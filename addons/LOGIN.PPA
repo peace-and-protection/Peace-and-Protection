@@ -1,0 +1,502 @@
+; #= rawlogin -rs
+; ########################################
+; Peace and Protection
+; Port Tools (standard addon)
+; ########################################
+ 
+#.ppa.info off
+[addon]
+name=Port Tools
+group=Core
+popup=Port Tools
+author=pai
+version=1.00
+url=http://www.pairc.com/
+email=pnp@pairc.com
+id=pplogin
+ppver=4.22
+sockets=LOGIN.*
+windows=@Login* @ARP @.nuke*
+timers=.nukedetect .nukerepeat .arpdetect
+dialogs=nukedet
+[files]
+1=login.ppa
+[other]
+1=services.txt
+2=loginarp.bat
+3=loginns.bat
+[notes]
+1=This addon adds some socket and nuke-detection tricks to PnP. It is not finished or documented at this time and does not contain any popups.
+2=The commands currently supported: /login, /nukes, /arp, /service
+3=Note that '/nukes' is a nuke-detection tool- not a war tool.
+[menu]
+#.ppa.info end
+ 
+on *:LOAD:{
+  ; PnP check
+  if (!$_ispnp) {
+    echo 4 -ati2 *** This addon requires Peace and Protection by pai to use.
+    echo 4 -ati2 *** You can download Peace and Protection at http://www.pairc.com/
+    .timer -mio 1 0 .unload -rs " $+ $script $+ "
+    halt
+  }
+  ; Invalid load method check
+  if (!$istok($_cfgx(addons,ids),$readini($script,n,addon,id),32)) {
+    .timer -mio 1 0 .unload -rs " $+ $script $+ "
+dispa Unloading ' $+ $script $+ ' $chr(40) $+ addon is not properly loaded; use /addon to load it $+ $chr(41)
+    halt
+  }
+}
+ 
+; Need to add-
+;;; 1) Listening for connections
+; 2) Logging
+;;; 3) "Disconnect" and "Reconnect" popups
+;;; 4) Recognize packets without newlines
+;;; 5) send packets without newlines if desired
+; 6) bugs in titlebars of multiple windows screwing up
+; 7) login to nickname
+;;; 8) display special ascii and interpret ascii codes (\xx?)
+;;; 9) menubar popups
+ 
+;
+; Logging in to a site
+;
+alias login {
+if ($2 == $null) _qhelp $_s2f(/login,+address,+portorservice,!An address and port to connect to) $1
+  var %service
+  if ($2 !isnum) {
+    %service = $_service($2-)
+if ($gettok(%service,1,32) == ??) _error Unrecognized service ' $+ $2- $+ '.Try using a port number.
+    tokenize 32 $1 %service
+  }
+  if (@ isin $1) tokenize 32 $gettok($1,2-,64) $2
+  ; either nick or .nick works
+  elseif (((.* iswm $1) && ($count($1,.) == 1)) || ($count($1,.) == 0)) {
+    var %dns = $_nc($remove($1,.))
+    if ($address(%dns,5)) tokenize 32 $gettok($ifmatch,2-,64) $2
+    else {
+dispa Looking up address of $:t(%dns) $+ ...
+      _notconnected
+_Q.userhost login&a $+ $2 dispa $+ User $+ $:t(%dns) $+ notfound %dns
+      halt
+    }
+  }
+  var %win = $_newwin(@Login)
+  _window 1 -ez + %win $_winpos(15,15,12,12) @Login
+  _windowreg %win _logonclose
+  sockopen LOGIN. $+ %win $1-
+echo $color(high) %win Connecting to: $1 on port $2-
+titlebar %win - $1 $+ : $+ $2 - 0/0 (Connecting)
+}
+on *:SOCKOPEN:LOGIN.*:{
+if ($sockerr) { echo $color(high) $gettok($sockname,2,46) Error connecting: $sock($sockname).wsmsg | titlebar $gettok($sockname,2,46) $gettok($window($gettok($sockname,2,46)).title,1-4,32) (Error) }
+else { echo $color(high) $gettok($sockname,2,46) Connection established | titlebar $gettok($sockname,2,46) $gettok($window($gettok($sockname,2,46)).title,1-4,32) }
+}
+on *:SOCKCLOSE:LOGIN.*:updt $gettok($sockname,2,46) $sockname | echo $color(high) $gettok($sockname,2,46) Connection closed! | titlebar $gettok($sockname,2,46) $gettok($window($gettok($sockname,2,46)).title,1-4,32) (Closed)
+alias _logonclose var %socket = LOGIN. $+ $1 | if ($sock(%socket,1)) sockclose %socket
+alias -l updt titlebar $1 $gettok($window($1).title,1-2,32) - $sock($2,1).sent $+ / $+ $sock($2,1).rcvd
+on *:INPUT:@Login*:{
+  var %socket = LOGIN. $+ $target
+if ($sock(%socket,1).status == connecting) echo $color(high) $target Connection not made yet!
+  elseif ($sock(%socket,1)) { sockwrite -tn %socket $1- | echo $color(act) -i2 $target < $1- }
+  halt
+}
+on *:SOCKWRITE:LOGIN.*:{
+  updt $gettok($sockname,2,46) $sockname
+  if ($sockerr) {
+echo $color(high) $gettok($sockname,2,46) Error sending data: $sock($sockname).wsmsg
+titlebar $gettok($sockname,2,46) $gettok($window($gettok($sockname,2,46)).title,1-4,32) (Error)
+    sockclose $sockname
+  }
+}
+on *:SOCKREAD:LOGIN.*:{
+  if ($sockerr) {
+    updt $sock($sockname,1).mark $sockname
+echo $color(high) $sock($sockname,1).mark Error receiving data: $sock($sockname).wsmsg
+titlebar $gettok($sockname,2,46) $gettok($window($gettok($sockname,2,46)).title,1-4,32) (Error)
+    sockclose $sockname
+    halt
+  }
+  var %data
+  :next
+  sockread %data
+  if ($sockbr) {
+    if (%data == $null) var %data
+    echo $color(norm) -i2 $gettok($sockname,2,46) > %data
+    goto next
+  }
+  updt $gettok($sockname,2,46) $sockname
+}
+ 
+;
+; Nuke stat check
+;
+alias nukes {
+  if ($dialog(nukedet)) did -b nukedet 101
+else dispa Detecting IP statistics...
+  .remove $_temp(nss)
+  .write -c $_temp(nsd) 1
+  run -n " $+ $scriptdirloginns.bat $+ " $_temp(nss) $_temp(nsd)
+  .timer.nukedetect -mio 0 200 if ($exists( $+ $_temp(nsd) $+ ) == $!false) _nukes2 $iif($1 isnum,$1)
+}
+alias -l _finnuke return $gettok($gettok($line(@.nuke1,$fline(@.nuke1,$1,1)),2,61),1,32)
+alias -l _finnuke2 return $gettok($line(@.nuke1,$fline(@.nuke1,$1,1)),$2,32)
+alias -l _nukes2 {
+  .timer.nukedetect off
+  if ($1 isnum) .timer.nukerepeat -io 1 $1 nukes $1
+  window -c @.nuke1
+  window -hln @.nuke1
+  filter -fw $_temp(nss) @.nuke1 * * *
+  .remove $_temp(nss)
+  if ($dialog(nukedet) == $null) {
+    dialog -dm nukedet nukedet
+    if ($1 isnum) {
+      did -c nukedet 50
+      did -o nukedet 51 1 $1
+    }
+  }
+  _updnuke 3 $_finnuke2(*Destination Unreachable*,3) 71 2
+  _updnuke 5 $_finnuke2(*Echos*,2) 72 2
+  _updnuke 7 $_finnuke2(*Echo replies*,3) 73 2
+  _updnuke 9 $_finnuke(*No ports*) 74 2
+  _updnuke 11 $_finnuke(*Reassembly Required*) 75 1
+  _updnuke 16 $_finnuke2(*Messages*,2) 76 2
+  _updnuke 17 $_finnuke2(*Messages*,3) 81 2
+  _updnuke 19 $_finnuke(*Datagrams Received*) 77 5
+  _updnuke 20 $_finnuke(*Datagrams Sent*) 82 5
+  _updnuke 22 $_finnuke(*Segments Received*) 78 5
+  _updnuke 23 $_finnuke(*Segments Sent*) 83 5
+  _updnuke 25 $_finnuke(*Passive Opens*) 79 1
+  _updnuke 26 $_finnuke(*Active Opens*) 84 1
+  _updnuke 28 $_finnuke(*Packets Received*) 80 5
+  _updnuke 29 $_finnuke(*Output Requests*) 85 5
+  did -o nukedet 60 1 $ticks
+  did -e nukedet 101
+  window -c @.nuke1
+}
+alias -l _updnuke {
+  var %old = $did(nukedet,$1)
+  if ((%old isnum) && (%old < $2)) {
+    var %time = $calc(($ticks - $did(nukedet,60)) / 1000),%persec = $int($calc(($2 - %old) / %time / $4))
+    if (%persec > 2) %persec = 2
+    did -o nukedet $3 1 $str(ø,$calc(%persec + 1))
+  }
+  else did -r nukedet $3
+  did -o nukedet $1 1 $2
+}
+dialog nukedet {
+title "Nuke Detect / IP Statistics"
+  icon script\pnp.ico
+  option dbu
+  size -1 -1 262 115
+ 
+box "Possible packet attacks:", 1, 5 5 104 86
+text "Packets", 30, 69 15 30 10
+text "Dest. unreachable:", 2, 10 27 52 10, right
+  edit "", 3, 64 25 30 11, autohs read right
+text "ICMP pings:", 4, 10 39 52 10, right
+  edit "", 5, 64 37 30 11, autohs read right
+text "ICMP ping replies:", 6, 10 51 52 10, right
+  edit "", 7, 64 49 30 11, autohs read right
+text "UDPs with no port:", 8, 10 63 52 10, right
+  edit "", 9, 64 61 30 11, autohs read right
+text "Packet fragments:", 10, 10 75 52 10, right
+  edit "", 11, 64 73 30 11, autohs read right
+ 
+  text "", 71, 96 27 10 11
+  text "", 72, 96 39 10 11
+  text "", 73, 96 51 10 11
+  text "", 74, 96 63 10 11
+  text "", 75, 96 75 10 11
+ 
+box "IP statistics:", 12, 114 5 142 86
+text "In", 13, 172 15 30 10
+text "Out", 14, 217 15 30 10
+text "ICMP packets:", 15, 119 27 46 10, right
+  edit "", 16, 167 25 30 11, autohs read right
+  edit "", 17, 212 25 30 11, autohs read right
+text "UDP packets:", 18, 119 39 46 10, right
+  edit "", 19, 167 37 30 11, autohs read right
+  edit "", 20, 212 37 30 11, autohs read right
+text "TCP packets:", 21, 119 51 46 10, right
+  edit "", 22, 167 49 30 11, autohs read right
+  edit "", 23, 212 49 30 11, autohs read right
+text "TCP connects:", 24, 119 63 46 10, right
+  edit "", 25, 167 61 30 11, autohs read right
+  edit "", 26, 212 61 30 11, autohs read right
+text "Total IP packets:", 27, 119 75 46 10, right
+  edit "", 28, 167 73 30 11, autohs read right
+  edit "", 29, 212 73 30 11, autohs read right
+ 
+  text "", 76, 199 27 10 11
+  text "", 77, 199 39 10 11
+  text "", 78, 199 51 10 11
+  text "", 79, 199 63 10 11
+  text "", 80, 199 75 10 11
+  text "", 81, 244 27 10 11
+  text "", 82, 244 39 10 11
+  text "", 83, 244 51 10 11
+  text "", 84, 244 63 10 11
+  text "", 85, 244 75 10 11
+ 
+check "&Automatic refresh:", 50, 59 98 55 11
+  edit "", 58, 114 98 25 11
+text "seconds", 52, 141 100 37 10
+ 
+check "&On top", 53, 183 98 35 11
+ 
+  edit "", 60, 1 1 1 1, hide autohs
+ 
+button "Close", 100, 12 97 40 12, cancel default
+button "&Refresh", 101, 217 97 40 12
+}
+on *:DIALOG:nukedet:sclick:53:dialog $iif($did(53).state,-o,-n) nukedet
+on *:DIALOG:nukedet:sclick:101:{
+  did -tf nukedet 100
+  nukes
+}
+on *:DIALOG:nukedet:sclick:100:{
+  .timer.nukedetect off
+  .timer.nukerepeat off
+}
+on *:DIALOG:nukedet:sclick:50:_chkref
+on *:DIALOG:nukedet:edit:51:_chkref
+alias -l _chkref {
+  if (($did(50).state) && ($did(51) isnum)) .timer.nukerepeat -io 1 $did(51) nukes $did(51)
+  else .timer.nukerepeat off
+}
+ 
+;
+; Connection detection
+;
+;;; needs to resolve IPs and recheck against info (for outgoing connections) remembering that $dns() can result in multiple results
+;;; popups
+alias arp {
+  .remove $_temp(ars)
+  .write -c $_temp(ard) 1
+if ($active != @ARP) dispa Detecting TCP/UDP connections...
+  close -@ @.nuke2 @ARP
+  if (($longip($server) == $null) && ($server)) _Q.dns _arp3 _arp4 -h $server
+  else _arp4
+  run -n " $+ $scriptdir $+ loginarp.bat $+ " $_temp(ars) $_temp(ard)
+  .timer.arpdetect -mio 0 200 if ($exists( $+ $_temp(ard) $+ ) == $!false) _arp2
+}
+alias _arp3 {
+  window -hln @.nuke2
+  titlebar @.nuke2 $iaddress
+  if ($line(@.nuke2,1)) _arp5
+}
+alias _arp4 {
+  window -hln @.nuke2
+  titlebar @.nuke2 ?
+  if ($line(@.nuke2,1)) _arp5
+}
+alias -l _arp2 {
+  .timer.arpdetect off
+  window -hln @.nuke2
+  filter -fwtu 2 58 $_temp(ars) @.nuke2 *:*
+  .remove $_temp(ars)
+if ($line(@.nuke2,1) == $null) aline @.nuke2 (none)
+  if ($window(@.nuke2).title) _arp5
+}
+alias -l _arp5 {
+  _window 2. -hlnz -t20,30,40 @ARP -1 -1 -1 -1 @ARP
+  var %num = $line(@.nuke2,0),%tcp = 1,%listen = 1,%udp = 1
+  :loop
+  if (%num) {
+    tokenize 32 $line(@.nuke2,%num)
+    if ($1 == TCP) {
+      if (($4 == ESTABLISHED) || ($4 == TIME_WAIT)) {
+iline @ARP %tcp $_service($gettok($2,2,58)) $+ 	 $+ $gettok($3,1,58) $+ 	 $+ $_service($gettok($3,2,58)) $+ 	 $+ $iif($4 == TIME_WAIT,(connecting)) $_arpinfo($gettok($2,2,58),$gettok($3,2,58),$gettok($3,1,58))
+        inc %listen
+        inc %udp
+      }
+      else {
+        var %addr = $gettok($2,1,58)
+if (%addr == 0.0.0.0) %addr = (any)
+iline @ARP %listen $_service($gettok($2,2,58)) $+ 	 $+ %addr $+ 	 $+ (listening) $_listeninfo(tcp,$gettok($2,2,58))
+        inc %udp
+      }
+    }
+    elseif ($1 == UDP) {
+iline @ARP %udp $_service($gettok($2,2,58)) $+ 	 $+ (listening) $_listeninfo(udp,$gettok($2,2,58))
+    }
+    dec %num | goto loop
+  }
+  window -c @.nuke2
+  iline @ARP %tcp  
+iline @ARP %tcp Local port	Remote address	Remote port	Notes
+  iline @ARP %tcp  
+iline @ARP %tcp Active TCP connections-
+  inc %listen 4
+  iline @ARP %listen  
+iline @ARP %listen Local port	Local address	Notes
+  iline @ARP %listen  
+iline @ARP %listen Ports waiting for TCP connections-
+  iline @ARP %listen  
+  iline @ARP %listen  
+  inc %udp 10
+  iline @ARP %udp  
+iline @ARP %udp Local port	Notes
+  iline @ARP %udp  
+iline @ARP %udp UDP ports waiting for data-
+  iline @ARP %udp  
+  iline @ARP %udp  
+  window -awb @ARP
+}
+; $_service(port/name) returns port (name)
+alias -l _service {
+  if ($1 == *) return *
+  var %port,%name
+  if ($1 isnum) {
+    %port = $1
+    var %found = $read($scriptdirservices.txt,nw,$1 &)
+    if (%found) %name = $gettok(%found,2,32)
+  }
+  else {
+    %name = ( $+ $1 $+ )
+    var %found = $read($scriptdirservices.txt,nw,& %name)
+    if (%found) %port = $gettok(%found,1,32)
+  }
+  if (%port == $null) %port = ??
+  if (%name) return %port %name
+  return %port
+}
+; $_arpinfo(local,remote,addr) data for a TCP connection
+alias -l _arpinfo {
+  ; Chat, send, get, fserve?
+  var %num = 1
+  :loop2
+  var %chat = $chat(%num).ip,%send = $send(%num).ip,%get = $get(%num).ip,%fserv = $fserv(%num).ip
+if (%chat == $3) return $chat(%num) (DCC chat)
+if (%get == $3) return $get(%num) (DCC get)
+if (%send == $3) return $send(%num) (DCC send)
+if (%fserv == $3) return $fserv(%num) (fserve)
+  if ((%chat) || (%send) || (%get) || (%fserv)) { inc %num | goto loop2 }
+    
+  ; Check all cid-specific things
+  var %scon = $scon(0)
+  while (%scon) {
+    scon %scon
+    ; Server? (remove titlebar check once we start resolving everything)
+if ((($3 == $server) || ($3 == $window(@.nuke2).title)) && ($2 == $port)) return IRC connection
+    ; Self?
+if (($3 == $ip) || ($3 == 127.0.0.1)) return (yourself)
+    ; IAL?
+    if ($ial(*!*@ $+ $3,1).nick) return $ifmatch
+    dec %scon
+  }
+  scon -r
+ 
+  ; Sockets?
+  var %num = $sock(*,0)
+  while (%num) {
+if (($sock(*,%num).ip == $3) && ($sock(*,%num).type == tcp) && ($sock(*,%num).port == $2) && ($sock(*,%num).bindport == $1)) return Socket $sock(*,%num)
+    dec %num
+  }
+}
+; $_listeninfo(type,local) sees if any sockets are listening on that port; type = udp/tcp
+; also returns info for ddeserver, finger, ident, if they are open
+alias -l _listeninfo {
+  ; Sockets?
+  var %num = $sock(*,0)
+  while (%num) {
+if (($sock(*,%num).status == listening) && ($sock(*,%num).type == $1) && ($sock(*,%num).port == $2)) return Socket $sock(*,%num)
+    dec %num
+  }
+  
+  ; mIRC stuff?
+  if ($1 == tcp) {
+if (($2 == 79) && ($_optn(3,29))) return mIRC finger server
+    var %opt = $readini($mircini,n,dccserver,n0)
+if (($2 == $dccport) && ($gettok(%opt,1,44))) return mIRC DCC server
+if (($2 == $readini($mircini,n,ident,port)) && (yes == $readini($mircini,n,ident,active))) return mIRC identd server
+  }
+}
+ 
+;
+; Port listening and connections
+;
+;!! complete this feature
+dialog portlisten {
+title "Port Listening"
+  icon script\pnp.ico
+  option dbu
+  size -1 -1 180 135
+ 
+box "&Ports:", 1, 5 5 75 90
+  list 2, 10 15 65 75
+ 
+box "Configure port:", 9, 85 5 90 90
+ 
+text "&Protocol:", 3, 87 28 27 10, right
+  combo 6, 117 26 50 100, drop
+text "&Port:", 4, 87 40 27 10, right
+  combo 7, 117 38 50 100, drop edit
+text "7Action:", 5, 87 52 27 10, right
+  combo 8, 117 50 50 100, drop
+ 
+button "&Add", 10, 90 76 37 12
+button "&Remove", 11, 132 76 37 12
+ 
+  list 12, 1 1 1 1, hide
+  list 13, 1 1 1 1, hide
+ 
+check "&Reopen these connections when you exit and reopen mIRC", 14, 10 101 160 8
+ 
+button "OK", 100, 10 115 42 12, ok default
+button "Cancel", 101, 69 115 42 12, cancel
+button "&Help", 102, 128 115 42 12, disable
+}
+on *:DIALOG:portlisten:init:*:{
+  did -ac $dname 6 TCP
+  did -a $dname 6 UDP
+  loadbuf -o $dname 7 " $+ $scriptdir $+ services.txt $+ "
+  did -c $dname 7 1
+did -ac $dname 8 Popup warning
+did -a $dname 8 Note in status
+did -a $dname 8 Accept connection
+}
+on *:DIALOG:portlisten:sclick:10,11:{
+  var %prev = $did(2).sel
+  if ($gettok($did(7),1,32) isnum) {
+    var %where = $ifmatch $did(6),%num = $did(2).lines
+    :loop
+    if (%num) {
+      if ($gettok($did(2,%num),1-2,32) == %where) did -d $dname 2 %num
+      dec %num | goto loop
+    }
+if ($did == 10) did -ac $dname 2 %where ( $+ $gettok(warn*note*connect,$did(8).sel,42) $+ )
+    else {
+      if ($did(2).lines < %prev) %prev = $ifmatch
+      if (%prev) {
+        did -c $dname 2 %prev
+        _selit
+      }
+    }
+  }
+  did -t $dname 100
+}
+on *:DIALOG:portlisten:sclick:2:_selit
+alias -l _selit {
+  var %it = $did(2,$did(2).sel)
+  if (%it) {
+    did -c $dname 6 $findtok(tcp udp,$gettok(%it,2,32),1,32)
+    did -c $dname 7 $didwm($dname,7,$gettok(%it,1,32) *,1)
+did -c $dname 8 $findtok((warn)*(note)*(connect),$gettok(%it,3-,32),1,42)
+  }
+}
+ 
+;
+; Informational
+;
+alias service {
+if ($1 == $null) _qhelp $_s2f(/service,+portorservice,!A service or port to lookup)
+  var %match,%found = $_service($1-)
+  if (($gettok(%found,1,32) != ??) && ($gettok(%found,2-,32))) {
+dispa Port $:s($gettok(%found,1,32)) is the $:s($left($right($ifmatch,-1),-1)) service
+  }
+else dispa No TCP or UDP service found matching ' $+ $:s($1-) $+ '
+}
+0

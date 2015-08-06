@@ -1,0 +1,670 @@
+What's New in PnP 4.22.3?
+Complete details on everything added here. See pp-readme.txt for a summary of the important stuff.
+
+As of Sunday October 21 2012, the support channel #peace&protection has moved to EFnet.
+
+*** 4.22.3 changes ***
+
+* Updated alias1.mrc to allow IPv6 dns lookups. (Thanks SiD)
+* Fixed the @Awaylog window bug.
+
+*** 4.22.2 changes ***
+
+With mIRC 6.17 all notices opened a new separate query each time a notice was received
+regardless of any settings. This is now fixed.
+
+*** 4.22.1 changes ***
+
+* New version number system. Because 4.22 was the last release by the developer (Pai)
+  we implementet the open source version number system to reflect bug fixes.
+* A bug in P&P and a fix was brougt to our attention by Paul, an IRC-Operator on Quakenet. (Thank you)
+  A hole in the file "last.mrc" allows an attacker to remotely execute arbitrarly code,
+  by sending a private message (msg/query). The fix closes this hole.
+* Fixed the problem of the missing popups in the @Clones window.
+* Fixed the problem of the missing bantype popups after mIRC 6.01.
+* Fixed the problem of writing into the logs directory experienced in mIRC 6.15 and newer.
+* Fixed a few ChanServ and NameServ bugs.
+
+*** 4.22 changes ***
+
+* DO NOT ADD YOUR OWN SCRIPTS/EVENTS TO PNP'S SCRIPT FILES. If you want to
+  add stuff, go to File->New or File->Load to create your own script file.
+  If you add your own stuff to PnP's files, it can very easily cause problems.
+
+MAJOR FEATURE ADDITIONS
+
+* New Spam Blocker addon for blocking spam, queries, invites, etc. /addon to install.
+* First-time configuration wizard added. Use /wizard to run it at any time. (or select
+  from menu- PnP -> Configure -> Configuration Wizard)
+* Added 'Rejoin channel if alone and not opped' option to channel options in /config
+* Included some more PnP themes and variations- The 'elite' theme with fixed-width,
+  aligned nicknames (and two variations) and a variation of the PnP theme that colors
+  the entire nickname (not just the brackets)
+* Added 'show raws to active' option (configuration, under Display -> Other) Note that
+  this only applies to raws when they don't have an appropriate channel or query to
+  show in- mostly, failed-to-join-channel and no-such-command.
+
+OTHER MINOR CHANGES AND ADDITIONS
+
+* The LagBar now attempts to follow you resizing/moving mIRC if it is Docked.
+* /fontfix can now be used from the commandline- /fontfix -cqfnopsb size font
+* Default theme now shows server a servernotice is from, if different from your own
+* PnP won't consider a notify as "address verified" if the address mask is just a
+  $network or $server mask.
+* PnP will always consider a network to be the one you entered in favorites, if a
+  server match is found.
+* PnP won't consider a DCC with a pathname in it (but otherwise valid) as an error.
+* PnP can now be downloaded in a 'lite' format that doesn't support translations,
+  saving a large chunk of filesize.
+* NickServ addon detects "This nickname is registered and protected" and auto logins.
+* Rearranged some popups a little (just moved items up or down- nothing more)
+* Holding Shift+Ctrl down during the signon process (until MOTD is complete)
+  will now skip joining any favorite channels.
+* PnP ignores MAP raws 006 and 015 now, to preserve space formatting
+* PnP shows raw 005 "use this server" (austnet) like other raws now
+* Added shortcut keys to all dialog controls (not consistent due to
+  translation support, may have duplicates, but they at least work)
+* /who now goes to active if you have whois set to "source window"
+* Tabbed listbox windows with Arial font open with different tab widths
+* Only reloads timestamp format on startup if it needs to to retain color
+  settings, so your mirc timestamp settings are less likely to get overridden.
+* F4 now cycles between /onotice and /ovnotice.
+* Removed control codes from default sound actions
+* /whois now recognizes D#chan as a deaf bot, in addition to the normal -#chan.
+  /whois will also recognize ~^* as special "modes" for formatting.
+* Added ^O within some raw/theme displays, so that topics, quit/part msgs,
+  sound actions, etc. with colors won't disturb remaining text on the line.
+* Improved /ports handling on UnrealIRCd servers.
+* PnP now hides "error: closing link" when you quit if it's just repeating the
+  quit message that PnP already displayed.
+* PnP will now correctly "fix" an MTS theme that has used <nick> instead of <me> in
+  it's Query events.
+* The command queue used for delaying multiple commands to prevent flooding is
+  server-specific now.
+* Tweaked ban time in /x ban dialog to be wider to fit more characters on some systems.
+* 'desktop' and 'font' popups (window menu) appear even if a given window is
+  empty, now, for custom script windows like @MOTD, @Whois.
+* PnP now retains your awaynick if you reconnect to a favorite network/server, and
+  won't change to an awaynick if you set away when you're already away with an awaynick.
+* PnP now logs any line that triggers your highlight settings. (other than nick-based
+  highlight)
+
+BUG FIXES
+
+* Fixed incorrect channel avg ping times in mIRC titlebar.
+* Fixed double-clicking on a private action line in awaylog; fixed double-clicking on any
+  line when your timestamp format had spaces in it.
+* Fixed bug when using inline and normal nick completion in same line and inline matched
+  multiple nicks; fixed nick completion popup being empty sometimes... both mIRC bugs :(
+* Fixed notice flood not working, fixed query flood not resetting
+* Fixed serverlist popups opening a new server connection when they didn't need to
+* Fixed erroneous away messages when using /qa then deselecting 'quiet'
+* Fixed not using favorites 'preferred info' if you didn't have any favorite servers listed
+  or if connecting to 'Random X' servers.
+* Fixed setting back on other servers when closing a status window
+* Fixed op passwords not showing up in /user for (default) channel
+* Fixed box in about dialog under Windows XP
+* Fixed inaccurate kick messages in F8 recent-offenders dialog
+* Fixed /background error when applying themes with @Ping window open on some OSes.
+* Fixed backgrounds not applying to windows in various circumstances.
+* Fixed theme delete not always deleting theme images.
+* Fixed occasionally having userhost replies start echoing in windows.
+* Fixed startup, autoaway, and notify sounds not playing
+* Fixed duplicated opnotice/events windows
+* Fixed bans/unbans not updating an open @Banlist window
+* Fixed xdcc full list popups sending just the short ad.
+* Lists duplicated addons in proper areas of /addons dialog now
+* Fixed whois no such user not showing in @Whois
+* Fixed 'send grab request in private' not working with popups/autograb methods
+* Fixed 'send ping silently' option of extras ez-ping not working
+* Fixed kickbanning users with IAL off
+* Fixed hash errors if you were kicked/parted before nicklist colors were fully updated
+* Fixed userhost-based features (notify addr check, user lookup) not working on WebNet
+* Fixed MOTD not working properly if @MOTD window was desktopped.
+* Fixed not using proper set of commands for P popups on Planetarion
+* Fixed /did bug when viewing away options if no awaynick was set
+* Fixed /kickstat not reporting kickstats, also allows /kickstat ident@addr now
+* Fixed server notice mask raw on UnrealIRCd
+* Fixed 'op activity' popup in awaylog opening new window and not saving setting
+* Fixed servernotice filter settings not saving from /config all of the time
+* Fixed hash errors when using /unban -s (unbanning bans matching a user)
+* Fixed /tempban not working
+* Fixed selecting a startup profile not closing the previous mIRC
+* Fixed lastseen not properly recording userids of 10+ characters
+* Fixed /sayseen not looking up a user by userid if "include chan" disabled
+* lastseen addon no longer records invalid data if the ial is disabled/not full
+* Fixed errors on using X suspend/unsuspend/remuser cmds/popups
+* Fixed DCC queue max option not working, and DCC queue freezing up
+* Fixed nick not being shown in "please do not deop" msgs.
+* Fixed deop-protection deopping user even if the level was not set to revenge
+* Fixed /msg =nick (dcc) not showing msg being sent.
+* Fixed "/set: line too long" error when whois'ing users on lots of chans
+* Fixed "x users x invisible x servers" raw showing wrong on some servers
+* Fixed !leech command showing even if leeching was disabled, in some cases
+* Fixed 'no such user (/nickserv)' (or /chanserv) under certain configurations
+* Fixed not properly recognizing nickserv/chanserv support occasionally
+* Fixed a couple spurious "no such table" hash errors.
+* Fixed goto error if using warn-via-msg as a second command in protection
+* Fixed $:t() appearing (instead of a highlight) in warning-to-self msgs
+* Fixed rare problem when trying to ban, etc. nickname of a user you can't see
+* Fixed sound addon not handling MP3 CTCPs.
+* Fixed F8 kicking clones even when 'kick clones' was unchecked
+* Fixed $mid error when using /unhide with hidden script windows.
+* Fixed wallops showing nickname twice
+  (you may need to go into /theme and hit OK to fix this.)
+* Fixed drag-drop sending files to dcc chats
+* Fixed 'flash on private msg' giving '/if: invalid format' on an action.
+* Fixed Clear popup not showing in @windows
+* Fixed removing channels with . in them from favorites
+* Fixed sounds not playing to active from a @playlist window
+* Fixed sounds not playing to a window on another server
+* Fixed command-line parameters for /ltopic and /utopic.
+* Fixed $replace error from /config dialog, messages section
+
+*** 4.21 changes ***
+
+BUG FIXES / CHANGES
+
+* Various favorites bugs fixed, including joining only one, lists with
+  commas, popup bugs, channels with periods adding as servers, and not
+  being able to delete favorites networks.
+* No longer shows [ network ] prefix on 'joining favorites' message.
+* PnP will now let you add !chans to favorites even when not connected
+  to a !chan-supporting server (!chan is recognized in other areas like
+  this as well)
+* Included 'test' theme from 4.06 (I think it's ugly, but some people
+  seem to want it :)
+* Fixed $_stripout error when using /sayseen (lastseen addon)
+* Fixed NickServ errors ('no such user IDENTIFY')
+* PnP won't try to login to NickServ more than once in a 60-second period
+  now, so you shouldn't get multiple identifies during connect unless
+  NickServ is lagged.
+* Fixed kickstats showing when set not to show
+* Fixed kickstats hash-not-found and loadbuf bugs
+* Fixed $cid bug when closing config dialog
+* Fixed crash/lockup on install
+* Fixed sound schemes not playing
+* Fixed DCC PING (and /msg =nick)
+* Fixed 'unknown command dispra' on DCC chat flood
+* Fixed whois replies not showing in @Whois if on multiple servers
+* Fixed crash/lockup when using /fontfix or unhiding all windows
+* Fixed colors/etc being reset when restarting PnP; you may need to go
+  into /theme and correct any settings.
+* When applying a theme, you can turn off the font/image missing warnings
+  permanently
+* Fixed error when applying a theme with missing fonts with spaces in name
+* Fixed <placeholders> showing up sometimes in various cmds and output.
+  (/scan, /country, /host, etc.)
+* Fixed /elseif bug when sound options dialog closes
+* Fixed reevaluation bug in flood queue, caused problems such as when you
+  receive a CTCP from a user with the nickname |.
+* Fixed auto-desc for MP3s (from ID3 tags) not working.
+* Fixed raw 378 not showing up in a whois reply.
+* Fixed /titlebar errors if lagbar is off but lagbar is set to show
+  active server
+* Fixed 'unknown command unste' when banning enforcement runs
+* Fixed items in /msgs (esp. autoaway msg) getting corrupted on occasion;
+* Fixed some dialog items that weren't fully shown on some systems
+* Fixed typo in "Remeber" popup
+* Fixed SOUND.PPA/SOUND.PTM being detected as virii by Norton (false alarm)
+* Fixed showing sounds you play in parens after the msg. (on your system)
+* Fixed playing sounds to active window.
+* Fixed 'indexing not enabled' error when first enableing indexing for sounds
+* Fixed not remembering key when you type /join #chan key
+* Fixed switchbar/toolbar mixup in applying themes
+* Fixed not remembering (all other chans) strictmode settings.
+* Fixed asking for an email when you use chanserv op/deop cmds
+* Added new ChanServ SET cmds to help listed when you do /cs set
+* Fixed '/if' error if you ping someone twice before they reply
+* Notices displayed to status now highlight the status window button
+* Fixed not setting strict modes if you join lots of channels at once
+  (may have fixed other problems where modes weren't getting set when
+  multiple channels were involved)
+* Fixed "set reroute" dialog giving "not connected" errors
+* When you select a network in the sound-target dialog (/starg) now only
+  windows from that network are shown in the list below.
+* Fixed events settings (/route) for "(all other channels)" not working.
+* Fixed '/blah: not connected to server' error on disconnect, if you had
+  any 3.20 addons loaded
+* Fixed addons dialog giving 'invalid' error if you had parenthesis in your
+  directory name.
+* PnP properly handles 'r' flag in /who replies on certain networks
+  (for 'registered')
+* Fixed '@Notices /notice ...' appearing in wrong window when receiving
+  notices into windows on multiple networks.
+* @Notices, @Banlist, @Events, and @Ping window now show network name in
+  titlebar.
+* Fixed X MODINFO AUTOMODE popup/cmd on Undernet.
+* Fixed nick colors not being applied if your listbox text color was different
+  from your normal text color.
+* Fixed blacklisting a user you can't currently see, was looking up nicknames
+  like 'not' and 'blacklist'.
+* Fixed XDCC enable/disable options in menu being checked wrong
+* Changed default XDCC messages to mention "/ctcp yournick".
+* Fixed '/titlebar @MOTD' error.
+* Modified default theme so you can disable showing your own nickname; you
+  will have to reload the PnP theme in /theme (you can load just Events) if
+  you want this feature.
+* Fixed $+ $chr(37) showing in caps warning/kick msgs and <$:t$etc in any
+  protection warning messages (if you upgraded)
+* Changed listbox tab widths to be larger under some fonts.
+* Fixed /close bug if bug/feedback report failed- was preventing you from
+  moving on to the 'failed report- enter smtp server' dialog.
+* Cleaned up display of server errors.
+
+*** 4.20 changes ***
+
+MAJOR FEATURE ADDITIONS
+
+* PnP is now completely mIRC 6.01 compatible.
+* PnP fully supports mIRC's new multi-server features- everything is
+  completely multi-server aware and compatible. Most options are still
+  global at this time (very few are network-specific) but this may
+  change over time.
+* PnP now uses hashes to store almost all settings and data, instead
+  of variables. This results in cleaner code, and in many cases, faster
+  code. Most data is also connection-specific, allowing for
+  connection-independent flood tracking, etc.
+* If (any) event occurs on a server other than the active connection,
+  but the event is being shown to the active window, a [ network ]
+  prefix is shown on the event. If you are connected multiple times to a
+  network, then [ network : yournick ] is shown.
+* Selecting popups in the status window to connect to a new server
+  will start a new server session if you're already connected and the
+  network differs from where you're currently connected to.
+* Favorites now includes favorite servers as well! You can add servers
+  to a favorite network, as well as preferred nickname/info. PnP can be
+  set to connect to one or more favorite networks on startup, or you can
+  connect to them at anytime using Status popups or /fav c. Favorite
+  server info (nickname, etc.) is used anytime you try to connect to
+  that network or server via a PnP feature/popup or the /server command.
+  See Favorites in configuration for details.
+* F11 when not connected now connects to all favorite servers.
+* If you are holding ctrl+shift when PnP's startup completes, PnP will
+  cancel ALL connect-on-startup options.
+
+* Halfop support added in all appropriate areas. (use /hfop or /+h to
+  halfop users- unfortunately, /hop was already taken as a command.)
+  "Owner" status is also recognized internally although no
+  popups/features specifically support it.
+* Nicklist colors now support halfops and "blank" colors (blank colors
+  just fall through to the next possible color- For example, a blank
+  color for IRCops will then just use whatever other color they would
+  have if they were not an IRCop)
+
+* PnP has an entirely new theming system! (/theme) Fully
+  MTS-compliant. (version 1.1) PnP no longer supports old PnP themes or
+  schemes. (txs/ppt files) Feel free to e-mail me with any especially
+  nice or unique themes you create, I may include them in future
+  releases.
+
+* Configuration dialog (/config) is entirely revamped and much
+  cleaner. A lot of smaller configuration dialogs (away, msgs, etc.)
+  have been integrated into this one.
+* Messages configuration improved dramatically- now done via dialog,
+  includes preview of what your message will look like.
+* Added options to not advertise your away message to specific
+  channels or to channels where you have idled X minutes.
+* Added option to respond to a user (when you're away) if they trigger
+  your highlight settings in a channel.
+* Added option to only send away responses (awaywords, etc.) to users
+  if they are triggered in specific channels.
+* A number of previously hidden options are now in the configuration
+  dialog- hiding the splash screen on startup, checking your op status
+  before performing commands, and showing shared channels in bold in a
+  whois reply.
+* A number of options can now be set by channel- Tempban type and
+  mask, whether to show banned users and clones, and whether to check
+  your op status before performing commands. (See configuration dialog,
+  under Channel options)
+* Added settings to not send script reply to version CTCPs and to not
+  reply to other CTCPs (mIRC's VERSION reply is always sent)
+  
+* PnP now has full translation support. Currently, only English is
+  included- although you can use the translation options to set all
+  popups or all text to lowercase. (in configuration) See
+  Script\Trans\English.ini or contact pai@pairc.com if you are
+  interested in translating PnP to another language.
+  
+* Sound addon now supports ogg, mwa, and using mp3 with mirc's
+  built-in player
+* Sound addon fkeys improved- CtrlF5 picks a soundtype now. F5 plays
+  random of the current type, ShiftF5 lets you select a file, and
+  Shift+Ctrl+F5 lets you search for files.
+* Added /mp, /wav, /mid, /ogg, /wma aliases to sound addon- type alone
+  to select a file, or type it with wildcards or a string to find
+  matching files.
+* Sound addon now supports drag/dropping files to a window to play
+  them.
+  
+* /viewpic command added, to view pictures. Right-click on an open
+  window for options. /rec will now use /viewpic to open a received
+  picture file.
+  
+* Lagbar now has additional options- 3d bar, light/dark colors, shows
+  name of network, and can show average, current, or highest lagtime
+  (right-click on the lagbar to access these options)
+* LastSeen now saves data network-specific, and uses hashes for speed.
+  Your old data will be imported to the -first- network you connect to
+  after upgrading.
+* Addon information is now shown in a nicely formatted dialog.
+* If your preferred nickname is taken during signon, PnP will
+  automatically try to retake it now. (You must still press a key to
+  retake nicknames any other time.)
+* Expanded topic popups in channel- added topic save, restore,
+  add-to-topic, lock/unlock topic, and refresh. Associated cmds-
+  /stopic, /otopic, /atopic, /ltopic, /utopic, /rtopic. The topic
+  separator (for /atopic) defaults to // and can be changed by typing
+  "/_cfgw topic.sep blah" where blah is the separator. (or blank for
+  none.)
+* Can now do /unban with a number or range, to unban any or all of the
+  last 10 bans (1-10 does all 10, 2 does 2nd most recent, 3-5 does 3rd
+  thru 5th, etc.) Same goes for /reban and /banlast.
+* PnP now supports !chans and other channel prefixes properly.
+* Added support for P on planetarion network. (use the X addon)
+
+OTHER MINOR CHANGES AND ADDITIONS
+
+* Improved error detection/messages during startup sequence
+* When PnP deletes files for you or overwrites a file (when you're
+  prompted) the file goes to the Recycle Bin now
+* PnP now handles detecting another script load a lot quicker and
+  quieter (just displaying a note in status)
+* PnP now uses mIRC's logging routines for custom windows; whois
+  replies are still written to log for @Whois if one is being used
+* When services notices appear in @Notices, the reply now uses /msg
+  blah@blah or /nickserv, etc. format depending on network
+* Improved syntax for /nickcol cmd line setting-
+  /nickcol [-tn] [on|off|edit]
+* Improved /rec to list files on any erroneous syntax
+* Removed /sle (say last event) and /rle (repeat last event) features
+  in extras addon
+* /whois supports channels returned in @+#format (user having multiple
+  modes set) found on the occasional server
+* /fontfix opens with all boxes checked by default, now
+* Nicklist Ban submenu now includes a nickname ban.
+* Double-click popup now appears above mouse if it would appear near
+  the bottom of the screen (to prevent accidental selection of an option
+  if you triple-click, etc.)
+* MOTD isn't shown as 'new' if only a date at the top has changed.
+* The dcc ignore-possible-viruses feature only ignores extensions
+  .vbs.shs.scr.exe.com.pif.lnk.bat.htm.hta.reg.js.pl now. It also allows
+  either extension to be from 2 to 4 characters. (note that this feature
+  only ignores files with two extensions)
+* In pager, now dcc/query/ignore buttons won't close pager if you
+  cancel the ignore or if you're not on the last page.
+* Color icons in dialogs now use actual current rgb colors (not just
+  default mirc colors)
+* If you use &me& in your away nickname, PnP will now truncate your
+  old nickname to fit everything into the server's nick length, if
+  possible
+* /rn (random nick changes) uses mIRC's temporary nick change feature
+  (less likely to become your normal nick accidentally)
+* /colorwin (extras) shows names of colors in titlebar now
+* Attributes mirc has auto-stripped from channel text will now count
+  towards protections still
+* Notify window popups now includes 'query' popup
+* Added new toplevel domains to extras /country lookup (info, biz, etc.)
+* Better handling for @DALnet IRCcop/staff addresses in a few places
+* Added dialog that pops up when you select a double-click default
+  action, to remind you how to remove it later
+* /login window titlebars work properly with multiple @login windows open
+* PnP now remembers addon options (nickserv, extras, lastseen,
+  reroute) when addons are unloaded and reloaded
+* Changed white border on items in /_qhelp to one pixel (not two)
+* Removed addon codes- not needed
+* Removed horizontal line character option- now PnP just underlines
+  column headers in listbox windows.
+* All addons are just a single file now (aside from any data files) -
+  No extraneous .mrc files
+* Removed /portup (no longer needed- mIRC has random port options)
+* mIRC's new second editbox feature (Alt+Q) is ignored in all scripts-
+  you can use this to paste/type text and retain spaces, if you like
+* Channel protection dialog- 'Add channel' now lists all chanels open
+  in a drop down for easy selection
+* Newly joined channels are highlighted if minimized
+* Removed reply to AWAY CTCP
+* Using a custom action as a punishment (channel protection) will now
+  automatically supply channel/target to the command, if you don't use
+  &chan& etc. in your command definition.
+* Changed message format (/msgs) to use normal $identifiers() instead
+  of the weird !$ <$ >$ stuff; also cleaned up some other weirdness
+  regarding &vars& in messages.
+* PnP shows all resulting IPs from a /dns, if multiple matches are returned
+* Recent servers list (in status) will no longer add duplicates that
+  only differ by port
+* Addons refuse to load (give error) on a non-PnP mIRC or if loaded
+  using /load instead of /addon.
+* Removed CLEAN and UNBAN ALL/ME cmds from ChanServ addon; /cs unban
+  will ask you for a user to unban now
+* Added some new cmds to ChanServ addon- SET VERBOSE / MAILBLOCK /
+  SUCCESSOR / WEBPASSWD and SENDPASS
+* F4 is now used to send opnotices.
+* Blacklisted users are sorted to the end of the userlist now, so that
+  other users in the userlist will be considered 'exceptions' to
+  blacklisted users.
+* Notice flood detect now wont't exempt notify users, and will ignore
+  all sites if multiple users flood you.
+* Temporarily-set modes (from protection) will no longer unset already
+  existing channel modes.
+* Added sound addon option to show leech cmds when playing files.
+* Added 'Kick Clones' checkbox to F8 punish dialog; F8 is also
+  mentioned now when clones join
+* Added 'clean' to sound queue popups to remove already-played files
+
+BUG FIXES
+
+* /serverlist and unloading/loading addons now work properly with
+  "monitor file changes" enabled
+* Fixed spaces being removed from passwords in services addons
+* Fixed 'line too long' bug when /whois'ing someone
+* Fixed away /umode to work differently- only modes that differ
+  between normal and away are changed (not +o, etc)
+* Fixed minor bugs in /scfg dialog
+* Fixed notices-to-active setting to work even if the user sending it
+  isn't in a channel with you
+* Fixed so if PnP text display is off, you can type multiple spaces properly.
+* Fixed "disable sounds on away" to work properly with sound addon
+* Fixed 'i have no access' in chanserv menu being checked under wrong conditions
+* Fixed /xw auto login to only login once after X rejoins on a split (Undernet)
+* Fixed various mode-related features using keys when 'hide channel
+  keys' mirc option was on
+* Fixed messages to properly read default message if messages are
+  improperly configured
+* Doesn't show 'Attempting to rejoin...' when you kick yourself now.
+  (since you won't rejoin)
+* Fixed nicklist color icon missing from /user dialog
+* Fixed your sound playing triggering highlight/etc.
+* Fixed pnp changing "nick!user@host.com" into "nick!user@host.host.com"
+* Creating a new profile from 'default settings' works properly now
+  (mirc.ini wasn't being copied)
+* Loading addons with multiple mircs open now only loads them in
+  copies of the same profile
+* If you have DDE disabled, /profile won't allow you to open the same
+  profile twice
+* Fixed an error resulting from a drag-drop disappearing before you
+  could read it
+* Fixed 'select...' in /ctcpedit not working if existing reply
+  contained certain characters
+* Fixed nick coloring to work properly when you change nicks
+* Fixed many cases where dialogs were not active after you would
+  select a color, file, another popup dialog, etc.
+* Fixed /away +a (not sure if it's actually used anywhere in PnP)
+* /black no longer enters a "-" reason if you leave it blank
+* Sound routines won't (accidentally) recognize single letter
+  extensions now
+* Fixed some graphical bugs on certain systems
+* Fixed bug allowing you to "add" a blank favorites group in /fav
+* Lagbar default position is better if you have toolbar off and use
+  maximized channel/etc windows
+* PnP doesn't override /server -sar (this allows /server -sar to work)
+* Fixed bug- can show awaylog count in titlebar without showing away reason now
+* Sound addon now plays sound CTCPs containing quotes properly
+* Fixed 'Addons' menu being hidden if you disable the 'Favorites' menu (menubar popups)
+* Fixed some things to properly check case-sensitivity, such as
+  password verifications and setting nick on /back
+* Fixed bug where pnp wouldn't always try and use X or ChanServ to do
+  cmds like /op if you weren't opped
+* Fixed some stored-keys bugs.
+* Cleaned up some profiles issues/bugs
+
+*** 4.06 changes ***
+
+. DCCs of 1 gig or more are no longer rejected as "invalid".
+. Fixed 'Cancel' not working on a number of nickserv/chanserv/xw popups
+. Fixed themes loading fonts improperly
+. Fixed /away, /profile, and other areas with errors opening multiple dialogs.
+. Fixed menubar popups showing 'Back' checked when you were actually Away.
+. Fixed bug with event routing when using a mirc.ini from an older mirc
+. Fixed tabs in certain windows showing as box characters in certain circumstances
+. Fixed goto bug in protection editor (adding/editing actions)
+. Fixed /whois 'shared channels' to work when user is opped/voiced
+. Fixed auto-away and away-nick options in /awaycfg
+. Fixed nick retake causing userhost errors if you got another nick-in-use error later
+. PnP now unloads mirc's aliases.ini; fixes problems with channel ping and opping multiple users
+. Updated some raw displays, including fixing odd /map output on some servers
+. in /strict, added "use current" buttons to use current modes in a channel as default (good for saving keys)
+. made topic in /strict into a drop down containing recently-seen topics (like /etopic)
+. /join will now add any known keys to the join request automatically, if you don't specify them yourself.
+  This means that once you see a key set in a channel, it will always try it the first time. Great for favorites with keys.
+. Converted all dialogs to use DBUs. They should look better on systems using different dialog font sizes.
+. If notices are set to display "normal" and mirc has notices in active, notices now appear.. in active! :)
+. /user, /black, /dcc, /auth, /ign, /dns, and a few other cmds/popups show mroe descriptive errors if not connected
+. /hop now works like mIRC's /hop, except it will add the # prefix to a channel name (like /j/join)
+. /cycle and /rejoin now use mIRC's /hop, so the window doesn't close
+. masking routines should recognize IPv6 addresses now, but I'm not sure where this is used :) (user request)
+. changed /sounds configuration command to /soundcfg due to popular request (conflict with another popular script)
+. added "wipe list" to nickserv status menu
+. nicklist colors now update to reflect changes in notify status when a user changes nickname
+. Fixed set-mode-if-alone to work properly on a /hop or /rejoin
+. Fixed strictmode to wait for mode reply if you get opped before you know the mode or don't know the key yet
+. Fixed -o+o yourself on undernet hiding the next /mode reply
+. Added /action as alias for /me
+. DCC protection ignores files with two extensions (usually viruses)
+. Fixed bug in sound indices causing duplicate files, made sound reindex more robust
+. Fixed timer bug when closing /theme window
+. mIRC option "reset away on keypress" works now
+
+*** 4.05 changes ***
+
+Please note that many of these bug fixes were related to changes in mIRC, although many were bugs that were simply there
+to begin with. Also note that I may have missed a few bugfixes or optimizations of insignificance.
+
+. Added PnP icon to dialogs and windows
+. Fixed 'ping' popup in chat windows
+. Nickcompleter can now match nicks by ignoring numbers (ie "hi" will match "10hi")
+. Fixed NickServ autologin to work on nick change
+. Fixed "can't send to channel" not showing
+. Fixed not storing key on join sometimes
+. Fixed infinite loop with only one stored key
+. /notif -r nick(s) removes nicks from notify
+. Fixed durations appearing with "0 min" etc.
+. /bans can be used to view channel bans (just a synonym for /ban)
+. Fixed 'no such user' and 'no such server' not showing up
+. Fixed mirc error on trying to open awaylog when it's empty
+. Fixed possible bug in ChanServ popups
+. Fixed display of invalid DCCs
+. Fixed hops column of /scan d (server details window)
+. On word kicks, if matched word is longer than 15 chars, it's shortened in any msgs shown
+. Fixed bug with f7/f10/etc fkey allocation routines
+. Adjusted flood kicks to not trigger if you're self-lagged 10 or more seconds (was 15 before)
+. Minor correction to protection channel selection routines
+. Modified "show who is banned" so it also shows who is banned even if you're not opped, protection is not on, etc.
+. Fixed bug in addon interfaces (was causing /= error on startup)
+. Theme text display now uses mirc's options/code to handle stripping, beeps, flashes, highlights, and switchbar highlighting/flashing
+. Fixed fonts on startup, progress meter, quick help, errors, color selection boxes, and dbl-click menus
+. Fixed slightly tweaked outlines on quick help
+. Fixed bugs in color selection boxes
+. Fixed many dialogs to not trigger oddly when clicking in blank areas
+. In /sounds, selecting/pasting a sound now enables the copy button
+. Fixed window tab stops to be proportionate to selected font (this may be a possible mIRC bug, but I've worked around it)
+. Fixed sound indices losing files and having duplicate files over time
+. If using dedicated query window with themes, pnp honors the iconify window setting now
+. Ignore code (including /ign) now supports ignoring DCCs using new /ignore -d switch
+. Fixed code to match new [ ] rules
+. Used $sdir() and $sfile() to replace old file identifiers
+. Fixed code to use new $dde, $readini, and $read formats
+. Popups now use standard checkmarks to denote selected items; as a result, removed 'popup mark' option
+. Fixed kickstats to handle numeric ips and be more specific with idents
+. Support for /dcc send -c added (mirc feature) Also, all sends made via xdcc/sound system/etc are closed automatically
+. Better detection of server features (max modes per line, silence, map, etc.)
+. /fontfix can now update open dcc chats
+. Using mIRC's filename renaming and log filename routines instead of my own now
+. /nickcol off now removes current nick colors and uses mirc's nicklist colors only (in address book)
+. If you set colors in mirc's nicklist colors, those override any pnp nicklist color settings (use /nickcolor to update after any changes)
+. Cleaned up internal command queueing system (no more $read 0.ld errors)
+. Using mirc's internal mp3 identifiers; as a result, should detect times/etc of VBR mp3s properly now
+. Fixed sound config and a few other dialogs that weren't loading settings properly
+. Fixed bug in option disabling in /textopt dialog
+. Uses mirc's option for 'show mode prefix' (removed my similar option from /textopt)
+. Theming now supports ALL of mirc's event show options- in options/irc and in the 'events' options in channel system menus
+. Uses mirc's event show options to determine whether to show quits in status (removed "show quits in status" option from /textopt)
+. Uses internal banlist, when full, for quickly displaying banlist (/ban) and unbanning matching bans (/unban -s nick|mask)
+. nickserv/chanserv addons message nickserv@services.* and chanserv@services.* on dalnet and newnet now
+. fixed emailing to work with outlook express (when you click on an email link in an addon info window, /about, etc.)
+. X/W addon- /x works for cmds now (in addition to /xw and /z)
+. X/W addon- old command/popup sets still work as normal on oz.org (for use with Z) not 100% tested however
+. X/W addon- all commands/popups/etc updated to reflect all current undernet X commands (and W has been removed)
+. X/W addon- added popup in channel to select what access level you have, to determine which commands to show
+. X/W addon- updated webpages in status window popups; added "verify" popup to query window under misc
+. Chanserv/Nickserv- fixed bug to allow enabling cs or ns using /msg chanserv/nickserv method
+. Recognizes (*.net *.split) as a netsplit quit message (undernet)
+. Removed _dynpop* and a few other internal aliases (important for anyone who may have made a 4.00 addon)
+. Any scripts that use sockets (/login, etc.) report winsock errors now.
+. Recent CTCPs doesn't record SOUND ctcps now
+. /sping is disabled on undernet and other servers that mask user's servers (I may find a way to reenable it later)
+. /about uses links instead of buttons for email/web
+. Can now /login to nicknames, IE /login nick 123
+. Can /login using service names instead of ports, IE /login 1.2.3.4 telnet
+. Added /service to login addon to lookup port numbers (/service 80 or /service www)
+. Standardized display locations somewhat- if you select to show ctcp/dns to status then ONLY the following appears there-
+  ctcps and replies to you only, /dns, /host, selfping, /auth expirations, and away/back status
+. nickserv addon auto-idents if chanserv joins, because it likely means services split
+. removed option in nickserv addon for auto-login- now you always auto-login if possible.
+. fixed bug in nickserv (mirc error) when trying to login on networks with no logins defined.
+. shared channels in /whois replies shown in bold (type "/`set whois.shared 0" to disable this)
+. you can now permanently log awaylog to logs/@awaylog.log, see /awaycfg for option
+. @whois and other logfiles now include the date if you've setup mirc logfiles to do so
+. "grab focus" option on sound playing should work a little cleaner now
+. more "efficient" code relating to automatic cleanup when closing error/quickhelp/progress windows
+. lagbar hides/shows itself quicker when switching to and from mirc now
+. nickserv release, register, and set password/passwd now hide passwords in display properly under more circumstances
+. nickserv access add/del only provides the portion of the mask after ! now (as required by dalnet)
+. nickserv register now asks for email address
+. nickserv set passwd now sends the old password with the new (on dalnet only)
+. nickserv drop now works on newnet (special for newnet only)
+. most dalnet and newnet nickserv features supported
+. various nickserv settings features show, hide, or work differently on different nets
+. I've re-enabled bug reporting and feedback (/bug) please don't abuse this. You may need to enter your mailserver when using this.
+. startup script now checks popup files and reloads as needed
+. added some internal drag/drop support (not used yet but will be in the future)
+. first-time startup enables certain mirc features (dcc speedups, dccserver, default user level, remotes)
+. /load'ing first.mrc should properly install ALL of pnp now
+
+*** Final Beta ***
+
+. fixed most bugs in file leeching and dcc queueing (i hope)
+. sound commands (leech, stats, etc.) mention other helpful commands in the replies
+. fixed (unlikely) bug in /rrset or /rr -a if specified a dde on the cmd line
+. if you go to select a file in /ctcpedit dialog and hit Cancel, dialog becomes active again
+. altered startup progress meter color
+. corrected a few typos
+. slight improvement to internal log filename function
+
+5.61 corrections-
+. $$0 to $$$ (#81)
+. changed use of $highlight (#28)
+. fixed banlist update code to not search for control codes (#43)
+
+5.7 corrections-
+. [ unset ] to unset [ ] (#84)
+. drawrect corrections (#102)
+. {} -> { } (unspecified)
+. -u vars being unset before a $dialog (unspecified)
+. progress meter and other windows not popping up (#82)
+. $null checked separately from 0 when needed (#57)
+. corrected a few now-obsolete uses of ] ] ] (unspecified)
+. fixed using $chan. $nick. etc shortcuts (#100)
+. fixed event routing, includes checks for new mirc event routing settings
+
+*** All changes before this version removed from WHATSNEW.TXT ***

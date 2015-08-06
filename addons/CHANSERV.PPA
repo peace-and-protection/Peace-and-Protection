@@ -1,0 +1,581 @@
+; #= ppcsbot -rs
+; ########################################
+; Peace and Protection
+; ChanServ support (standard addon)
+; ########################################
+ 
+#.ppa.info off
+[addon]
+name=ChanServ
+group=Core
+popup=ChanServ
+author=pai
+version=1.02
+url=http://www.pairc.com/
+email=pnp@pairc.com
+id=ppcsbot
+ppver=4.22
+dialogs=csregister
+hashcid=-csacc.*
+[files]
+1=chanserv.ppa
+[notes]
+1=This addon adds popups for accessing almost all ChanServ commands available, as well as founder auto-logins. This addon is designed to work with ChanServ on DALnet, but may work on other nets. If ChanServ popups are not showing on a network where they are supported, type '/cs on' to enable them.
+2=Commands can be accessed through popups (channel, nicklist, and status) as well as /cs command or by doing normal op commands when not opped. (for example, /opme or /kick when you aren't opped will use ChanServ automatically, IF you've declared yourself as having access.) To setup access in a channel, right-click in the channel, and select 'My Access' from the ChanServ menu.
+[menu]
+1=$iif($server,$iif($_isserv(cs),Disable ChanServ support on $hget(pnp. $+ $cid,net),Enable ChanServ support on $hget(pnp. $+ $cid,net))):cs $iif($_isserv(cs),off,on)
+[interfaces]
+bot=_cs.splice
+#.ppa.info end
+ 
+;;; todo- users, akicks, config
+;;; auto clear clears one net- no way to clear all nets, clear while offline pointless
+ 
+; /csa [#chan] [0|1|2|3|no|aop|sop|founder]
+; view or set cs access
+alias csa {
+if ($server == $null) _error You must be connected to use that command
+if ($_isserv(cs) == $false) _error /csa only works on networks with ChanServ.If there is ChanServ on this network $+ $chr(44) type /cs on
+  if ($_ischan($1)) { var %chan = $1,%how = $2 }
+  elseif ($active ischan) { var %chan = $active,%how = $1 }
+else _error You must use /csa in a channel $+ $chr(40) $+ or specify a target channel $+ $chr(41)
+  if (%how == $null) {
+    %how = $readini($_cfg(pw.ini),n,cs- $+ $hget(pnp. $+ $cid,net),a $+ %chan)
+    if (%how !isnum 0-3) %how = 0
+  }
+  else {
+    if (%how !isnum 0-3) {
+      if ($pos(asf,$left(%how,1),1) isnum) %how = $ifmatch
+      else %how = 0
+    }
+    if (%how) writeini $_cfg(pw.ini) cs- $+ $hget(pnp. $+ $cid,net) a $+ %chan %how
+    else remini $_cfg(pw.ini) cs- $+ $hget(pnp. $+ $cid,net) a $+ %chan
+  }
+var %access = $gettok(no access.AOP.SOP.Founder,$calc(%how + 1),46)
+dispa You have set yourself as $:s(%access) on $:s(%chan)
+}
+ 
+; /cs command [#chan|?] [params]
+; not mentioned but work- help, drop, acc(ess), acc(ess) nick, info, invite, mkick, mdeop, unban, count
+alias cs {
+if (($1 == on) || ($1 == on)) {
+    var %net = $2
+    if ($2 == $null) %net = $hget(pnp. $+ $cid,net)
+if (%net == Offline) _error Use /cs $1 while connected.Or $+ $chr(44) use " $+ /cs $1 network".
+    set %.net %net
+    _ssplay Dialog
+    var %opt = $$dialog(csway,csway,-4)
+    ; Set on all servers that are this net
+    var %scon = $scon(0)
+    while (%scon >= 1) {
+      scon %scon
+      if (($server) && (%net == $hget(pnp. $+ $cid,net))) {
+        _addbot cs ChanServ $replace($gettok(%opt,1,32),???,$gettok($server,-2-,46))
+      }
+      dec %scon
+    }
+    scon -r
+    writeini $_cfg(pw.ini) csforce %net 1 %opt
+dispa ChanServ support enabled for $:s(%net) $+ .
+    return
+  }
+if (($1 == off) || ($1 == off)) {
+    var %net = $2
+    if ($2 == $null) %net = $hget(pnp. $+ $cid,net)
+if (%net == Offline) _error Use /cs $1 while connected.Or $+ $chr(44) use " $+ /cs $1 network".
+    ; Set on all servers that are this net
+    var %scon = $scon(0)
+    while (%scon >= 1) {
+      scon %scon
+      if (($server) && (%net == $hget(pnp. $+ $cid,net))) {
+        _rembot cs ChanServ
+      }
+      dec %scon
+    }
+    scon -r
+    remini $_cfg(pw.ini) csforce %net
+dispa ChanServ support disabled for $:s(%net) $+ .
+    return
+  }
+  if (($_isserv(cs) == $false) && (($1 != auto) || ($istok(view clear,$2,32) == $false))) {
+if ($server) _error /cs only works on networks with ChanServ.If there is ChanServ on this network $+ $chr(44) type /cs on
+_error You must be connected to use that command
+  }
+  var %chan,%param,%send,%pw,%old,%nets,%net,%type,%who
+if ($1 == $null) _qhelp $_s2f(/cs +command -#channel -parameters * !ChanServ command to perform)
+  elseif ($_ischan($2)) { %chan = $2 | %param = $3- }
+  elseif (($istok(list help,$1,32)) || (($1 == auto) && ($istok(add del,$2,32) == $false))) %param = $2-
+  elseif ($active ischan) { %chan = $active | %param = $2- }
+elseif ($2 == ?) { %chan = $_patch($_entry(-1,$null,Channel for $1 command?)) | %param = $3- }
+else _error You must use /cs in a channel $+ $chr(40) $+ or specify a target channel $+ $chr(41)
+  if (($1 == set) && ($numtok(%param,32) == 1)) {
+    %send = msgcs SET %chan $upper(%param) | goto %param
+ 
+    :passwd
+    _ssplay Question
+%pw = $$input(New ChanServ founder password for %chan $+ ?,2)
+if ($$input(Please retype password to confirm:,2) !=== %pw) _error Passwords do not match.You must enter the password exactly the same each time.
+    %send %pw
+    return
+    :webpasswd
+    _ssplay Question
+%pw = $$input(New website password for %chan $+ ?,2)
+if ($$input(Please retype password to confirm:,2) !=== %pw) _error Passwords do not match.You must enter the password exactly the same each time.
+    %send %pw
+    return
+:founder | _okcancel 1 Transfer %chan founder to your nick? ( $+ $me $+ ) | %send | return
+:desc | %send $_entry(0,$null,ChanServ description for %chan $+ ? $+ $chr(40) $+ cannot be blank $+ $chr(41)) | return
+:mlock | %param = $_entry(1,$_chmode(%chan),Modes to lock on %chan $+ ? $+ $chr(40) $+ blank for none $+ $chr(41)) | %send $iif(%param,%param,*) | return
+:opguard | var %yn = $_yesno(1,Disallow unknown users from being opped?) | %send $iif(%yn,ON,OFF) | return
+:keeptopic | var %yn = $_yesno(1,Remember channel topic when channel is empty?) | %send $iif(%yn,ON,OFF) | return
+:url | %send $_entry(1,$null,ChanServ URL for %chan $+ ? $+ $chr(40) $+ blank to clear $+ $chr(41)) | return
+:ident | var %yn = $_yesno(1,Require users to identify with NickServ to get ops?) | %send $iif(%yn,ON,OFF) | return
+:restrict | var %yn = $_yesno(0,Only allow known ops to join %chan $+ ?) | %send $iif(%yn,ON,OFF) | return
+:topiclock | set %.fullmsg Who is allowed to change the topic? | set %.found Founder,Any SOP,Any op | _ssplay Question | %param = $$dialog(nickcomp,nickcomp,-4) | %send $gettok(FOUNDER SOP OFF,$findtok(Founder.Any SOP.Any op,%param,1,46),32) | return
+:leaveops | var %yn = $_yesno(0,Allow first person to join %chan to keep ops?) | %send $iif(%yn,ON,OFF) | return
+:unsecure | var %yn = $_yesno(0,Allow founder commands without using founder password?) | %send $iif(%yn,ON,OFF) | return
+:private | var %yn = $_yesno(0,Make %chan a private channel?) | %send $iif(%yn,ON,OFF) | return
+:verbose | var %yn = $_yesno(0,Send opnotices when AOPs/SOPs/AKICKs modified?) | %send $iif(%yn,ON,OFF) | return
+:successor | %send $_entry(0,$null,Who should be successor as %chan founder $+ $chr(44) should your nick expire?) | return
+:mailblock | var %yn = $_yesno(0,Disallow ChanServ to e-mail you a lost password?) | %send $iif(%yn,ON,OFF) | return
+:memo | set %.fullmsg Who is allowed to send channel memos? | set %.found Founder,Any SOP,Any AOP,No one | _ssplay Question | %param = $$dialog(nickcomp,nickcomp,-4) | %send $gettok(FOUNDER SOP AOP NONE,$findtok(Founder.Any SOP.Any AOP.No one,%param,1,46),32) | return
+    :%param
+    msgcs $upper($1) %chan
+  }
+  elseif ($1 == auto) {
+    if ($gettok(%param,1,32) == add) {
+if (%chan == $null) _error You must use /cs auto add in a channel $+ $chr(40) $+ or specify a target channel $+ $chr(41)
+      if ($gettok(%param,2,32)) %pw = $ifmatch
+      else {
+        _ssplay Question
+%pw = $$input(Password for auto-login to %chan $+ ? ( $+ $hget(pnp. $+ $cid,net) $+ ),2)
+if ($$input(Please retype password to confirm:,2) !=== %pw) _error Passwords do not match.You must enter the password exactly the same each time.
+      }
+      writeini $_cfg(pw.ini) cs- $+ $hget(pnp. $+ $cid,net) %chan $_pw.enc(%pw)
+dispa Auto-login to $:t(ChanServ) for $:s(%chan) added. $chr(40) $+ on $hget(pnp. $+ $cid,net) $+ $chr(41)
+      %old = $readini($_cfg(pw.ini),n,cs- $+ $hget(pnp. $+ $cid,net),all)
+      writeini $_cfg(pw.ini) cs- $+ $hget(pnp. $+ $cid,net) all $addtok(%old,%chan,32)
+      %old = $readini($_cfg(pw.ini),n,cs,nets)
+      writeini $_cfg(pw.ini) cs nets $addtok(%old,$hget(pnp. $+ $cid,net),32)
+    }
+    elseif ($gettok(%param,1,32) == del)  {
+if (%chan == $null) _error You must use /cs auto del in a channel $+ $chr(40) $+ or specify a target channel $+ $chr(41)
+      %pw = $readini($_cfg(pw.ini),n,cs- $+ $hget(pnp. $+ $cid,net),%chan)
+      if (%pw) {
+        %old = $readini($_cfg(pw.ini),n,cs- $+ $hget(pnp. $+ $cid,net),all)
+        %old = $remtok(%old,%chan,1,32)
+        if (%old == $null) {
+          remini $_cfg(pw.ini) cs- $+ $hget(pnp. $+ $cid,net) all
+          %old = $readini($_cfg(pw.ini),n,cs,nets)
+          %old = $remtok(%old,$hget(pnp. $+ $cid,net),1,32)
+          if (%old == $null) remini $_cfg(pw.ini) cs nets
+          else writeini $_cfg(pw.ini) cs nets %old
+        }
+        else writeini $_cfg(pw.ini) cs- $+ $hget(pnp. $+ $cid,net) all %old
+        remini $_cfg(pw.ini) cs- $+ $hget(pnp. $+ $cid,net) %chan
+dispa Auto-login for $:s(%chan) deleted. $chr(40) $+ on $hget(pnp. $+ $cid,net) $+ $chr(41)
+      }
+else dispa No auto-login has been defined for $:s(%chan) $+ . $chr(40) $+ on $hget(pnp. $+ $cid,net) $+ $chr(41)
+    }
+    elseif ($gettok(%param,1,32) == view) {
+      %nets = $readini($_cfg(pw.ini),n,cs,nets)
+if (%nets == $null) dispa No ChanServ auto-logins have been defined.
+      else {
+        _info /cs auto
+dispr @Info ChanServ logins-
+        :vloop1
+        %net = $gettok(%nets,1,32)
+        %param = $readini($_cfg(pw.ini),n,cs- $+ %net,all)
+        :vloop2
+        %chan = $gettok(%param,1,32)
+dispr @Info   - Login to $:t(ChanServ) on $:s(%chan) $chr(40) $+ on %net $+ $chr(41)
+        %param = $gettok(%param,2-,32)
+        if (%param) goto vloop2
+        %nets = $gettok(%nets,2-,32)
+        if (%nets) goto vloop1
+      }
+    }
+    elseif ($gettok(%param,1,32) == clear) {
+      remini $_cfg(pw.ini) cs- $+ $hget(pnp. $+ $cid,net)
+      %old = $readini($_cfg(pw.ini),n,cs,nets)
+      %old = $remtok(%old,$hget(pnp. $+ $cid,net),1,32)
+      if (%old == $null) remini $_cfg(pw.ini) cs nets
+      else writeini $_cfg(pw.ini) cs nets %old
+dispa All ChanServ auto-logins have been deleted. $chr(40) $+ on $hget(pnp. $+ $cid,net) $+ $chr(41)
+    }
+    else {
+      if (%chan) {
+        %pw = $readini($_cfg(pw.ini),n,cs- $+ $hget(pnp. $+ $cid,net),%chan)
+if (%pw) { .msgcs IDENTIFY %chan $_pw.enc(%pw) | disprc %chan Logging into $:t(ChanServ) }
+else _error No ChanServ login defined for %chan $+ .You can add an auto-login through popups.
+      }
+      else {
+        %param = $readini($_cfg(pw.ini),n,cs- $+ $hget(pnp. $+ $cid,net),all)
+if (%param == $null) _error No ChanServ logins have been defined!You can add auto-logins through popups.
+        :aloop
+        %chan = $gettok(%param,1,32)
+        %pw = $readini($_cfg(pw.ini),n,cs- $+ $hget(pnp. $+ $cid,net),%chan)
+        .msgcs IDENTIFY %chan $_pw.enc(%pw)
+disprc %chan Logging into $:t(ChanServ)
+        %param = $gettok(%param,2-,32)
+        if (%param) goto aloop
+      }
+    }
+  }
+  ;!! Not done yet
+  elseif ($1 == users) { _error not done yet... }
+  elseif ($1 == akicks) { _error not done yet... }
+  elseif ($1 == config) { _error not done yet... }
+  elseif (($numtok(%param,32) <= 1) && ($istok(sop aop akick op deop sendpass,$1,32))) {
+    goto $1
+ 
+    :sop | :aop | %type = $upper($1) | goto ask
+    :akick | %type = AutoKick | goto ask
+    :ask
+    if ($findtok(Add Del List Wipe Clean,%param,1,32)) {
+      %send = msgcs $upper($1) %chan %param
+      goto $gettok(%param,1,32)
+    }
+    editbox -ap /cs $1 %chan
+dispa Specify one of the following actions:
+    if ($1 == akick) {
+      dispa - $:l(Add Del List Wipe)
+;!!dispa Or $+ $chr(44) use /cs akicks to view/edit interactively.
+    }
+    else {
+      dispa - $:l(Add Del List Wipe)
+;!!dispa Or $+ $chr(44) use /cs users to view/edit interactively.
+    }
+    return
+:add | %send $_entry(-1,$null,Nickname $chr(40) $+ or mask $+ $chr(41) to add as an %type $+ ?) | return
+:del | %send $_entry(-1,$null,Nickname $chr(40) $+ or mask $+ $chr(41) of %type to delete?) | return
+:list | %send $_entry(1,$null,Show %type entries matching what mask?Enter to list all entries) | return
+:wipe | _okcancel 1 Delete ALL %type entries on %chan $+ ? | %send | return
+    :clean | %send | return
+ 
+    :op | :deop
+    if (%param) %who = $_nccs(32,%chan,$_c2s(%param))
+else %who = $_c2s($_entry(0,$null,$iif($1 == op,User $+ $chr(40) $+ s $+ $chr(41) to op? $+ $chr(40) $+ You may specify multiple users $+ $chr(41),User $+ $chr(40) $+ s $+ $chr(41) to deop? $+ $chr(40) $+ You may specify multiple users $+ $chr(41))))
+    msgcs $upper($1) %chan %who
+    return
+ 
+    :sendpass
+%send $_entry(-1,$email,E-Mail address? $chr(40) $+ to send password to $+ $chr(41) $+ This must match the e-mail you registered with.)
+    return
+  }
+  elseif ($istok(list help,$1,32)) msgcs $upper($1) %param
+  elseif (%param) msgcs $upper($1) %chan %param
+  elseif ($istok(register identify unban why set drop,$1,32)) {
+    %send = msgcs $upper($1) %chan | goto $1
+ 
+:drop | _okcancel 0 Drop ChanServ registration for %chan $+ ? | %send | return
+    :register | %.csr.chan = %chan | _ssplay Dialog | return $dialog(csregister,csregister,-4)
+:identify | _ssplay Question | %send $$input(Enter founder password:,2) | return
+:why | %send $_entry(-1,$null,Find out why someone is opped- Enter nickname:) | return
+:unban | %send $_entry(-1,$null,Nickname or mask to unban?) | return
+ 
+    :set
+    editbox -ap /cs $1 %chan
+dispa Specify one of the following settings:
+    dispa - $:l(Founder Successor Passwd WebPasswd MLock Private Memo MailBlock)
+    dispa - $:l(LeaveOps Unsecure Restrict OpGuard Ident Verbose)
+    dispa - $:l(Desc URL KeepTopic TopicLock)
+;!!dispa Or $+ $chr(44) use /cs config to view/edit interactively.
+  }
+  else msgcs $upper($1) %chan
+}
+ 
+; /msgcs full command
+alias msgcs {
+  _linedance . $+ $_botacc(ChanServ) $1-
+  if (($1 == register) || (($1 == set) && ($3 == passwd)) || ($1 == identify)) {
+    if ($1 == set) {
+dispr $iif($2 ischan,$2,-ai2) Using $:t(ChanServ) for command: $:h($1-3,?????)
+      var %pw = $readini($_cfg(pw.ini),n,cs- $+ $hget(pnp. $+ $cid,net),$2)
+      if (%pw) writeini $_cfg(pw.ini) cs- $+ $hget(pnp. $+ $cid,net) $2 $_pw.enc($4)
+    }
+    else {
+dispr $iif($2 ischan,$2,-ai2) Using $:t(ChanServ) for command: $:h($puttok($1-,?????,3,32))
+      if (($1 == identify) || ($1 == register)) hadd pnp. $+ $cid -csacc. $+ $2 fop
+    }
+  }
+  else {
+    if ($1 == drop) hdel pnp. $+ $cid -csacc. $+ $2
+dispr $iif($2 ischan,$2,-ai2) Using $:t(ChanServ) for command: $:h($1-)
+  }
+}
+ 
+alias _cs.splice {
+  if ($1 == ?) {
+    if ($_isserv(cs) == $false) return 0
+    if ($istok(voice devoice halfop dehalfop mode kick topic,$3,32)) return 0
+    if ($hget(pnp. $+ $cid,-csacc. $+ $2)) return 1
+    var %access = $readini($_cfg(pw.ini),n,cs- $+ $hget(pnp. $+ $cid,net),a $+ $2)
+    if ((%access > 1) || ((%access == 1) && ($3 != ban))) return 1
+    return 0
+  }
+  goto $3
+  :op | :opme | cs op $2 $4- | return
+  :deop | cs deop $2 $4- | return
+  :ban | cs akick $2 add $4
+  :unban | cs unban $2 $4- | return
+}
+ 
+dialog csregister {
+title "Register channel with ChanServ"
+  option dbu
+  size -1 -1 170 137
+  box "", 1, 2 4 165 30
+  edit "", 3, 7 15 155 11, autohs
+box "Password:", 21, 2 37 165 52
+text "You must enter a password for founder access. (enter it twice to confirm the password.)", 20, 10 47 150 15
+text "&Password:", 8, 5 65 39 8, right
+  edit "", 9, 45 63 61 11, pass autohs
+text "&Confirm:", 10, 5 76 39 8, right
+  edit "", 11, 45 75 61 11, pass autohs
+box "Auto-login:", 12, 2 93 165 22
+check "&Have PnP auto-login as founder when you connect", 13, 15 103 150 8
+button "OK", 101, 15 121 60 12, OK default
+button "Cancel", 102, 92 121 60 12, cancel
+  edit %.csr.chan, 201, 1 1 1 1, hide autohs
+}
+on *:DIALOG:csregister:init:*:{
+  did -c $dname 13
+did -a $dname 1 $did(201) description $+ :
+  unset %.csr.chan
+}
+on *:DIALOG:csregister:sclick:101:{
+if ($did(3) == $null) _error You must specify a description.Channels cannot be registered with no description.
+if ($did(9) == $null) _error You must specify a password.You need a password to register the channel.
+if ($did(9) !=== $did(11)) _error Passwords do not match.You must enter the password exactly the same each time.
+  msgcs REGISTER $did(201) $did(9) $did(3)
+  if ($did(13).state) cs auto $did(201) add $did(9)
+}
+ 
+on *:SIGNAL:PNP.SIGNON:{ _cs.connect }
+on *:LOAD:{
+  ; PnP check
+  if (!$_ispnp) {
+    echo 4 -ati2 *** This addon requires Peace and Protection by pai to use.
+    echo 4 -ati2 *** You can download Peace and Protection at http://www.pairc.com/
+    .timer -mio 1 0 .unload -rs " $+ $script $+ "
+    halt
+  }
+  ; Invalid load method check
+  if (!$istok($_cfgx(addons,ids),$readini($script,n,addon,id),32)) {
+    .timer -mio 1 0 .unload -rs " $+ $script $+ "
+dispa Unloading ' $+ $script $+ ' $chr(40) $+ addon is not properly loaded; use /addon to load it $+ $chr(41)
+    halt
+  }
+  scon -at1 _cs.connect
+}
+ 
+alias _cs.connect {
+  if ($readini($_cfg(pw.ini),n,csforce,$hget(pnp. $+ $cid,net))) {
+    var %opt = $ifmatch
+    _addbot cs ChanServ $replace($gettok(%opt,2,32),???,$gettok($server,-2-,46))
+  }
+ 
+  if ($_isserv(cs)) .cs auto
+}
+ 
+; if bot joins, relogin to chanserv. (most networks don't actually have ChanServ join, though.)
+on *:JOIN:#:if (($_isserv(cs)) && ($_isbot($nick)) && ($nick == ChanServ)) .cs auto $chan
+ 
+alias -l cspop {
+  if ($_isserv(cs) == $false) unset %.cspop
+  else {
+set -u1 %.cspop ChanServ
+    set -u1 %.csfounder $iif($readini($_cfg(pw.ini),n,cs- $+ $hget(pnp. $+ $cid,net),$active),1,0)
+    set -u1 %.csaccess $readini($_cfg(pw.ini),n,cs- $+ $hget(pnp. $+ $cid,net),a $+ $active)
+    if (%.csaccess isnum 1-2) unset %.csfounder
+    if (%.csaccess == $null) set -u1 %.csaccess 0
+    return $_popssep
+  }
+}
+menu channel {
+  $cspop
+  %.cspop
+.$iif(%.csaccess < 1,Info):cs info
+  .-
+.$iif(%.csfounder,Founder)
+..Manual login...:cs identify
+..Change password...:cs set passwd
+  ..-
+..Transfer founder...:cs set founder
+..Set successor...:cs set successor
+..Retrieve lost password...:cs sendpass
+..Drop channel...:cs drop
+  ..-
+..Perform auto-login:cs auto #
+..Remove $replace($active,&,&&) auto-login...:_okcancel 1 Delete auto-login? | cs auto del
+  ..-
+..View all auto-logins:cs auto view
+..Clear all auto-logins...:_okcancel 1 Delete ALL ChanServ auto-logins? | cs auto clear
+.$iif(%.csfounder == 0,Founder)
+..Register channel...:cs register
+..Drop channel...:cs drop
+  ..-
+..Identify as Founder...:cs identify
+..Change password...:cs set passwd
+  ..-
+..Add $replace($active,&,&&) auto-login...:cs auto add
+  ..-
+..View all auto-logins...:cs auto view
+..Clear all auto-logins...:_okcancel 1 Delete ALL ChanServ auto-logins? | cs auto clear
+.$iif(%.csaccess,Info)
+..Your access:cs access
+..Channel info:cs info
+..Count of ops:cs count
+  .-
+.$iif(%.csaccess,AOPs)
+..$iif(%.csaccess > 1,Add..):cs aop add
+..$iif(%.csaccess > 1,Remove...):cs aop del
+..List..:cs aop list
+  ..-
+..$iif(%.csaccess > 2,Remove ALL...):cs aop wipe
+.$iif(%.csaccess,SOPs)
+..$iif(%.csaccess > 2,Add...):cs sop add
+..$iif(%.csaccess > 2,Remove...):cs sop del
+..List...:cs sop list
+  ..-
+..$iif(%.csaccess > 2,Remove ALL...):cs sop wipe
+;!!.$iif(%.csaccess > 1,Edit list):cs users
+;!!.$iif(%.csaccess == 1,List):cs users
+  .-
+.$iif(%.csaccess,AKicks)
+;!!..$iif(%.csaccess > 1,List):cs akicks
+  ..-
+..$iif(%.csaccess > 1,Add..):cs akick add
+..$iif(%.csaccess > 1,Remove...):cs akick del
+..List..:cs akick list
+  ..-
+..$iif(%.csaccess > 2,Remove ALL...):cs akick wipe
+.$iif(%.csaccess,Mass)
+..Mass deop:cs mdeop
+..Mass kick:cs mkick
+  .-
+.$iif(%.csaccess > 2,Set)
+..Description...:cs set desc
+..URL...:cs set url
+..Keep topic...:cs set keeptopic
+..Topic lock...:cs set topiclock
+  ..-
+..Memo...:cs set memo
+..Mode lock...:cs set mlock
+..Private...:cs set private
+  ..-
+..Leave ops...:cs set leaveops
+..Unsecure...:cs set unsecure
+..Restrict...:cs set restrict
+..Op guard...:cs set opguard
+..Ident...:cs set ident
+  ..-
+..Disallow password requests...:cs set mailblock
+..Verbose mode...:cs set verbose
+..Set website password...:cs set webpasswd
+;!!.$iif(%.csaccess > 2,Config...):cs config
+  .-
+.My access
+..$iif(!%.csaccess,$style(1)) I have no access in $replace($active,&,&&):csa # 0
+  ..-
+..$iif(%.csaccess == 1,$style(1)) I am an AOP:csa # 1
+..$iif(%.csaccess == 2,$style(1)) I am a SOP:csa # 2
+..$iif(%.csaccess == 3,$style(1)) I am the Founder:csa # 3
+}
+ 
+alias -l cspop2 {
+  if ($_isserv(cs) == $false) unset %.cspop
+  else {
+    set -u1 %.csaccess $readini($_cfg(pw.ini),n,cs- $+ $hget(pnp. $+ $cid,net),a $+ $active)
+if (%.csaccess) set -u1 %.cspop ChanServ
+    return $_popssep
+  }
+}
+menu nicklist {
+  $cspop2
+  %.cspop
+.Op:cs op $$snicks
+.Deop:cs deop $$snicks
+  .-
+.$iif(%.csaccess > 1,AutoKick)
+  ..$snick(#,1):cs akick add $$1
+  ..-
+  ..%.ban2:cs akick add $_ppmask($$1,0,$_getchopt(#,3),2)
+  ..%.ban3:cs akick add $_ppmask($$1,0,$_getchopt(#,3),4)
+  ..%.ban4:cs akick add $_ppmask($$1,0,$_getchopt(#,3),3)
+  ..%.ban5:cs akick add $_ppmask($$1,0,$_getchopt(#,3),6)
+  ..-
+  ..%.banS:cs akick add $_ppmask($$1,$_stmask(2,#))
+  ..%.banD:cs akick add $_ppmask($$1,$_stmask(4,#))
+  .-
+.$iif(%.csaccess > 1,Add AOP)
+  ..$snick(#,1):cs aop add $$1
+  ..-
+  ..%.ban2:cs aop add $_ppmask($$1,0,$_getchopt(#,3),2)
+  ..%.ban3:cs aop add $_ppmask($$1,0,$_getchopt(#,3),4)
+  ..%.ban4:cs aop add $_ppmask($$1,0,$_getchopt(#,3),3)
+  ..%.ban5:cs aop add $_ppmask($$1,0,$_getchopt(#,3),6)
+  ..-
+  ..%.banS:cs aop add $_ppmask($$1,$_stmask(2,#))
+  ..%.banD:cs aop add $_ppmask($$1,$_stmask(4,#))
+.$iif(%.csaccess > 2,Add SOP)
+  ..$snick(#,1):cs sop add $$1
+  ..-
+  ..%.ban2:cs sop add $_ppmask($$1,0,$_getchopt(#,3),2)
+  ..%.ban3:cs sop add $_ppmask($$1,0,$_getchopt(#,3),4)
+  ..%.ban4:cs sop add $_ppmask($$1,0,$_getchopt(#,3),3)
+  ..%.ban5:cs sop add $_ppmask($$1,0,$_getchopt(#,3),6)
+  ..-
+  ..%.banS:cs sop add $_ppmask($$1,$_stmask(2,#))
+  ..%.banD:cs sop add $_ppmask($$1,$_stmask(4,#))
+  .-
+.$iif(%.csaccess > 1,Remove AOP)
+  ..$snick(#,1):cs aop del $$1
+  ..-
+  ..%.ban2:cs aop del $_ppmask($$1,0,$_getchopt(#,3),2)
+  ..%.ban3:cs aop del $_ppmask($$1,0,$_getchopt(#,3),4)
+  ..%.ban4:cs aop del $_ppmask($$1,0,$_getchopt(#,3),3)
+  ..%.ban5:cs aop del $_ppmask($$1,0,$_getchopt(#,3),6)
+  ..-
+  ..%.banS:cs aop del $_ppmask($$1,$_stmask(2,#))
+  ..%.banD:cs aop del $_ppmask($$1,$_stmask(4,#))
+.$iif(%.csaccess > 2,Remove SOP)
+  ..$snick(#,1):cs sop del $$1
+  ..-
+  ..%.ban2:cs sop del $_ppmask($$1,0,$_getchopt(#,3),2)
+  ..%.ban3:cs sop del $_ppmask($$1,0,$_getchopt(#,3),4)
+  ..%.ban4:cs sop del $_ppmask($$1,0,$_getchopt(#,3),3)
+  ..%.ban5:cs sop del $_ppmask($$1,0,$_getchopt(#,3),6)
+  ..-
+  ..%.banS:cs sop del $_ppmask($$1,$_stmask(2,#))
+  ..%.banD:cs sop del $_ppmask($$1,$_stmask(4,#))
+  .-
+.Access:cs access $$1
+.Why opped:cs why $$1
+}
+ 
+;;; menu status { }
+ 
+;!! add 'advanced' button to specify an actual cmd or address
+dialog csway {
+title "ChanServ access setup"
+  option dbu
+  size -1 -1 125 77
+ 
+  text "", 1, 5 5 90 20
+radio "&Use /msg ChanServ", 2, 10 22 115 11
+radio "&Use /chanserv", 3, 10 34 115 11
+radio "&Use /msg ChanServ@services.blah.net", 4, 10 45 115 11
+ 
+  edit "", 50, 1 1 1 1, autohs hide result
+ 
+button "OK", 100, 5 61 40 12, ok default
+button "Cancel", 101, 80 61 40 12, cancel
+}
+on *:DIALOG:csway:init:*:{
+  did -c $dname 2
+did -o $dname 1 1 For %.net $+ $chr(44) how should I access ChanServ?
+  unset %.net
+}
+on *:DIALOG:csway:sclick:100:did -o $dname 50 1 $iif($did(3).state,ChanServ@/chanserv,$iif($did(4).state,ChanServ@services.???,ChanServ))

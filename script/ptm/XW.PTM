@@ -1,0 +1,1255 @@
+addons\xw.ppa
+; #= xwzbot -rs
+; ########################################
+; Peace and Protection
+; X/Z/P (standard addon)
+; ########################################
+
+;!!floatlim, etc. and set lang- see http://cservice.undernet.org/docs/xcmds.txt
+;!!add /xw on /xw off cmds/dlg
+
+#.ppa.info off
+[xwuser]
+25 ([xwuser_dialog:lvl_25])
+50 ([xwuser_dialog:lvl_50])
+75 ([xwuser_dialog:lvl_75])
+100 ([xwuser_dialog:lvl_100])
+200
+400 ([xwuser_dialog:lvl_400])
+450 ([xwuser_dialog:lvl_450])
+499 ([xwuser_dialog:lvl_499])
+[addon]
+name=[xw:name:dlg]
+group=[addon:core:dlg]
+popup=[xw:name]
+author=pai
+version=1.05
+url=http://www.pairc.com/
+email=pnp@pairc.com
+id=ppxwzbot
+ppver=4.22
+unload=_cleanxwc
+hashcid=-xwacc.*
+dialogs=xwacc xwban xwuser xwuser2 xwcfg
+[files]
+1=xw.ppa
+[notes]
+1=[xw:info1:dlg]
+2=[xw:info2:dlg]
+[menu]
+1=$_xwloginpop
+2=%.xwlogin.1:xw AUTO $xwloginas(1)
+3=%.xwlogin.2:xw AUTO $xwloginas(2)
+4=%.xwlogin.3:xw AUTO $xwloginas(3)
+5=%.xwlogin.4:xw AUTO $xwloginas(4)
+6=%.xwlogin.5:xw AUTO $xwloginas(5)
+7=-
+8=[popups_status:xw_login_perform_all]:xw AUTO
+9=[popups_status:xw_login_view]...:xw AUTO VIEW
+10=[popups_status:xw_login_clear]...:_okcancel 1 [xw:auto_del_all] | xw AUTO CLEAR
+[query]
+1=$_xwall
+2=.[popups_status:xw_verify]:xw VERIFY $1
+[interfaces]
+bot=_xw.splice
+#.ppa.info end
+
+;;; todo-
+;;; reop/revenge?
+
+alias -l _xwcmd if ($_isbot(w)) return /xw | if ($_isbot(z)) return /z | if ($_isserv(xw)) return /x
+alias _xwall if ($_isserv(xw)) return $replace($hget(pnp. $+ $cid,-servnick),$chr(32),./.,.,$chr(32))
+
+; /xw [bot|?|!] command [#chan|?] [params]
+alias z xw $1-
+alias x xw $1-
+alias xw {
+  if (($_isserv(xw) == $false) && (($1 != auto) || ($istok(view clear,$2,32) == $false))) _error [error:no_xw:cmd=/x]
+  if (($_isbot($1) == $false) && ($1 !isin !?)) tokenize 32 ? $1-
+  var %chan,%param,%xw,%pw,%send,%who,%new,%old
+  if ($2 == $null) { var %cmd = $_xwcmd +[quick:p_command:s2p] -#[word:channel:lower:s2p] -[quick:p_param:s2p] * ! $+ [quick:xw:bot=$_xwall] | _qhelp $_s2f(%cmd) }
+  elseif ($_ischan($3)) { %chan = $3 | %param = $4- }
+  elseif (($istok(SEARCH MAP MOTD HELP SHOWIGNORE VERIFY INFO,$2,32)) || ($2-3 == SET INVISIBLE) || ((($2 == NEWPASS) || ($2 == LOGIN) || ($2 == AUTO)) && (u isin $hget(pnp. $+ $cid,-servopt))) || (($2 == AUTO) && ($istok(ADD DEL,$3,32) == $false))) %param = $3-
+  elseif ($active ischan) { %chan = $active | %param = $3- }
+  elseif ($3 == ?) { %chan = $_patch($_entry(-1,$null,[chanserv:chan_prompt:cmd=$2])) | %param = $4- }
+  else _error [error:in_chan:cmd=$_xwcmd]
+  if ($1 isin !?) {
+    if ($chr(32) !isin $hget(pnp. $+ $cid,-servnick)) %xw = $hget(pnp. $+ $cid,-servnick)
+    elseif (($2 == SEARCH) || (($2 == AUTO) && ($gettok(%param,1,32) != ADD))) %xw = $replace($hget(pnp. $+ $cid,-servnick),$chr(32),$chr(44))
+    elseif ((%chan ischan) && ($_chanbot(%chan))) %xw = $ifmatch
+    else {
+      %pw = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),%chan)
+      if (%pw != $null) %xw = $gettok(%pw,1,32)
+      elseif ($istok(MAP HELP VERIFY,$2,32)) %xw = $gettok($hget(pnp. $+ $cid,-servnick),1,32)
+      elseif ($1 == !) { %.fullmsg = [xw:select_bot]: | %.found = $replace($hget(pnp. $+ $cid,-servnick),$chr(32),$chr(44)) | _ssplay Question | %xw = $$dialog(nickcomp,nickcomp,-4) }
+      else _error [error:xw_select:bots=$_xwall]
+    }
+  }
+  else %xw = $1
+  if (($2 == SET) && (%param == INVISIBLE)) {
+    var %yn = $_yesno(1,[xw:set_invis])
+    msgxw %xw SET INVISIBLE $iif(%yn,ON,OFF)
+    return
+  }
+  elseif (($2 == SET) && ($numtok(%param,32) == 1)) {
+    %send = msgxw %xw SET %chan $upper(%param) | goto %param
+    :USERFLAGS
+    if (u isin $hget(pnp. $+ $cid,-servopt)) {
+      %.fullmsg = [xw:set_userflags]:
+      %.found = [word:none],[xw:mode_op],[xw:mode_voice]
+      _ssplay Question
+      %send $calc($findtok([word:none]*[xw:mode_op]*[xw:mode_voice],$$dialog(nickcomp,nickcomp,-4),1,42) - 1)
+    }
+    else %send $_yesno(1,[xw:set_autoop:bot=%xw])
+    return
+    ;;; %yn var is a workaround for mirc bug with halt/$$ not working
+    :MASSDEOPPRO | %send $_entry(-2,3,[xw:set_massdeoppro]) | return
+    :NICKFLOODPRO | %send $_entry(-2,5,[xw:set_nickfloodpro]) | return
+    :FLOODPRO | %send $_entry(-2,7,[xw:set_floodpro]) | return
+    :NOOP | var %yn = $_yesno(0,[xw:set_noop:bot=%xw]) | %send $iif(%yn,ON,OFF) | return
+    :ALWAYSOP | var %yn = $_yesno(1,[xw:set_alwaysop:bot=%xw]) | %send $iif(%yn,ON,OFF) | return
+    :OPONLY | var %yn = $_yesno(0,[xw:set_oponly:bot=%xw]) | %send $iif(%yn,ON,OFF) | return
+    :STRICTOP | var %yn = $_yesno(1,[chanserv:op_guard]) | %send $iif(%yn,ON,OFF) | return
+    :DESCRIPTION | %send $_entry(1,$null,[xw:set_desc:bot=%xw:chan=%chan]) | return
+    :URL | %send $_entry(1,$null,[xw:set_url:chan=%chan]) | return
+    :AUTOTOPIC | var %yn = $_yesno(1,[xw:set_autotopic:bot=%xw]) | %send $iif(%yn,ON,OFF) | return
+    :KEYWORDS | %send $_entry(1,$null,[xw:set_keywords:bot=%xw:chan=%chan]) | return
+    :AUTOJOIN | var %yn = $_yesno(1,[xw:set_autojoin:bot=%xw:chan=%chan]) | %send $iif(%yn,ON,OFF) | return
+    :MODE | %send | return
+    :%param
+  }
+  elseif (($2 == MODINFO) && ($numtok(%param,32) isnum 1-2)) {
+    if ($istok(MATCH ACCESS AUTOOP AUTOMODE PASSWORD,$gettok(%param,1,32),32)) {
+      if ($gettok(%param,2,32)) %who = $_ncc($ifmatch,%chan)
+       else %who = $_entry(-1,$null,[xw:modify_prompt] $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),[xw:enter_usernick],[xw:enter_nickaddr]))
+      %send = msgxw %xw MODINFO %chan $upper($gettok(%param,1,32)) %who
+      goto $gettok(%param,1,32)
+
+      :MATCH
+      var %addr = ([word:unknown:lower])
+      if ($address(%who,5)) %addr = $address(%who,5)
+      %new = $_entry(-1,$iif($address(%who,5),$_banmask(%addr,%chan)),[xw:modify_match:bot=%xw:nick=%who:address=%addr])
+      %send $_fixmask(%new)
+      return
+
+      :ACCESS
+      %send $_entry(-2,$null,[xw:modify_access:bot=%xw:nick=$remove(%who,=)])
+      return
+
+      :PASSWORD
+      _ssplay Question
+      %new = $$input([xw:modify_pw:bot=%xw:nick=%who],2)
+      if ($$input([chanserv:verify_pw],2) !=== %new) _error [error:password]
+      %send %new
+      return
+
+      :AUTOMODE
+      %.fullmsg = [xw:modify_automode:nick=$remove(%who,=)]
+      %.found = [word:none],[xw:mode_op],[xw:mode_voice]
+      _ssplay Question
+      %send $gettok(NONE OP VOICE,$findtok([word:none]*[xw:mode_op]*[xw:mode_voice],$$dialog(nickcomp,nickcomp,-4),1,42),32)
+      return
+
+      :AUTOOP
+      var %yn = $_yesno(1,[xw:modify_autoop:bot=%xw:nick=%who])
+      %send $iif(%yn,ON,OFF)
+    }
+  }
+  elseif ($2 == AUTO) {
+    if ($gettok(%param,1,32) == VIEW) {
+      var %nets = $readini($_cfg(pw.ini),n,xw,nets)
+      if (%nets == $null) dispa [chanserv:auto_none:bot=$_xwall]
+      else {
+        _info $_xwcmd auto
+        dispr @Info [chanserv:login_head:bot=$_xwall] $+ -
+        :vloop1
+        var %net = $gettok(%nets,1,32)
+        var %param = $readini($_cfg(pw.ini),n,xw- $+ %net,all)
+        :vloop2
+        var %item = $gettok(%param,1,32)
+        %pw = $readini($_cfg(pw.ini),n,xw- $+ %net,%item)
+        if ($_ischan(%item)) dispr @Info   - [chanserv:login_list:bot=$;t($gettok(%pw,1,32)):chan=$;s(%item):net=%net]
+        else dispr @Info   - [xw:login_list_user:bot=$;t($gettok(%pw,1,32)):nick=$;s(%item):net=%net]
+        %param = $gettok(%param,2-,32)
+        if (%param) goto vloop2
+        %nets = $gettok(%nets,2-,32)
+        if (%nets) goto vloop1
+      }
+    }
+    elseif ($gettok(%param,1,32) == CLEAR) {
+      remini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net)
+      %old = $readini($_cfg(pw.ini),n,xw,nets)
+      %old = $remtok(%old,$hget(pnp. $+ $cid,net),1,32)
+      if (%old == $null) remini $_cfg(pw.ini) xw nets
+      else writeini $_cfg(pw.ini) xw nets %old
+      dispa [chanserv:auto_purge:bot=$_xwall:net=$hget(pnp. $+ $cid,net)]
+    }
+    elseif (u isin $hget(pnp. $+ $cid,-servopt)) {
+      if ($gettok(%param,1,32) == ADD) {
+        if ($gettok(%param,2,32)) %who = $ifmatch
+        else %who = $_entry(-1,$me,[xw:username])
+        if ($gettok(%param,3,32)) %pw = $ifmatch
+        else {
+          _ssplay Question
+          %pw = $$input([xw:username_pw:bot=%xw:nick=%who],2)
+          if ($$input([chanserv:verify_pw],2) !=== %pw) _error [error:password]
+        }
+        writeini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) %who %xw $_pw.enc(%pw)
+        dispa [xw:auto_add_user:bot=$;t(%xw):nick=$;s(%who):net=$hget(pnp. $+ $cid,net)]
+        %old = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),all)
+        writeini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) all $addtok(%old,%who,32)
+        %old = $readini($_cfg(pw.ini),n,xw,nets)
+        writeini $_cfg(pw.ini) xw nets $addtok(%old,$hget(pnp. $+ $cid,net),32)
+      }
+      elseif ($gettok(%param,1,32) == DEL)  {
+        if ($gettok(%param,2,32)) %who = $ifmatch
+        else %who = $_entry(-1,$me,[xw:username_del])
+        %pw = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),%who)
+        if (%pw) {
+          %old = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),all)
+          %new = $remtok(%old,%who,1,32)
+          if (%new == $null) {
+            remini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) all
+            %old = $readini($_cfg(pw.ini),n,xw,nets)
+            %old = $remtok(%old,$hget(pnp. $+ $cid,net),1,32)
+            if (%old == $null) remini $_cfg(pw.ini) xw nets
+            else writeini $_cfg(pw.ini) xw nets %old
+          }
+          else writeini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) all %new
+          remini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) %who
+          dispa [xw:auto_del_user:nick=$;s(%who):net=$hget(pnp. $+ $cid,net)]
+        }
+        else dispa [xw:auto_not_user:nick=$;s(%who):net=$hget(pnp. $+ $cid,net)]
+      }
+      else {
+        ; default to logging in as first listed nick
+        %who = $gettok(%param,1,32)
+        if (%who == LOGIN) %who = $gettok(%param,2,32)
+        if (!%who) {
+          %who = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),all)
+          var %pos = 1
+          while ($_ischan($gettok(%who,%pos,32))) { inc %pos }
+          %who = $gettok(%who,%pos,32)
+          if (!%who) _error [error:cs_nologin_any:bot=$_xwall]
+        }
+        %pw = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),%who)
+        if (%pw) { %xw = $gettok(%pw,1,32) | %pw = $_pw.enc($gettok(%pw,2,32)) | .msgxw %xw LOGIN %who %pw | dispa [xw:login_do_user:bot=$;t(%xw):nick=$;s(%who)] $+ ... }
+        else _error [error:xw_nologin_user:bot=$_xwall:nick=%who]
+      }
+    }
+    else {
+      if ($gettok(%param,1,32) == ADD) {
+        if (%chan == $null) _error [error:in_chan:cmd=$_xwcmd auto add]
+        if ($gettok(%param,2,32)) %pw = $ifmatch
+        else {
+          _ssplay Question
+          %pw = $$input([chanserv:login_pw:chan=%chan],2)
+          if ($$input([chanserv:verify_pw],2) !=== %pw) _error [error:password]
+        }
+        writeini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) %chan %xw $_pw.enc(%pw)
+        dispa [chanserv:auto_add:bot=$;t(%xw):chan=$;s(%chan):net=$hget(pnp. $+ $cid,net)]
+        %old = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),all)
+        writeini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) all $addtok(%old,%chan,32)
+        %old = $readini($_cfg(pw.ini),n,xw,nets)
+        writeini $_cfg(pw.ini) xw nets $addtok(%old,$hget(pnp. $+ $cid,net),32)
+      }
+      elseif ($gettok(%param,1,32) == DEL)  {
+        if (%chan == $null) _error [error:in_chan:cmd=$_xwcmd auto del]
+        %pw = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),%chan)
+        if (%pw) {
+          %old = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),all)
+          %new = $remtok(%old,%chan,1,32)
+          if (%new == $null) {
+            remini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) all
+            %old = $readini($_cfg(pw.ini),n,xw,nets)
+            %old = $remtok(%old,$hget(pnp. $+ $cid,net),1,32)
+            if (%old == $null) remini $_cfg(pw.ini) xw nets
+            else writeini $_cfg(pw.ini) xw nets %old
+          }
+          else writeini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) all %new
+          remini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) %chan
+          dispa [chanserv:auto_del:chan=$;s(%chan):net=$hget(pnp. $+ $cid,net)]
+        }
+        else dispa [chanserv:auto_not:chan=$;s(%chan):net=$hget(pnp. $+ $cid,net)]
+      }
+      else {
+        if (%chan) {
+          %pw = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),%chan)
+          if (%pw) { %xw = $gettok(%pw,1,32) | %pw = $_pw.enc($gettok(%pw,2,32)) | .msgxw %xw LOGIN %chan %pw | disprc %chan [chanserv:login_do:bot=$;t(%xw)] }
+          else _error [error:cs_nologin:bot=$_xwall:chan=%chan]
+        }
+        else {
+          %chan = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),all)
+          if (%chan == $null) _error [error:cs_nologin_any:bot=$_xwall]
+          var %delay = 0
+          :aloop
+          %old = $gettok(%chan,1,32)
+          %pw = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),%old)
+          %xw = $gettok(%pw,1,32)
+          if ($_isbot(%xw)) {
+            %pw = $_pw.enc($gettok(%pw,2,32))
+            .timer 1 %delay .msgxw %xw LOGIN %old %pw
+            inc %delay $iif(%delay < 2,1,4)
+            disprc %old [chanserv:login_do:bot=$;t(%xw)]
+          }
+          %chan = $gettok(%chan,2-,32)
+          if (%chan) goto aloop
+          if (%delay == 0) _error [error:cs_nologin_any:bot=$_xwall]
+        }
+      }
+    }
+  }
+  elseif (($numtok(%param,32) <= 1) && ($istok(KICK ADDUSER REMUSER BAN ACCESS UNSUSPEND SUSPEND OP DEOP VOICE DEVOICE,$2,32))) {
+    goto $2
+
+    :KICK
+    if (%param) %who = $_ncc(%param,%chan)
+    else %who = $_entry(-1,$null,[xw:kick])
+    %param = $_rentry(kick,1,$_s2p($_msg(kick)),[xw:kick_why])
+    _recent2 kick 9 %param
+    msgxw %xw KICK %chan %who %param
+    return
+
+    :ADDUSER
+    if (u isin $hget(pnp. $+ $cid,-servopt)) _xwuser2 %xw %chan $_ncc(%param,%chan)
+    elseif (%param) _xwuser %xw %chan $_ncc(%param,%chan)
+    else _xwuser %xw %chan $_entry(-1,$null,[xw:add_user:bot=%xw])
+    return
+
+    :SUSPEND
+    if (%param) %who = $_ncc(%param,%chan)
+    else %who = $_entry(-1,$null,[xw:suspend] $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),[xw:enter_usernick],[xw:enter_nickaddr]))
+    %param = $_entry(0,24hours,[xw:suspend_time])
+    msgxw %xw SUSPEND %chan %who $gettok(%param,1,32) $iif($left($gettok(%param,2,32),1) isin $iif(u isin $hget(pnp. $+ $cid,-servopt),hmd,hmds),$left($gettok(%param,2,32),1),h)
+    return
+
+    :BAN
+    if (%param) %param = $_ncc(%param,%chan)
+    set %.xw %xw
+    set %.xw.chan %chan
+    set %.xw.param %param
+    _ssplay Dialog
+    msgxw $$dialog(xwban,xwban,-4)
+    return
+
+    :REMUSER
+    if (%param) %who = $_ncc(%param,%chan)
+    else %who = $_entry(-1,$null,[xw:rem_user:bot=%xw] $+  $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),[xw:enter_usernick],[xw:enter_nickaddr]))
+    msgxw %xw REMUSER %chan %who
+    return
+
+    :UNSUSPEND
+    if (%param) %who = $_ncc(%param,%chan)
+    else %who = $_entry(-1,$null,[xw:unsuspend] $+  $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),[xw:enter_usernick],[xw:enter_nickaddr]))
+    msgxw %xw UNSUSPEND %chan %who
+    return
+
+    :ACCESS
+    if (%param) %who = $_ncc(%param,%chan)
+    else {
+      %who = $_entry(1,$null,[xw:access] $iif(u isin $hget(pnp. $+ $cid,-servopt),[xw:prefix_nick]))
+      if (%who == $null) {
+        set %.xw %xw
+        set %.xw.chan %chan
+        _ssplay Dialog
+        msgxw $$dialog(xwacc,xwacc,-4)
+        return
+      }
+    }
+    msgxw %xw ACCESS %chan %who -modif
+    return
+
+    :OP | :DEOP | :VOICE | :DEVOICE
+    if (%param) %who = $_nccs(32,%chan,$_c2s(%param))
+    else %who = $_c2s($_entry(0,$null,$iif($2 == OP,[chanserv:op],$iif($2 == DEOP,[chanserv:deop],$iif($2 == VOICE,[xw:voice],[xw:devoice])))))
+    msgxw %xw $upper($2) %chan %who
+  }
+  elseif ($istok(SEARCH MAP MOTD HELP SHOWIGNORE VERIFY,$2,32)) msgxw %xw $upper($2) %param
+  elseif (%param) msgxw %xw $upper($2) %chan %param
+  elseif (($2 == NEWPASS) && (u isin $hget(pnp. $+ $cid,-servopt))) {
+    _ssplay Question
+    %pw = $$input([xw:new_pw:bot=%xw],2)
+    if (%pw !=== $$input([chanserv:verify_pw],2)) _error [error:password]
+    msgxw %xw NEWPASS %pw
+  }
+  elseif (($istok(ADDCHAN REMCHAN,$2,32)) && (u isin $hget(pnp. $+ $cid,-servopt))) {
+    msgxw %xw SET %chan AUTOJOIN $iif($2 == ADDCHAN,ON,OFF)
+  }
+  elseif ($istok(INVITE UNBAN TOPIC LBANLIST BANS LOGIN INFO VERIFY SEARCH SET CONFIG MODINFO NEWPASS,$2,32)) {
+    %send = msgxw %xw $upper($2) %chan | goto $2
+
+    :INVITE | %send $iif(u !isin $hget(pnp. $+ $cid,-servopt),$_entry(-1,$iif(%chan !ischan,$me),[xw:invite])) | return
+    :UNBAN | %send $_entry(-1,$null,[xw:unban]) | return
+    :TOPIC | %send $_rentry(topic,%chan,$_s2p($chan(%chan).topic),[xw:topic]) | return
+    :LBANLIST | %send $_entry(-1,*,[xw:lbanlist:bot=%xw]) | return
+    :VERIFY | msgxw %xw VERIFY $_entry(-1,$null,[xw:verify]) | return
+    :SEARCH | msgxw %xw SEARCH $_entry(0,$null,[xw:search:bot=%xw]) | return
+    :INFO | msgxw %xw INFO $_entry(-1,$null,[xw:get_info]) | return
+
+    :LOGIN
+    var %who
+    if (u isin $hget(pnp. $+ $cid,-servopt)) %who = $_entry(-1,$me,[xw:login_username:bot=%xw])
+    _ssplay Question
+    %send %who $$input([xw:login_password:bot=%xw],2)
+    return
+
+    :SET
+    editbox -ap $_xwcmd %xw $2 %chan
+    dispa [chanserv:help_settings]:
+    if (u isin $hget(pnp. $+ $cid,-servopt)) {
+      dispa - $:l(MASSDEOPPRO FLOODPRO MODE)
+      dispa - $:l(NOOP STRICTOP USERFLAGS AUTOJOIN)
+      dispa - $:l(DESCRIPTION URL KEYWORDS AUTOTOPIC)
+    }
+    else {
+      dispa - $:l(MASSDEOPPRO NICKFLOODPRO FLOODPRO USERFLAGS)
+      dispa - $:l(NOOP ALWAYSOP OPONLY STRICTOP)
+      dispa - $:l(DESCRIPTION URL AUTOTOPIC)
+    }
+    dispa [chanserv:help_interactive:cmd=$_xwcmd CONFIG]
+    return
+
+    :CONFIG
+    if ($dialog(xwcfg)) { disprc %chan [xw:error_config] | return }
+    disprc %chan [xw:get_config:bot=$;t(%xw)]...
+    if ($hget(pnp.xwconfig)) hdel -w pnp.xwconfig *
+    else hmake pnp.xwconfig 20
+    hadd pnp.xwconfig chan %chan
+    hadd pnp.xwconfig bot %xw
+    hadd pnp.xwconfig cid $cid
+    .msgxw %xw STATUS %chan
+    .msgxw %xw CHANINFO %chan
+    return
+
+    :MODINFO
+    editbox -ap $_xwcmd %xw $2 %chan
+    dispa [chanserv:help_settings]:
+    if (u isin $hget(pnp. $+ $cid,-servopt)) dispa - $:l(ACCESS AUTOMODE)
+    else dispa - $:l(MATCH ACCESS AUTOOP PASSWORD)
+    return
+
+    :NEWPASS
+    _ssplay Question
+    %pw = $$input([xw:new_pw:bot=%xw],2)
+    if (%pw !=== $$input([chanserv:verify_pw],2)) _error [error:password]
+    msgxw %xw NEWPASS %chan %pw
+  }
+  else msgxw %xw $upper($2) %chan
+}
+; /msgxw bot full command
+alias msgxw {
+  _linedance . $+ $_botacc($1) $2-
+  if ((($2 == ADDUSER) && (u !isin $hget(pnp. $+ $cid,-servopt))) || (($2 == MODINFO) && ($4 == PASSWORD)) || ($2 == LOGIN) || ($2 == NEWPASS)) {
+    dispr $iif($3 ischan,$3,-ai2) [chanserv:do_cmd:bot=$;t($upper($1))]: $:h($gettok($1-,2- $+ $numtok($2-,32),32),?????)
+    if ($2 == NEWPASS) {
+      var %from = $3
+      if (u isin $hget(pnp. $+ $cid,-servopt)) %from = $hget(pnp. $+ $cid,-xwacc.username)
+      var %pw = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),%from)
+      if (%pw) hadd pnp. $+ $cid -xwacc.savenewpw xw- $+ $hget(pnp. $+ $cid,net) %from $gettok(%pw,1,32) $_pw.enc($gettok($1-,-1,32))
+    }
+    if ($2 == LOGIN) {
+      if (u isin $hget(pnp. $+ $cid,-servopt)) { hadd pnp. $+ $cid -xwacc.username $3 | _loadxwa }
+      elseif ($readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),a $+ $3) isnum 1-500) hadd pnp. $+ $cid -xwacc. $+ $3 $ifmatch
+      else hadd pnp. $+ $cid -xwacc. $+ $3 500
+    }
+  }
+  else {
+    dispr $iif($3 ischan,$3,-ai2) [chanserv:do_cmd:bot=$;t($upper($1))]: $:h($2-)
+    if ($2 == deauth) hdel pnp. $+ $cid -xwacc. $+ $3
+  }
+}
+
+on *:NOTICE:AUTHENTICATION SUCCESSFUL ON &:?:if ($_isbot($nick)) { if ($readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),a $+ $left($4,-1)) isnum 1-500) hadd pnp. $+ $cid -xwacc. $+ $left($4,-1) $ifmatch | else hadd pnp. $+ $cid -xwacc. $+ $left($4,-1) 500 }
+on *:NOTICE:AUTHENTICATION SUCCESSFUL as &:?:if ($_isbot($nick)) { hadd pnp. $+ $cid -xwacc.username $4 | _loadxwa }
+on *:NOTICE:Sorry, You are already authenticated as &:?:if ($_isbot($nick)) { hadd pnp. $+ $cid -xwacc.username $7 | _loadxwa }
+on *:NOTICE:Password successfully changed.:?:if (($_isbot($nick)) && ($hget(pnp. $+ $cid,-xwacc.savenewpw))) { writeini $_cfg(pw.ini) $hget(pnp. $+ $cid,-xwacc.savenewpw) | hdel pnp. $+ $cid -xwacc.savenewpw }
+on *:NOTICE:Password changed!:?:if (($_isbot($nick)) && ($hget(pnp. $+ $cid,-xwacc.savenewpw))) { writeini $_cfg(pw.ini) $hget(pnp. $+ $cid,-xwacc.savenewpw) | hdel pnp. $+ $cid -xwacc.savenewpw }
+
+dialog xwacc {
+  title "[xwacc_dialog:title]"
+  icon script\pnp.ico
+  option dbu
+  size -1 -1 170 135
+  box "", 1, 2 4 165 110
+  text "&[xwacc_dialog:mask]:", 2, 5 17 56 8, right
+  edit "*", 3, 62 15 100 11, autohs
+  text "&[xwacc_dialog:min_level]:", 4, 5 29 56 8, right
+  edit "", 5, 62 27 100 11
+  text "&[xwacc_dialog:max_level]:", 6, 5 41 56 8, right
+  edit "", 7, 62 39 100 11
+  check "&[xwacc_dialog:auto_op]", 8, 10 55 150 8
+  check "&[xwacc_dialog:auto_voice]", 9, 10 64 150 8
+  check "&[xwacc_dialog:no_auto_mode]", 10, 10 73 150 8
+  check "&[xwacc_dialog:last_mod]...", 11, 10 88 150 8
+  text "...&[xwacc_dialog:mod_by_user]:", 12, 5 99 99 8, right
+  edit "", 13, 105 97 57 11, autohs
+  button "[dialog:ok]", 101, 15 120 60 12, OK default
+  button "[dialog:cancel]", 102, 92 120 60 12, cancel
+  edit "", 200, 1 1 1 1, hide result autohs
+}
+on *:DIALOG:xwacc:init:*:{
+  did -c $dname 11
+  did -a $dname 1 [xwacc_dialog:search:bot=%.xw:chan=%.xw.chan:notdlg] $+ :
+  did -a $dname 200 %.xw ACCESS %.xw.chan
+  unset %.xw %.xw.chan
+  if (u isin $hget(pnp. $+ $cid,-servopt)) {
+    did -h $dname 12,13
+    did -ra $dname 11 &[xwacc_dialog:last_mod:notdlg]
+  }
+  else {
+    did -h $dname 10
+    did -ra $dname 9 &[xwacc_dialog:no_auto_op:notdlg]
+  }
+}
+on *:DIALOG:xwacc:sclick:8,9,10:did -u $dname $_s2c($remtok(8 9 10,$did,1,32))
+on *:DIALOG:xwacc:sclick:101:if (($did(13)) && (* !isin $did(13))) did -a $dname 13 !* | did -o $dname 200 1 $did(200) $iif($did(3),$gettok($did(3),1,32),*) $iif($did(5) isnum,-min $did(5)) $iif($did(7) isnum,-max $did(7)) $iif($did(8).state,$iif(u isin $hget(pnp. $+ $cid,-servopt),-op,-autoop)) $iif($did(9).state,$iif(u isin $hget(pnp. $+ $cid,-servopt),-voice,-noautoop)) $iif($did(10).state,-voice) $iif(($did(11).state) || ($did(13)),-modif) $gettok($did(13),1,32)
+
+dialog xwban {
+  title "[xwban_dialog:title]"
+  icon script\pnp.ico
+  option dbu
+  size -1 -1 170 115
+  box "", 1, 2 4 165 91
+  text "&[xwban_dialog:ban_who]:", 2, 5 17 59 8, right
+  combo 3, 65 15 99 60, edit drop
+  text "&[xwban_dialog:reason]:", 4, 5 28 59 8, right
+  combo 5, 65 26 99 60, edit drop
+  text "&[xwban_dialog:hours]:", 6, 5 39 59 8, right
+  edit "336", 7, 65 37 20 11, autohs
+  text "[xwban_dialog:hour_note]", 8, 87 39 70 8
+  radio "&[xwban_dialog:level_20]", 9, 25 53 120 8
+  radio "&[xwban_dialog:level_75]", 10, 25 62 120 8
+  radio "&[xwban_dialog:level_100]", 11, 25 71 120 8
+  radio "&[dialog:custom]:", 12, 25 80 50 8
+  edit "200", 13, 76 79 20 11, disable autohs
+  button "[dialog:ok]", 101, 15 100 60 12, OK default
+  button "[dialog:cancel]", 102, 92 100 60 12, cancel
+  edit "", 200, 1 1 1 1, hide autohs result
+}
+on *:DIALOG:xwban:init:*:{
+  _fillrec $dname 5 0 $_cfg(xwban.lis) %.xw.chan
+  if ($_dlgi(xwban1)) did -o $dname 7 1 $ifmatch
+  if ($_dlgi(xwban2)) {
+    var %ban = $_dlgi(xwban2)
+    if (%ban == 20) did -c $dname 9
+    elseif (%ban == 75) did -c $dname 10
+    elseif (%ban == 100) did -c $dname 11
+    else { did -c $dname 12 | did -oe $dname 13 1 %ban }
+  }
+  else did -c $dname 11
+  if ($numtok(%.xw.param,32) > 1) did -abc $dname 3 %.xw.param
+  elseif (%.xw.param) {
+    did -ac $dname 3 $ifmatch
+    if (*!*@* iswm %.xw.param) _ddaddm $dname 3 %.xw.param 022 030 100 002 111
+    elseif ($address(%.xw.param,5)) _ddaddm $dname 3 $ifmatch 022 030 100 002 111
+  }
+  did -a $dname 1 [xwban_dialog:head:bot=%.xw:chan=%.xw.chan:notdlg] $+ :
+  did -a $dname 200 %.xw BAN %.xw.chan
+  unset %.xw %.xw.chan %.xw.param
+}
+on *:DIALOG:xwban:sclick:101:{
+  if ($did(3) == $null) _error [error:xw_ban:notdlg]
+  if ($did(5)) _recent2 xwban 9 $replace($did(5),$gettok($did(200),3,32),&chan&)
+  if ($did(7) isnum) _dlgw xwban1 $ifmatch
+  var %lvl = $iif($did(9).state,20,$iif($did(10).state,75,$iif($did(11).state,100,$iif($did(13) isnum,$did(13),75))))
+  _dlgw xwban2 %lvl
+  did -o $dname 200 1 $did(200) $gettok($did(3),1,32) $iif($did(7) isnum,$did(7),24) %lvl $did(5)
+}
+on *:DIALOG:xwban:sclick:*:if ($did isnum 9-11) did -b $dname 13 | elseif ($did == 12) did -e $dname 13
+
+dialog xwuser {
+  title "[xwuser_dialog:title]"
+  icon script\pnp.ico
+  option dbu
+  size -1 -1 170 157
+  box "", 1, 2 4 165 50
+  text "&[word:nickname:dlg]:", 2, 5 17 39 8, right
+  edit "", 3, 45 15 120 11, autohs
+  text "&[word:usermask:dlg]:", 4, 5 29 39 8, right
+  combo 5, 45 27 119 75, drop edit
+  text "&[word:level:dlg]:", 6, 5 41 39 8, right
+  combo 7, 45 39 60 75, drop edit
+  box "[word:password:dlg]:", 21, 2 57 165 52
+  text "[xwuser_dialog:password_note]", 20, 10 67 150 15
+  text "&[word:password:dlg]:", 8, 5 85 39 8, right
+  edit "", 9, 45 83 61 11, pass autohs
+  text "&[dialog:confirm]:", 10, 5 96 39 8, right
+  edit "", 11, 45 95 61 11, pass autohs
+  box "[xwuser_dialog:auto_mode]:", 12, 2 113 165 22
+  radio "&[word:default:dlg]", 13, 15 123 45 8
+  radio "&[xw:mode_op]", 14, 62 123 45 8
+  radio "&[word:none:dlg]", 15, 109 123 45 8
+  button "[dialog:ok]", 101, 15 141 60 12, OK default
+  button "[dialog:cancel]", 102, 92 141 60 12, cancel
+  edit %.xw, 200, 1 1 1 1, hide autohs
+  edit %.xw.chan, 201, 1 1 1 1, hide autohs
+  edit $cid, 202, 1 1 1 1, hide autohs
+}
+on *:DIALOG:xwuser:init:*:{
+  if (%.xw.addr) { _ddaddm $dname 5 %.xw.addr $remove($_stmask(3,%.xw.chan),$chr(32)) $remove($_stmask(4,%.xw.chan),$chr(32)) 010 $remove($_stmask(2,%.xw.chan),$chr(32)) 011 | did -c $dname 5 1 }
+  did -a $dname 3 %.xw.who
+  did -c $dname 13
+  loadbuf -otxwuser $dname 7 " $+ $scriptdirxw.ppa"
+  did -c $dname 7 3
+  did -a $dname 1 [xwuser_dialog:head:bot=%.xw:chan=%.xw.chan] $+ :
+  unset %.xw %.xw.addr %.xw.chan %.xw.who
+}
+on *:DIALOG:xwuser:sclick:101:{
+  if ($did(3) == $null) _error [error:xw_add_nick]
+  if ($did(9) == $null) _error [error:xw_add_pw]
+  if ($did(9) !=== $did(11)) _error [error:password]
+  if ($scid($did(202)) == $null) return
+  scid $did(202)
+  msgxw $did(200) ADDUSER $did(201) $did(3) $iif($did(5),$_fixmask($did(5))) $iif($gettok($did(7),1,32) isnum,$gettok($did(7),1,32),100) $did(9)
+  if ($did(13).state == 0) msgxw $did(200) MODINFO $did(201) AUTOOP $did(3) $iif($did(14).state,ON,OFF)
+  scid -r
+}
+alias _xwuser {
+  if (($address($3,5)) || ($4)) {
+    %.xw = $1
+    %.xw.chan = $2
+    %.xw.who = $3
+    if ($address($3,5)) %.xw.addr = $ifmatch
+    elseif ($4 != .) %.xw.addr = $4
+    else unset %.xw.addr
+    _ssplay Dialog
+    return $dialog(xwuser,xwuser,-4)
+  }
+  else {
+    dispa [phrase:address_lookup:nick=$;t($3)]
+    _notconnected
+    _Q.userhost _xwuser $+ $1 $+  $+ $2 $+  $+ $3 $+  $+ &n!&a _xwuser $+ $1 $+  $+ $2 $+  $+ $3 $+ . $3
+  }
+}
+
+dialog xwuser2 {
+  title "[xwuser_dialog:title]"
+  icon script\pnp.ico
+  option dbu
+  size -1 -1 170 109
+  box "", 1, 2 4 165 58
+  text "&[xwuser_dialog:username]:", 2, 5 17 39 8, right
+  edit "", 3, 45 15 120 11, autohs
+  text "[xwuser_dialog:username_note]", 4, 46 28 118 16
+  text "&[word:level:dlg]:", 6, 5 48 39 8, right
+  combo 7, 45 46 60 75, drop edit
+  box "[xwuser_dialog:auto_mode]:", 12, 2 65 165 22
+  radio "&[word:default:dlg]", 13, 15 74 35 8
+  radio "&[xw:mode_op]", 14, 51 74 35 8
+  radio "&[xw:mode_voice]", 15, 87 74 35 8
+  radio "&[word:none:dlg]", 16, 123 74 35 8
+  button "[dialog:ok]", 101, 15 92 60 12, OK default
+  button "[dialog:cancel]", 102, 92 92 60 12, cancel
+  edit %.xw, 200, 1 1 1 1, hide autohs
+  edit %.xw.chan, 201, 1 1 1 1, hide autohs
+  edit $cid, 202, 1 1 1 1, hide autohs
+}
+on *:DIALOG:xwuser2:init:*:{
+  did -a $dname 3 %.xw.who
+  did -c $dname 13
+  loadbuf -otxwuser $dname 7 " $+ $scriptdirxw.ppa"
+  did -c $dname 7 4
+  did -a $dname 1 [xwuser_dialog:head:bot=%.xw:chan=%.xw.chan] $+ :
+  unset %.xw %.xw.addr %.xw.chan %.xw.who
+}
+on *:DIALOG:xwuser2:sclick:101:{
+  if ($did(3) == $null) _error [error:xw_add_user]
+  if ($scid($did(202)) == $null) return
+  scid $did(202)
+  msgxw $did(200) ADDUSER $did(201) $did(3) $iif($gettok($did(7),1,32) isnum,$gettok($did(7),1,32),100)
+  if ($did(13).state == 0) msgxw $did(200) MODINFO $did(201) AUTOMODE $did(3) $iif($did(14).state,OP,$iif($did(15).state,VOICE,NONE))
+  scid -r
+}
+alias -l _xwuser2 {
+  %.xw = $1
+  %.xw.chan = $2
+  %.xw.who = $3
+  _ssplay Dialog
+  return $dialog(xwuser2,xwuser2,-4)
+}
+
+on me:*:JOIN:#:if (($hget(pnp. $+ $cid,-xwacc.skip)) || ($hget(pnp. $+ $cid,-xwacc.skip. $+ $chan))) return | if (($_isserv(xw)) && (u !isin $hget(pnp. $+ $cid,-servopt))) { hadd -u120 pnp. $+ $cid -xwacc.skip. $+ $chan 1 | .xw AUTO $chan LOGIN }
+on *:JOIN:#:{
+  if (($_isserv(xw)) && ($_isbot($nick))) {
+    if (u isin $hget(pnp. $+ $cid,-servopt)) {
+      if (!$hget(pnp. $+ $cid,-xwacc.skipsplit)) {
+        hadd -u240 pnp. $+ $cid -xwacc.skipsplit 1
+        .xw AUTO LOGIN $hget(pnp. $+ $cid,-xwacc.username)
+      }
+    }
+    else .xw AUTO $chan LOGIN
+  }
+}
+on *:QUIT:{
+  ; (clear split skipping if bot quits again)
+  if (($_isserv(xw)) && ($_isbot($nick))) {
+    hdel pnp. $+ $cid -xwacc.skipsplit
+  }
+}
+
+on *:SIGNAL:PNP.SIGNON:{ _xw.connect }
+on *:LOAD:{
+  ; PnP check
+  if (!$_ispnp) {
+    echo 4 -ati2 *** This addon requires Peace and Protection by pai to use.
+    echo 4 -ati2 *** You can download Peace and Protection at http://www.pairc.com/
+    .timer -mio 1 0 .unload -rs " $+ $script $+ "
+    halt
+  }
+  ; Invalid load method check
+  if (!$istok($_cfgx(addons,ids),$readini($script,n,addon,id),32)) {
+    .timer -mio 1 0 .unload -rs " $+ $script $+ "
+    dispa [startup:addon_file_improper:file=$script]
+    halt
+  }
+  scon -at1 _xw.connect
+}
+
+alias _xw.connect if ($_isserv(xw)) { hadd -u120 pnp. $+ $cid -xwacc.skip 1 | .xw AUTO LOGIN }
+alias _xw.splice {
+  if ($1 == ?) {
+    if ($_isserv(xw) == $false) return 0
+    if ($istok(mode halfop dehalfop,$3,32)) return 0
+    if (($istok(voice devoice,$3,32)) && (u !isin $hget(pnp. $+ $cid,-servopt))) return 0
+    if ($_chanbot($2) !isop $2) return 0
+    if (u isin $hget(pnp. $+ $cid,-servopt)) {
+      if ($hget(pnp. $+ $cid,-xwacc.username)) {
+        var %acc = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),a $+ $2)
+        if (%acc >= 100) return 1
+        if ((%acc >= 75) && ($istok(ban unban,$3,32))) return 1
+        if ((%acc >= 50) && ($istok(kick topic,$3,32))) return 1
+        if ((%acc >= 25) && ($istok(voice devoice,$3,32))) return 1
+      }
+    }
+    elseif ($hget(pnp. $+ $cid,-xwacc. $+ $2)) return 1
+    return 0
+  }
+  goto $3
+  :kick | :topic | :op | :deop | :voice | :devoice | xw $upper($3) $2 $4- | return
+  :opme | xw OP $2 $4- | return
+  :unban | xw UNBAN $2 $4 | return
+  :ban | xw BAN $2 $4 336 75 $5-
+}
+
+alias -l xwpop {
+  unset %.xw*
+  if ($_isserv(xw)) {
+    set -u1 %.xwaccess $hget(pnp. $+ $cid,-xwacc. $+ $active)
+    if (!%.xwaccess) set -u1 %.xwaccess 0
+    set -u1 %.xwaccessstored $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),a $+ $active)
+    if (!%.xwaccessstored) set -u1 %.xwaccessstored 0
+    if ($_chanbot($active)) {
+      set -u1 %.xw $ifmatch
+    }
+    else {
+      set -u1 %.xw2 $_xwall
+      set -u1 %.xw1b [popups_status:xw_join:bot=$gettok($hget(pnp. $+ $cid,-servnick),1,32)] $+ 	[450]
+      if ($gettok($hget(pnp. $+ $cid,-servnick),2,32)) set -u1 %.xw2b [popups_status:xw_join:bot=$ifmatch] $+ 	[450]
+    }
+    if (u isin $hget(pnp. $+ $cid,-servopt)) {
+      set -u1 %.xwlogin 2
+      return $_xwloginpop
+    }
+    else set -u1 %.xwlogin $iif($readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),$active),1,0)
+    return $_popssep
+  }
+}
+alias -l _xwloginpop {
+  unset %.xwlogin.*
+  if (u isin $hget(pnp. $+ $cid,-servopt)) {
+    var %who = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),all)
+    var %pos = 1
+    var %popup = 1
+    :loop
+    var %un = $gettok(%who,%pos,32)
+    if (%un) {
+      if (!$_ischan(%un)) { set -u1 %.xwlogin. [ $+ [ %popup ] ] [popups_status:xw_login_user:nick=%un] | inc %popup }
+      inc %pos
+      goto loop
+    }
+  }
+  if ($_xwall) return $_popssep
+}
+alias -l xwloginas {
+  var %who = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),all)
+  var %pos = 1
+  var %popup = 1
+  :loop
+  var %un = $gettok(%who,%pos,32)
+  if (%un) {
+    if (!$_ischan(%un)) { if (%popup == $1) return %un | inc %popup }
+    inc %pos
+    goto loop
+  }
+  return
+}
+
+menu status {
+  $_xwloginpop
+  $_xwall
+  .$iif(u isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_login])
+  ..%.xwlogin.1:xw AUTO $xwloginas(1)
+  ..%.xwlogin.2:xw AUTO $xwloginas(2)
+  ..%.xwlogin.3:xw AUTO $xwloginas(3)
+  ..%.xwlogin.4:xw AUTO $xwloginas(4)
+  ..%.xwlogin.5:xw AUTO $xwloginas(5)
+  ..-
+  ..[popups_status:xw_login_add]...:xw AUTO ADD
+  ..[popups_status:xw_login_del]...:xw AUTO DEL
+  ..[popups_status:xw_login_manual]...:xw LOGIN
+  ..[popups_status:xw_change_pw]...:xw NEWPASS
+  ..-
+  ..[popups_status:xw_invis_on]:xw set INVISIBLE ON
+  ..[popups_status:xw_invis_off]:xw set INVISIBLE OFF
+  .$iif(u !isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_login])
+  ..[popups_status:xw_login_perform_all]:xw AUTO
+  ..[popups_status:xw_login_manual]...:xw ! LOGIN ?
+  ..[popups_status:xw_login_deauth]...:xw ! DEAUTH ?
+  .-
+  .[popups_status:xw_recovery]
+  ..[popups_status:xw_unban_me]...	[75]:xw ! UNBAN ? $me
+  ..[popups_status:xw_invite_me]...	[100]:xw ! INVITE ? $iif(u !isin $hget(pnp. $+ $cid,-servopt),$me)
+  ..[popups_status:xw_clearmode]...	[400]:xw ! CLEARMODE ?
+  .[popups_status:xw_cmd]
+  ..[popups_status:xw_topic]...	[50]:xw ! TOPIC ?
+  ..[popups_status:xw_kick]...	[50]:xw ! KICK ?
+  ..-
+  ..[popups_status:xw_ban]...	[75]:xw ! BAN ?
+  ..[popups_status:xw_unban]...	[75]:xw ! UNBAN ?
+  ..-
+  ..[popups_status:xw_op]...	[100]:xw ! OP ?
+  ..[popups_status:xw_deop]...	[100]:xw ! DEOP ?
+  ..-
+  ..[popups_status:xw_suspend]...	[100]:xw ! SUSPEND ?
+  .-
+  .[popups_status:xw_info]
+  ..$iif(u isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_yourinfo]	[0]):xw INFO $iif($hget(pnp. $+ $cid,-xwacc.username),$hget(pnp. $+ $cid,-xwacc.username),= $+ $me)
+  ..[popups_status:xw_youraccess]...	[0]:xw ! ACCESS ? $iif(u isin $hget(pnp. $+ $cid,-servopt),$iif($hget(pnp. $+ $cid,-xwacc.username),$hget(pnp. $+ $cid,-xwacc.username),= $+ $me),$me)
+  ..-
+  ..[popups_status:xw_chaninfo]...	[0]:xw ! CHANINFO ?
+  ..[popups_status:xw_status]...	[1]:xw ! STATUS ?
+  ..[popups_status:xw_lbanlist:bot=$_xwall]...	[0]:xw ! LBANLIST ?
+  .[popups_status:xw_botinfo:bot=$_xwall]
+  ..[popups_status:xw_search]...:xw SEARCH $_entry(0,$null,[xw:chan_search])
+  ..-
+  ..$iif(u !isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_map]):xw MAP
+  ..[popups_status:xw_motd]:xw ! MOTD
+  ..[popups_status:xw_ignore]:xw ! SHOWIGNORE
+  ..-
+  ..$iif(u isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_userinfo]...):xw INFO $_entry(-1,$null,[xw:get_info])
+  ..[popups_status:xw_verify]...:xw VERIFY $_entry(-1,$null,[xw:verify])
+  ..-
+  ..$iif(u !isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_help]...):xw HELP $_entry(0,$null,[xw:help_on:bot=$_xwall])
+  .-
+  .$iif($hget(pnp. $+ $cid,net) == undernet,[popups_status:xw_web])
+  ..[popups_status:xw_web_home]:http http://cservice.undernet.org/
+  ..-
+  ..[popups_status:xw_web_username]:http http://cservice.undernet.org/live/newuser.php3
+  ..[popups_status:xw_web_login]:http http://cservice.undernet.org/live/
+  ..-
+  ..[popups_status:xw_web_cmds]:http http://cservice.undernet.org/docs/xcmds.txt
+  .$iif($hget(pnp. $+ $cid,net) == ozorg,[popups_status:xw_web])
+  ..[popups_status:xw_web_ozorg]:http http://www.oz.org/
+  ..[popups_status:xw_web_channel]:http http://www.oz.org/aucs/
+}
+
+menu @Banlist {
+  $_banpopxw
+  .[popups_ban:xw_copy]...:_transxw $active 0
+  .[popups_ban:xw_move]...:_transxw $active 1
+}
+alias -l _banpopxw if (($sline($active,1).ln > 5) && ($_isserv(xw)) && ($_chanbot($mid($active,11,$len($active))))) return $ifmatch
+alias -l _transxw {
+  set %.xw.param ([xw:ban_transfer])
+  set %.xw.chan $mid($1,11,$len($1))
+  set %.xw $_chanbot(%.xw.chan)
+  _ssplay Dialog
+  var %num = 1,%todo = $$dialog(xwban,xwban,-4)
+  if ($2) var %blip = $mid(beI,$pos(bei,$mid($1,2,1),1),1)
+  :loop
+  if ($sline($1,%num)) {
+    msgxw $puttok(%todo,$gettok($ifmatch,2,9),4,32)
+    if ($2) _banrem $1 $sline($1,%num).ln %blip
+    else inc %num
+    goto loop
+  }
+}
+
+menu nicklist {
+  $xwpop
+  %.xw
+  .$iif(%.xwaccess > 99,[popups_status:xw_op]	[100]):xw OP $_c2s($$snicks)
+  .$iif(%.xwaccess > 99,[popups_status:xw_deop]	[100]):xw DEOP $_c2s($$snicks)
+  .$iif((u isin $hget(pnp. $+ $cid,-servopt)) && (%.xwaccess > 24),[popups_status:xw_voice]	[25]):xw VOICE $_c2s($$snicks)
+  .$iif((u isin $hget(pnp. $+ $cid,-servopt)) && (%.xwaccess > 24),[popups_status:xw_devoice]	[25]):xw DEVOICE $_c2s($$snicks)
+  .-
+  .$iif(%.xwaccess > 49,[popups_status:xw_kick]...	[50]):xw KICK $$1
+  .$iif(%.xwaccess > 74,[popups_status:xw_ban]...	[75]):xw BAN $$1
+  .-
+  .$iif(%.xwaccess < 400,[popups_status:xw_access]	[0]):xw ACCESS $iif(u isin $hget(pnp. $+ $cid,-servopt),= $+ $$1,$$1) -modif
+  .$iif((%.xwaccess < 400) && (u isin $hget(pnp. $+ $cid,-servopt)),[popups_status:xw_userinfo]	[0]):xw INFO = $+ $$1
+  .$iif(%.xwaccess < 400,[popups_status:xw_verify]	[0]):xw VERIFY $$1
+  .$iif(%.xwaccess > 399,[popups_status:xw_user])
+  ..[popups_status:xw_access]	[0]:xw ACCESS $iif(u isin $hget(pnp. $+ $cid,-servopt),= $+ $$1,$$1) -modif
+  ..$iif(u isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_userinfo]	[0]):xw INFO = $+ $$1
+  ..[popups_status:xw_verify]	[0]:xw VERIFY $$1
+  ..-
+  ..[popups_status:xw_add]...	[400]:xw ADDUSER $iif(u isin $hget(pnp. $+ $cid,-servopt),= $+ $$1,$$1)
+  ..[popups_status:xw_remove]	[400]:xw REMUSER $iif(u isin $hget(pnp. $+ $cid,-servopt),= $+ $$1,$$1)
+  ..-
+  ..$iif(u isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_automode]...	[400]):xw MODINFO AUTOMODE = $+ $$1
+  ..$iif(u !isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_autoop]...	[400]):xw MODINFO AUTOOP $$1
+  ..$iif(u !isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_match]...	[400]):xw MODINFO MATCH $$1
+  ..[popups_status:xw_modaccess]...	[400]:xw MODINFO ACCESS $iif(u isin $hget(pnp. $+ $cid,-servopt),= $+ $$1,$$1)
+  ..$iif(u !isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_pw]...	[400]):xw MODINFO PASSWORD $$1
+  .-
+  .$iif(%.xwaccess > 99,[popups_status:xw_suspend]...	[100]):xw SUSPEND $iif(u isin $hget(pnp. $+ $cid,-servopt),= $+ $$1,$$1)
+  .$iif(%.xwaccess > 99,[popups_status:xw_unsuspend]	[100]):xw UNSUSPEND $iif(u isin $hget(pnp. $+ $cid,-servopt),= $+ $$1,$$1)
+}
+
+menu channel {
+  $xwpop
+  %.xw2
+  .[popups_status:xw_chaninfo]	[0]:xw ! CHANINFO
+  .-
+  .%.xwlogin.1:xw AUTO $xwloginas(1)
+  .%.xwlogin.2:xw AUTO $xwloginas(2)
+  .%.xwlogin.3:xw AUTO $xwloginas(3)
+  .%.xwlogin.4:xw AUTO $xwloginas(4)
+  .%.xwlogin.5:xw AUTO $xwloginas(5)
+  .-
+  .$iif(u isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_login_add]...):xw AUTO ADD
+  .$iif(u isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_login_del]...):xw AUTO DEL
+  .$iif(u isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_login_manual]...):xw LOGIN
+  .$iif(u !isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_login_chan:chan=%.xw2] $+ ...	[0]):if ($readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),#)) xw AUTO # | else xw ! LOGIN
+  .$iif(u !isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_login_deauth]	[0]):xw ! DEAUTH
+  .[popups_status:xw_change_pw]...	[0]:xw ! NEWPASS
+  .-
+  .%.xw1b:xw $gettok($hget(pnp. $+ $cid,-servnick),1,32) JOIN
+  .%.xw2b:xw $gettok($hget(pnp. $+ $cid,-servnick),2,32) JOIN
+  .-
+  .$iif(u isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_myaccess])
+  ..$iif(!%.xwaccessstored,$style(1)) [popups_status:xw_noaccess:chan=#]:xwa # 0
+  ..-
+  ..$iif(%.xwaccessstored isnum 25-49,$style(1)) [popups_status:xw_numaccess:num=25:chan=#]:xwa # 25
+  ..$iif(%.xwaccessstored isnum 50-74,$style(1)) [popups_status:xw_numaccess:num=50:chan=#]:xwa # 50
+  ..$iif(%.xwaccessstored isnum 75-99,$style(1)) [popups_status:xw_numaccess:num=75:chan=#]:xwa # 75
+  ..$iif(%.xwaccessstored isnum 100-199,$style(1)) [popups_status:xw_numaccess:num=100:chan=#]:xwa # 100
+  ..$iif(%.xwaccessstored isnum 200-399,$style(1)) [popups_status:xw_numaccess:num=200:chan=#]:xwa # 200
+  ..$iif(%.xwaccessstored isnum 400-449,$style(1)) [popups_status:xw_numaccess:num=400:chan=#]:xwa # 400
+  ..$iif(%.xwaccessstored isnum 450-499,$style(1)) [popups_status:xw_numaccess:num=450:chan=#]:xwa # 450
+  ..$iif(%.xwaccessstored == 500,$style(1)) [popups_status:xw_accessfounder:chan=#]:xwa # 500
+  ..-
+  ..[popups_status:xw_accesslookup]:xw ACCESS $iif($hget(pnp. $+ $cid,-xwacc.username),$hget(pnp. $+ $cid,-xwacc.username),= $+ $me)
+  ..[popups_status:xw_accessremove]...:_okcancel 1 [xw:access_remove:chan=#] | xw REMUSER $iif($hget(pnp. $+ $cid,-xwacc.username),$hget(pnp. $+ $cid,-xwacc.username),= $+ $me)
+  ;;; this line represents a bug in mirc!
+  $iif(%.xw,%.xw)
+  .$iif(%.xwlogin == 2,[popups_status:xw_login])
+  ..%.xwlogin.1:xw AUTO $xwloginas(1)
+  ..%.xwlogin.2:xw AUTO $xwloginas(2)
+  ..%.xwlogin.3:xw AUTO $xwloginas(3)
+  ..%.xwlogin.4:xw AUTO $xwloginas(4)
+  ..%.xwlogin.5:xw AUTO $xwloginas(5)
+  ..-
+  ..[popups_status:xw_login_add]...:xw AUTO ADD
+  ..[popups_status:xw_login_del]...:xw AUTO DEL
+  ..[popups_status:xw_login_manual]...:xw LOGIN
+  ..[popups_status:xw_change_pw]...:xw NEWPASS
+  .$iif(%.xwlogin == 1,[popups_status:xw_login])
+  ..[popups_status:xw_login_manual]...:xw LOGIN
+  ..[popups_status:xw_login_deauth]:xw DEAUTH
+  ..[popups_status:xw_change_pw]...:xw NEWPASS
+  ..-
+  ..[popups_status:xw_login_perform]:xw AUTO #
+  ..[popups_status:xw_login_del_chan:chan=$replace($active,&,&&)] $+ ...:_okcancel 1 [chanserv:confirm_del] | xw AUTO DEL
+  ..-
+  ..[popups_status:xw_login_view]:xw AUTO VIEW
+  ..[popups_status:xw_login_clear]...:_okcancel 1 [chanserv:confirm_purge:bot=$_xwall] | xw AUTO CLEAR
+  .$iif(%.xwlogin == 0,[popups_status:xw_login])
+  ..[popups_status:xw_login_chan:chan=%.xw] $+ ...:xw LOGIN
+  ..[popups_status:xw_login_deauth]:xw DEAUTH
+  ..[popups_status:xw_change_pw]...:xw NEWPASS
+  ..-
+  ..[popups_status:xw_login_add_chan:chan=$replace($active,&,&&)] $+ ...:xw AUTO ADD
+  ..-
+  ..[popups_status:xw_login_view]...:xw AUTO VIEW
+  ..[popups_status:xw_login_clear]...:_okcancel 1 [chanserv:confirm_purge:bot=$_xwall] | xw AUTO CLEAR
+  .[popups_status:xw_info]
+  ..[popups_status:xw_chaninfo]	[0]:xw CHANINFO
+  ..$iif(%.xwaccess > 0,[popups_status:xw_status]	[1]):xw STATUS
+  ..-
+  ..[popups_status:xw_youraccess]	[0]:xw ACCESS $iif(u isin $hget(pnp. $+ $cid,-servopt),$iif($hget(pnp. $+ $cid,-xwacc.username),$hget(pnp. $+ $cid,-xwacc.username),= $+ $me),$me)
+  ..[popups_status:xw_yourcmd]	[0]:xw SHOWCOMMANDS
+  .-
+  .$iif(%.xwaccess > 49,[popups_status:xw_topic]...  [50]):xw TOPIC
+  .$iif((%.xwaccess > 99) && (u !isin $hget(pnp. $+ $cid,-servopt)),[popups_status:xw_invite]... [100]):xw INVITE
+  .-
+  .[popups_status:xw_bans]
+  ..$iif(%.xwaccess > 74,[popups_status:xw_ban]...	[75]):xw BAN
+  ..$iif(%.xwaccess > 74,[popups_status:xw_unban]...	[75]):xw UNBAN
+  ..-
+  ..[popups_status:xw_lbanlist:bot=%.xw]...	[0]:xw LBANLIST
+  ..[popups_status:xw_chanbans]	[0]:xw BANLIST
+  ..-
+  ..$iif(%.xwaccess > 199,[popups_status:xw_filterkick]...	[200]):xw KICK
+  .[popups_status:xw_user]
+  ..[popups_status:xw_access]...	[0]:xw ACCESS
+  ..$iif(u isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_userinfo]...	[0]):xw INFO
+  ..-
+  ..$iif(%.xwaccess > 99,[popups_status:xw_suspend]...	[100]):xw SUSPEND
+  ..$iif(%.xwaccess > 99,[popups_status:xw_unsuspend]...	[100]):xw UNSUSPEND
+  ..-
+  ..$iif(%.xwaccess > 399,[popups_status:xw_add]...	[400]):xw ADDUSER
+  ..$iif(%.xwaccess > 399,[popups_status:xw_remove]...	[400]):xw REMUSER
+  ..-
+  ..$iif(%.xwaccess > 399,[popups_status:xw_mod])
+  ...$iif(u isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_automode]...	[400]):xw MODINFO AUTOMODE
+  ...$iif(u !isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_autoop]...	[400]):xw MODINFO AUTOOP
+  ...$iif(u !isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_match]...	[400]):xw MODINFO MATCH
+  ...[popups_status:xw_modaccess]...	[400]:xw MODINFO ACCESS
+  ...$iif(u !isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_pw]...	[400]):xw MODINFO PASSWORD
+  .-
+  .$iif(%.xwaccess > $iif(u isin $hget(pnp. $+ $cid,-servopt),499,449),[popups_status:xw_joinpart])
+  ..[popups_status:xw_part:bot=%.xw] $+ 	 $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),[500],[450]):xw PART
+  ..-
+  ..[popups_status:xw_autoadd:bot=%.xw] $+ 	 $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),[500],[450]):xw ADDCHAN
+  ..[popups_status:xw_autodel:bot=%.xw] $+ 	 $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),[500],[450]):xw REMCHAN
+  ..-
+  ..[popups:help]:{
+    dispa [xw:joinpart_help1:bot=$_xwall]
+    dispa [xw:joinpart_help2]
+    if (u !isin $hget(pnp. $+ $cid,-servopt)) dispa [xw:joinpart_help3:bot=$_xwall]
+  }
+  .$iif(%.xwaccess > 449,[popups_status:xw_set])
+  ..[popups_status:xw_set_desc]...	[450]:xw SET DESCRIPTION
+  ..[popups_status:xw_set_url]...	[450]:xw SET URL
+  ..$iif(u isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_set_keywords]...	[450]):xw SET KEYWORDS
+  ..[popups_status:xw_set_topic]...	[450]:xw SET AUTOTOPIC
+  ..-
+  ..$iif((%.xwaccess > 499) || (u !isin $hget(pnp. $+ $cid,-servopt)),[popups_status:xw_set_deop]...	 $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),[500],[450])):xw SET MASSDEOPPRO
+  ..$iif(u !isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_set_nickpro]...	[450]):xw SET NICKFLOODPRO
+  ..$iif(%.xwaccess > 499,[popups_status:xw_set_flood]...	[500]):xw SET FLOODPRO
+  ..-
+  ..$iif(u !isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_set_alwaysop]...	[450]):xw SET ALWAYSOP
+  ..$iif(%.xwaccess > 499,[popups_status:xw_set_noop]...	[500]):xw SET NOOP
+  ..$iif(%.xwaccess > 499,[popups_status:xw_set_strict]...	[500]):xw SET STRICTOP
+  ..$iif(u !isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_set_oponly]...	[500]):xw SET OPONLY
+  ..-
+  ..$iif(u isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_automode],[popups_status:xw_autoop]) $+ ...	[450]:xw SET USERFLAGS
+  ..-
+  ..$iif(u isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_set_mode]	[450]):xw SET MODE
+  .$iif(%.xwaccess > 449,[popups_status:xw_config]... [450]):xw CONFIG
+  .-
+  .$iif(u isin $hget(pnp. $+ $cid,-servopt),[popups_status:xw_myaccess])
+  ..$iif(!%.xwaccessstored,$style(1)) [popups_status:xw_noaccess:chan=#]:xwa # 0
+  ..-
+  ..$iif(%.xwaccessstored isnum 25-49,$style(1)) [popups_status:xw_numaccess:num=25:chan=#]:xwa # 25
+  ..$iif(%.xwaccessstored isnum 50-74,$style(1)) [popups_status:xw_numaccess:num=50:chan=#]:xwa # 50
+  ..$iif(%.xwaccessstored isnum 75-99,$style(1)) [popups_status:xw_numaccess:num=75:chan=#]:xwa # 75
+  ..$iif(%.xwaccessstored isnum 100-199,$style(1)) [popups_status:xw_numaccess:num=100:chan=#]:xwa # 100
+  ..$iif(%.xwaccessstored isnum 200-399,$style(1)) [popups_status:xw_numaccess:num=200:chan=#]:xwa # 200
+  ..$iif(%.xwaccessstored isnum 400-449,$style(1)) [popups_status:xw_numaccess:num=400:chan=#]:xwa # 400
+  ..$iif(%.xwaccessstored isnum 450-499,$style(1)) [popups_status:xw_numaccess:num=450:chan=#]:xwa # 450
+  ..$iif(%.xwaccessstored == 500,$style(1)) [popups_status:xw_accessfounder:chan=#]:xwa # 500
+  ..-
+  ..[popups_status:xw_accesslookup]:xw ACCESS $iif($hget(pnp. $+ $cid,-xwacc.username),$hget(pnp. $+ $cid,-xwacc.username),= $+ $me)
+  ..[popups_status:xw_accessremove]...:_okcancel 1 [xw:access_remove:chan=#] | xw REMUSER $iif($hget(pnp. $+ $cid,-xwacc.username),$hget(pnp. $+ $cid,-xwacc.username),= $+ $me)
+}
+
+; /xwa [#chan] [0-500]
+; view or set xw access
+alias xwa {
+  if ($server == $null) _error [error:not_connected]
+  if ($_isserv(xw) == $false) _error [error:no_xw:cmd=/xwa]
+  if ($_ischan($1)) { var %chan = $1,%how = $2 }
+  elseif ($active ischan) { var %chan = $active,%how = $1 }
+  else _error [error:in_chan:cmd=/xwa]
+  if (%how == $null) {
+    %how = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),a $+ %chan)
+    if (%how !isnum 0-500) %how = 0
+  }
+  else {
+    if (%how !isnum 0-500) %how = 0
+    if (%how) writeini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) a $+ %chan %how
+    else remini $_cfg(pw.ini) xw a- $+ $hget(pnp. $+ $cid,net) $+ %chan
+    if (($hget(pnp. $+ $cid,-xwacc. $+ %chan) != $null) || ($hget(pnp. $+ $cid,-xwacc.username))) hadd pnp. $+ $cid -xwacc. $+ %chan %how
+  }
+  dispa [xw:set_access:num=$;s(%how):chan=$;s(%chan)]
+}
+; loads all xwc.chan vars from ini
+alias -l _loadxwa {
+  hdel -w pnp. $+ $cid -xwacc.#*
+  var %ini = $_cfg(pw.ini)
+  var %ln = $read(%ini,s,$+($chr(91),xw-,$hget(pnp. $+ $cid,net),$chr(93)))
+  if ($readn) {
+    %ln = $readn + 1
+    :loop
+    var %get = $read(%ini,n,%ln)
+    if (([* !iswm %get) && (%get)) {
+      if ((a* iswm %get) && ($right($gettok(%get,1,61),-1))) hadd pnp. $+ $cid -xwacc. $+ $right($gettok(%get,1,61),-1) $gettok(%get,2,61)
+      inc %ln
+      goto loop
+    }
+  }
+}
+
+on ^*:NOTICE:Channel* has & user* & operator*:?:{
+  if (($nick == $hget(pnp.xwconfig,bot)) && ($2 == $hget(pnp.xwconfig,chan)) && ($cid == $hget(pnp.xwconfig,cid))) {
+    hdel -w pnp.xwconfig *
+    hadd pnp.xwconfig bot $nick
+    hadd pnp.xwconfig chan $2
+    hadd pnp.xwconfig cid $cid
+    hadd pnp.xwconfig receiving 1
+    .enable #xwconfig
+    window -c @.xwinfo
+    window -hl @.xwinfo
+    aline @.xwinfo $1-
+    halt
+  }
+}
+on *:SIGNAL:PNP.TRANSLATE:{ if ($hget(pnp.xwconfig,receiving)) .enable #xwconfig }
+#xwconfig off
+alias -l _isxwcfg if (($nick != $hget(pnp.xwconfig,bot)) || ($cid != $hget(pnp.xwconfig,cid))) $$$
+on ^*:NOTICE:Mode is*:?:_isxwcfg | aline @.xwinfo $1- | halt
+on ^*:NOTICE:I'm & in this channel*:?:_isxwcfg | aline @.xwinfo $hget(pnp.xwconfig,bot) is $2- | halt
+on ^*:NOTICE:Default user flag*AUTOOP*:?:_isxwcfg | hadd pnp.xwconfig auto 1 | halt
+on ^*:NOTICE:MassDeopPro* NickFloodPro* FloodPro*:?:_isxwcfg | hadd pnp.xwconfig deop $2 | hadd pnp.xwconfig nickfld $4 | hadd pnp.xwconfig flood $6 | halt
+on ^*:NOTICE:MassDeopPro* FloodPro*:?:_isxwcfg | hadd pnp.xwconfig deop $remove($2,$chr(44)) | hadd pnp.xwconfig flood $4 | halt
+on ^*:NOTICE:MassDeopPro*:?:_isxwcfg | hadd pnp.xwconfig deop $remove($2,$chr(44)) | halt
+on ^*:NOTICE:FloodPro*:?:_isxwcfg | hadd pnp.xwconfig flood $2 | halt
+on ^*:NOTICE:NoOp* AlwaysOp* OpOnly* StrictOp* AutoTopic*:?:{
+  _isxwcfg
+  hadd pnp.xwconfig noop $_o2tf($2)
+  hadd pnp.xwconfig alwaysop $_o2tf($4)
+  hadd pnp.xwconfig oponly $_o2tf($6)
+  hadd pnp.xwconfig strictop $_o2tf($8)
+  hadd pnp.xwconfig autotopic $_o2tf($10)
+  halt
+}
+on ^*:NOTICE:Flags set*:?:{
+  _isxwcfg
+  hadd pnp.xwconfig strictop $findtok($3-,STRICTOP,0,32)
+  hadd pnp.xwconfig noop $findtok($3-,NOOP,0,32)
+  hadd pnp.xwconfig autotopic $findtok($3-,AUTOTOPIC,0,32)
+  hadd pnp.xwconfig autojoin $findtok($3-,AUTOJOIN,0,32)
+  halt
+}
+on ^*:NOTICE:Default language is*:?:_isxwcfg | aline @.xwinfo $1- | halt
+on ^*:NOTICE:Channel has been idle*:?:_isxwcfg | aline @.xwinfo $1- | halt
+on ^*:NOTICE:Auth*:?:_isxwcfg | aline @.xwinfo [xwcfg_dialog:auth]: $2- | halt
+on ^*:NOTICE:& is registered by*:?:_isxwcfg | halt
+on ^*:NOTICE:& & last seen*:?:{
+  _isxwcfg
+  iline @.xwinfo 1 [xwcfg_dialog:founder]: $1-
+  ; (so we only try to open dialog once even if multiple last seen lines appear)
+  if ($hget(pnp.xwconfig,init) != 1) { _juryrig $$!dialog(xwcfg,xwcfg,-4) | hadd pnp.xwconfig init 1 }
+  halt
+}
+on ^*:NOTICE:Desc*:?:_isxwcfg | hadd pnp.xwconfig desc $2- | halt
+on ^*:NOTICE:Keywords*:?:_isxwcfg | hadd pnp.xwconfig keywords $2- | halt
+on ^*:NOTICE:URL*:?:_isxwcfg | hadd pnp.xwconfig url $2- | halt
+#xwconfig end
+alias -l _isxwc if (($dialog(xwcfg)) && ($nick == $did(xwcfg,100)) && ($cid == $did(xwcfg,103))) return | $$$
+on ^*:NOTICE:Desc*:?:_isxwc | hadd pnp.xwconfig desc $2- | did -ra xwcfg 16 $2- | halt
+on ^*:NOTICE:Keywords*:?:_isxwc | hadd pnp.xwconfig keywords $2- | did -ra xwcfg 32 $2- | halt
+on ^*:NOTICE:URL*:?:_isxwc | hadd pnp.xwconfig url $2- | did -ra xwcfg 18 $2- | halt
+on ^*:NOTICE:& & last seen*:?:_isxwc | did -i xwcfg 4 1 Founder: $1- | halt
+
+dialog xwcfg {
+  title "[xwcfg_dialog:title]"
+  icon script\pnp.ico
+  option dbu
+  size -1 -1 180 168
+  edit "", 100, 1 1 1 1, hide
+  edit $cid, 103, 1 1 1 1, hide
+  text "", 1, 5 5 50 8
+  edit "", 2, 55 3 100 11, autohs read
+  box "[word:info:dlg]:", 3, 2 15 175 45
+  edit "", 4, 7 24 165 30, vsbar read multi
+  box "[word:options:dlg]:", 14, 2 62 175 86
+  text "&[xwcfg_dialog:desc]:", 15, 7 72 25 8, right
+  edit "", 16, 33 70 140 11, autohs
+  text "&[xwcfg_dialog:url]:", 17, 7 83 25 8, right
+  edit "", 18, 33 81 140 11, autohs
+  text "&[xwcfg_dialog:keywords]:", 31, 7 94 25 8, right
+  edit "", 32, 33 92 140 11, autohs
+  text "&[xwcfg_dialog:deoppro]:", 19, 7 105 36 8, right
+  edit "", 20, 45 103 12 11
+  text "&[xwcfg_dialog:nickpro]:", 21, 65 105 36 8, right
+  edit "", 22, 103 103 12 11
+  text "&[xwcfg_dialog:floodpro]:", 23, 123 105 36 8, right
+  edit "", 24, 161 103 12 11
+  check "", 25, 7 116 67 8
+  check "&[xwcfg_dialog:oponly]", 26, 7 136 67 8
+  check "&[xwcfg_dialog:strictop]", 27, 7 126 67 8
+  check "&[xwcfg_dialog:autoop]", 28, 75 116 100 8
+  check "", 29, 75 126 100 8
+  check "&[xwcfg_dialog:autotopic]", 30, 75 136 100 8
+  button "[dialog:ok]", 101, 15 152 60 12, OK default
+  button "[dialog:cancel]", 102, 92 152 60 12, cancel
+}
+on *:DIALOG:xwcfg:init:*:{
+  did -a $dname 100 $hget(pnp.xwconfig,bot)
+  did -a $dname 2 $hget(pnp.xwconfig,chan)
+  did -a $dname 16 $hget(pnp.xwconfig,desc)
+  did -a $dname 18 $hget(pnp.xwconfig,url)
+  did -a $dname 32 $hget(pnp.xwconfig,keywords)
+  did -a $dname 20 $hget(pnp.xwconfig,deop)
+  did -a $dname 22 $hget(pnp.xwconfig,nickfld)
+  did -a $dname 24 $hget(pnp.xwconfig,flood)
+
+  did -a $dname 25 & $+ [xwcfg_dialog:alwaysop:notdlg:bot=$hget(pnp.xwconfig,bot)]
+  did -a $dname 1 [xwcfg_dialog:head:notdlg:bot=$hget(pnp.xwconfig,bot)]
+  did -a $dname 29 & $+ [xwcfg_dialog:noop:notdlg:bot=$hget(pnp.xwconfig,bot)]
+
+  :loop | if ($line(@.xwinfo,1)) { did -a $dname 4 $ifmatch $+ $crlf | dline @.xwinfo 1 | goto loop }
+  window -c @.xwinfo
+
+  if (u isin $hget(pnp. $+ $cid,-servopt)) {
+    did -h $dname 21,22,25,28
+    did -ra $dname 26 & $+ [xwcfg_dialog:autojoin:notdlg:bot=$hget(pnp.xwconfig,bot)]
+    if ($hget(pnp.xwconfig,autojoin)) did -c $dname 26
+  }
+  else {
+    if ($hget(pnp.xwconfig,alwaysop)) did -c $dname 25
+    if ($hget(pnp.xwconfig,oponly)) did -c $dname 26
+    if ($hget(pnp.xwconfig,auto)) did -c $dname 28
+    else hadd pnp.xwconfig auto 0
+    did -h $dname 31,32
+  }
+  if ($hget(pnp.xwconfig,strictop)) did -c $dname 27
+  if ($hget(pnp.xwconfig,noop)) did -c $dname 29
+  if ($hget(pnp.xwconfig,autotopic)) did -c $dname 30
+
+  .disable #xwconfig
+  hdel pnp.xwconfig chan
+  hdel pnp.xwconfig init
+  hdel pnp.xwconfig receiving
+}
+on *:DIALOG:xwcfg:sclick:101:{
+  if ($scid($did(103)) == $null) return
+  scid $did(103)
+  did -o $dname 2 1 msgxw $did(100) SET $did(2)
+  if ($did(16) != $hget(pnp.xwconfig,desc)) $did(2) DESCRIPTION $did(16)
+  if ($did(18) != $hget(pnp.xwconfig,url)) $did(2) URL $did(18)
+  if (($did(20) != $hget(pnp.xwconfig,deop)) && ($did(20) isnum)) $did(2) MASSDEOPPRO $did(20)
+  if (($did(22) != $hget(pnp.xwconfig,nickfld)) && ($did(22) isnum)) $did(2) NICKFLOODPRO $did(22)
+  if (($did(24) != $hget(pnp.xwconfig,flood)) && ($did(24) isnum)) $did(2) FLOODPRO $did(24)
+  if ($did(27).state != $hget(pnp.xwconfig,strictop)) $did(2) STRICTOP $iif($did(27).state,ON,OFF)
+  if ($did(29).state != $hget(pnp.xwconfig,noop)) $did(2) NOOP $iif($did(29).state,ON,OFF)
+  if ($did(30).state != $hget(pnp.xwconfig,autotopic)) $did(2) AUTOTOPIC $iif($did(30).state,ON,OFF)
+  if (u isin $hget(pnp. $+ $cid,-servopt)) {
+    if ($did(26).state != $hget(pnp.xwconfig,autojoin)) $did(2) AUTOJOIN $iif($did(26).state,ON,OFF)
+    if ($did(32) != $hget(pnp.xwconfig,keywords)) $did(2) KEYWORDS $did(32)
+  }
+  else {
+    if ($did(25).state != $hget(pnp.xwconfig,alwaysop)) $did(2) ALWAYSOP $iif($did(25).state,ON,OFF)
+    if ($did(26).state != $hget(pnp.xwconfig,oponly)) $did(2) OPONLY $iif($did(26).state,ON,OFF)
+    if ($did(28).state != $hget(pnp.xwconfig,auto)) $did(2) USERFLAGS $did(28).state
+  }
+  scid -r
+  hfree pnp.xwconfig
+}
+on *:DIALOG:xwcfg:sclick:102:hfree pnp.xwconfig
+on *:DISCONNECT:if ($dialog(xwcfg)) did -b xwcfg 101
+alias _cleanxwc if ($hget(pnp.xwconfig)) hfree pnp.xwconfig

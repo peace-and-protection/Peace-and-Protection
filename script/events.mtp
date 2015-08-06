@@ -1,0 +1,136 @@
+TextChan <lt><cnick><cmode><nick><gt> <text>
+TextChanOp *<nick>:<target>* <text>
+TextChanSelf !Script %:echo $iif($_optn(0,23),$+(<,%::cnick,%::cmode,%::me,>),>) %::text %:comments
+ActionChan * <nick> <text>
+ActionChanOp * <nick>:<target> <text>
+ActionChanSelf * <me> <text>
+Notice -<nick>- <text>
+NoticeChan -<nick>:<target>- <text>
+NoticeSelf -> -<nick>- <text>
+NoticeSelfChan -> -<target>- <text>
+TextQuery <lt><nick><gt> <text>
+TextQuerySelf !Script %:echo $iif($_optn(0,23),$+(<,%::me,>),>) %::text %:comments
+ActionQuery * <nick> <text>
+ActionQuerySelf * <me> <text>
+TextMsg *<nick>* <text>
+TextMsgSelf -> *<nick>* <text>
+TextSelfChanOp -> *<target>* <text>
+Mode *** <nick> sets mode: <modes>
+ModeUser *** <nick> sets mode: <modes>
+Join !Script %:echo *** $iif($_optn(2,19),Joins:) %::nick $iif($_optn(0,2),( $+ %::address $+ )) $iif(!$_optn(2,19),has joined %::chan) %:comments
+JoinSelf *** Now talking in <chan>
+Part !Script %:echo *** $iif($_optn(2,19),Parts:) %::nick $iif($_optn(0,2),( $+ %::address $+ )) $iif(!$_optn(2,19),has left %::chan) %::parentext %:comments
+Kick *** <knick> was kicked by <nick> <parentext>
+KickSelf *** You were kicked from <chan> by <nick> <parentext>
+Quit !Script %:echo *** $iif($_optn(2,19),Quits:) %::nick $iif($_optn(0,2),( $+ %::address $+ )) $iif(!$_optn(2,19),Quit) %::parentext %:comments
+Topic *** <nick> changes topic to '<text>'
+Nick *** <nick> is now known as <newnick>
+NickSelf *** Your nick is now <newnick>
+Invite <pre> You were invited to <bl><chan><br> by <nick>
+ServerError <pre> Error: <text>
+Rejoin *** Attempting to rejoin...
+Ctcp !Script %:echo %::pre ¢ $iif(%::ctcp = PING,$:s(PING),CTCP $:s(%::ctcp) $iif(%::text != $null,$iif(%::ctcp = PING,( $+ %::text $+ ),: $:s(%::text)))) from $:t(%::nick) %:comments
+CtcpChan !Script %:echo %::pre [[ $+ $:s(%::chan) $+ ]] ¢ $iif(%::ctcp = PING,$:s(PING),CTCP $:s(%::ctcp) $iif(%::text != $null,$iif(%::ctcp = PING,( $+ %::text $+ ),: $:s(%::text)))) from $:t(%::nick) %:comments
+CtcpSelf !Script %:echo %::pre ¢ $iif($istok(SCRIPT FINGER TIME VERSION USERINFO CLIENTINFO,%::ctcp %::text,32),$:s(%::ctcp) info requested from $:t(%::nick),$:s(%::ctcp) $iif(%::text != $null,: $:s(%::text)) sent to $:t(%::nick)) %:comments
+CtcpChanSelf !Script %:echo %::pre [[ $+ $:s(%::chan) $+ ]] ¢ $iif($istok(SCRIPT FINGER TIME VERSION USERINFO CLIENTINFO,%::ctcp %::text,32),$:s(%::ctcp) info requested from $:t(%::chan),$:s(%::ctcp) $iif(%::text != $null,: $:s(%::text)) sent to $:t(%::chan)) %:comments
+CtcpReply !Script %:echo %::pre $iif(%::chan,[[ $+ $:s(%::chan) $+ ]]) ¢ $iif(%::text == $null,$:s(%::ctcp) reply from $:t(%::nick),$:s(%::ctcp) reply of $iif($gettok(%::ctcp,-1,32) = PING,$:s(%::text),$:q(%::text)) from $:t(%::nick)) %:comments
+CtcpReplySelf !Script %:echo %::pre $iif(%::chan,[[ $+ $:s(%::chan) $+ ]]) ¢ Reply of $:s(%::ctcp) $iif(%::text != $null,: $:s(%::text)) sent to $:t(%::nick) %:comments
+Notify !Script _pnptheme.notify
+UNotify !Script _pnptheme.unotify
+Wallop !Script %:echo %::pre $iif(%::nick !isin $gettok(%::text,1,32),! $+ %::nick $+ !,$iif(!%::nick,(w))) %::text %:comments
+NoticeServer !Script %:echo %::pre $iif(%::fromserver != %::server,( $+ %::fromserver $+ ),(s)) %::text %:comments
+DNS !Script %:echo %::pre $iif(%::nick == $null,Looking up $:b(%::address),Looking up host of $:b(%::nick)) %:comments
+DNSError !Script %:echo %::pre $iif(%::address == $null,Failed to find %::nick $chr(40) $+ no such user $+ $chr(41),Failed to resolve %::address) %:comments
+DNSResolve <pre> Resolved <address> to <bl><raddress><br>
+Error *** <text> ***
+JoinStatus !Script %:echo *** $iif($_optn(2,19),Joins %::chan $+ :) %::nick $iif($_optn(0,2),( $+ %::address $+ )) $iif(!$_optn(2,19),has joined %::chan) %:comments
+PartStatus !Script %:echo *** $iif($_optn(2,19),Parts %::chan $+ :) %::nick $iif($_optn(0,2),( $+ %::address $+ )) $iif(!$_optn(2,19),has left %::chan) %::parentext %:comments
+KickStatus *** <knick> was kicked from <chan> by <nick> <parentext>
+ModeStatus *** <nick> sets <chan> mode: <modes>
+TopicStatus *** <nick> changes <chan> topic to '<text>'
+Sound !Script %:echo [[ $+ %::nick  $+ $color(background) $+ , $+ $color(ctcp) %::text $+  $+ $color(background) $+ , $+ $color(ctcp) ] %:comments
+SoundMsgSelf !Script %:echo -> %::target [[ $+ %::me  $+ $color(background) $+ , $+ $color(ctcp) %::text $+  $+ $color(background) $+ , $+ $color(ctcp) ] %:comments
+RAW.Other !Script $iif($left(%::chan,1) isin $chantypes,disprc %::chan,$iif(%::nick != $null,disprn %::nick,%:echo %::pre)) %::text %:comments
+RAW.008 !Script disptn -s %::nick Server notice mask is $:mc(mode,%::value,$gettok(%::text,6,32)) %:comments
+RAW.108 !Script disptn -s %::nick Server notice mask is $:mc(mode,%::value,$gettok(%::text,6,32)) %:comments
+RAW.221 !Script disptn -s %::nick Usermode is $:mc(mode,%::modes) %:comments
+RAW.250 !Script %:echo %::pre $:ihn(%::text) %:comments
+RAW.251 !Script %:echo %::pre $:ihn(%::fulltext) %:comments
+RAW.252 !Script %:echo %::pre $:ihn(%::text) %:comments
+RAW.253 !Script %:echo %::pre $:ihn(%::text) %:comments
+RAW.254 !Script %:echo %::pre $:ihn(%::text) %:comments
+RAW.255 !Script %:echo %::pre $:ihn(%::text) %:comments
+RAW.265 !Script %:echo %::pre $:ihn(%::text) %:comments
+RAW.266 !Script %:echo %::pre $:ihn(%::text) %:comments
+RAW.271 !Script _pnptheme.silence271
+RAW.272 !Script disptn -s %::nick $iif(%::empty,No silence list found,End of silence list) %:comments
+RAW.301 !Script disprn %::nick User is away « $+ $:h(%::text) $+ » %:comments
+RAW.315 !Script _pnptheme.who315
+RAW.324 !Script disprc %::chan mode- $:s($iif(%::modes == +,(none),%::modes)) %:comments
+RAW.328 !Script disprc %::chan url- $:h(%::text) %:comments
+RAW.329 !Script disprc %::chan formed- $:h($_datetime(%::value)) %:comments
+RAW.331 !Script disprc %::chan topic- $:s((none)) %:comments
+RAW.332 !Script disprc %::chan topic- $:q(%::text) %:comments
+RAW.333 !Script disprc %::chan topic- set by $:t(%::nick) ( $+ $:h($_datetime(%::value)) $+ ) %:comments
+RAW.341 !Script disprc %::chan Inviting $:t(%::nick) to channel... %:comments
+RAW.352 !Script _pnptheme.who352
+RAW.353 !Script _pnptheme.names353
+RAW.354 <pre> <text>
+RAW.366 !Script return
+RAW.366uc !Script _pnptheme.names366uc
+RAW.371 !Script _pnptheme.info371
+RAW.374 !Script return
+RAW.372 <text>
+RAW.375 Message of the Day for [<c2><value>]
+RAW.376 End Message of the Day
+RAW.391 !Script %:echo %::pre Date / time at $:s(%::value) $+ - $:h($gettok(%::text,2-,32)) %:comments
+RAW.401 <pre> [<bl><c2><nick><br>] No such user
+RAW.401fd !Script _pnptheme.failed401
+RAW.402 <pre> No such server <c2><value>
+RAW.403 !Script disprc %::chan Channel does not exist %:comments
+RAW.404 !Script disprc %::chan Cannot send to channel %:comments
+RAW.405 !Script disprc %::chan Cannot join channel- server limit of $chan(0) channels reached %:comments
+RAW.406 !Script disprn %::nick There was no such user %:comments
+RAW.408ns !Script %:echo %::pre No such service $:t(%::value) %:comments
+RAW.409 <pre> No origin given for server PING / PONG
+RAW.411 !Script %:echo %::pre $gettok(%::text,2-4,32) $:s($gettok(%::text,5-,32)) %:comments
+RAW.412 <pre> No text given to send
+RAW.413 <pre> No toplevel domain given for <c2><value> (no message sent)
+RAW.414 <pre> Wildcard in toplevel domain for <c2><value> (no message sent)
+RAW.416 <pre> Your <cmd> request would return too much data- please try a more specific query
+RAW.421 <pre> Server does not recognize <c2><value> command
+RAW.422 <pre> Server error in retrieving Message of the day (<c2><fromserver>)
+RAW.423 <pre> Server error in retrieving Administration info (<c2><fromserver>)
+RAW.424 <pre> Error at server ("<text>")
+RAW.431 <pre> No nickname given for command
+RAW.432 !Script disptn -a %::nick Invalid nickname $+ $iif($gettok(%::text,3-,32) != $null,- $ifmatch) %:comments
+RAW.433 !Script disptn $wildtok(%:echo,-*,1,32) %::nick Nickname already in use! %:comments
+RAW.433nr !Script disptn -a %::nick Nickname registered to someone else %:comments
+RAW.436 !Script disptn -s %::nick Nickname collision! %:comments
+RAW.437 !Script disprc %::chan Cannot change nickname- You are banned %:comments
+RAW.437tu !Script $iif(%::chan,disprc %::chan Channel is temporarily unavailable,disptn -a %::nick Nickname is temporarily unavailable) %:comments
+RAW.438 !Script disptn -a %::nick Change to nickname too fast %:comments
+RAW.439 !Script $iif(%::chan,disprc %::chan,disptn -s %::nick) The server says you can't send to $iif(%::chan,$:s(%::chan),$:t(%::nick)) until waiting $:s(%::value) seconds %:comments
+RAW.441 !Script disprc %::chan $:t(%::nick) is not on channel %:comments
+RAW.442 !Script disprc %::chan You are not on that channel %:comments
+RAW.443 !Script disprc %::chan $:t(%::nick) is already on channel $:s((INVITE)) %:comments
+RAW.461 <pre> Not enough parameters for <c2><value> command
+RAW.463 <pre> Your host is not allowed to connect here ("<text>")
+RAW.464 <pre> Connection password incorrect!
+RAW.465 <pre> You are banned from connecting to this server ("<text>")
+RAW.467 !Script disprc %::chan Channel key already set $iif(($chan(%::chan).key) && ($chan(%::chan).key != *),( $+ $:s($chan(%::chan).key) $+ )) %:comments
+RAW.468 !Script disprc %::chan Only servers can change that mode %:comments
+RAW.471 !Script disprc %::chan Cannot join channel- $:w(Channel is full) ( $+ mode $:s(+l) $+ ) %:comments
+RAW.472 !Script dispw Unknown channel mode- $:mc(mode,mode + $+ %::value) %:comments
+RAW.473 !Script disprc %::chan Cannot join channel- $:w(You must be invited) ( $+ mode $:s(+i) $+ ) %:comments
+RAW.474 !Script disprc %::chan Cannot join channel- $:w(You are banned) ( $+ mode $:s(+b) $+ ) %:comments
+RAW.477 !Script disprc %::chan Cannot join channel- $:w(You must have a registered nick) ( $+ mode $:s(+R) $+ ) %:comments
+RAW.478 !Script disprc %::chan $:w(Cannot ban $:b(%::value) $+ - Ban list is full) %:comments
+RAW.481 <pre> Sorry, you must be an IRC operator to do that
+RAW.482 !Script disprc %::chan Sorry $+ $chr(44) you aren't a channel operator %:comments
+RAW.483 <pre> You cannot KILL a server
+RAW.484 !Script disprc %::chan %::text ( $+ $:t(%::nick) $+ ) %:comments
+RAW.491 <pre> Your host is not allowed to be an IRC operator ("<text>")
+RAW.501 <pre> Unknown user mode
+RAW.502 <pre> You cannot change or view other users' modes
+RAW.511 <pre> Your <c2>SILENCE list is full $+ $chr(44) cannot add <c2><value>

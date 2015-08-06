@@ -1,0 +1,10 @@
+[mts]
+PnPTheme 1
+MTSVersion 1.0
+Name Default PnP display
+ActionChan * <nick> <text>
+ActionChanSelf * <me> <text>
+TextChan <cnick>(<cmode><nick><cnick>): <text>
+TextChanSelf !Script %:echo $iif($_optn(0,23),$+(,%::cnick,$chr(40),,%::cmode,%::me,,%::cnick,$chr(41),:),:) %::text %:comments
+TextQuery (<nick>): <text>
+TextQuerySelf !Script %:echo $iif($_optn(0,23),$+(,$chr(40),,%::me,,$chr(41),:),:) %::text %:comments

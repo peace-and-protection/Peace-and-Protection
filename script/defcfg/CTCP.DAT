@@ -1,0 +1,4 @@
+ADDON Loaded: &addondebug& (PnP)
+SCRIPT PnP &ver& &addons& - $:www()
+TIME &fulldate&
+VERSION PnP &ver& - $:www()

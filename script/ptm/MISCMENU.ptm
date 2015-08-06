@@ -1,0 +1,17 @@
+script\miscmenu.dat
+[channel]
+.-
+.$iif(($hget(pnp.config,popups.hideop) != 1) || ($me isop #) || ($me ishop #) || ($mouse.key & 2),[popups_chan:mass])
+..$iif(($hget(pnp.config,popups.hideop) != 1) || ($me isop #) ||  ($mouse.key & 2),[popups_chan:mass_op]...):_okcancel 1 [channel:mass_op_confirm:chan=#] | fop # *
+..$iif(($hget(pnp.config,popups.hideop) != 1) || ($me isop #) ||  ($mouse.key & 2),[popups_chan:mass_deop]...):_okcancel 1 [channel:mass_deop_confirm:chan=#] | fdop # *
+..-
+..$iif((% isin $prefix) || ($mouse.key & 2),[popups_chan:mass_hop]...):_okcancel 1 [channel:mass_hop_confirm:chan=#] | fhfop # *
+..$iif((% isin $prefix) || ($mouse.key & 2),[popups_chan:mass_dehop]...):_okcancel 1 [channel:mass_dehop_confirm:chan=#] | fdhfop # *
+..-
+..[popups_chan:filterkick]...:fk # $_entry(-1,$null,[channel:filterkick])
+..[popups_chan:mass_kick]...:_okcancel 1 [channel:mass_kick_confirm:chan=#] | fknop # *
+.[popups_chan:rejoin]:rejoin
+.$iif(($hget(pnp.config,popups.hideop) != 1) || ($me isop #) || ($me ishop #) || ($mouse.key & 2),[popups_chan:invite]...):inv
+[status]
+[nicklist]
+[query]

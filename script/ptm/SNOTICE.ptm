@@ -1,0 +1,451 @@
+script\snotice.mrc
+; #= P&P -rs
+; ########################################
+; Peace and Protection
+; Servernotice and wallop filtering and display
+; ########################################
+
+;
+; Server notices
+;
+
+on &^*:SNOTICE:Ca & Cd & Ce & Cl & Ch & Cu &:return
+on &^*:SNOTICE:Re & Rl & Rp & Rq &:return
+on &^*:SNOTICE:Ru & Rsh & Rs & Rt &:return
+on &^*:SNOTICE:Minute *Hour *Day *Yest*:hadd pnp. $+ $cid -statsw 1 | return
+
+alias -l _skipsn if ($hget(pnp. $+ $cid,-statsw)) $$$ | if ($hget(pnp.config,snotice.on) == 0) { _showsn $2- | halt } | if ($mid($hget(pnp.config,snotice.f),$1,1)) return | halt
+
+on &^*:SNOTICE:& & & Nick change collision from *:{
+  _skipsn 1 $1-
+  _showsn [snotice:cat_collision]- [snotice:kill:nick=$;s($10):who=$;s($gettok($14,1,91))] ([snotice:nick_collision]- [snotice:nick_change:nick=$;s($8):newnick=$;s($10)] $+ )
+}
+on &^*:SNOTICE:& & & Nick collision on *:{
+  _skipsn 1 $1-
+  _showsn [snotice:cat_collision]- [snotice:kill:nick=$;s($7):who=$;s($gettok($11,1,91))] ([snotice:nick_collision])
+}
+on &^*:SNOTICE:& & & received kill message for *:{
+  if (($10 == nickserv) || ($10 == nickop) || (services.* iswm $10)) var %num = 2
+  else var %num = 3
+  if ($chr(40) isin $10-) var %reason = $_noparen($mid($10-,$pos($10-,$chr(40),1),$len($10-)))
+  else var %reason = $gettok($10-,$numtok($10-,33),33)
+  if ($istok((older nick overruled)*(nick collision from same user@host)*(Nick collision),$gettok(%reason,4-,32),42)) { _skipsn 1 $1- | _showsn [snotice:cat_collision]- [snotice:kill:nick=$;s($left($8,-1)):who=$;s($10)] ( $+ %reason $+ ) }
+  elseif ((?change collision *->* iswm %reason) || (?collision *->* iswm %reason)) { _skipsn 1 $1- | _showsn [snotice:cat_collision]- [snotice:kill:nick=$_break($8):who=$;s($10)] ( $+ %reason $+ ) }
+  elseif (*. iswm $8) { _skipsn %num $1- | _showsn [snotice:cat_kill]- [snotice:kill:nick=$;s($left($8,-1)):who=$;s($10)] ( $+ %reason $+ ) }
+  else { _skipsn %num $1- | _showsn [snotice:cat_kill]- [snotice:kill:nick=$_break($8):who=$;s($10)] ( $+ %reason $+ ) }
+}
+on &^*:SNOTICE:& & & net break*:{
+  _skipsn 4 $1-
+  _showsn [snotice:cat_split]- $:s($6) <-/ /-> $:s($7) ( $+ $_noparen($8-) $+ )
+}
+on &^*:SNOTICE:& & & Local SQUIT by *:{
+  _skipsn 4 $1-
+  _showsn [snotice:cat_split]- $:s($nick) <-/ /-> $:s($remove($8,$chr(91),$chr(93),:)) - [snotice:local_squit:nick=$;s($7)] $iif($9,( $+ $9- $+ ))
+}
+on &^*:SNOTICE:& & & Remote SQUIT by *:{
+  _skipsn 4 $1-
+  _showsn [snotice:cat_split]- $:s($remove($8,$chr(91),$chr(93),:)) - [snotice:remote_squit:nick=$;s($7)] $iif($9,( $+ $9- $+ ))
+}
+on &^*:SNOTICE:& & & Received SQUIT *:{
+  _skipsn 4 $1-
+  if ($8 == $6) {
+    if (($9- != :) && ($9- != $null)) _showsn [snotice:cat_split]- $:s($8) - [snotice:received_squit] $iif($9,( $+ $9- $+ ))
+    else _showsn [snotice:cat_split]- $:s($8) - [snotice:received_squit]
+  }
+  else {
+    if (($9- != :) && ($9- != $null)) _showsn [snotice:cat_split]- $:s($8) <-/ /-> $:s($6) - [snotice:received_squit] $iif($9,( $+ $9- $+ ))
+    else _showsn [snotice:cat_split]- $:s($8) <-/ /-> $:s($6) - [snotice:received_squit]
+  }
+}
+on &^*:SNOTICE:& & & from & Closing link to *:{
+  _skipsn 4 $1-
+  _showsn [snotice:cat_split]- $:s($remove($5,:)) <-/ /-> $:s($9) ( $+ $10- $+ )
+}
+on &^*:SNOTICE:& & & Link with & cancelled*:{
+  _skipsn 4 $1-
+  _showsn [snotice:cat_split]- $_break($6) ([snotice:link_cancelled]: $8- $+ )
+}
+on &^*:SNOTICE:& & & Write error to & closing link:{
+  _skipsn 4 $1-
+  _showsn [snotice:cat_split]- $:s($nick) <-/ /-> $:s($gettok($7,1,44)) - [snotice:write_error]
+}
+on &^*:SNOTICE:& & & Link with & established*:{
+  _skipsn 5 $1-
+  _showsn [snotice:cat_merge]- $_break($6) ([snotice:link_established])
+}
+on &^*:SNOTICE:& & & from & connection to & established*:{
+  _skipsn 5 $1-
+  _showsn [snotice:cat_merge]- $:s($remove($5,:)) --><-- $:s($8)
+}
+on &^*:SNOTICE:& & & Attempting to connect to & -- *:{
+  _skipsn 5 $1-
+  _showsn [snotice:cat_merge]- [snotice:link_attempt:server=$;s($8)] ( $+ $10- $+ )
+}
+on &^*:SNOTICE:& & & net junction*:{
+  _skipsn 5 $1-
+  _showsn [snotice:cat_merge]- $:s($6) --><-- $:s($7)
+}
+on &^*:SNOTICE:& & & Completed net.burst*:{
+  _skipsn 6 $1-
+  _showsn [snotice:cat_merge]- [snotice:burst_complete:server=$;s($7)]
+}
+on &^*:SNOTICE:& & & Completed sending Burst Data to *:{
+  _skipsn 6 $1-
+  _showsn [snotice:cat_merge]- [snotice:burst_complete_send:server=$;s($gettok($9,1-,46))]
+}
+on &^*:SNOTICE:& & & Completed receiving Burst Data from *:{
+  _skipsn 6 $1-
+  _showsn [snotice:cat_merge]- [snotice:burst_complete_receive_us:server=$;s($gettok($9,1-,46))]
+}
+on &^*:SNOTICE:& & & & acknowledged end of net.burst*:{
+  _skipsn 7 $1-
+  _showsn [snotice:cat_merge]- [snotice:burst_complete_receive_them:server=$;s($4)]
+}
+on &^*:SNOTICE:& & & & adding GLINE for *:{
+  _skipsn 8 $1-
+  _showsn [snotice:cat_gline]- [snotice:gline:nick=$;s($gettok($8,1,44)):who=$;s($4):time=$_datetime($gettok($11,1,58))] ( $+ $12- $+ )
+}
+on &^*:SNOTICE:& & & & adding local GLINE for *:{
+  _skipsn 8 $1-
+  _showsn [snotice:cat_gline]- [snotice:gline_local:nick=$;s($gettok($9,1,44)):who=$;s($4):time=$_datetime($gettok($12,1,58))] ( $+ $13- $+ )
+}
+on &^*:SNOTICE:& & & & removing GLINE for *:{
+  _skipsn 9 $1-
+  _showsn [snotice:cat_gline]- [snotice:gline_remove:address=$;s($8):who=$;s($4)]
+}
+on &^*:SNOTICE:& & & & GLINE's removed:{
+  _skipsn 9 $1-
+  _showsn [snotice:cat_gline]- [snotice:gline_remove_count:num=$;s($4)]
+}
+on &^*:SNOTICE:& & & g-line active for *:{
+  _skipsn 11 $1-
+  _showsn [snotice:cat_gline]- [snotice:gline_active:nick=$_break($7)]
+}
+on &^*:SNOTICE:& & & & & is now operator*:{
+  _skipsn 12 $1-
+  var %type = $iif(H isin $9,$iif((H isincs $9) || (O isincs $9),[snotice:oper_type_global],[snotice:oper_type_local]) ([snotice:oper_type_helpop]),$iif(A isincs $9,$iif((A isincs $9) || (O isincs $9),[snotice:oper_type_global],[snotice:oper_type_local]) ([snotice:oper_type_admin]),$iif(o isincs $9,[snotice:oper_type_local],$iif(O isincs $9,[snotice:oper_type_global],$9))))
+  _showsn [snotice:cat_oper]- [snotice:is_oper_type:nick=$;s($4) $5:type=%type]
+}
+on &^*:SNOTICE:& & & & & is now an operator*:{
+  _skipsn 12 $1-
+  _showsn [snotice:cat_oper]- [snotice:is_oper:nick=$;s($4)]
+}
+on &^*:SNOTICE:& & & new max local clients*:{
+  _skipsn 13 $1-
+  _showsn [snotice:cat_client]- [snotice:max_local:num=$;s($8)]
+}
+on &^*:SNOTICE:& & & maximum connections*:{
+  _skipsn 13 $1-
+  _showsn [snotice:cat_client]- [snotice:max_local:num=$;s($remove($7,$chr(40)))] ( $+ [snotice:max_total:num=$6])
+}
+on &^*:SNOTICE:& & & k-line active for *:{
+  _skipsn 14 $1-
+  _showsn [snotice:cat_kline]- [snotice:kline_active:nick=$_break($7)]
+}
+on &^*:SNOTICE:& & & & has removed the k-line for*:{
+  _skipsn 15 $1-
+  _showsn [snotice:cat_kline]- [snotice:kline_remove:num=$;s($remove($11,$chr(40))):address=$;s($10):who=$;s($4)]
+}
+on &^*:SNOTICE:& & & kill line active for *:{
+  _skipsn 14 $1-
+  _showsn [snotice:cat_kline]- [snotice:killline_active:nick=$_break($8)]
+}
+on &^*:SNOTICE:& & & & added a temp k?line for *:{
+  _skipsn 16 $1-
+  _showsn [snotice:cat_kline]- [snotice:kline_temp:nick=$;s($10):who=$;s($4)] $iif($11,( $+ $11- $+ ))
+}
+on &^*:SNOTICE:& & & from & & added * minute autokill for *:{
+  _skipsn 16 $1-
+  _showsn [snotice:cat_autokill]- [snotice:autokill:num=$;s($9):nick=$;s($13):who=$;s($6)] ( $+ $15- $+ )
+}
+on &^*:SNOTICE:& & & connect failure*:{
+  _skipsn 17 $1-
+  _showsn [snotice:cat_connect]- [snotice:connect_fail:nick=$_break($6)] ( $+ $7- $+)
+}
+on &^*:SNOTICE:& & & Cannot accept connections *:{
+  _skipsn 17 $1-
+  _showsn [snotice:cat_connect]- [snotice:connect_cant_accept1:server=$gettok($7,1,58)] ( $+ $gettok($7-,2-,58) $+ )
+}
+on &^*:SNOTICE:& & & Cannot accept connections? *:{
+  _skipsn 17 $1-
+  _showsn [snotice:cat_connect]- [snotice:connect_cant_accept2] ( $+ $7- $+ )
+}
+on &^*:SNOTICE:& & & Entering high-traffic mode -*:{
+  _skipsn 18 $1-
+  _showsn [snotice:cat_traffic]- [snotice:traffic_start] $8-
+}
+on &^*:SNOTICE:& & & Still high-traffic mode *:{
+  _skipsn 18 $1-
+  _showsn [snotice:cat_traffic]- [snotice:traffic_continue] ( $+ $10 $+ )
+}
+on &^*:SNOTICE:& & & Resuming standard operation*:{
+  _skipsn 18 $1-
+  _showsn [snotice:cat_traffic]- [snotice:traffic_end]
+}
+on &^*:SNOTICE:& & & from & Clone Alert*:{
+  _skipsn 19 $1-
+  _showsn [snotice:cat_alert]- [snotice:clones:num=$;s($8):nick=$;s($11):server=$remove($5,;)]
+}
+on &^*:SNOTICE:& & & from & services are being flooded *:{
+  _skipsn 20 $1-
+  _showsn [snotice:cat_alert]- [snotice:flooding_services:nick=$;s($11):server=$remove($5,;)]
+}
+on &^*:SNOTICE:& & & did /whois on you*:{
+  _skipsn 21 $1-
+  _showsn [snotice:cat_report]- [snotice:whois_you:nick=$_break($3)]
+}
+on &^*:SNOTICE:& & & did a /whois on you*:{
+  _skipsn 21 $1-
+  _showsn [snotice:cat_report]- [snotice:whois_you:nick=$;s($2)] $3
+}
+on &^*:SNOTICE:& & is doing a whois on you:{
+  _skipsn 21 $1-
+  _showsn [snotice:cat_report]- [snotice:whois_you:nick=$;s($1)] $2
+}
+on &^*:SNOTICE:& Report & & has issued a *:{
+  _skipsn 22 $1-
+  _showsn [snotice:cat_report]- [snotice:report:report=$;s($8-):nick=$;s($4)]
+}
+on &^*:SNOTICE:& & & & resetting expiration time on GLINE for *:{
+  _skipsn 10 $1-
+  _showsn [snotice:cat_gline]- [snotice:gline_reset:address=$;s($11):who=$;s($4):time=$_datetime($13)]
+}
+on &^*:SNOTICE:& & & IP# mismatch*:{
+  _skipsn 23 $1-
+  _showsn [snotice:cat_mismatch]- [snotice:ip_mismatch:ip=$;s($6):address=$gettok($8,1,91)]
+}
+on &^*:SNOTICE:& & & Username & for user & contained illegal characters & and was changed to *:{
+  _skipsn 24 $1-
+  _showsn [snotice:cat_username]- [snotice:username_invalid1:nick=$;s($8):old=$5:chars=$12:new=$17]
+}
+on &^*:SNOTICE:& & & Username & for user & contained illegal characters *:{
+  _skipsn 24 $1-
+  _showsn [snotice:cat_username]- [snotice:username_invalid2:nick=$;s($8):old=$5:chars=$12]
+}
+on &^*:SNOTICE:& & & Got signal SIGHUP, reloading ircd conf*:{
+  _skipsn 25 $1-
+  _showsn [snotice:cat_rehash]- [snotice:rehash]
+}
+on &^*:SNOTICE:& & & & is rehashing server config file:{
+  _skipsn 25 $1-
+  _showsn [snotice:cat_rehash]- [snotice:rehash_by:who=$;s($4)]
+}
+on &^*:SNOTICE:& & & SETTIME from & clock is set *:{
+  _skipsn 26 $1-
+  _showsn [snotice:cat_report]- [snotice:clock_set:num=$;s($10):how=$remove($12,s):who=$;s($gettok($6,1,44))]
+}
+on &^*:SNOTICE:& & & Received unauthorized connection from *:{
+  _skipsn 27 $1-
+  _showsn [snotice:cat_connect]- [snotice:unauth_connect:nick=$_break($gettok($8,1-,46))]
+}
+on &^*:SNOTICE:& & & Unauthorized connection from *:{
+  _skipsn 27 $1-
+  _showsn [snotice:cat_connect]- [snotice:unauth_connect:nick=$_break($gettok($7,1-,46))]
+}
+on &^*:SNOTICE:& & & Bogus server name & from *:{
+  _skipsn 28 $1-
+  _showsn [snotice:cat_alert]- [snotice:bogus_server:server=$;s($_noparen($7)):address=$;s($remove($9,$chr(91),$chr(93)))]
+}
+on &^*:SNOTICE:& & & Throttling connections from *:{
+  _skipsn 29 $1-
+  if ($7 !isin $8) _showsn [snotice:cat_throttle]- [snotice:throttle_start:address=$;s($7) ( $+ $mid($8,2,$calc($len($8) - 3)) $+ )]
+  else _showsn [snotice:cat_throttle]- [snotice:throttle_start:address=$;s($7)]
+}
+on &^*:SNOTICE:& & & Removing throttle for *:{
+  _skipsn 29 $1-
+  if ($7 !isin $8) _showsn [snotice:cat_throttle]- [snotice:throttle_end:address=$;s($7) ( $+ $mid($8,2,$calc($len($8) - 3)) $+ )]
+  else _showsn [snotice:cat_throttle]- [snotice:throttle_end:address=$;s($7)]
+}
+on &^*:SNOTICE:& & & HACK(4)*:{
+  _skipsn 30 $1-
+  _showsn [snotice:cat_hack]- $:s($5) $6-
+}
+on &^*:SNOTICE:& & & BOUNCE or HACK(3)*:{
+  _skipsn 30 $1-
+  _showsn [snotice:cat_hack]- $:s($7) $8-
+}
+on &^*:SNOTICE:& & & HACK(2)*:{
+  _skipsn 30 $1-
+  _showsn [snotice:cat_hack]- $:s($5) $6-
+}
+on &^*:SNOTICE:& & & NET.RIDE on *:{
+  _skipsn 30 $1-
+  _showsn [snotice:cat_hack]- [snotice:net_ride:chan=$;s($7):nick=$;s($9)]
+}
+on &^*:SNOTICE:& & & Client connecting on port *:{
+  _skipsn 32 $1-
+  _showsn [snotice:cat_client]- [snotice:client_connect:nick=$;s($9) $10] (port $left($8,-1) $+ )
+}
+on &^*:SNOTICE:& & & Client connecting*:{
+  _skipsn 32 $1-
+  if ($7) _showsn [snotice:cat_client]- [snotice:client_connect:nick=$_break($6)] ( $+ $_noparen($7-) $+ )
+  else _showsn [snotice:cat_client]- [snotice:client_connect:nick=$_break($6)]
+}
+on &^*:SNOTICE:& & & Client exiting*:{
+  _skipsn 32 $1-
+  if ($7) _showsn [snotice:cat_client]- [snotice:client_exit:nick=$_break($6)] ( $+ $_noparen($7-) $+ )
+  else _showsn [snotice:cat_client]- [snotice:client_exit:nick=$_break($6)]
+}
+on &^*:SNOTICE:& & & Shun from & for *:{
+  _skipsn 33 $1-
+  _showsn [snotice:cat_shun]- [snotice:shun_add:address=$_break($8):who=$_break($6)] $9-
+}
+on &^*:SNOTICE:& & & from & & used SAMODE *:{
+  _skipsn 34 $1-
+  _showsn [snotice:cat_samode]- [snotice:samode_used:address=$_break($6) $9-:server=$remove($5,;)]
+}
+on &^*:SNOTICE:& & & from & & used SAJOIN *:{
+  _skipsn 35 $1-
+  _showsn [snotice:cat_sajoin]- [snotice:samode_used:address=$_break($6) $9-:server=$remove($5,;)]
+}
+on &^*:SNOTICE:& & & from & & used GETPASS cmd for the channel *:{
+  _skipsn 36 $1-
+  _showsn [snotice:cat_services]- $:s($6) $7-12 $:s($13) ( $+ $4 $remove($5,:) $+ )
+}
+on &^*:SNOTICE:& & & from & & wiped the access list of the nickname *:{
+  _skipsn 36 $1-
+  _showsn [snotice:cat_services]- $:s($6) $7-13 $:s($13) ( $+ $4 $remove($5,:) $+ )
+}
+on &^*:SNOTICE:*:{
+  if ((*total connections iswm $1-) && ($hget(pnp. $+ $cid,-statsw))) { hdel pnp. $+ $cid -statsw | return }
+  elseif (($remove($usermode,+,i) == $null) || (Highest connection count* iswm $1-)) {
+    ; First notice during signon = linesep
+    if ($hget(pnp. $+ $cid,-linesep.signon) == 1) {
+      disps-div
+      hadd pnp. $+ $cid -linesep.signon 2
+    }
+    return
+  }
+  _skipsn 31 $1-
+  if ($remove($1,*) == $null) _showsn $2- | else _showsn $1-
+}
+
+alias -l _noparen if (($left($1-,1) == $chr(40)) && ($right($1-,1) == $chr(41))) return $mid($1-,2,$calc($len($1-) - 2)) | return $1-
+
+; breaks nick, nick[ip], or [ip] into one or two params and returns as nick, ip, or nick (ip), first one s:().
+; will also break <nick!addr> and nick!addr into nick (addr)
+alias -l _break {
+  if (<*!*@*> iswm $1) return $:s($right($gettok($1,1,33),-1)) ( $+ $left($gettok($1,2-,33),-1) $+ )
+  if (*!*@* iswm $1) return $:s($gettok($1,1,33)) ( $+ $gettok($1,2-,33) $+ )
+  if (*.*] !iswm $1) return $:s($1)
+  if (($count($1,$chr(91)) == 1) && ([* iswm $1)) return $:s($mid($1,2,$calc($len($1) - 2)))
+  return $:s($left($1,$calc($pos($1,$chr(91),$count($1,$chr(91))) - 1))) ( $+ $left($mid($1,$calc($pos($1,$chr(91),$count($1,$chr(91))) + 1),$len($1)),-1) $+ )
+}
+
+alias -l _showsn {
+  var %win = $hget(pnp.config,snotice.win)
+  if (@* iswm %win) {
+    %win = $_mservwin(%win)
+    if ($window(%win) == $null) {
+      _window 1 -nv + %win -1 -1 -1 -1 @SNotice
+      titlebar %win ( $+ $hget(pnp. $+ $cid,net) $+ )
+    }
+  }
+
+  set -u %:echo echo $color(notice) $iif(-* iswm %win,%win $+ tm $iif((a isin %win) && ($cid != $activecid),$:anp),-mti2 %win)
+  set -u %::fromserver $nick
+  set -u %::text $1-
+  theme.text NoticeServer
+
+  _ssplay NoticeServer
+  haltdef
+}
+
+menu @SNotice {
+  [popups_snotice:filters]...:config 10
+  [popups_snotice:usermode]...:umode
+  -
+  $iif(s isincs $usermode,$style(1)) [popups_snotice:s_on]:umode +s
+  $iif(s !isincs $usermode,$style(1)) [popups_snotice:s_off]:umode -s
+}
+
+;
+; Wallops
+;
+
+alias -l _skipwa if ($hget(pnp.config,wallop.on) == 0) { _showwo ! $+ $nick $+ ! $2- | halt } | if ($mid($hget(pnp.config,wallop.f),$1,1)) return | halt
+
+on &^*:WALLOPS:*Alert* & attempted to flood services:{
+  _skipwa 4 $1-
+  _showwo [snotice:cat_alert]- [snotice:flooding_services:nick=$_break($2):server=$nick]
+}
+on &^*:WALLOPS:& adding *netban* for & hours on & *:{
+  _skipwa 11 $1-
+  _showwo [snotice:cat_netban]- [snotice:netban_add:address=$;s($8):who=$;s($1):time=$5-6] $9-
+}
+on &^*:WALLOPS:& adding KLINE for & exp*:{
+  _skipwa 3 $1-
+  _showwo [snotice:cat_kline]- [snotice:kline:nick=$;s($5):who=$;s($1)] $6-
+}
+on &^*:WALLOPS:& is using & & MODE *:{
+  _skipwa 8 $1-
+  _showwo [snotice:cat_mode]- $7- ( $+ [snotice:mode_from_using:who=$;s($1):server=$4] $+ )
+}
+on &^*:WALLOPS:CMD mode *:{
+  _skipwa 8 $1-
+  _showwo [snotice:cat_mode]- $3- ( $+ [snotice:mode_from:who=$nick] $+ )
+}
+on &^*:WALLOPS:Invite FORCED from & on &:{
+  _skipwa 6 $1-
+  _showwo [snotice:cat_invite]- [snotice:invite:nick=$;s($4):chan=$;s($6):server=$nick]
+}
+on &^*:WALLOPS:& is asking me to & channel &:{
+  _skipwa 10 $1-
+  _showwo [snotice:cat_services]- [snotice:services_join:nick=$_break($1):server=$;s($nick):action=$6:chan=$;s($8)]
+}
+on &^*:WALLOPS:& is using & & CLEARCHAN *:{
+  _skipwa 7 $1-
+  _showwo [snotice:cat_services]- [snotice:clearchan:chan=$;s($7):who=$;s($1):server=$4]
+}
+on &^*:WALLOPS:REMGLINE &:{
+  _skipwa 5 $1-
+  _showwo [snotice:cat_gline]- [snotice:gline_remove:address=$;s($2):who=$;s($nick)]
+}
+on &^*:WALLOPS:GLINE for *:{
+  _skipwa 2 $1-
+  _showwo [snotice:cat_gline]- [snotice:gline_notime:nick=$;s($3):who=$;s($nick)] $4-
+}
+on &^*:WALLOPS:& [BLOCK] *:{
+  _skipwa 2 $1-
+  _showwo [snotice:cat_block]- [snotice:block:address=$;s($3):who=$;s($right($left($1,-1),-1))] ( $+ $4- $+ )
+}
+on &^*:WALLOPS:HACK*:{
+  _skipwa 1 $1-
+  _showwo [snotice:cat_hack]- $2-
+}
+on &^*:WALLOPS:Remote CONNECT *:{
+  _skipwa 9 $1-
+  _showwo [snotice:cat_merge]- [snotice:remote_connect:server=$;s($3):where=$4:who=$;s($6)]
+}
+on &^*:WALLOPS:*:{
+  _skipwa 12 $1-
+  _showwo $1-
+}
+
+alias -l _showwo {
+  var %win = $hget(pnp.config,wallop.win)
+  if (@* iswm %win) {
+    %win = $_mservwin(%win)
+    if ($window(%win) == $null) {
+      _window 1 -nv + %win -1 -1 -1 -1 @Wallop
+      titlebar %win ( $+ $hget(pnp. $+ $cid,net) $+ )
+    }
+  }
+
+  set -u %:echo echo $color(wallop) $iif(-* iswm %win,%win $+ tm $iif((a isin %win) && ($cid != $activecid),$:anp),-mti2 %win)
+  set -u %::fromserver $iif(. isin $nick,$nick)
+  set -u %::nick $iif(. !isin $nick,$nick)
+  set -u %::text $1-
+  theme.text Wallop
+
+  _ssplay Wallop
+  haltdef
+}
+
+menu @Wallop {
+  [popups_snotice:filters]...:config 12
+  [popups_snotice:usermode]...:umode
+  -
+  $iif(w isincs $usermode,$style(1)) [popups_snotice:w_on]:umode +w
+  $iif(w !isincs $usermode,$style(1)) [popups_snotice:w_off]:umode -w
+}

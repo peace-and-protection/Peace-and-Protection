@@ -1,0 +1,585 @@
+addons\nickserv.ppa
+; #= ppnserv -rs
+; ########################################
+; Peace and Protection
+; NickServ support (standard addon)
+; ########################################
+
+#.ppa.info off
+[addon]
+name=[nickserv:name:dlg]
+group=[addon:core:dlg]
+popup=[nickserv:name]
+author=pai
+version=1.01
+url=http://www.pairc.com/
+email=pnp@pairc.com
+id=ppnserv
+ppver=4.22
+dialogs=nickserv nsadd
+hashcid=nsinuse
+config=ns
+[files]
+1=nickserv.ppa
+[notes]
+1=[nickserv:info1:dlg]
+2=[nickserv:info2:dlg]
+[menu]
+1=$iif($server,$iif($_isserv(ns),[popups_misc:ns_disable:net=$hget(pnp. $+ $cid,net)],[popups_misc:ns_enable:net=$hget(pnp. $+ $cid,net)])):ns $iif($_isserv(ns),off,on)
+[interfaces]
+[nicklist]
+1=$iif($_nsnpop,[popups_nick:nickserv]):ns info $$1
+#.ppa.info end
+
+;;; auto-saving of new nickserv pws/etc should occur in msgns (and verify w/notices)
+;;; -NickServ- The nick mspai has been temporarily registered to you.
+;;; -NickServ- Your password has been reset. Please write it down.
+;;; -NickServ- Password accepted - you are now recognized.
+;;; -NickServ- Password changed.
+;;; -NickServ- The password for the nickname mspai has been changed to: xenon
+;;; -NickServ- The nickname mspai has now been registered to you.
+;;; -NickServ- Senha alterada.
+;;; -NickServ- Nick pai` registrado a partir de sua conta: pai@*.tnt3.lax3.da.uu.net
+;;; auto-ghosting/recovery
+;;; after a ghost/recovery, autotake, check on kill notices, fkey to release nick after recover
+
+alias -l _warpnick return $replace($1,[,~,],+)
+alias -l _unwarpnick return $replace($1,~,[,+,])
+
+dialog nickserv {
+  title "[nickserv_dialog:title]"
+  icon script\pnp.ico
+  option dbu
+  size -1 -1 150 145
+
+  text "&[nickserv_dialog:prompt]:", 1, 5 7 64 10, right
+  combo 2, 70 5 75 50, drop sort
+
+  box "", 3, 5 20 140 65
+  list 4, 10 29 95 55, sort
+  button "&[dialog:add]...", 11, 110 30 27 12
+  button "&[dialog:edit]...", 12, 110 47 27 12, disable
+  button "&[dialog:remove]", 13, 110 64 27 12, disable
+
+  check "&[nickserv_dialog:auto_add]", 21, 10 101 150 8
+  check "&[nickserv_dialog:auto_ghost]", 22, 10 111 65 8, disable
+  check "&[nickserv_dialog:auto_recover]", 23, 75 111 65 8, disable
+
+  button "[dialog:close]", 100, 7 125 40 12, cancel default
+  button "&[nickserv_dialog:remove_all]", 50, 52 125 40 12
+  button "&[nickserv_dialog:login_all]...", 80, 97 125 42 12
+}
+on *:DIALOG:nickserv:init:*:{
+  if ($hget(pnp.config,ns.autoupdate)) did -c $dname 21
+  if ($hget(pnp.config,ns.autoghost)) did -c $dname 22
+  if ($hget(pnp.config,ns.autorecover)) did -c $dname 23
+  var %nets = $readini($_cfg(pw.ini),n,ns,nets),%num = $numtok(%nets,32),%net
+  :loop | if (%num > 0) { %net = $gettok(%nets,%num,32) | did -a $+ $iif($hget(pnp. $+ $cid,net) == %net,c) $dname 2 %net | dec %num | goto loop }
+  did -a $+ $iif($did(2,0).sel == 0,c) $dname 2 ([phrase:all_net:lower])
+  _nsdupd
+}
+on *:DIALOG:nickserv:sclick:21:if ($did(21).state) `set ns.autoupdate 1 | else `set ns.autoupdate
+on *:DIALOG:nickserv:sclick:22:if ($did(22).state) `set ns.autoghost 1 | else `set ns.auoghost
+on *:DIALOG:nickserv:sclick:23:if ($did(23).state) `set ns.autorecover 1 | else `set ns.autorecover
+on *:DIALOG:nickserv:sclick:50:.ns auto clear
+on *:DIALOG:nickserv:sclick:80:ns auto all
+on *:DIALOG:nickserv:sclick:2:_nsdupd
+on *:DIALOG:nickserv:sclick:4:_nsseld
+alias -l _nsseld if ($did(nickserv,4,0).sel) did -e nickserv 12,13 | else did -b nickserv 12,13
+alias -l _nsdupd {
+  did -r nickserv 4
+  var %nets = $did(nickserv,2,$did(nickserv,2).sel).text,%net,%num,%nicks
+  if ($chr(32) isin %nets) %nets = $readini($_cfg(pw.ini),n,ns,nets)
+  if (%nets == $null) goto done
+  window -hln @.nsupd
+  :nloop
+  %net = $gettok(%nets,1,32)
+  %nets = $gettok(%nets,2-,32)
+  if ($ini($_cfg(pw.ini),ns- $+ %net)) {
+    loadbuf -tns- $+ %net @.nsupd $_cfg(pw.ini)
+    %num = $line(@.nsupd,0)
+    :loop | if (%num > 0) { did -a nickserv 4 $_unwarpnick($gettok($line(@.nsupd,%num),1,61)) ( $+ %net $+ ) | dec %num | goto loop }
+  }
+  if (%nets) { clear @.nsupd | goto nloop }
+  window -c @.nsupd
+  :done
+  _nsseld
+}
+on *:DIALOG:nickserv:sclick:11:dialog -am nsadd nsadd
+on *:DIALOG:nickserv:sclick:12:_nsedit
+on *:DIALOG:nickserv:sclick:13:_nsrem
+on *:DIALOG:nickserv:dclick:4:_nsedit
+alias -l _nsedit {
+  var %sel = $$did(nickserv,4,$did(nickserv,4).sel).text,%net = $right($left($gettok(%sel,2,32),-1),-1),%nick = $gettok(%sel,1,32)
+  set %.net %net
+  set %.nick %nick
+  dialog -am nsadd nsadd
+}
+alias -l _nsrem {
+  var %sel = $$did(nickserv,4,$did(nickserv,4).sel).text,%net = $right($left($gettok(%sel,2,32),-1),-1),%nick = $gettok(%sel,1,32)
+  _okcancel 1 [nickserv:remove_confirm:nick=%nick:net=%net]
+  .ns auto del %net %nick
+}
+dialog nsadd {
+  title "[nsadd_dialog:title]"
+  icon script\pnp.ico
+  option dbu
+  size -1 -1 95 72
+
+  text "&[word:network:dlg]:", 1, 5 7 34 10, right
+  combo 11, 40 5 49 50, drop edit sort
+  text "&[word:nickname:dlg]:", 2, 5 20 34 10, right
+  edit "", 12, 40 18 50 11, autohs
+  text "&[word:password:dlg]:", 3, 5 33 34 10, right
+  edit "", 13, 40 31 50 11, autohs pass
+
+  button "[dialog:ok]", 100, 5 52 35 12, OK default
+  button "[dialog:cancel]", 101, 55 52 35 12, cancel
+}
+on *:DIALOG:nsadd:init:*:{
+  var %nets = $readini($_cfg(pw.ini),n,ns,nets),%num,%net
+  if ((%.net == $null) && ($hget(pnp. $+ $cid,net) != [word:offline])) set -u %.net $hget(pnp. $+ $cid,net)
+  if ($hget(pnp. $+ $cid,net)) %nets = $addtok(%nets,$hget(pnp. $+ $cid,net),32)
+  if (%.net) %nets = $addtok(%nets,%.net,32)
+  %num = $numtok(%nets,32)
+  :loop | if (%num > 0) { %net = $gettok(%nets,%num,32) | did -a $+ $iif(%.net == %net,c) $dname 11 %net | dec %num | goto loop }
+  if (%.nick) {
+    did -a $dname 12 %.nick
+    var %pw = $readini($_cfg(pw.ini),n,ns- $+ %.net,$_warpnick(%.nick))
+    did -a $dname 13 $_pw.enc(%pw)
+  }
+  else did -a $dname 12 $me
+  unset %.net %.nick
+}
+on *:DIALOG:nsadd:sclick:100:{
+  if ($did(11) == $null) _error [error:ns_net]
+  if ($did(12) == $null) _error [error:ns_nick]
+  if ($did(13) == $null) _error [error:ns_pw]
+  .ns auto add $did(11) $did(12) $did(13)
+}
+
+;!! add 'advanced' button to specify an actual cmd or address and to select various network options (defaults to a mix of dalnet+newnet options now)
+dialog nsway {
+  title "[nsaccess_dialog:title]"
+  icon script\pnp.ico
+  option dbu
+  size -1 -1 125 77
+
+  text "", 1, 5 5 90 20
+  radio "&[nsaccess_dialog:option_msg]", 2, 10 22 115 11
+  radio "&[nsaccess_dialog:option_cmd]", 3, 10 34 115 11
+  radio "&[nsaccess_dialog:option_secure]", 4, 10 45 115 11
+
+  edit "", 50, 1 1 1 1, autohs hide result
+
+  button "[dialog:ok]", 100, 5 61 40 12, ok default
+  button "[dialog:cancel]", 101, 80 61 40 12, cancel
+}
+on *:DIALOG:nsway:init:*:{
+  did -c $dname 2
+  did -o $dname 1 1 [nsaccess_dialog:prompt:net=%.net:notdlg]
+  unset %.net
+}
+on *:DIALOG:nsway:sclick:100:did -o $dname 50 1 $iif($did(3).state,NickServ@/nickserv,$iif($did(4).state,NickServ@services.???,NickServ)) anod
+
+; /ns command [params]
+; /ns auto add|etc [network] nick pw
+; /ns on|off [network]
+; not mentioned but work- HELP
+; REGISTER <password> [email]
+; IDENTIFY <password>
+; DROP <nick> (must identify)
+; RECOVER <nick> [<password>]
+; ACC <nick>
+; INFO <nick>
+; RELEASE <nick> [password]
+; GHOST <nick> [<password>]
+; SET PASSWD <newpass> (must identify)
+; SET KILL [ON|OFF]
+; SET URL [<URL>]
+; SET NOMEMO ON|OFF
+; SET NOOP ON|OFF
+; SET EMAIL [<EMAIL ADDRESS>]
+; SET SHOWEMAIL ON|OFF
+; ACCESS ADD <user@host mask>
+; ACCESS DEL <user@host mask>
+; ACCESS LIST
+; (also, ACCESS and SET alone list options)
+;;; add config for settings? access list in window?
+alias ns {
+  if (($1 == $null) || ($istok(edit config cfg,$1,32))) { dialog -am nickserv nickserv | return }
+  if (($1 == on) || ($1 == [word:on:lower])) {
+    var %net = $2
+    if ($2 == $null) %net = $hget(pnp. $+ $cid,net)
+    if (%net == [word:offline]) _error [error:cs_connected:cmd=/ns on]
+    set %.net %net
+    _ssplay Dialog
+    var %opt = $$dialog(nsway,nsway,-4)
+    ; Set on all servers that are this net
+    var %scon = $scon(0)
+    while (%scon >= 1) {
+      scon %scon
+      if (($server) && (%net == $hget(pnp. $+ $cid,net))) {
+        _addbot ns NickServ $replace($gettok(%opt,1,32),???,$gettok($server,-2-,46))
+        hadd pnp. $+ $cid -servopt $remove($hget(pnp. $+ $cid,-servopt),o,d,a,p,n,e,r) $+ $gettok(%opt,2,32)
+      }
+      dec %scon
+    }
+    scon -r
+    writeini $_cfg(pw.ini) nsforce %net 1 %opt
+    dispa [nickserv:enable:net=$;s(%net)]
+    return
+  }
+  if (($1 == off) || ($1 == [word:off:lower])) {
+    var %net = $2
+    if ($2 == $null) %net = $hget(pnp. $+ $cid,net)
+    if (%net == [word:offline]) _error [error:cs_connected:cmd=/ns off]
+    ; Set on all servers that are this net
+    var %scon = $scon(0)
+    while (%scon >= 1) {
+      scon %scon
+      if (($server) && (%net == $hget(pnp. $+ $cid,net))) {
+        _rembot ns NickServ
+      }
+      dec %scon
+    }
+    scon -r
+    remini $_cfg(pw.ini) nsforce %net
+    dispa [nickserv:disable:net=$;s(%net)]
+    return
+  }
+  if (($_isserv(ns) == $false) && ($1 != auto)) _error [error:no_nickserv:cmd=/ns]
+  if ($1 == auto) {
+    if ($2 == add) {
+      if ($4 == $null) { dispa [word:syntax]: /ns auto add [[word:network:lower]] [word:nickname:lower] [word:password:lower] | editbox -ap /ns auto add | halt }
+      if ($5) var %net = $3,%nick = $4,%pw = $5
+      else var %net = $hget(pnp. $+ $cid,net),%nick = $3,%pw = $4
+      dispa [nickserv:auto_add:nick=$;t(%nick):net=%net]
+      writeini $_cfg(pw.ini) ns- $+ %net $_warpnick(%nick) $_pw.enc(%pw)
+      var %nets = $readini($_cfg(pw.ini),n,ns,nets)
+      writeini $_cfg(pw.ini) ns nets $addtok(%nets,%net,32)
+      if ($dialog(nickserv)) {
+        _ddadd nickserv 2 $did(11)
+        _nsdupd
+      }
+    }
+    elseif ($2 == del) {
+      if ($3 == $null) { dispa [word:syntax]: /ns auto del [[word:network:lower]] [word:nickname:lower] | editbox -ap /ns auto del | halt }
+      if ($4) var %net = $3,%nick = $4
+      else var %net = $hget(pnp. $+ $cid,net),%nick = $3
+      var %old = $readini($_cfg(pw.ini),n,ns- $+ %net,$_warpnick(%nick)),%nets = $readini($_cfg(pw.ini),n,ns,nets)
+      remini $_cfg(pw.ini) ns- $+ %net %nick
+      if (%old) {
+        %nicks = $_countns(%net)
+        if (%nicks == 0) {
+          remini $_cfg(pw.ini) ns- $+ %net
+          %nets = $remtok(%nets,%net,1,32)
+          if (%nets) writeini $_cfg(pw.ini) ns nets %nets
+          else remini $_cfg(pw.ini) ns
+          if ($dialog(nickserv)) {
+            if ($_finddid(nickserv,2,%net)) {
+              did -d nickserv 2 $ifmatch
+              if ($did(nickserv,2,0).sel == 0) did -c nickserv 2 1
+            }
+          }
+        }
+        dispa [nickserv:auto_del:nick=$;t(%nick):net=%net]
+        if ($dialog(nickserv)) _nsdupd
+      }
+      else dispa [nickserv:auto_not:nick=$;t(%nick):net=%net]
+    }
+    elseif ($2 == all) {
+      var %count = $_countns($hget(pnp. $+ $cid,net))
+      if (%count == 0) _error [error:ns_nologin_any:net=$hget(pnp. $+ $cid,net)]
+      if ($3 == $null) {
+        var %time = $calc(%count * 3)
+        _okcancel 1 [nickserv:login_all:num=%count:sec=%time]
+      }
+      window -hln @.loginall
+      if ($ini($_cfg(pw.ini),ns- $+ $hget(pnp. $+ $cid,net))) loadbuf -tns- $+ $hget(pnp. $+ $cid,net) @.loginall $_cfg(pw.ini)
+      var %count = $line(@.loginall,0),%delay = 0
+      :loop
+      var %line = $line(@.loginall,%count)
+      .timer 1 %delay .msgns IDENTIFY $_unwarpnick($gettok(%line,1,61)) $_pw.enc($mid(%line,$calc($pos(%line,=) + 1),$len(%line)))
+      if (%count > 1) { dec %count | inc %delay 3 | goto loop }
+      window -c @.loginall
+    }
+    elseif ($2 == clear) {
+      if ($3) {
+        _okcancel 1 [nickserv:clear_confirm:net=$3]
+        remini $_cfg(pw.ini) ns- $+ $3
+        var %nets = $readini($_cfg(pw.ini),n,ns,nets)
+        %nets = $remtok(%nets,$3,1,32)
+        if (%nets) writeini $_cfg(pw.ini) ns nets %nets
+        else remini $_cfg(pw.ini) ns
+        dispa [nickserv:auto_clear:net=$3]
+      }
+      else {
+        _okcancel 1 [nickserv:purge_confirm]
+        var %nets = $readini($_cfg(pw.ini),n,ns,nets)
+        :cloop
+        if ($gettok(%nets,1,32)) {
+          remini $_cfg(pw.ini) ns- $+ $ifmatch
+          %nets = $gettok(%nets,2-,32)
+          goto cloop
+        }
+        remini $_cfg(pw.ini) ns
+        dispa [nickserv:auto_purge]
+      }
+      if ($dialog(nickserv)) {
+        did -r nickserv 2
+        did -ac nickserv 2 ([phrase:all_net:lower])
+        _nsdupd
+      }
+    }
+    else {
+      if (($2 == throttle) && ($hget(pnp. $+ $cid,-nsacc.skip. $+ $me))) return
+      var %pw = $readini($_cfg(pw.ini),n,ns- $+ $hget(pnp. $+ $cid,net),$_warpnick($me))
+      if (%pw == $null) _error [error:ns_nologin:nick=$me:net=$hget(pnp. $+ $cid,net)]
+      else msgns IDENTIFY $_pw.enc(%pw)
+      hadd -u60 pnp. $+ $cid -nsacc.skip. $+ $me 1
+    }
+  }
+  elseif ($1 == info) {
+    if ($2) var %who = $_nc($2)
+    else var %who = $_entry(-1,$null,[nickserv:info_prompt])
+    msgns $upper($1) %who
+  }
+  elseif (($2 == $null) && ($istok(register identify set drop recover sendpass release ghost acc access,$1,32))) {
+    var %send = msgns $upper($1) | goto $1
+
+    :access
+    editbox -ap /ns $1
+    dispa [chanserv:help_actions]:
+    dispa - $:l(Add Del List Wipe)
+    return
+
+    :set
+    editbox -ap /ns $1
+    dispa [chanserv:help_settings]:
+    dispa - $:l($iif(p isin $hget(pnp. $+ $cid,-servopt),PassWord,PassWd) $iif(r isin $hget(pnp. $+ $cid,-servopt),Protect,$iif(e isin $hget(pnp. $+ $cid,-servopt),Enforce,Kill)) $iif(a isin $hget(pnp. $+ $cid,-servopt),NoMemo NoOp))
+    dispa - $:l(URL EMail $iif(a isin $hget(pnp. $+ $cid,-servopt),ShowEMail MailBlock) $iif(n isin $hget(pnp. $+ $cid,-servopt),Secure))
+    return
+
+    :identify | _ssplay Question | %send $$input([nickserv:pw_prompt:nick=$me],2) |  return
+    :acc | %send $_entry(-1,$null,[nickserv:access_prompt]) | return
+
+    :register
+    _ssplay Question
+    var %pw = $$input([nickserv:register_pw:nick=$me],2)
+    if ($$input([chanserv:verify_pw],2) !=== %pw) _error [error:password]
+    %send %pw $_entry(-1,$email,[nickserv:register_email])
+    return
+
+    :sendpass
+    var %who = $_entry(-1,$me,[nickserv:forgot_pw])
+    %send %who $_entry(-1,$email,[nickserv:forgot_email])
+    return
+
+    :drop
+    var %pw = $readini($_cfg(pw.ini),n,ns- $+ $hget(pnp. $+ $cid,net),$_warpnick($me))
+    if (%pw == $null) {
+      _ssplay Question
+      %pw = $$input([nickserv:drop_pw],2)
+    }
+    else {
+      _okcancel 1 [nickserv:drop_confirm:nick=$me]
+      %pw = $_pw.enc(%pw)
+    }
+    msgns IDENTIFY %pw
+    if (d isin $hget(pnp. $+ $cid,-servopt)) %send
+    else %send $me
+    return
+
+    :recover
+    :release
+    :ghost
+    var %nick = $_entry(-1,$null,$iif($1 == ghost,[nickserv:ghost_prompt],$iif($1 == recover,[nickserv:recover_prompt],[nickserv:release_prompt])))
+    var %pw = $readini($_cfg(pw.ini),n,ns- $+ $hget(pnp. $+ $cid,net),$_warpnick(%nick))
+    if (%pw == $null) {
+      _ssplay Question
+      %pw = $input([nickserv:ghost_pw:nick=%nick],2)
+    }
+    else %pw = $_pw.enc(%pw)
+    %send %nick %pw
+    return
+  }
+  elseif (($1 == set) && ($3 == $null) && ($istok(passwd password kill enforce protect url nomemo noop email showemail mailblock secure,$2,32))) {
+    var %send = msgns SET $upper($2) | goto $2
+
+    :passwd
+    :password
+    var %oldpw = $readini($_cfg(pw.ini),n,ns- $+ $hget(pnp. $+ $cid,net),$_warpnick($me))
+    if (%oldpw == $null) {
+      _ssplay Question
+      %oldpw = $input([nickserv:old_pw:nick=$me],2)
+    }
+    else %oldpw = $_pw.enc(%oldpw)
+    _ssplay Question
+    var %newpw = $$input([nickserv:new_pw:nick=$me],2)
+    if ($$input([chanserv:verify_pw],2) !=== %newpw) _error [error:password]
+    if (%oldpw) msgns IDENTIFY %oldpw
+    if (o isin $hget(pnp. $+ $cid,-servopt)) %send %oldpw %newpw
+    else %send %newpw
+    return
+
+    :kill | :enforce | :protect | var %yn = $_yesno(1,[nickserv:kill:nick=$me]) | %send $iif(%yn,ON,OFF) | return
+    :url | %send $_entry(1,$null,[nickserv:url]) | return
+    :nomemo | var %yn = $_yesno(0,[nickserv:nomemo]) | %send $iif(%yn,ON,OFF) | return
+    :noop | var %yn = $_yesno(0,[nickserv:noop]) | %send $iif(%yn,ON,OFF) | return
+    :email | %send $_entry(-1,$email,[nickserv:email]) | return
+    :showemail | var %yn = $_yesno(1,[nickserv:showemail]) | %send $iif(%yn,ON,OFF) | return
+    :mailblock | var %yn = $_yesno(1,[nickserv:mailblock]) | %send $iif(%yn,ON,OFF) | return
+    :secure | var %yn = $_yesno(1,[nickserv:secure]) | %send $iif(%yn,ON,OFF) | return
+  }
+  elseif (($1 == access) && ($3 == $null) && ($istok(add del,$2,32))) {
+    msgns ACCESS $upper($2) $_entry(-1,$gettok($_banmask($hget(pnp. $+ $cid,-myself)),2-,33),$iif($2 == add,[nickserv:access_add],[nickserv:access_del]))
+    return
+  }
+  else msgns $upper($1) $2-
+}
+
+; pass network, counts ns logins
+alias -l _countns {
+  var %nets = $readini($_cfg(pw.ini),n,ns,nets)
+  if (!$istok(%nets,$1,32)) return 0
+  window -hln @.autosc
+  if ($ini($_cfg(pw.ini),ns- $+ $1)) loadbuf -tns- $+ $1 @.autosc $_cfg(pw.ini)
+  var %count = $line(@.autosc,0)
+  window -c @.autosc
+  return %count
+}
+
+; /msgns full command
+alias msgns {
+  _linedance . $+ $_botacc(NickServ) $1-
+  if (($istok(register identify recover ghost release,$1,32)) || (($1 == set) && ($istok(passwd password,$2,32)))) {
+    if ($3) {
+      if ($1 == register) dispa [chanserv:do_cmd:bot=$;t(NickServ)]: $:h($1,?????,$3-)
+      else dispa [chanserv:do_cmd:bot=$;t(NickServ)]: $:h($1-2,?????,$iif($4,?????))
+    }
+    elseif (($1 == recover) || ($1 == ghost) || ($1 == release)) {
+      dispa [chanserv:do_cmd:bot=$;t(NickServ)]: $:h($1-2)
+    }
+    else {
+      dispa [chanserv:do_cmd:bot=$;t(NickServ)]: $:h($1,?????)
+    }
+  }
+  else dispa [chanserv:do_cmd:bot=$;t(NickServ)]: $:h($1-)
+}
+
+alias -l _nschk if (($_isserv(ns)) && ($nick === NickServ)) return | $$$
+on *:NOTICE:Your password is & - please write it down for later use.:?:_nschk | if ($hget(pnp.config,ns.autoupdate)) .ns auto add $hget(pnp. $+ $cid,net) $me $strip($4)
+on *:NOTICE:Password changed. Your new password is & - remember it.:?:_nschk | if ($hget(pnp.config,ns.autoupdate)) .ns auto add $hget(pnp. $+ $cid,net) $me $strip($7)
+on *:NOTICE:Dropped nick &:?:_nschk | if ($hget(pnp.config,ns.autoupdate)) .ns auto del $hget(pnp. $+ $cid,net) $strip($3)
+on *:NOTICE:This nick is owned by someone else. Please choose another.:?:_nschk | .ns auto throttle
+on *:NOTICE:This nickname is registered and protected*:?:_nschk | .ns auto throttle
+
+; Nickname in use
+raw &433:*nick*:{
+  if ($server) _nsnch1 $2
+  ; If connecting, waits until connected to send
+  else hadd pnp. $+ $cid nsinuse $2
+}
+on me:*:NICK:.timer -m 1 0 .ns auto throttle
+; if a bot joins, probably a split rejoining, so relogin to nickserv.
+on *:JOIN:#:if (($_isserv(ns)) && ($_isbot($nick))) .ns auto
+on *:SIGNAL:PNP.SIGNON:{ _ns.connect }
+
+on *:LOAD:{
+  ; PnP check
+  if (!$_ispnp) {
+    echo 4 -ati2 *** This addon requires Peace and Protection by pai to use.
+    echo 4 -ati2 *** You can download Peace and Protection at http://www.pairc.com/
+    .timer -mio 1 0 .unload -rs " $+ $script $+ "
+    halt
+  }
+  ; Invalid load method check
+  if (!$istok($_cfgx(addons,ids),$readini($script,n,addon,id),32)) {
+    .timer -mio 1 0 .unload -rs " $+ $script $+ "
+    dispa [startup:addon_file_improper:file=$script]
+    halt
+  }
+  scon -at1 _ns.connect
+}
+
+alias _ns.connect {
+  if ($readini($_cfg(pw.ini),n,nsforce,$hget(pnp. $+ $cid,net))) {
+    var %opt = $ifmatch
+    _addbot ns NickServ $replace($gettok(%opt,2,32),???,$gettok($server,-2-,46))
+    hadd pnp. $+ $cid -servopt $remove($hget(pnp. $+ $cid,-servopt),o,d,a,p,n,e,r) $+ $gettok(%opt,3,32)
+  }
+
+  .ns auto
+  if ($hget(pnp. $+ $cid,nsinuse)) { _nsnch1 $ifmatch | hdel pnp. $+ $cid nsinuse }
+}
+alias -l _nsnch1 {
+  if (($me != $1) && ($_isserv(ns)) && ($readini($_cfg(pw.ini),n,ns- $+ $hget(pnp. $+ $cid,net),$_warpnick($1)))) {
+    _Q.userhost _nsnch2&n&a halt $1
+  }
+}
+alias _nsnch2 {
+  if ($2 == $gettok($hget(pnp. $+ $cid,-myself),2-,33)) {
+    _Q.fkey 1 $calc($ctime + 180) _cidexists $cid $chr(124) scid $cid ns ghost $1
+    disptn -a $1 [nickserv:offer_ghost:fkey=$;s($result)]
+  }
+  else {
+    _Q.fkey 1 $calc($ctime + 180) _cidexists $cid $chr(124) scid $cid ns recover $1
+    disptn -a $1 [nickserv:offer_recover:fkey=$;s($result)]
+  }
+}
+
+; For nicklist popups
+alias _nsnpop if (($_isserv(ns)) && ($server)) return 1
+; Status popups for nickserv
+alias -l _nsspop if (($_isserv(ns)) && ($server)) { if ($null != $readini($_cfg(pw.ini),n,ns- $+ $hget(pnp. $+ $cid,net),$_warpnick($me))) set -u1 %.ident 1 | else unset %.ident | set -u1 %.ns [popups_status:nickserv] | return $_popssep } | else unset %.ns
+menu status {
+  $_nsspop
+  %.ns
+  .[popups_status:ns_register:nick=$me] $+ ...:ns register
+  .[popups_status:ns_drop:nick=$me] $+ ...:ns drop
+  .[popups_status:ns_identify:nick=$me] $+ ...:ns identify
+  .-
+  .[popups_status:ns_auto]
+  ..$iif(%.ident == $null,[popups_status:ns_add:nick=$me] $+ ...):{
+    _ssplay Question
+    var %pw = $$input([nickserv:pw_prompt:nick=$me],2)
+    if ($$input([chanserv:verify_pw],2) !=== %pw) _error [error:password]
+    ns auto add $me %pw
+  }
+  ..$iif(%.ident,[popups_status:ns_perform]):ns auto
+  ..$iif(%.ident,[popups_status:ns_del:nick=$me]):ns auto del $me
+  ..-
+  ..[popups_status:ns_edit]...:ns
+  ..[popups_status:ns_clear]...:ns auto clear
+  ..-
+  ..[popups_status:ns_perform_all]...:ns auto all
+  .[popups_status:ns_recovery]
+  ..[popups_status:ns_ghost]...:ns ghost
+  ..-
+  ..[popups_status:ns_recover]...:ns recover
+  ..[popups_status:ns_release]...:ns release
+  .-
+  .[popups_status:ns_access]
+  ..[popups_status:ns_access_add]...:ns access add
+  ..[popups_status:ns_access_del]...:ns access del
+  ..-
+  ..[popups_status:ns_access_list]:ns access list
+  ..[popups_status:ns_access_clear]...:_okcancel 1 [nickserv:access_clear] | ns access wipe
+  ..-
+  ..$iif(a isin $hget(pnp. $+ $cid,-servopt),[popups_status:ns_lost]...):ns sendpass
+  .[popups_status:ns_config] ( $+ $me $+ )
+  ..[popups_status:ns_pw]...:ns set $iif(p isin $hget(pnp. $+ $cid,-servopt),password,passwd)
+  ..[popups_status:ns_enforce]...:ns set $iif(r isin $hget(pnp. $+ $cid,-servopt),protect,$iif(e isin $hget(pnp. $+ $cid,-servopt),enforce,kill))
+  ..$iif(a isin $hget(pnp. $+ $cid,-servopt),[popups_status:ns_mailblock]...):ns set mailblock
+  ..$iif(n isin $hget(pnp. $+ $cid,-servopt),[popups_status:ns_secure]...):ns set secure
+  ..-
+  ..[popups_status:ns_url]...:ns set url
+  ..[popups_status:ns_email]...:ns set email
+  ..$iif(a isin $hget(pnp. $+ $cid,-servopt),[popups_status:ns_showemail]...):ns set showemail
+  ..-
+  ..$iif(a isin $hget(pnp. $+ $cid,-servopt),[popups_status:ns_nomemo]...):ns set nomemo
+  ..$iif(a isin $hget(pnp. $+ $cid,-servopt),[popups_status:ns_noop]...):ns set noop
+  .-
+  .[popups_status:ns_info]...:ns info
+}

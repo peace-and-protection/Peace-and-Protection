@@ -1,0 +1,486 @@
+; #= ppxdcc -rs
+; ########################################
+; Peace and Protection
+; XDCC (standard addon)
+; ########################################
+ 
+#.ppa.info off
+[xdcctarg]
+window received
+status window
+@XDCC window
+hide requests
+[addon]
+name=XDCC
+group=Core
+popup=XDCC
+author=pai
+version=1.00
+url=http://www.pairc.com/
+email=pnp@pairc.com
+id=ppxdcc
+ppver=4.22
+config=xdcc edit
+dialogs=xdcc xdcccfg
+windows=@XDCC
+timers=.xdccad
+help=xdcc
+[files]
+1=xdcc.ppa
+[notes]
+1=This addon adds full XDCC features to PnP. XDCC allows you to offer specific files for people to request from you using XDCC CTCPs. XDCC is designed for sharing a small number of files and is not suited for full-fledged file serving or sharing. See 'XDCC' under the PnP menu for options.
+[query]
+1=XDCC
+2=.Send full XDCC list:xdcc list $$1
+3=.Send XDCC ad:xdcc ad $$1
+[nicklist]
+1=XDCC
+2=.Send full XDCC list:xdcc list $$1
+3=.Send XDCC ad:xdcc ad $$1
+[channel]
+1=XDCC
+2=.Send full XDCC list:xdcc list $chan
+3=.-
+4=.Send XDCC ad:xdcc ad $chan
+5=.$iif($timer(.xdccad) == $null,Timered ad to $replace($active,&,&&)):xdcc timer $_entry(-2,15,Send XDCC ad how often? $chr(40) $+ in minutes $+ $chr(41)) $chan
+6=.$iif($timer(.xdccad),Disable timered ad):xdcc timer off
+#.ppa.info end
+ 
+on *:LOAD:{
+  ; PnP check
+  if (!$_ispnp) {
+    echo 4 -ati2 *** This addon requires Peace and Protection by pai to use.
+    echo 4 -ati2 *** You can download Peace and Protection at http://www.pairc.com/
+    .timer -mio 1 0 .unload -rs " $+ $script $+ "
+    halt
+  }
+  ; Invalid load method check
+  if (!$istok($_cfgx(addons,ids),$readini($script,n,addon,id),32)) {
+    .timer -mio 1 0 .unload -rs " $+ $script $+ "
+dispa Unloading ' $+ $script $+ ' $chr(40) $+ addon is not properly loaded; use /addon to load it $+ $chr(41)
+    halt
+  }
+}
+ 
+;;; second version- multiple pack sets, copy/move between, select for diff groups of users, passwords
+;;; second version- allow LIST N to get file list of one pack
+;;; /xdcc add/del/etc?
+;;; saving/loading/deleting of 'presets'? more presets?
+;;; allow !cmds bound to individual packets?
+ 
+; Section one- Pack editing
+dialog xdcc {
+title "XDCC Pack Setup"
+  icon script\pnp.ico
+  option dbu
+  size -1 -1 200 135
+ 
+box "&Select a pack...", 1, 4 4 90 105
+  list 2, 9 14 80 75, extsel
+ 
+button "&Add...", 3, 9 93 24 10
+button "&Copy", 4, 36 93 24 10, disable
+button "&Remove", 5, 64 93 25 10, disable
+ 
+box "... &then edit file(s)", 21, 99 4 90 105
+  list 6, 104 14 80 35, extsel disable
+ 
+button "&Add...", 7, 104 47 24 10, disable
+button "&Edit...", 8, 131 47 24 10, disable
+button "&Remove", 9, 159 47 25 10, disable
+ 
+text "&Description of pack:", 26, 103 69 75 8
+  edit "", 10, 103 77 80 11, autohs disable
+ 
+text "Total requests:", 28, 103 95 45 8
+  text "-", 29, 148 95 15 8
+button "&Reset", 11, 163 93 20 10, disable
+ 
+  edit "", 200, 1 1 1 1, hide autohs
+ 
+button "Done!", 100, 9 116 40 12, OK default
+}
+on *:DIALOG:xdcc:init:*:{
+did -o $dname 10 1 (no packs selected)
+  var %line,%pack = 1,%file = $_cfg(xdcc.dat)
+  if ($exists(%file) == $false) return
+  :loop
+  %line = $read(%file,n,%pack)
+  if ($gettok(%line,1,9)) {
+    did -a $dname 2 [[ $+ %pack $+ ]] $ifmatch
+    inc %pack | goto loop
+  }
+}
+on *:DIALOG:xdcc:sclick:2:{
+  _xdccsave
+  if ($did(2,0).sel == 0) {
+    did -b $dname 4,5,6,7,8,9,10,11
+    did -r $dname 6
+did -o $dname 10 1 (no packs selected)
+    did -o $dname 29 1 -
+  }
+  elseif ($did(2,0).sel > 1) {
+    did -b $dname 4,6,7,8,9,10
+    did -e $dname 5
+    did -r $dname 6
+did -o $dname 10 1 ( $+ $+ )
+    var %line,%where = 1,%total = 0,%file = $_cfg(xdcc.dat)
+    :loopc
+    %line = $read(%file,n,$did(2,%where).sel)
+    inc %total $gettok(%line,2,9)
+    if (%where < $did(2,0).sel) { inc %where | goto loopc }
+    did -o $dname 29 1 %total
+    did $iif(%total,-e,-b) $dname 11
+  }
+  else {
+    did -e $dname 4,5,6,7,10
+    did -b $dname 8,9
+    var %num = 3,%line = $read($_cfg(xdcc.dat),n,$did(2,1).sel)
+    did -o $dname 10 1 $gettok($did(2,$did(2,1).sel),2-,32)
+    did -o $dname 29 1 $gettok(%line,2,9)
+    did $iif($gettok(%line,2,9),-e,-b) $dname 11
+    did -r $dname 6
+    :loopf
+    if ($gettok(%line,%num,9)) {
+      did -a $dname 6 $ifmatch
+      inc %num | goto loopf
+    }
+  }
+}
+on *:DIALOG:xdcc:sclick:3:{
+  _xdccsave
+did -ac $dname 2 [[ $+ $calc($did(2).lines + 1) $+ ]] (none)
+write $_cfg(xdcc.dat) (none)	0
+  did -e $dname 4,5,6,7,10
+  did -b $dname 8,9,11
+  did -o $dname 29 1 0
+  did -r $dname 6
+  did -rf $dname 10
+  _xdcced 1
+}
+on *:DIALOG:xdcc:sclick:4:{
+  _xdccsave
+did -ac $dname 2 [[ $+ $calc($did(2).lines + 1) $+ ]] $did(10) (Copy)
+  did -b $dname 11
+  did -o $dname 29 1 0
+did -of $dname 10 1 $did(10) (Copy)
+  did -o $dname 200 1 $did(2,1).sel
+  _xdccsave
+}
+on *:DIALOG:xdcc:sclick:5:{
+  did -r $dname 200
+  var %file = $_cfg(xdcc.dat)
+  :loopr
+  if ($did(2,1).sel) {
+    did -d $dname 2 $ifmatch
+    write -dl [ $+ [ $ifmatch ] ] %file
+    goto loopr
+  }
+  did -b $dname 4,5,6,7,8,9,10,11
+  did -r $dname 6
+did -o $dname 10 1 (no packs selected)
+  did -o $dname 29 1 -
+  did -f $dname 2
+  var %num = $did(2).lines
+  :loopn
+  if (%num) {
+    did -o $dname 2 %num [[ $+ %num $+ ]] $gettok($did(2,%num),2-,32)
+    dec %num | goto loopn
+  }
+}
+on *:DIALOG:xdcc:sclick:6:{
+  if ($did(6,0).sel == 0) did -b $dname 8,9
+  elseif ($did(6,0).sel > 1) { did -b $dname 8 | did -e $dname 9 }
+  else did -e $dname 8,9
+}
+on *:DIALOG:xdcc:dclick:6:_xdcced $did(6,1).sel
+on *:DIALOG:xdcc:sclick:7:_xdcced $calc($did(6).lines + 1)
+on *:DIALOG:xdcc:sclick:8:_xdcced $did(6,1).sel
+on *:DIALOG:xdcc:sclick:9:{
+  did -o $dname 200 1 $did(2,1).sel
+  :loop | if ($did(6,1).sel) { did -d $dname 6 $ifmatch | goto loop }
+  did -f $dname 6
+  did -b $dname 8,9
+}
+on *:DIALOG:xdcc:edit:10:did -o $dname 200 1 $did(2,1).sel | did -oc $dname 2 $did(2,1).sel $gettok($did(2,$did(2,1).sel),1,32) $did(10)
+on *:DIALOG:xdcc:sclick:11:{
+  if ($did(2,0).sel > 1) {
+    var %line,%num = 1,%file = $_cfg(xdcc.dat)
+    :loopr
+    if ($did(2,%num).sel) {
+      %line = $read(%file,n,$ifmatch)
+      write -l $+ $ifmatch %file $puttok(%line,0,2,9)
+      inc %num | goto loopr
+    }
+  }
+  else did -o $dname 200 1 $did(2,1).sel
+  did -o $dname 29 1 0
+  did -b $dname 11
+}
+on *:DIALOG:xdcc:sclick:100:_xdccsave
+alias -l _xdcced {
+  var %old = $did(xdcc,6,$1)
+  if (%old == $null) %old = $_dlgi(xdccpack)
+  if (%old == $null) %old = $mircdir
+  _ssplay Question
+var %new = $$sfile(%old,Select pack file:)
+  _dlgw xdccpack $nofile(%new)
+  did -o xdcc 200 1 $did(xdcc,2,1).sel
+  if ($did(xdcc,6).lines == 0) {
+    did -fo xdcc 10 1 $gettok($nopath(%new),1,46)
+    did -oc xdcc 2 $did(xdcc,2,1).sel $gettok($did(xdcc,2,$did(xdcc,2,1).sel),1,32) $did(xdcc,10)
+  }
+  did -oc xdcc 6 $1 %new
+  did -e xdcc 8,9
+}
+alias -l _xdccsave {
+  if ($did(200) !isnum) return
+  var %num = 1,%curr = $did(10)
+if (%curr == $null) %curr = (none)
+  %curr = %curr $+ 	 $+ $did(29)
+  :loop
+  if ($did(6,%num)) {
+    %curr = %curr $+ 	 $+ $ifmatch
+    inc %num | goto loop
+  }
+  write -l [ $+ [ $did(200) ] ] $_cfg(xdcc.dat) %curr
+  did -r $dname 200
+}
+ 
+; Section two- Other options
+dialog xdcccfg {
+title "XDCC Options"
+  icon script\pnp.ico
+  option dbu
+  size -1 -1 150 157
+ 
+check "&Enable XDCC:", 1, 5 5 62 8
+text "&Presets:", 11, 69 6 20 8
+  combo 12, 90 4 50 50, drop
+  box "", 2, 5 15 140 117
+text "&First line of advertise / LIST: (optional)", 3, 10 25 125 8
+  edit "", 4, 10 34 130 11, autohs
+text "&Packet (middle) lines of advertise / LIST:", 5, 10 47 125 8
+  edit "", 6, 10 56 130 11, autohs
+text "&Last line of advertise / LIST: (optional)", 7, 10 70 125 8
+  edit "", 8, 10 79 130 11, autohs
+text "&Single line advertise:", 9, 10 92 125 8
+  edit "", 10, 10 101 130 11, autohs
+text "&Show XDCC requests to:", 13, 10 117 60 8
+  combo 14, 70 115 70 50, drop
+ 
+button "OK", 100, 5 139 40 12, OK default
+button "Cancel", 101, 55 139 40 12, cancel
+button "&Help", 102, 105 139 40 12, disable
+}
+on *:DIALOG:xdcccfg:init:*:{
+  loadbuf -otxdcctarg $dname 14 " $+ $scriptdirxdcc.ppa"
+  if ($_cfgx(xdcc,enable)) did -c $dname 1
+  else did -b $dname 3,4,5,6,7,8,9,10,13,14
+  did -o $dname 4 1 $_readprep($_cfgx(xdcc,ad-pre))
+  did -o $dname 6 1 $_readprep($_cfgx(xdcc,ad-mid))
+if ($did(6) == $null) did -o $dname 6 1 [&num&] &desc& - &size& (&request& dls)
+  did -o $dname 8 1 $_readprep($_cfgx(xdcc,ad-post))
+  did -o $dname 10 1 $_readprep($_cfgx(xdcc,ad-line))
+  did -c $dname 14 $findtok(* -si2 @XDCC hide,$_cfgx(xdcc,route),32)
+did -a $dname 12 Minimal
+did -a $dname 12 Basic
+did -a $dname 12 Colorful
+}
+on *:DIALOG:xdcccfg:sclick:1:did $iif($did(1).state,-e,-b) $dname 3,4,5,6,7,8,9,10,13,14
+on *:DIALOG:xdcccfg:edit:*:did -u $dname 12
+on *:DIALOG:xdcccfg:sclick:12:{
+  goto $did(12).sel
+  :1
+  did -r $dname 4,8
+did -o $dname 6 1 [&num&] &desc& - &size& (&request& dls)
+did -o $dname 10 1 &total& XDCC packs available $chr(40) $+ &request& dls $+ $chr(41) Use /ctcp &me& XDCC LIST to request a list
+  return
+  :2
+did -o $dname 4 1 &total& packs available: $chr(40) $+ &request& total dls $+ $chr(41)
+did -o $dname 6 1 [&num&]: &desc& / &size& / &request& dls
+did -o $dname 8 1 Use /ctcp &me& XDCC GET # to request a pack
+did -o $dname 10 1 &total& XDCC packs available $chr(40) $+ &request& dls $+ $chr(41) Use /ctcp &me& XDCC LIST to request a list
+  return
+  :3
+did -o $dname 4 1 &col1&&total& packs available: $chr(40) $+ &col2&&request& total dls $+ $chr(41)
+did -o $dname 6 1 [&col1&&num&] &col2&&desc& - &size& (&request& dls)
+did -o $dname 8 1 Use &col1&/ctcp &me& XDCC GET # to request a pack
+did -o $dname 10 1 &col1&&total& XDCC packs available $chr(40) $+ &request& dls $+ $chr(41) Use &col2&/ctcp &me& XDCC LIST to request a list
+  return
+}
+on *:DIALOG:xdcccfg:sclick:100:{
+  _cfgxw xdcc enable $did(1).state
+  _cfgxw xdcc ad-pre $_writeprep($did(4))
+  _cfgxw xdcc ad-mid $_writeprep($did(6))
+  _cfgxw xdcc ad-post $_writeprep($did(8))
+  _cfgxw xdcc ad-line $_writeprep($did(10))
+  _cfgxw xdcc route $gettok(* -si2 @XDCC hide,$did(14).sel,32)
+}
+ 
+; Section three- CTCP/msg receipt and reply
+ctcp *:XDCC:*:_xdcc $2- | if ($result) { $_show.ctcp($nick,$address,$1,$2-) | halt }
+on ^*:OPEN:?:XDCC *:_xdcc $2-
+on ^*:TEXT:XDCC *:?:_xdcc $2-
+alias -l _xdcc {
+  if (!$_cfgx(xdcc,enable)) return
+  if ($1 == LIST) { _xdccfloodp 7 | _sendad _qnotice $nick }
+  elseif ((($1 == GET) || ($1 == SEND)) && ($2- isnum)) { _xdccfloodp 3 | _xdccsend $nick $2 }
+elseif (($1 == GET) || ($1 == SEND)) { _xdccfloodp 3 | _linedance _qnotice $nick Usage: XDCC $upper($1) N $chr(40) $+ where N is the pack number to be sent $+ $chr(41) }
+elseif ($1 == HELP) { _xdccfloodp 5 | _linedance _qnotice $nick Use XDCC LIST to get a listing of offered packs $chr(40) $+ files $+ $chr(41) | _linedance _qnotice $nick Use XDCC GET N to get a pack $+ $chr(44) where N is the pack number to be sent }
+elseif ($1 == CANCEL) { _xdccfloodp 3 | _cancel.dcc $nick | if ($result) _linedance _qnotice $nick I have cancelled $result file $+ $chr(40) $+ s $+ $chr(41) queued for you | else _linedance _qnotice $nick I do not have any files queued for you }
+  else return 0
+  ; display
+  var %to = $_cfgx(xdcc,route)
+  if (%to == *) return 1
+  if ((%to == @XDCC) && ($window(@XDCC) == $null)) _window 1 -nzi + @XDCC -1 -1 -1 -1 @XDCC
+var %say = XDCC request from $:s($nick) $+ : $1-
+  if (%to == hide) halt
+  dispr %to %say
+  halt
+}
+alias -l _xdccfloodp {
+  if ($hget(pnp.flood. $+ $cid,xdcc. $+ $site) >= 9) halt
+  hinc -z pnp.flood. $+ $cid xdcc. $+ $site $1
+  if ($hget(pnp.flood. $+ $cid,xdcc. $+ $site) >= 9) {
+    hinc -z pnp.flood. $+ $cid xdcc. $+ $site 30
+_linedance _qnotice $nick Sorry $+ $chr(44) you are now being ignored for 30 seconds for too many requests.
+    halt
+  }
+}
+alias -l _xdccsend {
+  var %file,%valid = 0,%num = 3,%line = $read($_cfg(xdcc.dat),n,$2)
+if ($numtok(%line,9) < 3) _linedance _qnotice $1 Sorry $+ $chr(44) there is no pack number $2
+  else {
+    :loop
+    %file = $gettok(%line,%num,9)
+    if (%file) {
+      _send.dcc $1 $ifmatch
+      if ($result >= 0) %valid = 1
+if ($result > 0) _linedance _qnotice $1 File ' $+ $nopath(%file) $+ ' has been queued- You are number $result in the queue
+elseif ($result == -4) _linedance _qnotice $1 Error sending ' $+ $nopath(%file) $+ '
+elseif ($result == -5) _linedance _qnotice $1 ' $+ $nopath(%file) $+ ' is already queued to be sent to you
+elseif ($result == -6) _linedance _qnotice $1 ' $+ $nopath(%file) $+ ' is already being sent to you
+elseif ($result < 0) _linedance _qnotice $1 Cannot send ' $+ $nopath(%file) $+ '- All DCC slots and queue slots are full $+ $chr(44) sorry
+      inc %num | goto loop
+    }
+    if (%valid) write -l $+ $2 $_cfg(xdcc.dat) $puttok(%line,$calc(1 + $gettok(%line,2,9)),2,9)
+  }
+}
+ 
+; Section four- Advertising
+alias -l _sendad {
+  var %fname,%num,%size,%line,%where = 1,%total = 0,%file = $_cfg(xdcc.dat),%mid = $_readprep($_cfgx(xdcc,ad-mid))
+if (%mid == $null) %mid = [&num&] &desc& - &size& (&request& dls)
+  :loopc
+  %line = $read(%file,n,%where)
+  if (%line) {
+    inc %total $gettok(%line,2,9)
+    inc %where | goto loopc
+  }
+  var %packs = $lines(%file),%where = 1
+  if ($_readprep($_cfgx(xdcc,ad-pre))) _linedance $1-2 $msg.compile($ifmatch,&nick&,$2,&total&,%packs,&request&,%total)
+  :loopa
+  %line = $read(%file,n,%where)
+  if (%line) {
+    ; &desc& &size& &count& &file& &request& &num& &nick&
+    ; &file& is (x files) if multiple &count& is 1 or more
+    if ($numtok(%line,9) > 2) {
+      %size = 0 | %num = 3
+      :loopf
+      if ($gettok(%line,%num,9)) { if ($exists($ifmatch)) inc %size $lof($gettok(%line,%num,9)) | inc %num | goto loopf }
+      if (%num == 4) %fname = $gettok(%line,3,9)
+      else %fname = ( $+ $calc($numtok(%line,9) - 2) files)
+      _linedance $1-$2 $msg.compile(%mid,&nick&,$2,&total&,%packs,&request&,$gettok(%line,2,9),&desc&,$gettok(%line,1,9),&file&,%fname,&size&,$_size(%size),&num&,%where)
+    }
+    inc %where | goto loopa
+  }
+  if ($_readprep($_cfgx(xdcc,ad-post))) _linedance $1-$2 $msg.compile($ifmatch,&nick&,$2,&total&,%packs,&request&,%total)
+}
+ 
+alias -l _shortad {
+  var %line,%where = 1,%total = 0,%file = $_cfg(xdcc.dat)
+  var %ad = $_readprep($_cfgx(xdcc,ad-line))
+if (%ad == $null) %ad = &total& XDCC packs available $chr(40) $+ &request& dls $+ $chr(41) Use XDCC LIST to request a list
+  :loopc
+  %line = $read(%file,n,%where)
+  if (%line) {
+    inc %total $gettok(%line,2,9)
+    inc %where | goto loopc
+  }
+  var %packs = $lines(%file)
+  return $msg.compile(%ad,&nick&,$1,&total&,%packs,&request&,%total)
+}
+ 
+; Section five- popups and /xdcc
+alias -l _validact if (($chr(32) !isin $active) && (@* !iswm $active)) return $1-
+menu menubar {
+  $_popssep
+XDCC
+.$iif($_cfgx(xdcc,enable),$style(1)) XDCC enabled:xdcc on
+.$iif(!$_cfgx(xdcc,enable),$style(1)) XDCC disabled:xdcc off
+  .-
+.$_validact(Send full list to $replace($active,&,&&)):xdcc list $active
+.$_validact(Send ad to $replace($active,&,&&)):xdcc ad $active
+  .-
+.$_validact($iif($timer(.xdccad) == $null,Timered ad to $replace($active,&,&&))):xdcc timer $_entry(-2,15,Send XDCC ad how often? $chr(40) $+ in minutes $+ $chr(41)) $active
+.$_validact($iif($timer(.xdccad) == $null,Timered ad to all channels)):xdcc timer $_entry(-2,15,Send XDCC ad how often? $chr(40) $+ in minutes $+ $chr(41)) all
+.$iif($timer(.xdccad),Disable timered ad):xdcc timer off
+  .-
+.$iif($window(@DCCQueue).state == hidden,View queue):window -aw @DCCQueue
+  .-
+.Pack setup...:xdcc edit
+.XDCC options...:xdcc cfg
+.DCC queue options...:dcc queue
+}
+alias xdcc {
+if (($1 == on) || ($1 == on)) {
+dispa XDCC enabled.
+    _cfgxw xdcc enable 1
+  }
+elseif (($1 == off) || ($1 == off)) {
+dispa XDCC disabled.
+    _cfgxw xdcc enable 0
+  }
+  elseif ($1 == list) {
+    if ($2) var %targ = $2
+    else var %targ = $active
+if (($chr(32) isin %targ) || (@* iswm %targ)) _error Cannot send XDCC data to that window
+    if (%targ == all) _sendad amsg *
+    else _sendad msg %targ
+  }
+  elseif ($1 == ad) {
+    if ($2) var %targ = $2
+    else var %targ = $active
+if (($chr(32) isin %targ) || (@* iswm %targ)) _error Cannot send XDCC data to that window
+    if (%targ == all) amsg $_shortad(*)
+    else msg %targ $_shortad(%targ)
+  }
+  elseif ($1 == timer) {
+    if ($2 !isnum) {
+      .timer.xdccad off
+dispa XDCC ad timer disabled.
+    }
+    else {
+      if ($3) var %targ = $3
+      else var %targ = $active
+if (($chr(32) isin %targ) || (@* iswm %targ)) _error Cannot send XDCC data to that window
+      .timer.xdccad 0 $calc($2 * 60) xdcc ad %targ
+dispa XDCC ad will be sent to $:t(%targ) every $:s($2) minutes. $chr(40) $+ $:s(/xdcc timer off) to disable $+ $chr(41)
+    }
+  }
+  elseif ($1 == cfg) _dialog -am xdcccfg xdcccfg
+  elseif ($1 == edit) _dialog -am xdcc xdcc
+  else {
+dispa $:s(/xdcc edit) to edit packs
+dispa $:s(/xdcc cfg) to configure options
+var %cmd = /xdcc on|off
+dispa $:s(%cmd) to enable or disable
+var %cmd = /xdcc list [nickname|#channel]
+dispa $:s(%cmd) to send a list of packs
+var %cmd = /xdcc ad [nickname|#channel]
+dispa $:s(%cmd) to send a short advertisement
+var %cmd = /xdcc timer n|off [#channel|nickname|all]
+dispa $:s(%cmd) to send short advertisement every n minutes
+  }
+}

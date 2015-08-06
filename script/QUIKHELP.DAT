@@ -1,0 +1,66 @@
+/me +actiontoperform * !An action to perform in the active window
+/say +messagetosay * !A message to say in the active window
+/auth --r +nicknameoraddress -minutes !User to authorize for DCCs $chr(40) $+ -r to remove $+ $chr(41)
+/ign --r +nicknameoraddress !Nickname $chr(40) $+ or address $+ $chr(41) of a user to ignore $chr(40) $+ or -r to unignore $+ $chr(41)
+/dcc +chat/send -nickname -filename * !CHAT or SEND and a nickname $+ $chr(44) plus a filename for SENDs.
+/names -#[channel],#channel... !A channel to get a names list for
+/msg +nickname +messagetosay * !A nickname and a message to send to them
+/query +nickname -messagetosay * !A nickname to open a private message window
+/describe +nickname +actiontoperform * !A nickname and an action to send to them
+/join -#[channel],#channel... -channelkey $+ $chr(40) $+ s $+ $chr(41) !One or more channels to join $+ $chr(44) separated by commas
+/jp -#[channel],#channel... -channelkey $+ $chr(40) $+ s $+ $chr(41) !One or more channels to join and then ping
+/kick -#channel +nickname -reasonforkick * !A nickname to kick $+ $chr(44) with optional channel or reason
+/fk --n -#channel +usermask -reasonforkick * !An address mask to filter users against for kicking
+/ban --u# -#channel +nickname -masktype * !A nickname or address to ban $+ $chr(44) with optional channel
+/cb -#channel +nickname -reasonforkickban * !A nickname to kick and cloneban
+/tempban -#channel +nickname -reasonfortempban * !A nickname to kick and ban temporarily $+ $chr(44) with optional reason
+/black -#channel +nickname -reasonforblacklist * !A nickname or address to blacklist $+ $chr(44) with optional channel
+/kb -#channel +nickname -reasonforkickban * !A nickname to kick and ban $+ $chr(44) with optional channel or reason
+/kb0 -#channel +nickname -reasonforkickban * !A nickname to kickban by site $+ $chr(44) with optional channel or reason
+/kb2 -#channel +nickname -reasonforkickban * !A nickname to kickban by domain $+ $chr(44) with optional channel or reason
+/notice +nickname +messagetosay * !A nickname and a message to send to them
+/ntc +nickname +messagetosay * !A nickname and a message to send to them
+/userhost +nickname -nickname... * !One or more nicknames to get addresses of
+/host +nickname -masktype !A nickname to look up the hostmask of $+ $chr(44) and an optional mask type
+/whois +nickname -nickname... * !One or more nicknames to get info on
+/whowas +nickname -nickname... * !One or more recent users to get whowas info on
+/nick +newnickname !Your desired new nickname
+/op -#channel +nickname -nickname... * !One or more nicknames to op
+/deop -#channel +nickname -nickname... * !One or more nicknames to deop
+/unop -#channel +nickname -nickname... * !One or more nicknames to deop and dehalfop
+/hfop -#channel +nickname -nickname... * !One or more nicknames to halfop
+/dehfop -#channel +nickname -nickname... * !One or more nicknames to dehalfop
+/voc -#channel +nickname -nickname... * !One or more nicknames to give voice to
+/devoc -#channel +nickname -nickname... * !One or more nicknames to tak voice from
+/fop -#channel +usermask * !An address mask to filter users against and op them
+/fdeop -#channel +usermask * !An address mask to filter users against and deop them
+/funop -#channel +usermask * !An address mask to filter users against and deop/dehalfop
+/fhfop -#channel +usermask * !An address mask to filter users against and halfop them
+/fdehfop -#channel +usermask * !An address mask to filter users against and dehalfop them
+/fvoc -#channel +usermask * !An address mask to filter users against and give voice to
+/fdevoc -#channel +usermask * !An address mask to filter users against and take voice from
+/onotice -#channel +messagetosay * !A message to send to all ops $+ $chr(44) channel name optional
+/ohnotice -#channel +messagetosay * !A message to send to all ops/halfops $+ $chr(44) channel name optional
+/ovnotice -#channel +messagetosay * !A message to send to all ops/halfops/voiced users $+ $chr(44) channel name optional
+/peon -#channel +messagetosay * !A message to send to all NON ops/halfops $+ $chr(44) channel name optional
+/allbut -#channel +nickname $+ $chr(40) $+ s $+ $chr(41) +messagetosay * !A message to send to all BUT the given users $+ $chr(44) channel name optional
+/fnotice -#channel +usermask +messagetosay * !A message to send to all matching users $+ $chr(44) channel name optional
+/ew +nickname !Nickname to get extended whois on
+/ame +actiontoperform * !An action to perform in all channels
+/aame +actiontoperform * !An action to perform in all channels $+ $chr(44) chats $+ $chr(44) and recent queries
+/acme +actiontoperform * !An action to perform in all chats and recent queries
+/amsg +messagetosay * !A message to send to all channels
+/aamsg +messagetosay * !A message to send to all channels $+ $chr(44) chats $+ $chr(44) and recent queries
+/acmsg +messagetosay * !A message to send to all chats and recent queries
+/who +nickname $+ $chr(44) $+ mask $+ $chr(44) $+ orsearchstring * !A nickname or other string to search for matching users
+/userinfo +nicknameor $+ $chr(35) $+ channel * !A nickname or channel to request USERINFO info from $+ $chr(44) via CTCP
+/clientinfo +nicknameor $+ $chr(35) $+ channel * !A nickname or channel to request CLIENTINFO info from $+ $chr(44) via CTCP
+/fing +nicknameor $+ $chr(35) $+ channel * !A nickname or channel to request FINGER info from $+ $chr(44) via CTCP
+/script +nicknameor $+ $chr(35) $+ channel * !A nickname or channel to request SCRIPT info from $+ $chr(44) via CTCP
+/ctcp +nicknameor $+ $chr(35) $+ channel +CTCPtosend * !A nickname or channel and the CTCP to send to them
+/ctcpreply +nicknameor $+ $chr(35) $+ channel +CTCPreply * !A nickname or channel and the CTCP to send to them
+/user +nicknameoraddress !A user to edit userlevels for $chr(40) $+ see help for advanced usage $+ $chr(41)
+/sping +nicknameorserver !A server to ping or user to 'server ping'
+/serverlist ++/- +network $+ $chr(40) $+ s $+ $chr(41) * !A network to add or remove from the serverlist
+/invite +nickname $+ $chr(44) $+  $+ $chr(35) $+ channel $+ $chr(44) $+ orboth * !A user and channel to invite them to $chr(40) $+ active window defaults $+ $chr(41)
+/addon +action +filename * !An action $chr(40) $+ install $+ $chr(44) config $+ $chr(44) etc. $+ $chr(41) and a PnP addon filename

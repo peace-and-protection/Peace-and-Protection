@@ -1,0 +1,33 @@
+invdcc1* 1 8 Invalid DCC detected
+invdcc2* 1 9 Invalid DCC detected
+invdcc3* 1 2 Invalid DCC detected
+wordk11* 1 8 Unallowed word/phrase - &A&
+wordk21* 1 9 Unallowed word/phrase - &A&
+pervscan1* 1 9 Unallowed channel - &A&
+ctcp1* 1 9 CTCP flooding
+ctcp2* 1 5 CTCP flood detected
+allc1* 3 13 &nick& triggered protection- CTCP flood - &A& pts from all sites in &B& sec
+joinp1* 1 9 Join/Part flood
+joinp2* 2 5 Join / part flood detected
+nick1* 1 9 Nick change flood - &A& nicks in &B& sec
+clones1* 1 10 Please remove the clones (&A& clones from &B& detected)
+clones2* 1 5 &A& clones from &B&
+banyou1* 1 6
+deop1* 1 8 Mass deop - &A& deops
+kick1* 1 8 Mass kick - &A& kicks
+mbanu1* 1 8 Mass ban - &A& users
+mbanb1* 1 8 Mass ban - &A& bans
+model1* 1 6
+tover1* 1 6
+text1* 1 8 Text flood - &A& bytes in &B& sec
+text2* 1 9 Text flood - &A& bytes in &B& sec
+scroll1* 1 8 Text flood - &A& lines in &B& sec
+scroll2* 1 9 Text flood - &A& lines in &B& sec
+repeat1* 1 8 Repeating - &A& times
+repeat2* 1 9 Repeating - &A& times
+notice1* 1 9 Notice flood - &A& in &B& sec
+notice2* 1 2 Notice flood - &A& in &B& sec
+caps1* 1 8 Caps abuse - &A&%
+attrfl1* 1 8 Color/Attribute flood - &A& codes
+attrfl2* 1 9 Color/Attribute flood - &A& codes
+attrab1* 1 8 Color/Attribute abuse - &A& codes

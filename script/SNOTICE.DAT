@@ -1,0 +1,36 @@
+Nick collisions
+Kills (from services)
+Kills
+Net splits (and squit)
+Net merges (and connects)
+Net burst received
+Net burst acknowledged
+GLine added
+GLine removed
+GLine expired
+GLine active for user
+Oper is now active
+Max connection records
+KLine active for user
+KLine removed
+KLine or autokill (temp) added
+Connection failures
+High-traffic mode
+Clone alert
+Services flooded
+Whois on you (IRCop only)
+Reports on commands (MOTD, etc.)
+IP number mismatch
+Illegal username
+Rehashing
+Settime received
+Unauthorized connection
+Bogus server name
+Throttling connections
+Hack notices
+[all other notices]
+Client connects/exits
+Shun notices
+Use of SAMODE
+Use of SAJOIN
+Privledged use of services

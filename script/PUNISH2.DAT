@@ -1,0 +1,24 @@
+ctcp CTCP flooding
+allc CTCP flooding
+invdcc Invalid DCC &A& - &B&
+notice Notice flood - &A& in &B& sec
+text Text flood - &A& bytes in &B& sec
+scroll Text flood - &A& lines in &B& sec
+repeat Repeating - &A& times
+attrfl Color/Attribute flood - &A& codes
+attrab Color/Attribute abuse - &A& codes
+joinp Join/Part flood
+clones &A& clones from &B&
+deop Mass deop - &A& deops
+kick Mass kick - &A& kicks
+mbanu Mass ban - &A& users
+mbanb Mass ban - &A& bans
+pervscan Unallowed channel - &A&
+wordk1 Unallowed word/phrase - &A&
+wordk2 Unallowed word/phrase - &A&
+nick Nick change flood - &A& nicks in &B& sec
+caps Caps abuse - &A&%
+banyou Banning myself - &A&
+model Potential takeover modes
+tover Potential takeover modes
+spam Spam/invite detected

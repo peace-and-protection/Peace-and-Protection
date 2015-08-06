@@ -1,0 +1,13 @@
+script\wallop.dat
+[config_dialog:wallop_hack]
+[config_dialog:wallop_gline]
+[config_dialog:wallop_kline]
+[config_dialog:wallop_servicesflood]
+[config_dialog:wallop_uworldgline]
+[config_dialog:wallop_uworldinvite]
+[config_dialog:wallop_uworldclearchan]
+[config_dialog:wallop_uworldmode]
+[config_dialog:wallop_connect]
+[config_dialog:wallop_xw]
+[config_dialog:wallop_netban]
+[[config_dialog:wallop_other:lower]]

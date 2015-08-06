@@ -1,0 +1,490 @@
+script\banlist.mrc
+; #= P&P -rs
+; ########################################
+; Peace and Protection
+; Banlist / etc. editing, and blacklist
+; ########################################
+
+;
+; Banlist/etc. editing
+;
+alias -l _openlist {
+  var %win = $_mservwin($1,$2)
+  if ($window(%win)) {
+    if ($window(%win).title) {
+      clear %win
+      titlebar %win
+      _windowreg %win _closebanlist
+    }
+  }
+  else {
+    _window 2.6 -nhlvk -t3,30,39,50 %win -1 -1 -1 -1 @banlist
+    _windowreg %win _closebanlist
+  }
+  return %win
+}
+alias -l _addlist if ($3) aline $1  	 $+ $2 $+ 	 $round($calc(($ctime - $4) / 86400),2) $+ 	 $+ $3 | else aline $1  	 $+ $2 $+ 	 	 
+alias -l _finlist {
+  var %win = $_openlist(@ $+ $1 $+ -list,- $+ $2)
+  if ($line(%win,0) == 0) {
+    window -c %win
+    if ($halted) return
+    disprc $2 [banlist:empty:type=$1]
+    halt
+  }
+  iline %win 1 [banlist:instructions] ([phrase:right_click:lower])
+  iline %win 2 [banlist:reminder]
+  iline %win 3  
+  iline %win 4  	 $+ $1 $+ 	[banlist:days_old]	[banlist:set_by]
+  iline %win 5  
+  window -awb %win
+  _banupd %win
+  halt
+}
+
+; opens a list from the ibl
+alias _iblbanlist {
+  var %win = $_openlist(@Ban-list,- $+ $1)
+  var %pos = 1
+  while ($ibl($1,%pos)) {
+    _addlist %win $ibl($1,%pos) $ibl($1,%pos).by $ibl($1,%pos).ctime
+    inc %pos
+  }  
+  _finlist Ban $1
+}
+
+raw 367:*:{
+  var %hashhit = $+(pnp.scanfound.,$cid,.,$cha2)
+  if ($hget(%hashhit)) {
+    var %hash = $+(pnp.scanunban.,$cid,.,$2)
+    var %num = $hget(%hash,0).item
+    while (%num > 0) {
+      var %item = $hget(%hash,%num).item
+      if ((%item iswm $3) || ($3 iswm %item)) hadd %hashhit $3 1
+      dec %num
+    }
+  }
+  else {
+    if ($halted) return
+    _addlist $_openlist(@Ban-list,- $+ $2) $3-
+  }
+  halt
+}
+raw 368:*:{
+  if ($hget($+(pnp.scanfound.,$cid,.,$2))) {
+    _scanu4 $2
+    halt
+  }
+  _finlist Ban $2
+}
+raw &346:*:{ _addlist $_openlist(@Invite-list,- $+ $2) $3- | halt }
+raw 347:*:_finlist Invite $2
+raw &348:*:{ _addlist $_openlist(@Exception-list,- $+ $2) $3- | halt }
+raw 349:*:_finlist Exception $2
+
+menu @Banlist {
+  dclick:_bangroup $active _bantog
+  $iif($sline($active,1).ln > 5,[popups_ban:toggle]):_bangroup $active _bantog
+  $iif($sline($active,1).ln > 5,[popups_ban:remove]):_bangroup $active _banrem
+  [popups_ban:add]...:_banadd $active $mid(beI,$pos(bei,$mid($active,2,1),1),1) $_entry(-1,$null,[banlist:add_ban:type=$remove($gettok($active,1,45),@):channel=$gettok($active,3-,45)]) +
+  $iif($sline($active,1).ln > 5,[popups_ban:modify]...):_bangroup $active _banmod
+  -
+  [popups_ban:remove]
+  .[popups_ban:matching_entries]...:{ 
+    var %whom = $_entry(-1,$null,[banlist:remove_matching])
+    if ($_ppmask(%whom,1,1,1)) _bancln $active * $ifmatch
+    else {
+      _notconnected
+      _Q.userhost _bancln $+ $active $+ *&n!&a disps $+ [banlist:clean_not_found:nick=$;t(%whom):s2p] %whom
+    }
+  }
+  .[popups_ban:nick_entries]:_bancln $active n
+  .[popups_ban:ip_entries]:_bancln $active i
+  .-
+  .[popups_ban:server_entries]:_bancln $active s
+  .[popups_ban:entries_set_by]...:_bancln $active b $_entry(-1,$me,[banlist:clean_set_by])
+  .-
+  .[popups_ban:newer_entries]...:_bancln $active <= $_entry(-2,0.1,[banlist:clean_newer])
+  .[popups_ban:older_entries]...:_bancln $active >= $_entry(-2,5,[banlist:clean_older])
+  .-
+  .[popups_ban:all_entries]:_banall $active _banrem
+  [popups_ban:backup]
+  .[popups_ban:export]...:_ssplay Question | var %export = $$sfile(*.txt,[banlist:export_to],[word:export]) | if ($exists(%export)) _fileopt 1 %export | _banexp $active %export
+  .-
+  .[popups_ban:import_add]...:_ssplay Question | _banimp $active 0 $$sfile(*.txt,[banlist:import_from],[word:import])
+  .[popups_ban:import_replace]...:_ssplay Question | _banimp $active 1 $$sfile(*.txt,[banlist:import_from],[word:import])
+  .-
+  .$iif($sline($active,1).ln > 5,[popups_ban:blacklist_copy]...):black $active
+  .$iif($sline($active,1).ln > 5,[popups_ban:blacklist_move]...):var %win = $active | black %win | _bangroup %win _banrem
+  -
+  $iif($count($window($active).title,-) > 1,[popups_ban:changes])
+  .[popups_ban:perform]:_closebanlist $active
+  .-
+  .[popups_ban:cancel]:_banall $active _banok
+  .[popups_ban:close]:_windowreg $active | _dowclose $active | window -c $active
+}
+alias -l _bangroup var %blip = $mid(beI,$pos(bei,$mid($1,2,1),1),1),%num = $sline($1,0) | :loop | if (%num) { if ($sline($1,%num).ln > 5) $2 $1 $ifmatch %blip | dec %num | goto loop } | _banupd $1
+alias -l _banall var %blip = $mid(beI,$pos(bei,$mid($1,2,1),1),1),%num = $line($1,0) | :loop | if (%num > 5) { $2 $1 $ifmatch %blip | dec %num | goto loop } | _banupd $1
+alias _bancln {
+  var %blip = $mid(beI,$pos(bei,$mid($1,2,1),1),1),%num = $line($1,0)
+  :loop
+  if (%num > 5) {
+    var %kill
+    goto $2
+    :* | var %ban = $gettok($line($1,%num),2,9) | if ((%ban iswm $3) || ($3 iswm %ban)) %kill = 1 | goto next
+    :n | if ($remove($gettok($gettok($line($1,%num),2,9),1,33),*,?) != $null) %kill = 1 | goto next
+    :i | var %ban = $gettok($gettok($line($1,%num),2,9),2-,64) | if ((* !isin %ban) && (? !isin %ban)) %kill = 1 | goto next
+    :b | if ($3 iswm $gettok($line($1,%num),4,9)) %kill = 1 | goto next
+    :s | var %whom = $gettok($line($1,%num),4,9) | if ((. isin %whom) && (@ !isin %whom)) %kill = 1 | goto next
+    :<= | :>= | if ($gettok($line($1,%num),3,9) $2 $3) %kill = 1
+    :next
+    if (%kill) _banrem $1 %num %blip
+    dec %num | goto loop
+  }
+  _banupd $1
+}
+alias -l _bantog {
+  if (+ isin $gettok($line($1,$2),1,9)) dline $1 $2
+  elseif (- isin $gettok($line($1,$2),1,9)) rline $1 $2  	 $+ $gettok($line($1,$2),2-4,9)
+  else rline $1 $2 - $+ $3 $+ 	 $+ $gettok($line($1,$2),2-4,9) $+ 	 ( $+ [banlist:removing:type=$remove($gettok($1,1,45),@):lower] $+ )
+}
+alias -l _banok {
+  if (+ isin $gettok($line($1,$2),1,9)) dline $1 $2
+  elseif (- isin $gettok($line($1,$2),1,9)) rline $1 $2  	 $+ $gettok($line($1,$2),2-4,9)
+}
+alias _banrem {
+  if (+ isin $gettok($line($1,$2),1,9)) dline $1 $2
+  else rline $1 $2 - $+ $3 $+ 	 $+ $gettok($line($1,$2),2-4,9) $+ 	 ( $+ [banlist:removing:type=$remove($gettok($1,1,45),@):lower] $+ )
+}
+alias _banadd {
+  var %num = $line($1,0)
+  :loop
+  if ($gettok($line($1,%num),2,9) == $3) {
+    if (- isin $gettok($line($1,%num),1,9)) rline $1 %num  	 $+ $gettok($line($1,%num),2-4,9)
+    goto done
+  }
+  if (%num > 5) { dec %num | goto loop }
+  aline $1 + $+ $2 $+ 	 $+ $3 $+ 	 0 $+ 	 $+ $me $+ 	 ( $+ [banlist:adding:type=$remove($gettok($1,1,45),@):lower] $+ )
+  :done
+  if ($4) _banupd $1
+}
+alias -l _banmake {
+  var %num = $line($1,0)
+  :loop
+  if ($gettok($line($1,%num),2,9) == $2) {
+    rline $1 %num  	 $+ $gettok($line($1,%num),2-4,9)
+    goto done
+  }
+  if (%num > 5) { dec %num | goto loop }
+  aline $1  	 $+ $2 $+ 	 0 $+ 	 $+ $3
+  :done
+  _banupd $1
+}
+alias -l _bankill {
+  var %num = $line($1,0)
+  :loop
+  if ($gettok($line($1,%num),2,9) == $2) dline $1 %num
+  if (%num > 5) { dec %num | goto loop }
+  _banupd $1
+}
+alias -l _banmod {
+  var %newban = $_entry(-1,$gettok($line($1,$2),2,9),[banlist:change_ban:type=$remove($gettok($1,1,45),@)]) +
+  _banrem $1-
+  _banadd $1 $3 %newban
+}
+alias -l _banupd {
+  var %title = -
+  if ($fline($1,+*,0,0)) %title = %title [banlist:adding_count:num=$ifmatch:type=$remove($gettok($1,1,45),@)] -
+  if ($fline($1,-*,0,0)) %title = %title [banlist:removing_count:num=$ifmatch:type=$remove($gettok($1,1,45),@)] -
+  var %cur = $calc($line($1,0) - $fline($1,-*,0,0) - 5)
+  if (%title == -) %title = - [banlist:total_count:num=%cur:type=$remove($gettok($1,1,45),@)]
+  else %title = %title [banlist:result_count:num=%cur:type=$remove($gettok($1,1,45),@)]
+  titlebar $1 %title ( $+ $hget(pnp. $+ $window($1).cid,net) $+ )
+}
+alias _closebanlist {
+  var %channel = $mid($1,$calc($pos($1,-,2) + 1),$len($1))
+  _init.mass %channel
+  if (($fline($1,-*,1,0)) || ($fline($1,+*,1,0))) {
+    if (($me !ishop %channel) && ($me !isop %channel)) { disprc %channel [banlist:not_opped:type=$remove($gettok($1,1,45),@)] | return }
+  }
+  :loopu
+  if ($fline($1,-*,1,0)) {
+    _add.mass %channel - $mid($line($1,$ifmatch),3,1) $gettok($line($1,$ifmatch),2,9)
+    dline $1 $fline($1,-*,1,0)
+    goto loopu
+  }
+  :loopb
+  if ($fline($1,+*,1,0)) {
+    _add.mass %channel + $mid($line($1,$ifmatch),3,1) $gettok($line($1,$ifmatch),2,9)
+    dline $1 $fline($1,+*,1,0)
+    goto loopb
+  }
+  _flush.mass %channel
+}
+alias -l _banimp {
+  if ($2) _banall $1 _banrem
+  var %read,%num = 1,%last = $lines($3-),%type = $mid(beI,$pos(bei,$mid($1,2,1),1),1)
+  :loop
+  %read = $read($3-,n,%num)
+  if ($matchtok($matchtok(%read,*,1,9),*,1,32)) _banadd $1 %type $ifmatch
+  if (%num < %last) { inc %num | goto loop }
+  _banupd $1
+}
+alias _banexp {
+  write " $+ $2- $+ " $remove($gettok($1,1,45),@) $+ list / $mid($1,$calc($pos($1,-,2) + 1),$len($1)) / $hget(pnp. $+ $cid,net) / $me ( $+ $_datetime $+ )
+  var %line,%num = 6
+  :loop
+  %line = $line($1,%num)
+  if (%line) {
+    if (- !isin $gettok(%line,1,9)) {
+      if ($gettok(%line,3,9)) write " $+ $2- $+ " $gettok(%line,2,9) 	[banlist:set_by:lower] $gettok(%line,4,9) $gettok(%line,3,9) [banlist:days_old:lower]
+      else write " $+ $2- $+ " $gettok(%line,2,9)
+    }
+    inc %num | goto loop
+  }
+}
+on *:BAN:#:if ($window($_mservwin(@Ban-list,- $+ $chan))) _banmake $ifmatch $banmask $nick
+on *:UNBAN:#:if ($window($_mservwin(@Ban-list,- $+ $chan))) _bankill $ifmatch $banmask $nick
+
+;
+; Blacklist
+;
+alias blacklist blackedit
+alias blackedit {
+  if ($window(@Blacklist)) clear @Blacklist
+  else _window 2.7 -slzk -t10,25,40 @Blacklist $_winpos(8,12,10,10) @Blacklist
+  var %file,%num,%line,%nick,%chan,%note
+  %file = $_cfg(userinfo.ini)
+  %num = $ulist(*,black,0)
+  :loop
+  if (%num) {
+    %line = $ulist(*,black,%num)
+    %nick = $readini(%file,n,%line,nick)
+    %chan = $readini(%file,n,%line,chan)
+    %note = $readini(%file,n,%line,note)
+    aline @Blacklist $iif(%nick == $null,-,%nick) $+ 	 $+ %line $+ 	 $+ ( $+ $iif(%chan == $null,[word:all:lower],%chan) $+ ) $+ 	 $+ $_readprep(%note)
+    dec %num | goto loop
+  }
+  iline @Blacklist 1 [blacklist:instruction1]
+  iline @Blacklist 2 [blacklist:instruction2]
+  iline @Blacklist 3 [blacklist:instruction3]
+  iline @Blacklist 4  
+  iline @Blacklist 5 [word:nickname]	[word:address]	[word:channel]	[word:reason]
+  iline @Blacklist 6  
+  window -b @Blacklist
+}
+
+menu @Blacklist {
+  dclick:if ($sline($active,1).ln > 6) black $gettok($sline($active,1),2,9)
+  [popups_blacklist:add_user]...:black $_entry(-1,$null,[blacklist:add_user])
+  $iif($sline($active,1).ln > 6,[popups_blacklist:remove])::loop | black -r $gettok($sline($active,1),2,9) | if ($sline($active,1).ln) goto loop
+  -
+  $iif($sline($active,1).ln > 6,[popups_blacklist:edit]...):black $gettok($sline($active,1),2,9)
+}
+
+dialog blackedit {
+  title "[blacklist_dialog:blacklist]"
+  icon script\pnp.ico
+  option dbu
+  size -1 -1 150 130
+
+  box "[blacklist_dialog:header]:", 101, 5 5 140 39
+  text "&[word:nickname:dlg]:", 106, 8 17 25 10, right
+  edit "", 1, 35 15 50 11
+  text "([user_dialog:nickname_note:lower])", 107, 87 17 50 10
+  text "&[word:usermask:dlg]:", 108, 8 29 25 10, right
+  combo 2, 35 27 105 60, edit drop
+
+  box "[blacklist_dialog:where]:", 102, 5 46 140 43
+  radio "&[phrase:all_channels:dlg]", 5, 10 56 130 8
+  radio "&[blacklist_dialog:only_in]:", 6, 10 66 35 8
+  edit "", 7, 45 65 90 11, disable
+  text "([blacklist_dialog:multiple_ok:lower])", 103, 47 78 94 10
+
+  text "&[word:reason:dlg]:", 104, 8 95 25 10, right
+  combo 8, 35 93 105 70, edit drop
+
+  button "&[blacklist_dialog:blacklist]", 201, 5 112 40 12, default
+  button "[dialog:cancel]", 202, 55 112 40 12, cancel
+  button "&[dialog:remove]", 203, 105 112 40 12, disable
+
+  edit "", 241, 1 1 1 1, hide autohs
+  edit "", 242, 1 1 1 1, hide autohs result
+}
+on *:DIALOG:blackedit:sclick:5:did -b $dname 7
+on *:DIALOG:blackedit:sclick:6:did -e $dname 7
+on *:DIALOG:blackedit:init:*:{
+  var %reason
+  if (@* iswm %.who) {
+    var %chan = $mid(%.who,$calc($pos(%.who,-,2) + 1),$len(%.who))
+    did -ae $dname 7 %chan
+    did -cf $dname 6
+    did -abc $dname 2 ( $+ [blacklist:banlist_transfer:channel=%chan:lower] $+ )
+    did -a $dname 242 %.who
+  }
+  else {
+    if ($istok($level(%.addr),=black,44)) {
+      ; saves original address
+      did -a $dname 241 %.addr
+      did -e $dname 203
+      var %file = $_cfg(userinfo.ini)
+      did -a $dname 1 $readini(%file,n,%.addr,nick)
+      %reason = $readini(%file,n,%.addr,note)
+      var %chan = $readini(%file,n,%.addr,chan)
+      if (%chan) { did -ae $dname 7 %chan | did -c $dname 6 }
+      else did -c $dname 5
+    }
+    else {
+      did -c $dname 5
+      if ($gettok(%.who,1,33) != *) did -a $dname 1 $ifmatch
+    }
+    if ($did(7) == $null) {
+      if ($active ischan) did -a $dname 7 $active
+      elseif ($comchan($did(1),1)) did -a $dname 7 $ifmatch
+    }
+    did -ac $dname 2 %.addr
+    if (* !isin %.who) {
+      if (*!*@* iswm %.who) _ddaddm $dname 2 %.who 022 030 100 002 001 111
+      elseif ($address(%.who,5)) _ddaddm $dname 2 $ifmatch 022 030 100 002 001 111
+    }
+  }
+  _fillrec $dname 8 0 $_cfg(black.lis) 0 $_readprep(%reason)
+  if (%reason == $null) did -u $dname 8
+  unset %.who %.addr
+}
+on *:DIALOG:blackedit:sclick:201:{
+  if ($did(8) == $null) _okcancel 1 [blacklist:no_reason]
+  ; remove old?
+  if (($did(241) != $did(2)) && ($did(241) != $null)) .black -r $did(241)
+  ; add new
+  ; (transfer?)
+  if ($did(242) != $null) {
+    var %num = 1
+    if (($did(6).state) && ($_ischan($did(7),1))) var %where = $_s2c($did(7))
+    else var %where = *
+    var %other = = $+ $gettok($did(1),1,32) $did(8)
+    :loop
+    if ($sline($did(242),%num)) {
+      black %where $gettok($ifmatch,2,9) %other
+      inc %num | goto loop
+    }
+  }
+  else {
+    if (($did(6).state) && ($_ischan($did(7),1))) black $_s2c($did(7)) $did(2) = $+ $gettok($did(1),1,32) $did(8)
+    else black * $did(2) = $+ $gettok($did(1),1,32) $did(8)
+  }
+  dialog -c $dname
+}
+on *:DIALOG:blackedit:sclick:203:black -r $did(241) | dialog -c $dname
+
+; /black [-r|#channel(s)|*] nick|addr|@window [=nick] [reason]
+; pops up dialog only if just nick/addr is given
+alias black {
+  var %num,%nick,%line,%line2
+  if ((-* iswm $1) || ($_ischan($1)) || ($1 == *)) { var %where = $1,%who = $2,%why = $3- }
+  else { var %where,%who = $1,%why = $2- }
+  if (%who == $null) _qhelp /black $1-
+
+  if (@* iswm %who) { set -u %.who %who | _dialog -ma blackedit blackedit | return }
+
+  var %dialog = $iif($1- == %who,1,0)
+
+  %who = $_nc(%who)
+  var %addr = $_ppmask(%who,$_stmask(3,%where),1)
+  if (%addr == $null) {
+    dispa [phrase:address_lookup:nick=$;t(%who)] $+ ...
+    _notconnected
+    _Q.userhost black $+ %where $+ &n!&a $+ $iif(%why != $null,$_s2p(%why)) dispa $+ [blacklist:blacklist_not_found:nick=$;t(%who):s2p] %who
+    halt
+  }
+
+  ; dialog
+  if (%dialog) { set -u %.who %who | set -u %.addr %addr | _dialog -ma blackedit blackedit | return }
+
+  var %file = $_cfg(userinfo.ini)
+  if (%where == -r) {
+    if ($window(@Blacklist)) {
+      %num = 7 | :loop1 | if ($line(@Blacklist,%num)) { if ($gettok($ifmatch,2,9) == %addr) dline @Blacklist %num | else inc %num | goto loop1 }
+    }
+    else {
+      if ($istok($level(%addr),=black,44)) dispa [blacklist:removing:address=$;s(%addr)]
+      else dispa [blacklist:removing_not_found:address=$;s(%addr)]
+    }
+    .ruser black %addr
+    if ($level(%addr) == $dlevel) .ruser %addr
+    scid -a _nickcol.updatemask %addr 1
+    remini %file %addr
+  }
+  else {
+    if (=* iswm $gettok(%why,1,32)) { %nick = $right($gettok(%why,1,32),-1) | %why = $gettok(%why,2-,32) }
+    elseif ((* !isin $gettok(%who,1,33)) && ($gettok(%who,1,33) != $null)) %nick = $ifmatch
+    else %nick = $readini(%file,n,%addr,nick)
+    if (%why == $null) { %why = $readini(%file,n,%addr,note) | %why = $_readprep(%why) }
+    if (%where == $null) %where = $readini(%file,n,%addr,chan)
+    if (%where == *) var %where
+    if ($window(@Blacklist)) {
+      %line = $iif(%nick == $null,-,%nick) $+ 	 $+ %addr $+ 	 $+ ( $+ $iif(%where == $null,[word:all:lower],%where) $+ ) $+ 	 $+ %why
+      %num = 7 | :loop2
+      if ($line(@Blacklist,%num)) {
+        if ($gettok($ifmatch,2,9) == %addr) _ridline @Blacklist %num %line
+        else { inc %num | goto loop2 }
+      }
+      else iline @Blacklist $calc($line(@Blacklist,0) + 1) %line
+    }
+    else {
+      if (%nick) %line = $:t(%nick) ( $+ $:s(%addr) $+ ) | else %line = $:s(%addr)
+      if (%where == $null) %line2 = $:s([phrase:all_channels:lower]) | else %line2 = $:s(%where)
+      var %whyshow = $iif(%why == $null,[word:none:lower],$:s(%why))
+      dispa $iif($istok($level(%addr),=black,44),[blacklist:modifying:nick=%line:channel=%line2:reason=%whyshow],[blacklist:adding:nick=%line:channel=%line2:reason=%whyshow])
+    }
+    if ($level(%addr) == $dlevel) .auser -a $dlevel %addr
+    .auser -a black %addr
+    if (%nick) writeini %file %addr nick %nick | else remini %file %addr nick
+    if (%why) { writeini %file %addr note $_writeprep(%why) | _recent2 black 9 %why } | else remini %file %addr note
+    if (%where) writeini %file %addr chan %where | else remini %file %addr chan
+    var %cid = $scon(0)
+    set -u %.punishwait 1
+    while (%cid >= 1) {
+      scon %cid
+      _nickcol.updatemask %addr 1
+      %num = $chan(0)
+      :loopC
+      ; No need to check for connection status or on channel, as we check for isop/ishop
+      if ((($me isop $chan(%num)) || ($me ishop $chan(%num))) && ($ialchan(%addr,$chan(%num),0))) {
+        if ((%where == $null) || ($istok(%where,$chan(%num),44))) {
+          disprc $chan(%num) [blacklist:kickban:address=$;s(%addr)] $+ ...
+          %line = $_msg(black)
+          if (&reason !isin %line) %line = %line &reason&
+          set -u %&reason& %why
+          set -u %&addr& %addr
+          kb $chan(%num) %addr %line
+        }
+      }
+      if (%num > 1) { dec %num | goto loopC }
+      dec %cid
+    }
+    scon -r
+    unset %&reason& %&addr&
+  }
+}
+
+; Reorders userlist so all blacklist-only entries are at the end.
+alias _reorderblack {
+  saveini
+  if ($isfile($_cfg(users.mrc))) {
+    window -hln @.userlist
+    loadbuf @.userlist $_cfg(users.mrc)
+    var %ln = 1,%last = $line(@.userlist,0)
+    while (%ln <= %last) {
+      if (1,=black:* iswm $line(@.userlist,%ln)) {
+        aline @.userlist $line(@.userlist,%ln)
+        dline @.userlist %ln
+        dec %last
+      }
+      else inc %ln
+    }
+    savebuf @.userlist $_cfg(users.mrc)
+    .load -ru " $+ $_cfg(users.mrc) $+ "
+    window -c @.userlist
+  }
+}

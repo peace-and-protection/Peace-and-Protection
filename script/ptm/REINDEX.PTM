@@ -1,0 +1,286 @@
+addons\reindex.ini
+[files]
+addrbk=addrbk.ini
+servers=servers.ini
+browser=c:\progra~1\intern~1\iexplore.exe
+finger=finger.txt
+urls=urls.ini
+trayicon=script\pnp.ico
+emailer=c:\program files\outlook express\msimn.exe
+[warn]
+fserve=on
+[options]
+n0=0,0,0,0,0,0,300,0,0,0,1,0,0,0,0,0,1,0,0,0,512,0,1,0,0,0,1,1,0,50,0,0
+n1=5,50,0,0,0,0,0,0,2,1,0,1,0,0,1,1,0,1,0,0,1,1,1,0,5,0,1,0,0,0,1,0,0
+n2=0,0,0,1,1,1,1,1,0,60,120,0,0,1,0,0,1,1,0,120,20,10,0,1,1,0,0,1,0,0,0
+n3=500,0,0,0,0,0,1,0,0,1,0,1,0,0,1,1,3,1,0,1,0,0,0,0,0,1,0,1,0,0,1,3,180
+n4=0,0,1,0,0,3,9999,0,0,0,1,0,1024,0,0,99,60,0,0,1,1,0,0,0,1,5000,1,5,0,0,3
+n5=1,1,1,1,1,1,1,1,1,1,6667,0,0,0,0,0,1,0,300,10,4,0,0,24,0,0,1,8192,1,0,0,91
+n6=0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,100,1,1,0,0,1,0,0,4,1
+n7=1,0,0,0,0,0,0,1,1,1,1,1,0,1,0,0,1,70,0,3,0
+[dirs]
+logdir=logs\
+waves=sounds\
+midis=sounds\
+mp3s=sounds\
+wma=sounds\
+wmas=sounds\
+oggs=sounds\
+[about]
+version=6.01
+show=BR26354
+[ident]
+active=no
+system=UNIX
+port=113
+[socks]
+enabled=no
+port=1080
+method=4
+dccs=no
+[clicks]
+status=/lusers
+query=/whois $1
+channel=/channel
+nicklist=/query $1
+notify=/whois $1
+[fileserver]
+warning=on
+[dccserver]
+n0=0,59,0,0,0,0
+[mirc]
+host=Random US DALnet serverSERVER:irc.dal.net:7000GROUP:01
+[text]
+commandchar=/
+linesep=-
+ignore=*.exe,*.com,*.bat,*.dll,*.ini
+accept=*.jpg,*.gif,*.png,*.bmp,*.txt,*.log,*.wav,*.mid,*.mp3,*.zip
+[windows]
+scripts=129,473,90,441,0,0,0
+main=100,600,41,490,0,1,0
+[dde]
+ServerStatus=off
+ServiceName=mIRC
+CheckName=off
+[colours]
+n0=0,6,4,5,2,3,3,3,3,3,3,1,5,2,6,1,3,2,3,5,1,0,1,0,1,15,0,0
+[dragdrop]
+n0=*.wav:/sound $1 $2-
+n1=*.*:/dcc send $1 $2-
+s0=*.*:/dcc send $1 $2-
+[pfiles]
+n0=popups.ini
+n1=popups.ini
+n2=popups.ini
+n3=popups.ini
+n4=popups.ini
+
+[agent]
+enable=0,0,0
+char=default
+options=1,1,1,100,0
+speech=150,60,100,1,180,10,50,1,1,1,0,50,1
+channel=1,1,1,1,1,1,1,1,1
+private=1,1,1,1
+other=1,1,1,1,1,1,1
+pos=20,20
+
+[variables]
+
+[script]
+n0=alias -l reindex {
+n1=%.fext = mp2 mp3 | %.trig.type = mp3 | %.type = mp3 | %.userdir = f:\pp400\config\DEFAULT\ | %.sdesc = MPEG | %.textlist = f:\pp400\Awenyedd-mp3.txt | %.leechcmd = !Awenyedd
+n2=window -hls @.reindex
+n3=if (%.trig.type == %.type) { window -hl @.text | unset %.lastdir %.totalsize }
+n4=if ($exists(script\pnp.ico)) tray -i script\pnp.ico
+n5=%.fn = 1 | %.ftotal = 0
+n6=%.sini = %.userdir $+ sound.ini
+n7=:loop1
+n8=%.fdir = $readini(%.sini,n,%.type,dir $+ %.fn)
+n9=if (%.fdir) {
+n10=%.fx = $numtok(%.fext,32)
+n11=:loop2
+n12=%.fex = *. $+ $gettok(%.fext,%.fx,32)
+n13=inc %.ftotal $findfile(%.fdir,%.fex,@.reindex)
+n14=if (%.fx > 1) { dec %.fx | goto loop2 }
+n15=inc %.fn
+n16=goto loop1
+n17=}
+n18=
+n19=if (%.ftotal < 1) return
+n20=
+n21=%.fprog = 0
+n22=_progress.1 [sound:reindex:type=%.sdesc]...
+n23=
+n24=; File names
+n25=%.indx = %.userdir $+ %.type $+ _indx.dat
+n26=
+n27=window -hl @.idx
+n28=if ($exists(%.indx)) {
+n29=if ($read(%.indx,0) != $null) write -dl1 " $+ %.indx $+ "
+n30=loadbuf @.idx " $+ %.indx $+ "
+n31=
+n32=; Sort, just in case
+n33=filter -ctww 2 9 @.idx @.idx
+n34=}
+n35=
+n36=; Compare to old list, deleting if missing, inserting if new
+n37=; create text list as well
+n38=; fnew and fold are indexes into the window and file, resp.
+n39=%.fnew = 1 | %.fold = 1
+n40=:loop3
+n41=%.fnewln = $line(@.reindex,%.fnew)
+n42=
+n43=if (($window(@.text)) && (%.fnewln != $null)) {
+n44=if ($nofile($ifmatch) != %.lastdir) {
+n45=%.lastdir = $ifmatch
+n46=aline @.text $cr
+n47=aline @.text ,---------[ $ifmatch ]-
+n48=aline @.text :
+n49=aline @.text `
+n50=}
+n51=%.nop = $nopath(%.fnewln)
+n52=%.size = $lof(%.fnewln)
+n53=aline @.text %.nop $str(.,$calc(69 - $len(%.nop))) $+ .. $round($calc(%.size / 1048576),2) [size:megabytes]
+n54=inc %.totalsize %.size
+n55=}
+n56=:loop3b
+n57=%.foldln = $gettok($line(@.idx,%.fold),2,9)
+n58=
+n59=; skip blank lines, duplicates
+n60=if (($remove(%.foldln,$chr(32),$chr(9)) == $null) && (%.fold < $line(@.idx,0))) {
+n61=dline @.idx %.fold
+n62=goto loop3b
+n63=}
+n64=if ((%.foldln != $null) && (%.foldln == $gettok($line(@.idx,$calc(%.fold + 1)),2,9))) {
+n65=dline @.idx %.fold
+n66=goto loop3b
+n67=}
+n68=
+n69=if (%.fnewln == $null) {
+n70=if (%.foldln == $null) goto done3
+n71=dline @.idx %.fold
+n72=goto loop3b
+n73=}
+n74=elseif ((%.fnewln < %.foldln) || (%.foldln == $null)) {
+n75=iline @.idx %.fold 0 	 $+ %.fnewln $+ $chr(9)
+n76=}
+n77=elseif (%.fnewln > %.foldln) {
+n78=dline @.idx %.fold
+n79=goto loop3b
+n80=}
+n81=;;; fixing beta12's mess
+n82=elseif ($count($line(@.idx,%.fold),	) < 2) {
+n83=rline @.idx %.fold $line(@.idx,%.fold) $+ 	
+n84=}
+n85=inc %.fprog
+n86=if (5 // %.fprog) _progress.2 $int($calc(%.fprog * 100 / %.ftotal)) %.fnewln
+n87=inc %.fold | inc %.fnew | goto loop3
+n88=:done3
+n89=
+n90=_progress.2 100 [word:done] %.ftotal %.sdesc [word:files:lower]
+n91=
+n92=iline @.idx 1 $line(@.idx,0)
+n93=savebuf @.idx " $+ %.indx $+ "
+n94=if ($window(@.text)) {
+n95=aline @.text .
+n96=aline @.text :
+n97=aline @.text '---------[ [public_sound:total_files]: %.ftotal / $round($calc(%.totalsize / 1048576),2) [size:megabytes] ]-
+n98=if (%.leechcmd) {
+n99=iline @.text 1 [public_sound:grab_info:cmd=$ifmatch]
+n100=iline @.text 2 [public_sound:example]: $ifmatch $gettok($line(@.idx,$r(1,$line(@.idx,0))),2,9)
+n101=}
+n102=savebuf @.text " $+ %.textlist $+ "
+n103=}
+n104=}
+n105=
+n106=;
+n107=; Progress meter display
+n108=;
+n109=
+n110=
+n111=alias -l _progress.1 {
+n112=close -@ @Progress @.pbmp
+n113=window -pfdohkaB +bLt @Progress $calc($window(-1).w - 330) $calc($window(-1).h - 160) 319 104
+n114=drawrect -frn @Progress $rgb(face) 2 0 0 319 104
+n115=_gradient @Progress 9 69 300 25
+n116=_bevel @Progress 7 67 304 29
+n117=drawrect -rn @Progress $rgb(face) 7 0 60 319 44
+n118=drawtext -nr @Progress $rgb(text) "ms sans serif" 16 8 25 $1-
+n119=drawpic -nt @Progress $rgb(255,255,255) 247 1 195 65 64 64 script\icons.bmp
+n120=drawdot @Progress
+n121=window -hpf @.pbmp 0 0 301 30
+n122=drawcopy @Progress 9 69 300 28 @.pbmp 0 0
+n123=}
+n124=alias -l _progress.2 {
+n125=if ($1 > 100) { _recurse _progress.2 100 $2- | return }
+n126=drawcopy -n @.pbmp 0 0 300 28 @Progress 9 69
+n127=drawtext -nro @Progress $rgb(text) "arial" 24 $calc(159 - $width($1%,arial,24,1,0) / 2) 67 $1%
+n128=drawrect -nrif @Progress 1 0 9 69 $calc($1 * 3 + 1) 26
+n129=drawrect -frn @Progress $rgb(face) 2 8 45 236 21
+n130=drawtext -cnr @Progress $rgb(text) "ms sans serif" 12 8 48 235 99 $2-
+n131=titlebar @Progress - $1%
+n132=drawdot @Progress
+n133=}
+n134=alias -l _bevel {
+n135=drawrect -nr $1 $rgb(frame) 1 $calc($2 + 1) $calc($3 + 1) $calc($4 - 1) $calc($5 - 1)
+n136=drawrect -frn $1 $rgb(3dlight) 2 $calc($2 + 1) $calc($3 + $5 - 1) $calc($4 - 1) 2
+n137=drawrect -frn $1 $rgb(3dlight) 2 $calc($2 + $4 - 1) $calc($3 + 1) 2 $calc($5 - 1)
+n138=drawrect -nr $1 $rgb(hilight) 1 $2 $3 $calc($4 + 1) $calc($5 + 1)
+n139=drawline -nr $1 $rgb(shadow) 1 $2 $calc($3 + $5 - 1) $2 $3 $calc($2 + $4) $3
+n140=}
+n141=alias -l _gradient {
+n142=; Left side
+n143=var %place,%r,%g,%b,%goal
+n144=%place = $calc($4 / 2 + $5 / 2 + $2)
+n145=%r = $calc($rgb(face) % 256)
+n146=%g = $calc($rgb(face) / 256 % 256)
+n147=%b = $calc($rgb(face) / 65536)
+n148=:loopL
+n149=drawline -nr $1 $rgb(%r,%g,%b) 7 $calc(%place - 3) $calc($3 - 3) $calc(%place - $5) $calc($3 + $5)
+n150=if (%place > $2) {
+n151=if (%r > 2) dec %r 3
+n152=if (%g > 2) dec %g 3
+n153=if (%b > 2) dec %b 3
+n154=dec %place 8
+n155=goto loopL
+n156=}
+n157=; Right side
+n158=%place = $calc($4 / 2 + $5 / 2 + $2)
+n159=%r = $calc($rgb(face) % 256)
+n160=%g = $calc($rgb(face) / 256 % 256)
+n161=%b = $calc($rgb(face) / 65536)
+n162=%goal = $calc($2 + $4 + $5)
+n163=:loopR
+n164=drawline -nr $1 $rgb(%r,%g,%b) 7 $calc(%place - 3) $calc($3 - 3) $calc(%place - $5) $calc($3 + $5)
+n165=if (%place < %goal) {
+n166=if (%r < 250) inc %r 3
+n167=if (%g < 250) inc %g 3
+n168=if (%b < 250) inc %b 3
+n169=inc %place 8
+n170=goto loopR
+n171=}
+n172=}
+n173=alias -l _recurse $1- | return $result
+n174=on *:START:{
+n175=reindex
+n176=unsetall
+n177=.timer -io 1 1 exit
+n178=}
+
+[extensions]
+n0=defaultEXTDIR:download\
+n1=defaulEXTDIR:download\
+n2=*.wav,*.midEXTDIR:sounds\
+n3=*.mp3EXTDIR:sounds\
+n4=*.wmaEXTDIR:sounds\
+n5=*.oggEXTDIR:sounds\
+
+[afiles]
+n0=aliases.ini
+
+[rfiles]
+n0=addons\reindex.ini
+n1=addons\reindex.ini
+n2=addons\reindex.ini
+

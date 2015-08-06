@@ -1,0 +1,457 @@
+addons\lastseen.ppa
+; #= xwzbot -rs
+; ########################################
+; Peace and Protection
+; Last seen (standard addon)
+; ########################################
+ 
+#.ppa.info off
+[addon]
+name=[lastseen:name:dlg]
+group=[addon:core:dlg]
+popup=[lastseen:name]
+author=pai
+version=1.01
+url=http://www.pairc.com/
+email=pnp@pairc.com
+id=pplastseen
+ppver=4.22
+config=lastseen
+unload=_lastseenunload
+dialogs=lastseen
+timers=.cacheseen.*
+[files]
+1=lastseen.ppa
+[notes]
+1=[lastseen:info:dlg]
+[menu]
+1=[popups_menu:clean_all]...:clrseen
+#.ppa.info end
+
+; Updates last seen data for a channel or all channels
+; Assumes CID is active
+; /_updseen network */channel
+alias -l _updseen {
+  var %chan,%cnum,%num
+  if ($2 == *) {
+    if ($chan(0) == 0) return
+    %cnum = 1
+    %chan = $chan(1)
+    if ($_isseenchan(%chan) == 0) goto nextchan
+  }
+  else %chan = $2
+  :dochan
+  %num = $nick(%chan,0)
+  while (%num) {
+    if ($nick(%chan,%num) != $me) if ($address($ifmatch,5)) _addlseen $1 $gettok($ifmatch,1,33) $ifmatch %chan
+    dec %num
+  }
+  :nextchan
+  if ($2 == *) {
+    inc %cnum
+    if ($chan(%cnum)) {
+      %chan = $ifmatch
+      if ($_isseenchan(%chan) == 0) goto nextchan
+      goto dochan
+    }
+  }
+  if ($timer(.cacheseen. $+ $1) == $null) .timer.cacheseen. $+ $1 -io 1 15 _saveseen $1
+}
+ 
+; Adds last seen data
+; /_addlseen network nick fulladdress channel
+alias -l _addlseen {
+  hadd pnp.lastseen. $+ $1 n $+ $2 $3 $ctime $4
+  var %ident = $gettok($gettok($3,1,64),2,33)
+  if (~* iswm %ident) %ident = $right(%ident,-1)
+  if (%ident != $2) hadd pnp.lastseen. $+ $1 u $+ %ident $3 $ctime $4
+  if ($timer(.cacheseen. $+ $1) == $null) .timer.cacheseen. $+ $1 -io 1 60 _saveseen $1
+}
+alias -l _saveseen {
+  if ($hget(pnp.lastseen. $+ $1,0).item) hsave -o pnp.lastseen. $+ $1 $_cfg(lastseen $+ $1 $+ .dat)
+  else .remove $_cfg(lastseen $+ $1 $+ .dat)
+  ; Now that it's saved, unload if it doesn't match any known nets
+  var %found = 0,%scon = $scon(0)
+  while (%scon) {
+    if ($hget(pnp. $+ $scon(%scon),net) == $1) %found = 1
+    dec %scon
+  }
+  if (!%found) .timer -mio 1 0 hfree pnp.lastseen. $+ $1
+}
+
+; Saves all seen data to disk
+alias -l _saveseenall {
+  var %hash = $hget(0)
+  while (%hash) {
+    if (pnp.lastseen.* iswm $hget(%hash)) {
+      var %net = $gettok($hget(%hash),3-,46)
+      .timer.cacheseen. $+ %net off
+      _saveseen %net
+    }
+    dec %hash
+  }
+}
+on *:EXIT:{ _saveseenall }
+ 
+; Record data on user quit, kick, part, nick
+on !*:PART:#:if ($_isseenchan($chan)) _addlseen $hget(pnp. $+ $cid,net) $nick $fulladdress $chan
+on !*:KICK:#:if ($_isseenchan($chan)) if ($address($knick,5)) _addlseen $hget(pnp. $+ $cid,net) $knick $ifmatch $chan
+on !*:QUIT:_dobulkls $nick
+on !*:NICK:_dobulkls $newnick
+alias -l _dobulkls {
+  var %num = 1
+  while ($comchan($1,%num)) {
+    if ($_isseenchan($ifmatch)) _addlseen $hget(pnp. $+ $cid,net) $nick $fulladdress $comchan($1,%num)
+    inc %num
+  }
+}
+ 
+; Record data on our disconnect, kick, or part
+on *:DISCONNECT:if ($hget(pnp. $+ $cid,net) != [word:offline]) _updseen $hget(pnp. $+ $cid,net) *
+on me:*:PART:#:if ($_isseenchan($chan)) _updseen $hget(pnp. $+ $cid,net) $chan
+on *:KICK:#:if (($knick == $me) && ($_isseenchan($chan))) _updseen $hget(pnp. $+ $cid,net) $chan
+
+; Load data when needed for a network
+; skip 1 to not make hash if data doesn't exist
+; /_prepseen network [skip]
+alias -l _prepseen {
+  if ($hget(pnp.lastseen. $+ $1)) return
+  var %file = $_cfg(lastseen $+ $1 $+ .dat)
+  if ($isfile(%file)) {
+    hmake pnp.lastseen. $+ $1 200
+    hload pnp.lastseen. $+ $1 %file
+  }
+  elseif (!$2) {
+    hmake pnp.lastseen. $+ $1 200
+    ; Copy over lastseen.dat (old data) if it exists- one time only
+    if ($isfile($_cfg(lastseen.dat))) {
+      window -hln @.importls
+      loadbuf @.importls $_cfg(lastseen.dat)
+      var %ln = $line(@.importls,0)
+      while (%ln) {
+        var %data = $line(@.importls,%ln)
+        hadd pnp.lastseen. $+ $1 $gettok(%data,2,32) $+ $gettok(%data,1,32) $gettok(%data,3-,32)
+        dec %ln
+      }
+      window -c @.importls
+      .remove $_cfg(lastseen.dat)
+    }
+  }
+}
+on *:CONNECT:_prepseen $hget(pnp. $+ $cid,net)
+ 
+; Find appropriate data given a nick|ident and return it
+; Assumes CID of network is current; else pass param 5 as true to skip searching current chans/etc.
+; $_findseen(net,nick|ident,opt,opt[,skipsearch])
+; pass option 5 / 9 as $3 $4 (modify to influence output)
+alias -l _findseen {
+  if (!$5) {
+    if ($3) {
+      if ($ial($2!*@*,1).addr) return n $:b($ial($2!*@*,1).nick) $+ ! $+ $ifmatch $comchan($2,1)
+      if ($4) {
+        var %identfind = *! $+ $2@*,%identfind2 = *!~ $+ $2@*
+        if (($ial(%identfind,1)) || ($ial(%identfind2,1))) return i $gettok($ifmatch,1,33) $+ ! $+ $:b($gettok($gettok($ifmatch,1,64),2-,33)) $+ @ $+ $gettok($ifmatch,2-,64) $comchan($gettok($ifmatch,1,33),1)
+      }
+    }
+    else {
+      if ($ial($2!*@*,1).nick) return n $:b($ial($2!*@*,1).nick) $comchan($2,1)
+      if ($4) {
+        var %identfind = *! $+ $2@*,%identfind2 = *!~ $+ $2@*
+        if (($ial(%identfind,1)) || ($ial(%identfind2,1))) return i $:b($gettok($gettok($ifmatch,1,64),2-,33)) $comchan($gettok($ifmatch,1,33),1)
+      }
+    }
+  }
+  ; Load if exists and not loaded
+  if ($hget(pnp.lastseen. $+ $1) == $null) {
+    if ($isfile($_cfg(lastseen $+ $1 $+ .dat))) _prepseen $1
+    else return
+  }
+  var %nick = $hget(pnp.lastseen. $+ $1,n $+ $2)
+  var %ident = $hget(pnp.lastseen. $+ $1,u $+ $2)
+  if ((%nick == $null) && (%ident == $null)) return
+  if ($3) {
+    if (%nick) return n $:b($gettok($gettok(%nick,1,32),1,33)) $+ ! $+ $gettok($gettok(%nick,1,32),2-,33) $gettok(%nick,2-,32)
+    if ($4 == 0) return
+    return i $gettok($gettok(%ident,1,32),1,33) $+ ! $+ $:b($gettok($gettok($gettok(%ident,1,32),1,64),2-,33)) $+ @ $+ $gettok($gettok(%ident,1,32),2-,64) $gettok(%ident,2-,32)
+  }
+  if (%nick) return n $:b($gettok($gettok(%nick,1,32),1,33)) $gettok(%nick,2-,32)
+  if ($4 == 0) return
+  return i $:b($gettok($gettok($gettok(%ident,1,32),1,64),2-,33)) $gettok(%ident,2-,32)
+}
+; Turns a _findseen reply into readable form
+; $_readseen(net,nick|ident,opt,opt,opt[,skipsearch])
+; pass options 5 / 6 / 9 as $3-5 (modify to influence output)
+alias -l _readseen {
+  var %found = $_findseen($1,$2,$3,$5,$6)
+  if (%found == $null) return [public_lastseen:no_match]
+  var %nick = $gettok(%found,2,32) $iif(($3 == 0) && ($gettok(%found,1,32) == i),([word:userid:lower]))
+  if ($numtok(%found,32) < 4) return $iif($4,[public_lastseen:online_chan:nick=%nick:chan=$gettok(%found,3,32)],[public_lastseen:online:nick=%nick])
+  return $iif($4,[public_lastseen:offline_chan:nick=%nick:duration=$_dur($calc($ctime - $gettok(%found,3,32))):chan=$gettok(%found,4,32)],[public_lastseen:offline:nick=%nick:duration=$_dur($calc($ctime - $gettok(%found,3,32)))])
+}
+ 
+dialog lastseen {
+  title "[lastseen_dialog:title]"
+  icon script\pnp.ico
+  option dbu
+  size -1 -1 145 140
+   
+  check "&[lastseen_dialog:only_on]:", 1, 5 5 138 8
+  edit "", 10, 15 15 125 11, autohs
+   
+  check "&[lastseen_dialog:respond_ctcp]", 2, 5 31 138 8
+  check "&[lastseen_dialog:respond_trigger]", 3, 5 41 138 8
+  check "&[lastseen_dialog:respond_private]", 11, 5 51 138 8
+  check "&[lastseen_dialog:respond_known]", 4, 5 61 138 8
+  check "&[lastseen_dialog:allow_userid]", 9, 5 71 138 8
+  check "&[lastseen_dialog:include_addr]", 5, 5 81 138 8
+  check "&[lastseen_dialog:include_chan]", 6, 5 91 138 8
+   
+  check "&[lastseen_dialog:clean]", 7, 5 106 75 8
+  edit "", 8, 81 105 20 11
+  text "[lastseen_dialog:on_startup]", 20, 102 107 43 8
+   
+  button "[dialog:ok]", 201, 15 122 40 12, OK default
+  button "[dialog:cancel]", 203, 90 122 40 12, cancel
+}
+on *:DIALOG:lastseen:init:*:{
+  var %num = 1
+  :loop
+  if ($gettok($hget(pnp.config,lastseen.opt),%num,32)) did -c $dname %num
+  if (%num < 7) { inc %num | goto loop }
+  did -o $dname 8 1 $gettok($hget(pnp.config,lastseen.opt),8,32)
+  if ($gettok($hget(pnp.config,lastseen.opt),9,32) & 1) did -c $dname 9
+  if ($gettok($hget(pnp.config,lastseen.opt),9,32) & 2) did -c $dname 11
+  did -o $dname 10 1 $gettok($hget(pnp.config,lastseen.opt),10-,32)
+  if ($did(7).state == 0) did -b $dname 8
+  if ($did(1).state == 0) did -b $dname 10
+  if (($did(2).state == 0) && ($did(3).state == 0)) did -b $dname 11,4
+}
+on *:DIALOG:lastseen:sclick:1:did $iif($did(1).state,-e,-b) $dname 10
+on *:DIALOG:lastseen:sclick:7:did $iif($did(7).state,-e,-b) $dname 8
+on *:DIALOG:lastseen:sclick:2,3:did $iif(($did(2).state) || ($did(3).state),-e,-b) $dname 11,4
+on *:DIALOG:lastseen:sclick:201:{
+  var %opt,%num = 1
+  :loop
+  %opt = %opt $did(%num).state
+  if (%num < 7) { inc %num | goto loop }
+  if ($did(8) isnum) %opt = %opt $ifmatch
+  else %opt = %opt 14
+  `set lastseen.opt %opt $or($did(9).state,$calc(2 * $did(11).state)) $iif($did(10),$_s2c($did(10)))
+}
+alias lastseen _dialog -am lastseen lastseen
+ 
+on *:LOAD:{
+  ; PnP check
+  if (!$_ispnp) {
+    echo 4 -ati2 *** This addon requires Peace and Protection by pai to use.
+    echo 4 -ati2 *** You can download Peace and Protection at http://www.pairc.com/
+    .timer -mio 1 0 .unload -rs " $+ $script $+ "
+    halt
+  }
+  ; Invalid load method check
+  if (!$istok($_cfgx(addons,ids),$readini($script,n,addon,id),32)) {
+    .timer -mio 1 0 .unload -rs " $+ $script $+ "
+    dispa [startup:addon_file_improper:file=$script]
+    halt
+  }
+
+  if ($numtok($hget(pnp.config,lastseen.opt),32) < 9) `set lastseen.opt 0 1 0 0 1 1 0 20 1
+  scid -at1 _prepseen $!hget(pnp. $!+ $!cid,net)
+  if ($_dlgi(lswarn) == $null) { _dlgw lswarn 1 | _doerror [word:warning]- [lastseen:warning] }
+}
+
+; Any seen data?
+alias -l _isanyseen {
+  var %hash = $hget(0)
+  var %found = $findfile($_cfg,lastseen*.dat,0)
+  while (%hash) {
+    if (pnp.lastseen.* iswm $hget(%hash)) %found = 1
+    dec %hash
+  }
+  return %found
+}
+ 
+alias _lastseenunload {
+  if ($_isanyseen) {
+    if ($_yesno(1,[lastseen:confirm_clear])) {
+      .clrseen
+      return
+    }
+  }
+  ; Flush seen data
+  _saveseenall
+}
+ 
+; Returns if we're collecting data on a channel
+alias -l _isseenchan {
+  if ($gettok($hget(pnp.config,lastseen.opt),1,32) == 0) return 1
+  if ($istok($gettok($hget(pnp.config,lastseen.opt),10,32),$1,44)) return 1
+  return 0
+}
+ 
+; Responses
+; Uses current network
+; $_seenresp(ctcp/msg)
+alias -l _seenresp {
+  if (($2) && ($3 == $null) && ($remove($2,*,?,!,@) == $2)) {
+    if ($gettok($hget(pnp.config,lastseen.opt),4,32)) { if ($_known($nick,$fulladdress) == 0) return }
+    return $_readseen($hget(pnp. $+ $cid,net),$2,$gettok($hget(pnp.config,lastseen.opt),5,32),$gettok($hget(pnp.config,lastseen.opt),6,32),$and($gettok($hget(pnp.config,lastseen.opt),9,32),1))
+  }
+}
+ctcp &*:SEEN:*:{
+  hinc -u20 pnp.flood. $+ $cid recd.seen
+  if ($hget(pnp.flood. $+ $cid,recd.seen) > 5) return
+  if ($chan) { if (!$_isseenchan($chan)) return }
+  if ($gettok($hget(pnp.config,lastseen.opt),2,32)) {
+    _seenresp $1-
+    if ($result) set -u1 %.ctcp.reply $_stripout($result)
+  }
+}
+on *:TEXT:!seen &:*:{
+  hinc -u20 pnp.flood. $+ $cid recd.seen
+  if ($hget(pnp.flood. $+ $cid,recd.seen) > 5) return
+  if ($chan) { if (!$_isseenchan($chan)) return }
+  if ($gettok($hget(pnp.config,lastseen.opt),3,32)) {
+    _seenresp $1-
+    if ($result) _linedance msg $iif(($target ischan) && ($and($gettok($hget(pnp.config,lastseen.opt),9,32),2) == 0),$chan,$nick) $_stripout($result)
+  }
+}
+ 
+; Self-requested info
+alias seen {
+  if ($1 == $null) _qhelp $_s2f(/seen +[quick:p_nickuserid:s2p] -[word:network:lower:s2p] ![quick:seen])
+  var %net = $hget(pnp. $+ $cid,net)
+  if ($2) %net = $2
+  if ((%net == $null) || (%net == [word:offline:lower])) _error [error:cs_connected:cmd=/seen $1]
+  ; if an existing connection is this network, swap to it, otherwise no search feature
+  var %search = 1
+  if ($hget(pnp. $+ $cid,net) == %net) %search = 0
+  else {
+    var %scon = $scon(0)
+    while (%scon) {
+      if ($hget(pnp. $+ $scon(%scon),net) == %net) {
+        scon %scon
+        %search = 0
+        break 
+      }
+      dec %scon
+    }
+  }
+  dispa $_readseen(%net,$1,1,1,1,%search)
+  scon -r
+}
+alias sseen sayseen $1-
+alias sayseen {
+  if ($1 == $null) _qhelp $_s2f(/sayseen +[quick:p_nickuserid:s2p] ![quick:sayseen])
+  _notconnected /sayseen
+  say $_stripout($_readseen($hget(pnp. $+ $cid,net),$1,$gettok($hget(pnp.config,lastseen.opt),5,32),$gettok($hget(pnp.config,lastseen.opt),6,32),$gettok($hget(pnp.config,lastseen.opt),9,32)))
+}
+ 
+; Clean out lastseen database by age or channel, or all
+; Affects all networks if not specified
+; /clrseen [#chan|days] [network] (either order)
+alias clrseen {
+  if (!$_isanyseen) { dispa [lastseen:empty] | return }
+
+  var %chan,%days,%net,%allnet = 0,%allnetpos = 0,%cleaned = 0
+  if ($1 isnum) { %days = $1 | %net = $2 }
+  elseif ($_ischan($1)) { %chan = $1 | %net = $2 }
+  elseif ($2 isnum) { %days = $2 | %net = $1 }
+  elseif ($_ischan($2)) { %chan = $2 | %net = $1 }
+  else {
+    %net = $1
+    if ($show) {
+      var %msg = [lastseen:confirm_clear]
+      if (%net) %msg = [lastseen:confirm_clear_net:network=%net]
+      if (($show) && (!$_okcancel(1,%msg))) return
+    }
+  }
+
+  ; Verify network data exists and is loaded
+  if (%net) {
+    _prepseen %net 1
+    if (!$hget(pnp.lastseen. $+ %net)) {
+      dispa [lastseen:empty] ( $+ %net $+ )
+      return
+    }
+  }
+  ; Make sure all data is loaded (for all nets)
+  else {
+    var %found = $findfile($_cfg,lastseen*.dat,0,_prepseen $right($gettok($nopath($1-),1,46),-8))
+    %allnet = 1
+    %allnetpos = $hget(0)
+  }
+  
+  if ($show) _progress.1 [lastseen:cleaning]...
+
+  ; If doing all nets, pick another net
+  :nextnet
+  while (%allnetpos) {
+    if (pnp.lastseen.* iswm $hget(%allnetpos)) {
+      %net = $gettok($hget(%allnetpos),3,46)
+      break
+    }
+    dec %allnetpos
+  }
+  
+  if ((%allnet) && (!%allnetpos)) goto done
+  
+  if (%chan) {
+    while ($hmatch(pnp.lastseen. $+ %net,& & %chan).data) {
+      hdel pnp.lastseen. $+ %net $ifmatch
+      inc %cleaned
+    }
+  }
+  elseif (%days != $null) {
+    ; Search for items to remove
+    window -hnl @.lskill
+    var %item = $hget(pnp.lastseen. $+ %net,0).item
+    while (%item) {
+      if ($calc(($ctime - $gettok($hget(pnp.lastseen. $+ %net,%item).data,2,32)) / 86400) > %days) aline @.lskill $hget(pnp.lastseen. $+ %net,%item).item
+      dec %item
+    }
+    %item = $line(@.lskill,0)
+    inc %cleaned %item
+    while (%item) {
+      hdel pnp.lastseen. $+ %net $line(@.lskill,%item)
+      dec %item
+    }
+    window -c @.lskill
+  }
+  else {
+    inc %cleaned $hget(pnp.lastseen. $+ %net,0).item
+    hdel -w pnp.lastseen. $+ %net *
+  }
+
+  ; Flush changes to disk
+  _saveseen %net
+  if (%allnet) {
+    dec %allnetpos
+    goto nextnet
+  }
+  :done
+
+  if ($show) _progress.2 100 [word:done]
+
+  if (%chan) dispa [lastseen:clean_chan:num=$;t(%cleaned):chan=$;s(%chan)] $iif(!%allnet,( $+ %net $+ ))
+  elseif (%days != $null) dispa [lastseen:clean_old:num=$;t(%cleaned):day=$;s(%days)] $iif(!%allnet,( $+ %net $+ ))
+  else dispa [lastseen:clear:num=$;t(%cleaned)] $iif(!%allnet,( $+ %net $+ ))
+}
+alias _doclrseen if ($gettok($hget(pnp.config,lastseen.opt),7,32)) .clrseen $gettok($hget(pnp.config,lastseen.opt),8,32)
+on *:START:_startup.add _doclrseen [lastseen:cleaning]...
+ 
+; popups
+menu menubar {
+  $_popssep
+  [popups_menu:lastseen]
+  .[popups_menu:lastseen_echo]...	/seen:seen $_entry(-1,$null,[lastseen:prompt_lookup])
+  .[popups_menu:lastseen_say]...	/sseen:sseen $_entry(-1,$null,[lastseen:prompt_lookup])
+  .-
+  .[popups_menu:lastseen_clean]
+  ..[popups_menu:clean_chan]...:clrseen $_entry(-1,$null,[lastseen:prompt_chan])
+  ..[popups_menu:clean_age]...:clrseen $_entry(-2,$null,[lastseen:prompt_age])
+  ..-
+  ..[popups_menu:clean_all]...:clrseen
+  .-
+  .[popups:config]...	/lastseen:lastseen
+}

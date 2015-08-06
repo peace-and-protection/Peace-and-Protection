@@ -1,0 +1,387 @@
+script\register.mrc
+; #= P&P.temp -rs
+; ########################################
+; Peace and Protection
+; Register, bug report, etc.
+; ########################################
+ 
+alias _registerunload {
+  if ($dialog(bugrep)) return
+  if ($dialog(bugresend)) return
+  if ($dialog(pnpdonate)) return
+  if ($dialog(aboutpnp)) return
+  _unload register
+}
+
+dialog bugrep {
+  title "[bug_dialog:title]"
+  icon script\pnp.ico
+  option dbu
+  size -1 -1 250 192
+   
+  text "[bug_dialog:instructions]", 1, 5 5 240 20
+  radio "&[bug_dialog:bug]", 2, 5 25 50 12, push
+  radio "&[bug_dialog:feedback]", 3, 60 25 50 12, push
+  box "", 4, 5 40 240 117
+   
+  text "[bug_dialog:bug_instructions]", 5, 10 50 230 20
+   
+  edit "", 6, 10 70 230 40, return vsbar multi
+   
+  text "[bug_dialog:email_instructions]", 7, 10 115 230 25
+   
+  text "&[bug_dialog:email_prompt]:", 8, 10 142 30 10, right
+  edit "", 9, 41 140 100 11, autohs
+   
+  text "[bug_dialog:continue]", 11, 10 162 150 10
+  button "&[bug_dialog:next] >>", 12, 10 175 60 12, disable default
+   
+  text "[bug_dialog:more_instructions]", 13, 10 50 230 15, hide
+   
+  check "&[bug_dialog:send_basic]", 14, 10 69 100 8, hide
+  check "&[bug_dialog:send_config]", 15, 10 94 100 8, hide
+  check "&[bug_dialog:send_debug]", 16, 10 124 100 8, hide
+   
+  text "[bug_dialog:info_basic]", 17, 110 70 120 20, hide
+  text "[bug_dialog:info_config]", 18, 110 95 120 27, hide
+  text "[bug_dialog:info_debug]", 19, 110 125 120 30, hide
+   
+  text "[bug_dialog:bug_final]", 20, 10 162 230 10, hide
+  button "&[bug_dialog:send]", 21, 10 175 60 12, hide disable OK
+   
+  button "<< &[bug_dialog:back]", 22, 95 175 60 12, hide
+   
+  text "[bug_dialog:feedback_instructions]", 23, 10 50 230 20, hide
+  text "[bug_dialog:feedback_final]", 24, 10 162 150 10, hide
+   
+  button "[dialog:cancel]", 100, 180 175 60 12, cancel
+}
+alias _bug set -u %.option $1 | _dialog -md bugrep bugrep
+on *:DIALOG:bugrep:init:*:{
+  if ($debug == $null) did -b $dname 16,19
+  if (%.option) {
+    did -c $dname 3
+    _clickbtn 3 $dname
+  }
+  else {
+    did -c $dname 2,14
+    did -f $dname 6
+  }
+  unset %.option
+}
+on *:DIALOG:bugrep:sclick:21:{
+  window -c @.bug
+  window -hln @.bug
+  if ($did(2).state) {
+    aline @.bug Subject: [AUTO] Bug report ( $+ $:ver $+ )
+  }
+  else {
+    aline @.bug Subject: [AUTO] Feedback ( $+ $:ver $+ )
+  }
+  aline @.bug X-Mailer: Peace and Protection $:ver
+  if ((@ isin $did(9)) && (. isin $did(9))) {
+    aline @.bug From: $gettok($did(9),1,32)
+    aline @.bug Reply-to: $gettok($did(9),1,32)
+    titlebar @.bug smtp.pairc.com $gettok($did(9),1,32)
+  }
+  else titlebar @.bug smtp.pairc.com feedback@pairc.com
+  aline @.bug $lf
+  var %ln = 1,%num = $did(6).lines
+  :loop
+  if ($left($did(6,%ln).text,1) == $null) aline @.bug $lf
+  else aline @.bug $did(6,%ln).text
+  if (%ln < %num) { inc %ln | goto loop }
+  if ($did(2).state) {
+    saveini
+    flushini " $+ $mircini $+ "
+    if ($did(14).state) {
+      aline @.bug $lf
+      aline @.bug mIRC: $version
+      aline @.bug EXE: $mircexe
+      aline @.bug INI: $mircini
+      aline @.bug DIR: $mircdir
+      aline @.bug OS: $os
+      aline @.bug Timestamp: $ctime / $ticks
+      aline @.bug Profile: $hget(pnp,user)
+      aline @.bug DDE: $ddename $iif($readini($mircini,n,dde,ServerStatus) != on,(off))
+      aline @.bug Language: $readini(script\transup.ini,n,translation,enabled) / $readini(script\transup.ini,n,translation,language)
+      aline @.bug Theme: $hget(pnp.theme,Name)
+      aline @.bug $lf
+      var %scon = 1
+      aline @.bug CIDs: $scon(0)
+      while (%scon <= $scon(0)) {
+        scid $scon(%scon)
+        aline @.bug CID %scon $+ : $cid
+        if ($ip == $null) aline @.bug IP: (unknown)
+        else aline @.bug IP: $ip
+        aline @.bug Nickname: $me
+        if ($server == $null) aline @.bug Server: (not connected)
+        else aline @.bug Server: $server $+ , $port ( $+ $hget(pnp. $+ $cid,net) $+ )
+        inc %scon
+      }
+      scid -r
+    }
+    if ($did(15).state) {
+      aline @.bug $lf
+      aline @.bug *** $mircini
+      loadbuf @.bug " $+ $mircini $+ "
+      aline @.bug $lf
+      aline @.bug *** $mircdirconfig\profiles.ini
+      loadbuf @.bug " $+ $mircdirconfig\profiles.ini $+ "
+      aline @.bug $lf
+      aline @.bug *** $_cfg(config.ini)
+      loadbuf @.bug " $+ $_cfg(config.ini) $+ "
+      aline @.bug $lf
+      aline @.bug *** $_cfg(users.mrc)
+      loadbuf @.bug " $+ $_cfg(users.mrc) $+ "
+      aline @.bug $lf
+      ; (some pnp.* hashes)
+      var %hash = $hget(0)
+      while (%hash) {
+        var %hname = $hget(%hash)
+        if ((%hname == pnp) || (%hname == pnp.config) || (%hname == pnp.theme) || ((pnp.* iswm %hname) && ($gettok(%hname,2,46) isnum) && ($numtok(%hname,46) == 2))) {
+          aline @.bug *** %hname
+          if ($hget(%hname,0).item) {
+            var %item = $hget(%hname,0).item
+            while (%item) {
+              aline @.bug $hget(%hname,%item).item $hget(%hname,%item).data
+              dec %item
+            }
+          }
+          else aline @.bug (empty)
+          aline @.bug $lf
+        }
+        dec %hash
+      }
+    }
+    if (($did(16).state) && ($debug)) {
+      aline @.bug $lf
+      aline @.bug *** Debug ( $+ $debug $+ )
+      if (@* iswm $debug) {
+        filter -wwr $iif($line($debug,0) > 500,$calc($line($debug,0) - 500),1) $+ - $+ $line($debug,0) $debug @.bug *
+      }
+      elseif ($isfile($debug)) {
+        loadbuf 500 @.bug " $+ $debug $+ "
+      }
+      else {
+        aline @.bug (file not found)
+      }
+    }
+    aline @.bug $lf
+    aline @.bug *** End of Data
+  }
+  _bugstart $did(2).state
+}
+alias _bugstart {
+  _progress.1 $iif($1,[bug:send_bug],[bug:send_feedback])
+  _progress.2 0 [bug:connect:server=$gettok($window(@.bug).title,1,32)] $+ ...
+  sockclose bugrep
+  sockopen bugrep $gettok($window(@.bug).title,1,32) 25
+}
+on *:DIALOG:bugrep:sclick:100:.timer -mio 1 0 _registerunload
+on *:DIALOG:bugrep:sclick:*:if ($did > 0) _clickbtn $did $dname
+alias -l _clickbtn {
+  if (($1 == 2) || ($1 == 22)) {
+    did -v $2 5,6,7,8,9,11,12
+    did -h $2 13,14,15,16,17,18,19,20,21,22,23,24
+    did -t $2 12
+    did -f $2 6
+  }
+  elseif ($1 == 3) {
+    did -v $2 6,7,8,9,21,23,24
+    did -h $2 5,11,12,13,14,15,16,17,18,19,20,22
+    did -t $2 21
+    did -f $2 6
+  }
+  elseif ($1 == 12) {
+    did -v $2 13,14,15,16,17,18,19,20,21,22
+    did -h $2 5,6,7,8,9,11,12,23,24
+    did -t $2 21
+    did -f $2 14
+  }
+}
+on *:DIALOG:bugrep:edit:*:{
+  if (($did($did).lines > 1) || ($did($did).text != $null)) {
+    if ($did == 6) did -e $dname 12,21
+  }
+  else {
+    if ($did == 6) did -b $dname 12,21
+  }
+}
+on *:SOCKOPEN:bugrep:{
+  if ($sockerr) _bugresend [bug:error_connect]: $sock($sockname).wsmsg
+  _progress.2 0 [bug:transfer]...
+}
+on *:SOCKWRITE:bugrep:{
+  if ($sockerr) _bugresend [bug:error_socket]: $sock($sockname).wsmsg
+  if (($sock(bugrep).mark isnum) && ($sock(bugrep).mark > 0)) {
+    var %ln = $ifmatch,%line = $line(@.bug,$ifmatch)
+    if (%ln \\ 5) _progress.2 $int($calc(%ln * 100 / ($line(@.bug,0) + 2))) [bug:data]...
+    if ($left(%line,1) == .) sockwrite -n bugrep . $+ %line
+    else sockwrite -nt bugrep %line
+    inc %ln
+    if (%ln > $line(@.bug,0)) {
+      sockwrite -n bugrep .
+      sockmark bugrep 0
+    }
+    else sockmark bugrep %ln
+  }
+}
+on *:SOCKREAD:bugrep:{
+  var %data
+  :readmore
+  sockread %data
+  if ($sockerr) _bugresend [bug:error_socket]: $sock($sockname).wsmsg
+  if ($sockbr) {
+    tokenize 32 %data
+    if ($1 == 220) sockwrite -n bugrep HELO $iif(. isin $host,$host,$iif($longip($ip),$ip,$gettok($window(@.bug).title,1,32)))
+    elseif ($1 isnum 400-599) _bugresend [bug:error_mail]: $2-
+    elseif ($1 == 354) {
+      ; Send text
+      sockmark bugrep 2
+      sockwrite -n bugrep $line(@.bug,1)
+    }
+    elseif ($1 isnum 250-259) {
+      ; From/to
+      if ($sock(bugrep).mark == $null) {
+        sockwrite -n bugrep MAIL FROM:< $+ $gettok($window(@.bug).title,2,32) $+ >
+        sockmark bugrep a
+      }
+      elseif ($sock(bugrep).mark == a) {
+        sockwrite -n bugrep RCPT TO:<feedback@pairc.com>
+        sockmark bugrep b
+      }
+      elseif ($sock(bugrep).mark == b) {
+        sockwrite -n bugrep DATA
+        sockmark bugrep c
+      }
+      elseif ($sock(bugrep).mark == 0) {
+        _progress.2 99 [bug:disconnect]...
+        sockwrite -n bugrep QUIT
+      }
+    }
+    goto readmore
+  }
+}
+on *:SOCKCLOSE:bugrep:{
+  if ($sock(bugrep).mark == 0) {
+    window -c @.bug
+    _progress.2 100 [bug:done]
+    _registerunload
+  }
+  else _bugresend [bug:error_close]: $sock($sockname).wsmsg
+}
+alias -l _bugresend {
+  sockclose bugrep
+  close -@ @Progress @.pbmp
+  _dialog -am bugresend bugresend
+  did -ra bugresend 2 $1-
+  did -ra bugresend 5 $gettok($window(@.bug).title,1,32)
+  $$$
+}
+dialog bugresend {
+  title "[bugresend_dialog:title]"
+  icon script\pnp.ico
+  option dbu
+  size -1 -1 200 96
+  text "[bugresend_dialog:error]:", 1, 5 5 200 10
+  text "", 2, 5 17 200 10
+  text "[bugresend_dialog:instructions1]", 3, 5 30 190 10
+  text "[bugresend_dialog:instructions2]", 4, 5 42 190 17
+  edit "", 5, 5 61 125 11
+  button "&[bugresend_dialog:retry]", 10, 5 78 50 12, OK default
+  button "[dialog:cancel]", 11, 145 78 50 12, cancel
+}
+on *:DIALOG:bugresend:sclick:10:{
+  titlebar @.bug $iif(. isin $did(bugresend,5),$gettok($did(bugresend,5),1,32),smtp.pairc.com) $gettok($window(@.bug).title,2,32)
+  _bugstart 0
+}
+on *:DIALOG:bugresend:sclick:11:{
+  window -c @.bug
+  .timer -mio 1 0 _registerunload
+}
+
+;
+; Donate dialog
+;
+dialog pnpdonate {
+  title "[donate_dialog:title]"
+  icon script\pnp.ico
+  option dbu
+  size -1 -1 250 83
+  text "[donate_dialog:instructions1]", 2, 5 5 240 20
+  text "[donate_dialog:instructions2]", 3, 5 25 240 20
+  text "[donate_dialog:instructions3]", 4, 5 45 240 10
+  link "http://www.parc.com/donate.html", 5, 5 55 240 10
+  button "[dialog:close]", 13, 100 67 50 11, cancel default
+}
+on *:DIALOG:pnpdonate:sclick:5:{ dialog -x $dname | http http://www.pairc.com/donate.html | .timer -mio 1 0 _registerunload }
+on *:DIALOG:pnpdonate:sclick:13:{ .timer -mio 1 0 _registerunload }
+alias _donate _dialog -md pnpdonate pnpdonate
+
+;
+; ABOUT dialog
+;
+dialog aboutpnp {
+  title "[about_dialog:title]"
+  icon script\pnp.ico
+  option dbu
+  size -1 -1 125 140
+  text "Peace and Protection", 2, 5 5 75 8
+  text "[about_dialog:byline]", 3, 5 13 75 8
+  text "", 4, 5 21 75 8
+  text "[about_dialog:dedication]", 10, 5 29 75 8
+  text "[word:homepage:dlg]:", 5, 5 58 34 10, right
+  text "[word:email:dlg]:", 6, 5 67 34 10, right
+  link "", 7, 41 58 90 11
+  link "", 8, 41 67 90 11
+  button "&[dialog:close]", 1, 5 80 24 10, cancel default
+  icon 9, 70 85 50 50
+  button "&[bug_dialog:bug]...", 11, 5 99 57 11
+  button "&[bug_dialog:feedback]...", 12, 5 112 57 11
+  button "&[about_dialog:donate]...", 13, 5 125 57 11
+}
+on *:DIALOG:aboutpnp:init:*:{
+  hmake pnp.about 10
+  did -a $dname 4 $:ver
+  did -o $dname 7 1 $:www
+  did -o $dname 8 1 $:email
+  var %icon = $_dlgi(about)
+  if (%icon !isnum) %icon = 1
+  else %icon = $calc(%icon % 3 + 1)
+  _dlgw about %icon
+  did -g $dname 9 script\pai $+ %icon $+ .bmp
+  .timer -mio 1 0 do3d
+}
+on *:DIALOG:aboutpnp:sclick:1:stop3d
+on *:DIALOG:aboutpnp:sclick:7:http $:www | dialog -c aboutpnp
+on *:DIALOG:aboutpnp:sclick:8:mailto $:email | dialog -c aboutpnp
+on *:DIALOG:aboutpnp:sclick:11:.timer -mio 1 0 bug | dialog -c aboutpnp
+on *:DIALOG:aboutpnp:sclick:12:.timer -mio 1 0 feedback | dialog -c aboutpnp
+on *:DIALOG:aboutpnp:sclick:13:.timer -mio 1 0 donate | dialog -c aboutpnp
+menu @PNP3D {
+  sclick:fix3d
+  dclick:fix3d | inc -u5 %.blah | if (%.blah > 1) hadd pnp.about cq 1
+  $fix3d:{ }
+}
+alias -l fix3d dialog -v aboutpnp
+alias -l do3d window -pfdohaB +dL @PNP3D $calc($dialog(aboutpnp).x + 145) $calc($dialog(aboutpnp).x + $dialog(aboutpnp).h - $dialog(aboutpnp).ch + 2) 100 100 @PNP3D | hadd pnp.about cx 0 | hadd pnp.about cy 0 | hadd pnp.about cz 0 | .timer3d -mio 0 50 drawbox | dialog -v aboutpnp
+alias -l draw3d { drawline -rn @PNP3D $rgb(frame) 1 $calc($1 + 50 + $calc($3 / 4)) $calc($2 + 50 - $calc($3 / 4)) $calc($4 + 50 + $calc($6 / 4)) $calc($5 + 50 - $calc($6 / 4)) }
+alias -l drawbox {
+  hadd pnp.about cx $calc(($hget(pnp.about,cx) + 4) % 256)
+  hadd pnp.about cy $calc(($hget(pnp.about,cy) + 252.5) % 256)
+  hadd pnp.about cz $calc(($hget(pnp.about,cz) + 2 + $sin($calc(0.02454 * $hget(pnp.about,cy)))) % 256)
+  dorots $cos($calc(0.02454 * $hget(pnp.about,cx))) $sin($calc(0.02454 * $hget(pnp.about,cx))) $cos($calc(0.02454 * $hget(pnp.about,cy))) $sin($calc(0.02454 * $hget(pnp.about,cy))) $cos($calc(0.02454 * $hget(pnp.about,cz))) $sin($calc(0.02454 * $hget(pnp.about,cz)))
+}
+alias -l dodraws {
+  drawrect -frn @PNP3D $rgb(face) 2 0 0 101 101
+  draw3d $1-6 | draw3d $4-9 | draw3d $7-12 | draw3d $10-12 $1-3
+  draw3d $13-18 | draw3d $16-21 | draw3d $19-24 | draw3d $22-24 $13-15
+  draw3d $1-3 $13-15 | draw3d $4-6 $16-18 | draw3d $7-9 $19-21 | draw3d $10-12 $22-24
+  drawdot @PNP3D | window @PNP3D $calc($dialog(aboutpnp).x + 145) $calc($dialog(aboutpnp).y + 25)
+  if ($appactive) window -ro @PNP3D | else window -h @PNP3D
+}
+alias -l dorots dodraws $hget(pnp.about,cq) $bitrot(-30,-30,30,$1,$2,$3,$4,$5,$6) $bitrot(30,-30,30,$1,$2,$3,$4,$5,$6) $bitrot(30,30,30,$1,$2,$3,$4,$5,$6) $bitrot(-30,30,30,$1,$2,$3,$4,$5,$6) $bitrot(-30,-30,-30,$1,$2,$3,$4,$5,$6) $bitrot(30,-30,-30,$1,$2,$3,$4,$5,$6) $bitrot(30,30,-30,$1,$2,$3,$4,$5,$6) $bitrot(-30,30,-30,$1,$2,$3,$4,$5,$6)
+alias -l bitrot return $calc((($2 * $5 + $3 * $4) * $7 + $1 * $6) * $8 - ($2 * $4 - $3 * $5) * $9) $calc((($2 * $5 + $3 * $4) * $7 + $1 * $6) * $9 + ($2 * $4 - $3 * $5) * $8) $calc(($2 * $5 + $3 * $4) * $6 - $1 * $7)
+alias -l stop3d .timer3d off | window -c @PNP3D | hfree pnp.about
+alias _about _ssplay Dialog | $dialog(aboutpnp,aboutpnp,-2) | _registerunload

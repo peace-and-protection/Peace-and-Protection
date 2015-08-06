@@ -1,0 +1,179 @@
+Frequently Asked Questions
+
+Important note-
+DO NOT ADD YOUR OWN SCRIPTS/EVENTS TO PNP'S SCRIPT FILES. If you want to
+add stuff, go to File->New or File->Load to create your own script file.
+If you add your own stuff to PnP's files, it can very easily cause problems.
+
+See the end of this file for known issues with PnP and specific software,
+OSes, or scripts.
+
+Q; Where should I send bug reports?
+A; Use our forum on www.kristshell.net/pnp/
+
+Q: The command "/load -rs script\first.mrc" say that the file
+   does not exist. Now what?
+A: From v6.3 and onwards, mIRC changed the way it installs itself on a system.
+   mIRC v6.3 and later now install it self into
+   "C:\Documents and Settings\-username-\Application Data\mIRC\".
+   We have been told that this is because of compatibility issues with Windows Vista.
+   You should therefore also install Pnp into that directory and not
+   "C:\Program files\mIRC\" as before, even when you do not have Vista.
+
+   There are 3 different ways to locate the mIRC folder where the PnP
+   files are to be installed proceed: (Pick one)
+   1. Logokey + R (or Start -> Run) and type: %APPDATA%\mIRC
+   2. Inside mIRC, type: //run $mircdir
+   3. Copy mirc.ini from above folder to where you installed the software.
+
+   1 or 2 should take you to the folder where files are supposed to be extracted.
+   Number 3 forces mIRC to think it's an old installation
+   and it will use files in its own folder like it once used to do.
+
+Q; How do I put notices back in active?
+A; PnP menu -> Configure, look under 'Display - Text', or use the
+   /textopt command to quickly go to that section.
+
+Q; The help popups/buttons don't work.
+A; PnP 4.0x currently has no help. At all. (except these TXT files)
+   Sorry.
+
+Q; What is the latest version of PnP? When will you update?
+A; The latest version of PnP will always be announced on the front
+   page of www.kristshell.net/pnp/.
+
+Q; How can I import settings?
+A; 4.0x doesn't have the ability to import PnP 3.20 settings.
+   You can import profiles (/profile) from any version of PnP from
+   4.0x forward, or plain mIRC, currently. Importing from PnP versions
+   older than 4.0x will just get the mIRC settings.
+
+   If you install PnP 4.0x over an older copy of PnP 4.0x, your
+   settings should automatically be retained.
+
+Q; Can I use 3.20 addons?
+A; Some 3.20 addons may work. If you encounter odd problems, unload
+   the addon. The EasyPing addon from 3.20 is NOT supported. Please
+   use the /ezping features in the 4.00 extras addon instead. Please
+   note that most 3.20 addons were designed for older mIRCs and by
+   now may not work at all.
+
+Q; How can I help out?
+A; If you are fluent in English and another language, and want to
+   help write translations for PnP, contact me at pai@kristshell.net/pnp/.
+   You can see the file "english.ini" in the Script\Trans subfolder
+   for an idea of what is involved in translation. I currently do
+   not want help actually writing the script, thanks.
+
+Q; How do I fix the "/run: Command disabled" error?
+   (also known as "why can't I play my sounds" and "PnP tells me
+    sounds are not properly indexed but it won't index them")
+A; To fix the /run disable, do the following-
+
+   1) Open mIRC options (Alt+O)
+   2) Go to the last section listed, 'General', and make sure it's
+      sub-tree is open (if there is a + next to 'General', click it
+      to expand the tree)
+   3) Go to the Lock section.
+   4) Find the option under 'Disable commands' for /run, and
+      uncheck it.
+   5) Click OK.
+
+   This is a mIRC feature to disable /run usage, and must be turned
+   off for some scripts to work. 
+
+   You can then play and index sounds normally.
+
+Q; Can you do an IRCop addon?
+A; I am not an ircop, nor will I probably ever be, so no. I will not
+   make an addon on something I do not know well and won't ever use.
+
+Q; Can you make a fileserver addon?
+A; I don't plan on it, as I never use fileservers in any way. There
+   is an XDCC addon for limited filesharing.
+
+Q; Why is my nickname not showing up before my text? (or, how can I
+   keep my nickname from showing up before my text?)
+A; Go into mIRC options, into the IRC section, and enable or disable
+   "Prefix own messages".
+
+Q; How can I get the @ and + symbols to show up next to user's
+   nicknames? (or how do I disable this?)
+A; Go into mIRC options, into the IRC section, and enable or disable
+   "Show mode prefix".
+
+Q; Why do you need five (or even ten) seconds to start up?
+A; 90% of this time is spent on integrity checks and configuration
+   reloading. In other words, you could probably get along without
+   most of it, until one day when something broke, and you'd come
+   complaining to me about how to fix it.
+
+Q; But startup sometimes stalls or locks up!
+A; First, try deleting the TEMP subdir that's inside the SCRIPT folder.
+
+   If it locks up and you have to use Ctrl+Alt+Del to end the task
+   more than once, PnP should auto-detect this on the second or
+   third start and disable the DDE functions. (these are 99% of
+   the time the cause for lockups, although it occurs very rarely.)
+
+   You can use /ddeoff to manually disable the DDE functions. (or
+   /ddeon to enable them) However, if you do this, you should probably
+   not use the Profiles functions, nor run PnP (from the same
+   directory) more than once at a time.
+
+Q; Your fonts suck; how do I change them?
+A; First, go to the Status Window. Press ALT+V and change the font
+   to your favorite font.
+
+   Now, type /fontfix. This lets you 'apply' the Status Window
+   font to any or all other windows.
+
+   You can also change fonts from Theme Central. (/theme)
+
+Q; Why do you remove doubled spaces in text that I see or type?
+A; Because of how mIRC works, any script that changes display
+   will, as a side-effect, remove doubled spaces. There is no
+   way around this if you use a custom text scheme.
+
+   You may use "/text off" to disable PnP's text theme features,
+   and then doubled spaces will act as normal in most cases.
+
+   You can also press Alt+Q to enable mIRC's second channel editbox,
+   and type or paste your text there. PnP ignores anything typed
+   into this box, allowing spacing to be retained.
+
+   There is no way for PnP to handle sound filenames with doubled
+   spaces. This is simply a limitation of mIRC.
+
+Q; Can I disable the startup screen?
+A; Yes, in Configuration (/config) under 'Other'.
+
+Q; Why do I get the error msg "No matching MPEG files found." when
+   I try to play a random sound?
+A; On your menubar, go to PnP -> Sounds -> Configure -> Sound Types.
+   Select your MPEG sound type and click settings. At this point you
+   should be in the Sound Config dialog. Click on the Directories
+   button, then Add your MP3 directory. Then you're all set. :)
+
+Q; Why don't the X commands show up in channel/nicklist popups?
+A; You must tell the script what access level you have. Right-click
+   in each channel you have access, and select X -> My Access and
+   select an access level.
+   
+Q; NickServ (or ChanServ) is on this network, but the popups and
+   commands don't appear or work!
+A; Type /ns on (or /cs on) and you will be able to enable services
+   support for the current network.
+
+KNOWN ISSUES-
+
+Window Blinds: When using window blinds theming, spurious PnP icons
+may appear in various locations of PnP dialogs. There is no known fix
+for this.
+
+'/dialog: 'pnp.config' creation error': You may experience this error
+message when opening the /config dialog. (a similar error may occur
+with the /theme dialog) This is an issue with Windows resources-
+the only way to solve it is to close some programs or reboot and try
+again. There is no known permanent fix for this.
+

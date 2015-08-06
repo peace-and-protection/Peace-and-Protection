@@ -1,0 +1,1047 @@
+; #= ppextra -rs
+; ########################################
+; Peace and Protection
+; PnP Extras (standard addon)
+; ########################################
+ 
+#.ppa.info off
+[addon]
+name=Extras
+group=Core
+popup=Extras
+author=pai
+version=1.01
+url=http://www.pairc.com/
+email=pnp@pairc.com
+id=ppextra
+ppver=4.22
+unload=kstat.save
+timers=.lagbar .lagupdate .antiidle .kickstat.flush
+hashcid=-last.msg -last.ntc -ezping.* -kstat.recent.*
+[files]
+1=extras.ppa
+[nicklist]
+1=Kickstats
+2=.View:kickstat $$1
+3=.Clear:clearstat $$1
+[notes]
+1=This addon contains a number of small 'extra' features. It includes a graphical lagbar to show your current lag visually, kick stats to track and count kicks and bans on users, an anti-idle, a country code lookup, and a number of other small items. It also includes EZ-Ping, which allows you to automatically ping users on request and send them their ping times. See 'Extras' under the PnP menu for more features.
+#.ppa.info end
+ 
+on *:LOAD:{
+  ; PnP check
+  if (!$_ispnp) {
+    echo 4 -ati2 *** This addon requires Peace and Protection by pai to use.
+    echo 4 -ati2 *** You can download Peace and Protection at http://www.pairc.com/
+    .timer -mio 1 0 .unload -rs " $+ $script $+ "
+    halt
+  }
+  ; Invalid load method check
+  if (!$istok($_cfgx(addons,ids),$readini($script,n,addon,id),32)) {
+    .timer -mio 1 0 .unload -rs " $+ $script $+ "
+dispa Unloading ' $+ $script $+ ' $chr(40) $+ addon is not properly loaded; use /addon to load it $+ $chr(41)
+    halt
+  }
+}
+ 
+menu menubar {
+  $_popssep
+Extras
+.$iif($_cfgx(extras,lagbar),$style(1)) Lagbar:lagbar $_tf2o($_not($_cfgx(extras,lagbar)))
+.$iif($hget(pnp.config,kickstat),$style(1)) KickStats
+..$iif(!$hget(pnp.config,kickstat),$style(1)) Off:kickstat off
+..$iif($hget(pnp.config,kickstat) == 1,$style(1)) On:kickstat on
+..$iif($hget(pnp.config,kickstat) == 2,$style(1)) Record but don't show:kickstat quiet
+  ..-
+..Configure...:kickstat
+  ..-
+..Look up a user...:kickstat $_entry(-1,$null,Nickname or address to look up KickStats on?)
+..Clear database...:kickstat clear
+  .-
+.$iif($_cfgi(antiidle),$style(1)) Anti-idle:if ($_cfgi(antiidle)) aidle off | else aidle on
+.$iif($hget(pnp.config,ezping.on),$style(1)) EZ-Ping:ezping
+  .-
+.Show colors:showcolor
+.Say colors:saycolor
+.Color window:colorwin
+  .-
+.Events
+..Reshow last notice	/rln:/rln
+..Say last notice	/sln:/sln
+  ..-
+..Reshow last message	/rlm:/rlm
+..Say last message	/slm:/slm
+.Country codes
+..$iif($hget(pnp.config,docountry),$style(1)) Show in whois:country $_tf2o($_not($hget(pnp.config,docountry)))
+  ..-
+..Lookup country...:country $_entry(-1,$null,Country code to look up?)
+..Lookup state...:usa $_entry(-1,$null,State code to look up?)
+}
+ 
+;
+; EZ-Ping
+;
+alias ezping {
+if (($1 == on) || ($1 == on)) `set ezping.on 1
+elseif (($1 == off) || ($1 == off)) `set ezping.on 0
+  else {
+    _dialog -am ezping ezping
+    return
+  }
+dispa EZ-Ping is $:t($_tf2o($hget(pnp.config,ezping.on)))
+}
+dialog ezping {
+title "EZ-Ping options"
+  icon script\pnp.ico
+  option dbu
+  size -1 -1 160 222
+ 
+check "&Enable EZ-Ping:", 1, 5 5 75 10
+  box "", 2, 5 15 150 124
+check "&Ping users automatically for these phrases:", 3, 10 22 140 10
+  combo 4, 19 35 95 55
+button "&Add", 5, 120 35 27 11, disable
+button "&Remove", 6, 120 48 27 11, disable
+button "&Clear", 7, 120 62 27 11
+button "&Default", 8, 120 75 27 11
+check "&Hide automatic pings (sent)", 9, 10 92 140 10
+check "&Hide automatic ping replies (recieved)", 10, 10 103 140 10
+check "&Hide notice replies (sent)", 11, 10 114 140 10
+check "&Report ping replies from manual pings as well", 12, 10 125 140 10
+ 
+box "&Notice reply:", 13, 5 144 150 50
+  edit "", 14, 10 154 140 17, multi vsbar
+button "&Default 1", 15, 10 176 40 12
+button "&Default 2", 16, 60 176 40 12
+button "&Default 3", 17, 110 176 40 12
+ 
+button "OK", 100, 10 204 40 12, ok default
+button "Cancel", 101, 60 204 40 12, cancel
+button "&Help", 102, 110 204 40 12, disable
+}
+on *:DIALOG:ezping:init:*:{
+  if ($hget(pnp.config,ezping.on)) did -c $dname 1
+  if ($left($hget(pnp.config,ezping.opt),1)) did -c $dname 3
+  if ($mid($hget(pnp.config,ezping.opt),2,1)) did -c $dname 9
+  if ($mid($hget(pnp.config,ezping.opt),3,1)) did -c $dname 10
+  if ($mid($hget(pnp.config,ezping.opt),4,1)) did -c $dname 11
+  if ($right($hget(pnp.config,ezping.opt),1)) did -c $dname 12
+  if ($hget(pnp.config,ezping.reply)) did -a $dname 14 $ifmatch
+else did -a $dname 14 Your ping reply was &dur& from server &server&
+  if ($hget(pnp.config,ezping.phrase)) _loadepp $ifmatch
+  else _loadepp !ping,ping pl,ping me
+  _ezdu
+}
+on *:DIALOG:ezping:sclick:100:{
+  `set ezping.on $did(1).state
+  `set ezping.opt $did(3).state $+ $did(9).state $+ $did(10).state $+ $did(11).state $+ $did(12).state
+  `set ezping.reply $did(14)
+  `set ezping.phrase $didtok($dname,4,44)
+}
+alias -l _loadepp {
+  did -r ezping 4
+  didtok ezping 4 44 $1-
+}
+on *:DIALOG:ezping:sclick:*:{
+  if ($did < 1) return
+  if ($did == 5) {
+    _ddadd $dname 4 $did(4,0).text
+    did -uf $dname 4
+  }
+  elseif ($did == 6) did -d $dname 4 $did(4,1).sel
+  elseif ($did == 7) did -r $dname 4
+  elseif ($did == 8) _loadepp !ping,ping pl,ping me
+elseif ($did isnum 15-17) did -ra $dname 14 $gettok(Your ping reply was &dur& from server &server&Your ping time: &meter& $chr(40) $+ &time& secs $+ $chr(41)Your ping: &metercol& $chr(40) $+ &time& secs $+ $chr(41),$calc($did - 14),127)
+  _ezdu
+}
+on *:DIALOG:ezping:edit:4:_ezdu
+alias -l _ezdu {
+  if ($did(1).state == 0) did -b $dname 3,4,5,6,7,8,9,10,11,12,13,14,15,16,17
+  else {
+    did -e $dname 3,9,10,11,12,13,14,15,16,17
+    if ($did(3).state == 0) did -b $dname 4,5,6,7,8
+    else {
+      did -e $dname 4,7,8
+      if ($did(4,0).text == $null) did -b $dname 5
+      else did -e $dname 5
+      if ($did(4,0).sel == 0) did -b $dname 6
+      else did -e $dname 6
+    }
+  }
+}
+ 
+;
+; Anti-idle
+;
+alias aidle {
+if (($1 == on) || ($1 == on)) _cfgw antiidle 1
+if (($1 == off) || ($1 == off)) { _cfgw antiidle | .timer.antiidle off }
+dispa Anti-idle is $:t($_tf2o($_cfgi(antiidle)))
+  _doidle
+}
+alias -l _doidle {
+  if ($_cfgi(antiidle)) {
+    scid -at1 resetidle
+    scid -at1 .msg $!me antiidle
+    .timer.antiidle 1 $r(25,75) _doidle
+  }
+}
+on me:^&*:OPEN:?:antiidle:halt
+on me:^&*:TEXT:antiidle:*:halt
+ 
+;
+; LagBar
+;
+ 
+on *:DISCONNECT:{ .timer -mio 1 0 _lagbar }
+on *:CONNECT:{ _lagbar }
+on *:ACTIVE:*:{ if (($_cfgx(extras,lagtype) == 2) && ($window(@Lagbar))) _lagupdate }
+on *:START:{ _startup.add _extras.start Initializing extras addon }
+alias _extras.start { _doidle | _lagbar | kstat.setup }
+alias lagbar {
+  if ($1) _cfgxw extras lagbar $_o2tf($1)
+dispa Lagbar is $:t($_tf2o($_cfgx(extras,lagbar)))
+  if ($1) _lagbar
+}
+alias -l _lagdefpos {
+  var %pos = $calc($window(-2).x + $window(-2).w - $iif($_optn(3,8),220,265)) $calc($window(-3).y - $iif($_optn(3,8),21,18) - $iif(($_optn(4,21) == 1) && ($_optn(5,23)),$calc($_optn(5,24) + 3),0))
+  if ($_cfgx(extras,lagdock)) %pos = $calc($gettok(%pos,1,32) - $window(-2).x) $calc($gettok(%pos,2,32) - $window(-2).y)
+  return %pos
+}
+alias -l _currlag {
+  ; Find current lag
+  ; Returns 0 if there are servers but no lag replies yet
+  ; Returns network as token 2
+  var %type = $_cfgx(extras,lagtype)
+  var %scon = $scon(0),%lag = 0,%net,%count = 0
+  while (%scon >= 1) {
+    if ($scon(%scon).server) {
+      var %cid = $scon(%scon)
+      inc %count
+      if (%type == 1) {
+        inc %lag $hget(pnp. $+ %cid,-self.ticks)
+      }
+      elseif (%type == 2) {
+        if (%cid == $activecid) { %lag = $hget(pnp. $+ %cid,-self.ticks) | %net = $hget(pnp. $+ %cid,net) }
+      }
+      else {
+        if ($hget(pnp. $+ %cid,-self.ticks) > %lag) { %lag = $ifmatch | %net = $hget(pnp. $+ %cid,net) }
+      }
+    }
+    dec %scon
+  }
+  if (!%lag) {
+    if (%count) return 0
+    return
+  }
+  if (%type == 1) {
+    return $int($calc(%lag / %count))
+  }
+  else {
+    return %lag %net
+  }
+}
+alias -l _lagbar {
+  var %lag
+  if ($_cfgx(extras,lagbar)) {
+    %lag = $_currlag
+  }
+  if (%lag != $null) {
+    if ($window(@LagBar) == $null) {
+      if ($_cfgx(extras,lagpos)) var %pos = $ifmatch
+      else var %pos = $_lagdefpos
+      if ($_cfgx(extras,lagdock)) %pos = $calc($gettok(%pos,1,32) + $window(-2).x) $calc($gettok(%pos,2,32) + $window(-2).y)
+      window -fpdohBzi +dL @LagBar %pos 202 17 @LagBar
+      if ($appactive) showmirc -s
+      else window -uh @LagBar
+      hadd pnp lagbar.oldmirc.x $window(-2).x
+      hadd pnp lagbar.oldmirc.y $window(-2).y
+      hadd pnp lagbar.oldmirc.w $window(-2).w
+      hadd pnp lagbar.oldmirc.h $window(-2).h
+    }
+    drawrect -nfr @LagBar $rgb(face) 2 0 0 202 17
+    if (!$_cfgx(extras,lagdock)) {
+      drawline -nr @LagBar $rgb(hilight) 1 0 15 0 0 201 0
+      drawline -nr @LagBar $rgb(shadow) 1 1 16 201 16 201 0
+    }
+    drawline -nr @LagBar $rgb(shadow) 1 2 13 2 2 199 2
+    drawline -nr @LagBar $rgb(hilight) 1 3 14 199 14 199 2
+    if (%lag > 0) _lagfill %lag
+    else drawdot @LagBar
+    if ($appactive) .timer.lagupdate -io 0 1 _lagupdate
+  }
+  elseif ($window(@LagBar)) {
+    _lagspos
+    window -c @LagBar
+    .timer.lagupdate off
+  }
+}
+on *:APPACTIVE:{
+  if ($window(@LagBar)) {
+    if ($appactive) { window -o @LagBar | .timer.lagupdate -io 0 1 _lagupdate }
+    else { window -uh @LagBar | .timer.lagupdate off }
+  }
+}
+alias -l _lagupdate { _lagposcheck | if ($_currlag != $window(@LagBar).title) _lagfill $ifmatch }
+on *:SIGNAL:PNP.SELFPING:{ if ($window(@LagBar)) _lagupdate }
+alias -l _lagback { showmirc -s }
+menu @LagBar {
+  sclick:{ if ($_cfgx(extras,laglock)) { _lagback | return } | .timer.lagbar -mio 0 50 _lagmouse $calc($mouse.dx - $window(@LagBar).dx) $calc($mouse.dy - $window(@LagBar).dy) }
+  uclick:{ .timer.lagbar off | _lagback }
+  dclick:{ _lagdocklock | _lagback }
+Color
+.$iif(!$_cfgx(extras,lagcolor),$style(1)) 3D Bar:_lagcolor
+.$iif($_cfgx(extras,lagcolor) == shadow,$style(1)) Dark:_lagcolor shadow
+.$iif($_cfgx(extras,lagcolor) == hilight,$style(1)) Light:_lagcolor hilight
+  .-
+.$iif($_cfgx(extras,lagcolor) == 01,$style(1)) Black	1:_lagcolor 01
+.$iif($_cfgx(extras,lagcolor) == 02,$style(1)) Blue	2:_lagcolor 02
+.$iif($_cfgx(extras,lagcolor) == 03,$style(1)) Green	3:_lagcolor 03
+.$iif($_cfgx(extras,lagcolor) == 04,$style(1)) Red	4:_lagcolor 04
+.$iif($_cfgx(extras,lagcolor) == 05,$style(1)) Brown	5:_lagcolor 05
+.$iif($_cfgx(extras,lagcolor) == 06,$style(1)) Purple	6:_lagcolor 06
+.$iif($_cfgx(extras,lagcolor) == 07,$style(1)) Orange	7:_lagcolor 07
+.$iif($_cfgx(extras,lagcolor) == 08,$style(1)) Yellow	8:_lagcolor 08
+.$iif($_cfgx(extras,lagcolor) == 09,$style(1)) Lt Green	9:_lagcolor 09
+.$iif($_cfgx(extras,lagcolor) == 10,$style(1)) Cyan	10:_lagcolor 10
+.$iif($_cfgx(extras,lagcolor) == 11,$style(1)) Lt Cyan	11:_lagcolor 11
+.$iif($_cfgx(extras,lagcolor) == 12,$style(1)) Lt Blue	12:_lagcolor 12
+.$iif($_cfgx(extras,lagcolor) == 13,$style(1)) Pink	13:_lagcolor 13
+.$iif($_cfgx(extras,lagcolor) == 14,$style(1)) Grey	14:_lagcolor 14
+.$iif($_cfgx(extras,lagcolor) == 15,$style(1)) Lt Grey	15:_lagcolor 15
+.$iif($_cfgx(extras,lagcolor) == 16,$style(1)) White	16:_lagcolor 16
+Show
+.$iif(!$_cfgx(extras,lagtype),$style(1)) Highest lag:_lagtype 0
+.$iif($_cfgx(extras,lagtype) == 1,$style(1)) Average lag:_lagtype 1
+.$iif($_cfgx(extras,lagtype) == 2,$style(1)) Active server:_lagtype 2
+  -
+$iif($_cfgx(extras,lagdock),$style(1)) Docked:_lagdock | _lagback
+$iif($_cfgx(extras,laglock),$style(1)) Locked:_laglock | _lagback
+$iif($window(@LagBar).dx $window(@LagBar).dy == $_lagdefpos,$style(1)) Default position:window @LagBar $_lagdefpos | _lagback
+  -
+Disable:lagbar off | _lagback
+}
+on *:CLOSE:@LagBar:{ _lagspos | .timer.lagupdate off }
+alias -l _lagposcheck {
+  if (($hget(pnp,lagbar.oldmirc.x) != $window(-2).x) || ($hget(pnp,lagbar.oldmirc.y) != $window(-2).y) || ($hget(pnp,lagbar.oldmirc.w) != $window(-2).w) || ($hget(pnp,lagbar.oldmirc.h) != $window(-2).h)) {
+    if ($_cfgx(extras,lagdock)) {
+      var %pos = $calc($window(@LagBar).dx - $hget(pnp,lagbar.oldmirc.x) + $window(-2).x) $calc($window(@LagBar).dy - $hget(pnp,lagbar.oldmirc.y) + $window(-2).y)
+      ; If halfway towards an edge, also move on a resize
+      if ($window(@LagBar).dx > $calc($window(-2).x + $window(-2).w / 2)) %pos = $calc($gettok(%pos,1,32) - $hget(pnp,lagbar.oldmirc.w) + $window(-2).w) $gettok(%pos,2,32)
+      if ($window(@LagBar).dy > $calc($window(-2).y + $window(-2).h / 2)) %pos = $gettok(%pos,1,32) $calc($gettok(%pos,2,32) - $hget(pnp,lagbar.oldmirc.h) + $window(-2).h)
+      window @LagBar %pos
+    }
+    hadd pnp lagbar.oldmirc.x $window(-2).x
+    hadd pnp lagbar.oldmirc.y $window(-2).y
+    hadd pnp lagbar.oldmirc.w $window(-2).w
+    hadd pnp lagbar.oldmirc.h $window(-2).h
+  }
+}
+alias -l _lagspos {
+  _lagposcheck
+  var %pos = $window(@LagBar).dx $window(@LagBar).dy
+  if ($_cfgx(extras,lagdock)) %pos = $calc($gettok(%pos,1,32) - $window(-2).x) $calc($gettok(%pos,2,32) - $window(-2).y)
+  if (%pos != $_lagdefpos) _cfgxw extras lagpos %pos
+  else _cfgxw extras lagpos
+}
+alias -l _lagdock _cfgxw extras lagdock $_not($_cfgx(extras,lagdock)) | _lagspos | _lagbar
+alias -l _laglock _cfgxw extras laglock $_not($_cfgx(extras,laglock))
+alias -l _lagdocklock var %state = $_not($_cfgx(extras,lagdock)) | _cfgxw extras lagdock %state | _cfgxw extras laglock %state | _lagspos | _lagbar
+alias -l _lagcolor _cfgxw extras lagcolor $1 | if ($window(@LagBar).title) _lagfill $ifmatch | _lagback
+alias -l _lagtype _cfgxw extras lagtype $1 | _lagupdate | _lagback
+alias -l _lagmouse if ($mouse.key !& 1) .timer.lagbar off | else window @LagBar $calc($mouse.dx - $1) $calc($mouse.dy - $2)
+alias -l _lagfill {
+  titlebar @LagBar $1-
+  drawrect -nfr @LagBar $rgb(face) 2 3 3 196 11
+  var %size = $round($calc($1 / 50),0),%rgb = $rgb(face),%left = 0,%width = $width($2,Small Fonts,-7)
+  if (%size > 0) {
+    if (%size > 196) %size = 196
+    if (%size > $calc(%width + 9)) %left = 1
+    if ($_cfgx(extras,lagcolor)) {
+      var %color = $color($ifmatch)
+      if ($ifmatch !isnum) %color = $rgb( [ $ifmatch ] )  
+      drawrect -nfr @LagBar %color 2 3 3 %size 11
+      if (%left == 1) %rgb = %color
+    }
+    else {
+      if (%size < 2) %size = 2
+      drawline -nr @LagBar $rgb(hilight) 1 3 12 3 3 $calc(%size + 2) 3
+      drawline -nr @LagBar $rgb(frame) 1 4 13 $calc(%size + 2) 13 $calc(%size + 2) 3
+      if (%size >= 4) {
+        drawline -nr @LagBar $rgb(3dlight) 1 4 11 4 4 $calc(%size + 1) 4
+        drawline -nr @LagBar $rgb(shadow) 1 5 12 $calc(%size + 1) 12 $calc(%size + 1) 4
+      }
+    }
+  }
+  if ($2) {
+    %rgb = $rgb(%rgb)
+    %rgb = $calc($gettok(%rgb,1,44) * 30 + $gettok(%rgb,2,44) * 59 + $gettok(%rgb,3,44) * 11)
+    if (%rgb > 15000) %rgb = 0
+    else %rgb = 16777215
+    drawtext -nr @LagBar %rgb "Small Fonts" -7 $iif(%left,$calc(%size - 3 - %width),$calc(%size + 5)) 3 $2
+  }
+  drawdot @LagBar
+}
+ 
+;
+; ColorBars
+;
+alias showcolor dispa 1,0 0 0,1 1 0,2 2 0,3 3 0,4 4 0,5 5 0,6 6 0,7 7 1,8 8 1,9 9 0,10 10 1,11 11 0,12 12 0,13 13 0,14 14 1,15 15 
+alias saycolor say 1,0 0 0,1 1 0,2 2 0,3 3 0,4 4 0,5 5 0,6 6 0,7 7 1,8 8 1,9 9 0,10 10 1,11 11 0,12 12 0,13 13 0,14 14 1,15 15 
+ 
+;
+; RepeatLast, EZping send
+;
+on &^*:TEXT:*:*:{
+  if (($hget(pnp.config,ezping.on)) && ($left($hget(pnp.config,ezping.opt),1))) {
+    if (($hget(pnp.flood. $+ $cid,ezping) > 2) || ($hget(pnp. $+ $cid,-ezping. $+ $nick))) return
+    var %num = $numtok($hget(pnp.config,ezping.phrase),44)
+    :loop
+    if ($gettok($hget(pnp.config,ezping.phrase),%num,44) isin $1-) {
+      hinc -u16 pnp.flood. $+ $cid ezping
+      hadd pnp. $+ $cid -ezping. $+ $nick 1
+      _linedance $iif($mid($hget(pnp.config,ezping.opt),2,1),.ping,ping) $nick
+    }
+    elseif (%num > 1) { dec %num | goto loop }
+  }
+  if ($target !ischan) hadd pnp. $+ $cid -last.msg * $+ $nick $+ * $1-
+}
+on &^*:ACTION:*:?:hadd pnp. $+ $cid -last.msg * $+ $nick $+ * $1-
+on &^*:NOTICE:*:?:hadd pnp. $+ $cid -last.ntc - $+ $nick $+ - $1-
+alias rlm if ($hget(pnp. $+ $cid,-last.msg)) dispa $hget(pnp. $+ $cid,-last.msg)
+alias slm if ($hget(pnp. $+ $cid,-last.msg)) editbox -a /say $hget(pnp. $+ $cid,-last.msg)
+alias rln if ($hget(pnp. $+ $cid,-last.ntc)) dispa $hget(pnp. $+ $cid,-last.ntc)
+alias sln if ($hget(pnp. $+ $cid,-last.ntc)) editbox -a /say $hget(pnp. $+ $cid,-last.ntc)
+ 
+;
+; Rest of EZping
+;
+on &*:CTCPREPLY:PING *:{
+  if ($chan) return
+  if ($hget(pnp. $+ $cid,-ezping. $+ $nick)) {
+    hdel pnp. $+ $cid -ezping. $+ $nick
+    $iif($mid($hget(pnp.config,ezping.opt),3,1),._do.creply,_do.creply) $1-
+    if ($result) {
+      $iif($mid($hget(pnp.config,ezping.opt),4,1),_qnotice,_tnotice) $nick $_ezrepl($result)
+    }
+  }
+  elseif ($right($hget(pnp.config,ezping.opt),1)) {
+    _do.creply $1-
+    if ($result) {
+      $iif($mid($hget(pnp.config,ezping.opt),4,1),_qnotice,_tnotice) $nick $_ezrepl($result)
+    }
+  }
+}
+alias -l _ezrepl {
+  var %msg = $hget(pnp.config,ezping.reply)
+  if (!Random:* iswm %msg) %msg = $read($gettok(%msg,2-,58),n)
+  var %meter,%metercol
+  if (&meter isin %msg) {
+    var %len = $round($calc($1 / 1000),0)
+    if (%len < 1) %len = 1
+    if (%len > 20) %len = 20
+    %meter = $str(,%len) $+ $str(-,$calc(20 - %len))
+    if (&metercol& isin %msg) {
+      %len = 3 $+ %meter
+      if ($count(%len,) > 3) %len = $left(%len,5) $+ 7 $+ $mid(%len,6,$len(%len))
+      if ($count(%len,) > 10) %len = $left(%len,14) $+ 4 $+ $mid(%len,15,$len(%len))
+      if (- isin %len) %len = $left(%len,$calc($pos(%len,-,1) - 1)) $+ 15 $+ $str(-,$count(%len,-))
+      %metercol = %len $+ 
+    }
+  }
+  return $msg.compile(%msg,&time&,$round($calc($1 / 1000),1),&dur&,$_dur($round($calc($1 / 1000),0)),&server&,$server,&meter&,%meter,&metercol&,%metercol)
+}
+ 
+;
+; CountryCode
+;
+alias -l _state {
+  var %state = $1 | goto $1
+  :AL | return Alabama, USA
+  :AK | return Alaska, USA
+  :AZ | return Arizona,USA
+  :AR | return Arkansas, USA
+  :CA | return California, USA
+  :CO | return Colorado, USA
+  :CT | return Connecticut, USA
+  :DE | return Delaware, USA
+  :DC | return District of Columbia, USA
+  :FL | return Florida, USA
+  :GA | return Georgia, USA
+  :HI | return Hawaii, USA
+  :ID | return Idaho, USA
+  :IL | return Illinois, USA
+  :IN | return Indiana, USA
+  :IA | return Iowa, USA
+  :KS | return Kansas, USA
+  :KY | return Kentucky, USA
+  :LA | return Louisiana, USA
+  :ME | return Maine, USA
+  :MD | return Maryland, USA
+  :MA | return Massachusetts, USA
+  :MI | return Michigan, USA
+  :MN | return Minnesota, USA
+  :MS | return Mississippi, USA
+  :MO | return Missouri, USA
+  :MT | return Montana, USA
+  :NE | return Nebraska, USA
+  :NV | return Nevada, USA
+  :NH | return New Hampshire, USA
+  :NJ | return New Jersey, USA
+  :NM | return New Mexico, USA
+  :NY | return New York, USA
+  :NC | return North Carolina, USA
+  :ND | return North Dakota, USA
+  :OH | return Ohio, USA
+  :OK | return Oklahoma, USA
+  :OR | return Oregon, USA
+  :PA | return Pennsylvania, USA
+  :PR | return Puerto Rico
+  :RI | return Rhode Island, USA
+  :SC | return South Carolina, USA
+  :SD | return South Dakota, USA
+  :TN | return Tennessee, USA
+  :TX | return Texas, USA
+  :UT | return Utah, USA
+  :VT | return Vermont, USA
+  :VI | return Virgin Islands
+  :VA | return Virginia, USA
+  :WA | return Washington, USA
+  :WV | return West Virginia, USA
+  :WI | return Wisconsin, USA
+  :WY | return Wyoming, USA
+:%state | return (unknown), USA
+}
+alias -l _country {
+  var %country = $1 | goto $1
+  :AF | return Afghanistan
+  :AL | return Albania
+  :DZ | return Algeria
+  :AS | return American Samoa
+  :AD | return Andorra
+  :AO | return Angola
+  :AI | return Anguilla
+  :AQ | return Antarctica
+  :AG | return Antigua or Barbuda
+  :AR | return Argentina
+  :AM | return Armenia
+  :AW | return Aruba
+  :AA | return Aruba
+  :AU | return Australia
+  :AT | return Austria
+  :AZ | return Azerbaijan
+  :BS | return Bahamas
+  :BH | return Bahrain
+  :BD | return Bangladesh
+  :BB | return Barbados
+  :BY | return Belarus
+  :BE | return Belgium
+  :BZ | return Belize
+  :BJ | return Benin
+  :BM | return Bermuda
+  :BT | return Bhutan
+  :BO | return Bolivia
+  :BA | return Bosnia or Herzegowina
+  :BW | return Botswana
+  :BV | return Bouvet Island
+  :BR | return Brazil
+  :IO | return British Indian Ocean Territory
+  :BN | return Brunei Darussalam
+  :BG | return Bulgaria
+  :BF | return Burkina Faso
+  :BI | return Burundi
+  :KH | return Cambodia
+  :CB | return Cambodia
+  :CM | return Cameroon
+  :CA | return Canada
+  :CV | return Cape Verde
+  :KY | return Cayman Islands
+  :CF | return Central African Republic
+  :TD | return Chad
+  :CL | return Chile
+  :CN | return China
+  :CX | return Christmas Island
+  :CC | return Cocos (Keeling) Islands
+  :CO | return Colombia
+  :KM | return Comoros
+  :CG | return Congo
+  :CD | return Democratic Republic of the Congo
+  :CK | return Cook Islands
+  :CR | return Costa Rica
+  :CI | return Cote D'ivoire (Ivory Coast)
+  :HR | return Croatia (Hrvatska)
+  :CU | return Cuba
+  :CY | return Cyprus
+  :CZ | return Czech Republic
+  :CS | return Former Czechoslovakia
+  :DK | return Denmark
+  :DJ | return Djibouti
+  :DM | return Dominica
+  :DO | return Dominican Republic
+  :TP | return East Timor
+  :EC | return Ecuador
+  :EG | return Egypt
+  :SV | return El Salvador
+  :GQ | return Equatorial Guinea
+  :ER | return Eritrea
+  :EE | return Estonia
+  :ET | return Ethiopia
+  :FK | return Falkland Islands (Malvinas)
+  :FO | return Faroe Islands
+  :FJ | return Fiji
+  :FI | return Finland
+  :FR | return France
+  :FX | return France, Metropolitan
+  :GF | return French Guiana
+  :PF | return French Polynesia
+  :TF | return French Southern Territories
+  :GA | return Gabon
+  :GM | return Gambia
+  :GE | return Georgia
+  :DE | return Germany
+  :GH | return Ghana
+  :GI | return Gibraltar
+  :GR | return Greece
+  :GL | return Greenland
+  :GD | return Grenada
+  :GP | return Guadeloupe
+  :GU | return Guam
+  :GT | return Guatemala
+  :GN | return Guinea
+  :GW | return Guinea-Bissau
+  :GY | return Guyana
+  :HT | return Haiti
+  :HM | return Heard and McDonald Islands
+  :VA | return Holy See (Vatican City State)
+  :HN | return Honduras
+  :HK | return Hong Kong
+  :HU | return Hungary
+  :IS | return Iceland
+  :IN | return India
+  :ID | return Indonesia
+  :IR | return Iran (Islamic Republic of)
+  :IQ | return Iraq
+  :IE | return Ireland
+  :IL | return Israel
+  :IT | return Italy
+  :JM | return Jamaica
+  :JP | return Japan
+  :JO | return Jordan
+  :KZ | return Kazakhstan
+  :KE | return Kenya
+  :KI | return Kiribati
+  :KP | return Democratic People's Republic of Korea (North)
+  :KR | return Republic of Korea (South)
+  :KW | return Kuwait
+  :KG | return Kyrgyzstan
+  :LA | return Lao People's Democratic Republic (Laos)
+  :LV | return Latvia
+  :LB | return Lebanon
+  :LS | return Lesotho
+  :LR | return Liberia
+  :LY | return Libyan Arab Jamahiriya (Libya)
+  :LI | return Liechtenstein
+  :LT | return Lithuania
+  :LU | return Luxembourg
+  :MO | return Macau
+  :MK | return Former Yugoslav Republic of Macedonia
+  :MG | return Madagascar
+  :MW | return Malawi
+  :MY | return Malaysia
+  :MV | return Maldives
+  :ML | return Mali
+  :MT | return Malta
+  :MH | return Marshall Islands
+  :MQ | return Martinique
+  :MR | return Mauritania
+  :MU | return Mauritius
+  :YT | return Mayotte
+  :MX | return Mexico
+  :FM | return Federated States of Micronesia
+  :MD | return Republic of Moldova
+  :MC | return Monaco
+  :MN | return Mongolia
+  :MS | return Montserrat
+  :MA | return Morocco
+  :MZ | return Mozambique
+  :MM | return Myanmar
+  :NA | return Namibia
+  :NR | return Nauru
+  :NP | return Nepal
+  :NL | return Netherlands
+  :AN | return Netherlands Antilles
+  :NT | return Neutral Zone
+  :NC | return New Caledonia
+  :NZ | return New Zealand
+  :NI | return Nicaragua
+  :NE | return Niger
+  :NG | return Nigeria
+  :NU | return Niue
+  :NF | return Norfolk Island
+  :MP | return Northern Mariana Islands
+  :NO | return Norway
+  :OM | return Oman
+  :PK | return Pakistan
+  :PW | return Palau
+  :PA | return Panama
+  :PG | return Papua New Guinea
+  :PY | return Paraguay
+  :PE | return Peru
+  :PH | return Philippines
+  :PN | return Pitcairn
+  :PL | return Poland
+  :PT | return Portugal
+  :PR | return Puerto Rico
+  :QA | return Qatar
+  :RE | return Reunion
+  :RO | return Romania
+  :RU | return Russian Federation
+  :RW | return Rwanda
+  :KN | return Saint Kitts or Nevis
+  :LC | return Saint Lucia
+  :VC | return Saint Vincent or the Grenadines
+  :WS | return Samoa
+  :SM | return San Marino
+  :ST | return Sao Tome or Principe
+  :SA | return Saudi Arabia
+  :SN | return Senegal
+  :SC | return Seychelles
+  :SL | return Sierra Leone
+  :SG | return Singapore
+  :SK | return Slovakia (Slovak Republic)
+  :SI | return Slovenia
+  :SB | return Solomon Islands
+  :SO | return Somalia
+  :ZA | return South Africa
+  :GS | return South Georgia and South Sandwich Islands
+  :ES | return Spain
+  :LK | return Sri Lanka
+  :SH | return St. Helena
+  :PM | return St. Pierre or Miquelon
+  :SD | return Sudan
+  :SR | return Suriname
+  :SJ | return Svalbard and Jan Mayen Islands
+  :SZ | return Swaziland
+  :SE | return Sweden
+  :CH | return Switzerland
+  :SY | return Syrian Arab Republic
+  :TW | return Taiwan
+  :TJ | return Tajikistan
+  :TZ | return United Republic of Tanzania
+  :TH | return Thailand
+  :TG | return Togo
+  :TK | return Tokelau
+  :TO | return Tonga
+  :TT | return Trinidad or Tobago
+  :TN | return Tunisia
+  :TR | return Turkey
+  :TM | return Turkmenistan
+  :TC | return Turks or Caicos Islands
+  :TV | return Tuvalu
+  :UG | return Uganda
+  :UA | return Ukraine
+  :AE | return United Arab Emirates
+  :GB | return United Kingdom
+  :UK | return United Kingdom
+  :US | return United States
+  :UM | return United States, minor outlying islands
+  :UY | return Uruguay
+  :SU | return Former USSR
+  :UZ | return Uzbekistan
+  :VU | return Vanuatu
+  :VE | return Venezuela
+  :VN | return Viet Nam
+  :VG | return Virgin Islands (British)
+  :VI | return Virgin Islands (U.S.)
+  :WF | return Wallis and Futuna Islands
+  :EH | return Western Sahara
+  :YE | return Yemen
+  :YU | return Yugoslavia
+  :ZM | return Zambia
+  :ZW | return Zimbabwe
+  :ZR | return Zaire
+  :NET | return Network or ISP (often USA)
+  :COM | return Commercial entity (often USA)
+  :EDU | return Educational (usually USA)
+  :ORG | return Miscellaneous organization (often USA)
+  :INT | return International organization
+  :GOV | return USA federal government
+  :MIL | return USA military
+  :ARPA | return Old style Arpanet
+  :NATO | return Nato field
+  :BIZ | return Commercial business
+  :INFO | return Informational (no restrictions)
+  :NAME | return Personal name
+  :MUSEUM | return Museum
+  :COOP | return Cooperative Business
+  :AERO | return Air-transport Business
+  :PRO | return Professional (individuals)
+:%country | return (unknown)
+}
+alias -l _code {
+  if (*.us iswm $1) return $_state($gettok($1,-2,46))
+  return $_country($gettok($1,-1,46))
+}
+alias country {
+if (($1 == on) || ($1 == off) || ($1 == on) || ($1 == off)) {
+    `set docountry $_o2tf($1)
+dispa Country codes are $:t($_tf2o($hget(pnp.config,docountry)))
+  }
+elseif ($1) dispa Location of $:t($1) - $_code($1)
+else dispa Country codes are $:t($_tf2o($hget(pnp.config,docountry)))
+}
+alias usa country $iif(*.us iswm $1,$1,$1.us)
+raw 312:*:if (($hget(pnp.config,docountry)) && ($numtok($hget(pnp.twhois. $+ $cid,address),46) > 1)) _docountry $gettok($hget(pnp.twhois. $+ $cid,address),-1,46)
+alias -l _docountry if (($1 isnum) || ($1 == $null)) return | if (($istok(com edu net org biz info name pro,$1,32) == $false) && (* !isin $1)) whois.misc at $_code($1)
+ 
+;
+; Color window
+;
+alias f6 colorwin
+alias colorwin {
+  if ($active == @ColorWin) { window -c @ColorWin | return }
+  _window 2 -pfkz +efLt @ColorWin -1 -1 530 288 @ColorWin
+  var %row = 0
+  :row
+  var %line,%col = 0
+  %line =  $+ %row $_cprep(%row) $+ :
+  :col
+  %line = %line  $+ %col $+ , $+ $_cprep(%row) $+ $_cprep(%col)
+  if (%col < 15) { inc %col | goto col }
+  drawtext -pbn @ColorWin 1 0 Terminal 19 0 $calc(%row * 18) %line 
+  if (%row < 15) { inc %row | goto row }
+  drawdot @ColorWin
+}
+menu @ColorWin {
+  mouse:_cwm
+  sclick:_cwm | clipboard  $+ $gettok($window(@ColorWin).title,2,32) $+ , $+ $_cprep($gettok($window(@ColorWin).title,4,32)) | window -c @ColorWin
+  leave:titlebar @ColorWin
+}
+alias -l _cwm {
+  if ($mouse.x < 50) titlebar @ColorWin
+  else {
+    var %fg = $int($calc(($mouse.x - 50) / 30))
+    var %bg = $int($calc($mouse.y / 18))
+titlebar @ColorWin - %fg on %bg ( $+ $_colorword(%fg) on $_colorword(%bg) $+ )
+  }
+}
+ 
+;
+; Kickstats
+;
+alias -l kstat.load {
+  if ($hget(pnp.kickstat)) hdel -w pnp.kickstat *
+  else hmake pnp.kickstat 100
+  var %file = $_cfg(kickstat.dat)
+  if ($isfile(%file)) {
+    ; support old format of one item per line
+    if ($read(%file,n,1) == hash) {
+      hload pnp.kickstat " $+ %file $+ "
+      hdel pnp.kickstat hash
+    }
+    else {
+      window -hnl @.kickstats
+      loadbuf @.kickstats " $+ %file $+ "
+      var %ln = $line(@.kickstats,0)
+      while (%ln) {
+        hadd pnp.kickstat $line(@.kickstats,%ln)
+        dec %ln
+      }
+      window -c @.kickstats
+    }
+  }
+}
+alias kstat.save {
+  var %file = $_cfg(kickstat.dat)
+  if ($hget(pnp.kickstat)) {
+    write -c " $+ %file $+ " hash
+    write " $+ %file $+ " 1
+    hsave -a pnp.kickstat " $+ %file $+ "
+    if ($1) hfree pnp.kickstat
+  }
+}
+on *:EXIT:{ kstat.save }
+; makes sure loaded or unloaded depending on status
+alias -l kstat.setup {
+  if ($hget(pnp.config,kickstat)) {
+    if ($hget(pnp.kickstat) == $null) kstat.load
+  }
+  else {
+    kstat.save 1
+  }
+}
+alias kstat.address {
+  var %addr = $gettok($1,-1,33)
+  var %right = $gettok(%addr,2,64)
+  if ($numtok(%right,58) == 6) %right = $gettok(%right,1-5,58)
+  elseif ($longip(%right) isnum) %right = $gettok(%right,1-3,46)
+  else %right = $remove(%right,0,1,2,3,4,5,6,7,8,9,-,_)
+  return $remove($gettok(%addr,1,64),~) $+ @ $+ %right
+}
+on *:KICK:#:{
+  if (($hget(pnp.config,kickstat)) && ($knick != $me) && ($address($knick,5) != $null)) {
+    var %addr = $ifmatch
+    var %kstat = $kstat.address($ifmatch)
+    if (%addr isban $chan) var %ban = 1,%kick = 0
+    else var %ban = 0,%kick = 1
+    var %old = $hget(pnp.kickstat,%kstat)
+    hadd pnp.kickstat %kstat $calc(%kick + $gettok(%old,1,32)) $calc(%ban + $gettok(%old,2,32)) %addr $fulladdress $chan $ctime $1-
+    ; (only remembers so many tokens for length reasons)
+    if (%kick) hadd -u15 pnp. $+ $cid -kstat.recentkick. $+ $chan $gettok($addtok($hget(pnp. $+ $cid,-kstat.recentkick. $+ $chan),%addr,32),1-10,32)
+    .timer.kickstat.flush -io 1 20 kstat.save
+  }
+}
+on *:BAN:#:{
+  if ($hget(pnp.config,kickstat)) {
+    var %n = 1
+    while ($wildtok($hget(pnp. $+ $cid,-kstat.recentkick. $+ $chan),$banmask,%n,32)) {
+      var %kstat = $kstat.address($ifmatch)
+      var %old = $hget(pnp.kickstat,%kstat)
+      hadd pnp.kickstat %kstat $calc($gettok(%old,1,32) - 1) $calc($gettok(%old,2,32) + 1) $gettok(%old,3-,32)
+      inc %n
+    }
+  }
+}
+on !*:JOIN:#:{
+  if ($hget(pnp.config,kickstat) == 1) {
+    tokenize 32 $hget(pnp.kickstat,$kstat.address($fulladdress))
+    if ($1) {
+      if (($1 >= $hget(pnp.config,kickstat.kick)) || ($2 >= $hget(pnp.config,kickstat.ban))) {
+dispr $chan $:t($nick) has $:s($1) kicks / $:s($2) bankicks $chr(40) $+ $_q.fkey(0,$calc($ctime + 90),kickstat,$fulladdress) for info / $_q.fkey(1,$calc($ctime + 90),clearstat,$fulladdress) to clear $+ $chr(41)
+      }
+    }
+  }
+}
+; /kickstat [nick|on|off|quiet|clear]
+alias kickstat {
+if (($1 == on) || ($1 == on)) {
+    `set kickstat 1
+    if ($hget(pnp.config,kickstat.kick) !isnum) `set kickstat.kick 2
+    if ($hget(pnp.config,kickstat.ban) !isnum) `set kickstat.ban 1
+var %set = On
+dispa KickStats are $:t(%set)
+    kstat.setup
+  }
+elseif (($1 == off) || ($1 == off)) {
+    `set kickstat 0
+var %set = Off
+dispa KickStats are $:t(%set)
+    kstat.setup
+  }
+  elseif ($1 == quiet) {
+    `set kickstat 2
+var %set = On
+dispa KickStats $:t(%set) $+ $chr(44) but quiet.
+    kstat.setup
+  }
+  elseif ($1 == clear) {
+_okcancel 1 Clear KickStats database?
+    .remove $_cfg(kickstat.dat)
+    if ($hget(pnp.kickstat)) hdel -w pnp.kickstat *
+dispa KickStats database cleared.
+  }
+  elseif ($1) {
+    var %addr = $_nc($1)
+    if (@ !isin $1) {
+      if ($address(%addr,5)) %addr = $ifmatch
+      else {
+dispa Looking up address of $:t(%addr) $+ ...
+        _notconnected
+_Q.userhost kickstat&n!&a dispa $+ User $+ $:t(%addr) $+ notfound %addr
+        return
+      }
+    }
+    tokenize 32
+    if ($hget(pnp.kickstat)) tokenize 32 $hget(pnp.kickstat,$kstat.address(%addr))
+    else {
+      var %file = $_cfg(kickstat.dat)
+      if ($isfile(%file)) {
+        var %junk = $read(%file,ns,$kstat.address(%addr))
+        if ($readn) tokenize 32 $read(%file,n,$calc($readn + 1))
+      }
+    }
+if ($1 == $null) dispa No KickStats found for $:s(%addr)
+    else {
+disptn -a $gettok($3,1,33) Kicks: $:s($1) / Bankicks: $:s($2) / Total: $calc($1 + $2)
+disptn -a $gettok($3,1,33) Last kick: by $:s($4) in $:s($5) $chr(40) $+ $7- $+ $chr(41)
+disptn -a $gettok($3,1,33) Previous address was: $3
+    }
+  }
+  else _dialog -am kickstat kickstat
+}
+; /clearstat [nick]
+alias clearstat {
+  if ($1 == $null) kickstat clear
+  else {
+    var %addr = $_nc($1)
+    if (@ !isin $1) {
+      if ($address(%addr,5)) %addr = $ifmatch
+      else {
+dispa Looking up address of $:t(%addr) $+ ...
+        _notconnected
+_Q.userhost clearstat&n!&a dispa $+ User $+ $:t(%addr) $+ notfound %addr
+        return
+      }
+    }
+ 
+    if ($hget(pnp.kickstat)) {
+      hdel pnp.kickstat $kstat.address($fulladdress)
+      .timer.kickstat.flush -io 1 20 kstat.save
+    }
+    else {
+      var %file = $_cfg(kickstat.dat)
+      if ($isfile(%file)) {
+        var %junk = $read(%file,ns,$kstat.address(%addr))
+        if ($readn) {
+          write -dl $+ $readn " $+ %file $+ "
+          write -dl $+ $readn " $+ %file $+ "
+        }
+      }
+    }
+dispa KickStats cleared for $:s(%addr)
+  }
+}
+dialog kickstat {
+title "KickStat options"
+  icon script\pnp.ico
+  option dbu
+  size -1 -1 140 91
+ 
+radio "&Disable KickStats", 1, 5 5 130 11, group
+radio "&Enable KickStats", 2, 5 16 130 11
+radio "&Record Stats but don't show", 3, 5 27 130 11
+ 
+box "Show stats on join if at least:", 4, 5 45 75 41, disable
+text "&kicks or", 6, 42 57 35 11, disable
+  edit "", 5, 10 55 30 11, disable
+text "&bans", 8, 42 72 35 11, disable
+  edit "", 7, 10 70 30 11, disable
+ 
+button "OK", 100, 90 55 42 12, ok
+button "Cancel", 101, 90 73 42 12, cancel
+}
+on *:DIALOG:kickstat:init:*:{
+  if ($hget(pnp.config,kickstat) == 2) did -cf $dname 3
+  elseif ($hget(pnp.config,kickstat) == 1) {
+    did -cf $dname 2
+    did -e $dname 4,5,6,7,8
+  }
+  else did -cf $dname 1
+  if ($hget(pnp.config,kickstat.kick) isnum) did -o $dname 5 1 $ifmatch
+  else did -o $dname 5 1 2
+  if ($hget(pnp.config,kickstat.ban) isnum) did -o $dname 7 1 $ifmatch
+  else did -o $dname 7 1 1
+}
+on *:DIALOG:kickstat:sclick:*:{
+  if ($did < 1) return
+  if ($did == 2) did -e $dname 4,5,6,7,8
+  elseif ($did isnum 1-3) did -b $dname 4,5,6,7,8
+  elseif ($did == 100) {
+    if ($did(5) > 0) `set kickstat.kick $ifmatch
+    if ($did(7) > 0) `set kickstat.ban $ifmatch
+    if ($did(2).state) `set kickstat 1
+    elseif ($did(3).state) `set kickstat 2
+    else `set kickstat 0
+    kstat.setup
+  }
+}

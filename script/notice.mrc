@@ -1,0 +1,283 @@
+; #= P&P -rs
+; ########################################
+; Peace and Protection
+; Notice and mass-message routines
+; ########################################
+ 
+;
+; Notices windows
+;
+on *:INPUT:@Events*:_getcc | if (($left($1,1) != %.cmdchar) || (?me iswm $1) || ($mouse.key & 2)) { onotice $mid($target,$calc($pos($target,-,1) + 1)) $1- | halt }
+on *:INPUT:@Notices*:_getcc | if ($left($1,1) == %.cmdchar) { .timer -mo 1 0 editbox -p $active $iif($istok(n msg notice onotice ohnotice ovnotice omsg,$right($1,-1),32),$1-2,$1) | if (?notice iswm $1) { ntc $2- | halt } }
+menu @Notices {
+Text options...:textopt
+}
+ 
+;
+; Recent notices (includes onotice support) also notice flood support
+;
+on ^*:NOTICE:*:*:{
+  if (($level($fulladdress) == $dlevel) && (!$_isserv($nick))) {
+    if ($hget(pnp.flood. $+ $cid,noticehalt.mass)) { hadd -u60 pnp.flood. $+ $cid noticehalt.mass 1 | halt }
+    if ($hget(pnp.flood. $+ $cid,noticehalt. $+ $site)) { hadd -u60 pnp.flood. $+ $cid noticehalt. $+ $site 1 | halt }
+    if ($hget(pnp.flood. $+ $cid,noticemass)) {
+      if ($_genflood(notice.mass,$hget(pnp.config,xnotice.cfg))) {
+        hadd -u60 pnp.flood. $+ $cid noticehalt.mass 1
+        hadd -u60 pnp.flood. $+ $cid noticemass 1
+var %site = (all)
+_alert Flood Notice flood detected- Further notices from %site won't be shown
+        halt
+      }
+    }
+    if ($_genflood(notice. $+ $site,$hget(pnp.config,xnotice.cfg))) {
+      hadd -u60 pnp.flood. $+ $cid noticehalt. $+ $site 1
+      hadd -u60 pnp.flood. $+ $cid noticemass 1
+_alert Flood Notice flood detected- Further notices from $site won't be shown
+      halt
+    }
+  }
+  if (($target ischan) || ($1 == DCC)) return
+  if (((@* iswm $target) && (@%* !iswm $target) && (@+* !iswm $target)) || (%.opnotice)) _recseen 10 notice $right($target,-1) +
+  else _recseen 10 notice $nick
+}
+ 
+;
+; Notice msg formatting
+;
+alias _naction if ($gettok($1,1,32) == /me) return * $me $gettok($1-,2-,32) | else return $1-
+alias _mnmsg {
+  var %msg = $_msg($1)
+  if (&msg& !isin %msg) %msg = %msg &msg&
+  if ($me ison $2) return $msg.compile(%msg,&chan&,$2,&ops&,$nick($2,0,o),&hops&,$nick($2,0,h),&vocs&,$nick($2,0,v),&users&,$nick($2,0),&ohs&,$nick($2,0,oh),&ovs&,$nick($2,0,ohv),&nops&,$nick($2,0,r),&msg&,$_naction($3-))
+  else return $msg.compile(%msg,&chan&,$2,&ops&,??,&hops&,??,&vocs&,??,&users&,??,&ohs&,??,&ovs&,??,&nops&,??,&msg&,$_naction($3-))
+}
+alias _abmsg {
+  var %msg = $_msg($1)
+  if (&msg& !isin %msg) %msg = %msg &msg&
+  return $msg.compile(%msg,&chan&,$2,&nick&,$3,&targets&,$calc($nick($2,0) - $numtok($3,44)),&msg&,$_naction($4-))
+}
+alias _pvmsg {
+  var %msg = $_msg($1)
+  if (&msg& !isin %msg) %msg = %msg &msg&
+  return $msg.compile(%msg,&nick&,$2,&targets&,$3,&msg&,$_naction($4-))
+}
+ 
+;
+; Mass notices (op/etc)
+;
+ 
+; Used to send a notice, shows to @Notices/@Events-* if active, else channel window
+; _show.send.notice #chan target text
+alias -l _show.send.notice {
+  set -u %::text $3-
+  set -u %::target $2
+  set -u %::nick $me
+  set -u %::address $gettok($hget(pnp. $+ $cid,-myself),2-,33)
+  set -u %::chan $1
+  set -u %:echo echo $color(own) $iif((@Notices* iswm $active) || (@Events* iswm $active),-qati2,-qti2 $1)
+  theme.text NoticeSelfChan c
+}
+ 
+alias o onotice $1-
+alias wall onotice $1-
+alias onotice {
+  if ($1 == $null) _qhelp /onotice | _simsplit mn /onotice $1- | if (%.msg.mn == $null) _qhelp /onotice $1-
+if ($len(%.msg.mn) > 300) _error Please use a smaller message.You must enter a message under 300 characters for mass notices.
+if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot send mass notices to channels you are not currently in.
+  var %sendto,%target = @ $+ %.chan.mn,%send = $_mnmsg(onotice,%.chan.mn,%.msg.mn)
+  _show.send.notice %.chan.mn @ $+ %.chan.mn %send
+  if ((@ isin $hget(pnp. $+ $cid,-feat)) && (($me isop %.chan.mn) || (o !isin $hget(pnp. $+ $cid,-feat)))) { _qnotice %target %send | return }
+  var %num = $nick(%.chan.mn,0,o)
+  if (%num == 0) return
+  :loop
+  if ($nick(%.chan.mn,%num,o) != $me) %sendto = %sendto $ifmatch
+  if (($numtok(%sendto,32) >= $hget(pnp. $+ $cid,-target)) || ($calc($len(%sendto) + $len(%send)) > 450)) { _qnotice $_s2c(%sendto) %send | var %sendto }
+  if (%num > 1) { dec %num | goto loop }
+  if (%sendto) _qnotice $_s2c(%sendto) %send
+}
+ 
+alias oh ohnotice $1-
+alias ohnotice {
+  if ($1 == $null) _qhelp /ohnotice | _simsplit mn /ohnotice $1- | if (%.msg.mn == $null) _qhelp /ohnotice $1-
+if ($len(%.msg.mn) > 300) _error Please use a smaller message.You must enter a message under 300 characters for mass notices.
+if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot send mass notices to channels you are not currently in.
+  var %num,%sendto,%target = @% $+ %.chan.mn,%send = $_mnmsg(ohnotice,%.chan.mn,%.msg.mn)
+  _show.send.notice %.chan.mn @% $+ %.chan.mn %send
+  if ((+ isin $hget(pnp. $+ $cid,-feat)) && (($me ishop %.chan.mn) || ($me isop %.chan.mn) || (o !isin $hget(pnp. $+ $cid,-feat)))) { _qnotice %target %send | return }
+  if ((@ isin $hget(pnp. $+ $cid,-feat)) && (($me isop %.chan.mn) || (o !isin $hget(pnp. $+ $cid,-feat)))) _qnotice @ $+ %.chan.mn %send
+  else {
+    %num = $nick(%.chan.mn,0,o)
+    if (%num == 0) goto hop
+    :loop1
+    if ($nick(%.chan.mn,%num,o) != $me) %sendto = %sendto $ifmatch
+    if (($numtok(%sendto,32) >= $hget(pnp. $+ $cid,-target)) || ($calc($len(%sendto) + $len(%send)) > 450)) { _qnotice $_s2c(%sendto) %send | var %sendto }
+    if (%num > 1) { dec %num | goto loop1 }
+  }
+  :hop
+  %num = $nick(%.chan.mn,0,h,o)
+  if (%num == 0) goto done
+  :loop2
+  if ($nick(%.chan.mn,%num,h,o) != $me) %sendto = %sendto $ifmatch
+  if (($numtok(%sendto,32) >= $hget(pnp. $+ $cid,-target)) || ($calc($len(%sendto) + $len(%send)) > 450)) { _qnotice $_s2c(%sendto) %send | var %sendto }
+  if (%num > 1) { dec %num | goto loop2 }
+  :done
+  if (%sendto) _qnotice $_s2c(%sendto) %send
+}
+ 
+alias ov ovnotice $1-
+alias ovnotice {
+  if ($1 == $null) _qhelp /ovnotice | _simsplit mn /ovnotice $1- | if (%.msg.mn == $null) _qhelp /ovnotice $1-
+if ($len(%.msg.mn) > 300) _error Please use a smaller message.You must enter a message under 300 characters for mass notices.
+if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot send mass notices to channels you are not currently in.
+  var %num,%sendto,%target = @+ $+ %.chan.mn,%send = $_mnmsg(ovnotice,%.chan.mn,%.msg.mn)
+  _show.send.notice %.chan.mn @+ $+ %.chan.mn %send
+  if ((+ isin $hget(pnp. $+ $cid,-feat)) && (($me isvoice %.chan.mn) || ($me ishop %.chan.mn) || ($me isop %.chan.mn) || (o !isin $hget(pnp. $+ $cid,-feat)))) { _qnotice %target %send | return }
+  if ((@ isin $hget(pnp. $+ $cid,-feat)) && (($me isop %.chan.mn) || (o !isin $hget(pnp. $+ $cid,-feat)))) _qnotice @ $+ %.chan.mn %send
+  else {
+    %num = $nick(%.chan.mn,0,o)
+    if (%num == 0) goto voice
+    :loop1
+    if ($nick(%.chan.mn,%num,o) != $me) %sendto = %sendto $ifmatch
+    if (($numtok(%sendto,32) >= $hget(pnp. $+ $cid,-target)) || ($calc($len(%sendto) + $len(%send)) > 450)) { _qnotice $_s2c(%sendto) %send | var %sendto }
+    if (%num > 1) { dec %num | goto loop1 }
+  }
+  :voice
+  %num = $nick(%.chan.mn,0,vh,o)
+  if (%num == 0) goto done
+  :loop2
+  if ($nick(%.chan.mn,%num,vh,o) != $me) %sendto = %sendto $ifmatch
+  if (($numtok(%sendto,32) >= $hget(pnp. $+ $cid,-target)) || ($calc($len(%sendto) + $len(%send)) > 450)) { _qnotice $_s2c(%sendto) %send | var %sendto }
+  if (%num > 1) { dec %num | goto loop2 }
+  :done
+  if (%sendto) _qnotice $_s2c(%sendto) %send
+}
+ 
+; (no ops OR hops)
+alias rnotice peon $1-
+alias nnotice peon $1-
+alias peon {
+  if ($1 == $null) _qhelp /peon | _simsplit mn /peon $1- | if (%.msg.mn == $null) _qhelp /peon $1-
+if ($len(%.msg.mn) > 300) _error Please use a smaller message.You must enter a message under 300 characters for mass notices.
+if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot send mass notices to channels you are not currently in.
+  var %sendto,%send = $_mnmsg(peon,%.chan.mn,%.msg.mn)
+  _show.send.notice %.chan.mn nonop/ $+ %.chan.mn %send
+  var %num = $nick(%.chan.mn,0,a,oh)
+  if (%num == 0) return
+  :loop
+  if ($nick(%.chan.mn,%num,a,oh) != $me) %sendto = %sendto $ifmatch
+  if (($numtok(%sendto,32) >= $hget(pnp. $+ $cid,-target)) || ($calc($len(%sendto) + $len(%send)) > 450)) { _qnotice $_s2c(%sendto) %send | var %sendto }
+  if (%num > 1) { dec %num | goto loop }
+  if (%sendto) _qnotice $_s2c(%sendto) %send
+}
+ 
+alias allbut {
+  if ($2 == $null) _qhelp /allbut | _split mn /allbut $1-
+if ($len(%.msg.mn) > 300) _error Please use a smaller message.You must enter a message under 300 characters for mass notices.
+if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot send mass notices to channels you are not currently in.
+  var %sendto,%chan = %.chan.mn,%msg = %.msg.mn,%target = $_nccs(44,%chan,%.targ.mn),%send = $_abmsg(allbut,%chan,%target,%msg),%ctarget = - $+ %target
+  _show.send.notice %chan %chan %send
+  var %num = $nick(%chan,0)
+  if (%num == 1) return
+  :loop
+  if ($nick(%chan,%num) != $me) if ($istok(%target,$ifmatch,44) == $false) %sendto = %sendto $nick(%chan,%num)
+  if (($numtok(%sendto,32) >= $hget(pnp. $+ $cid,-target)) || ($calc($len(%sendto) + $len(%send)) > 450)) { _qnotice $_s2c(%sendto) %send | var %sendto }
+  if (%num > 1) { dec %num | goto loop }
+  if (%sendto) _qnotice $_s2c(%sendto) %send
+}
+ 
+alias fnotice {
+  if ($2 == $null) _qhelp /fnotice | _split mn /fnotice $1-
+if ($len(%.msg.mn) > 300) _error Please use a smaller message.You must enter a message under 300 characters for mass notices.
+if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot send mass notices to channels you are not currently in.
+  _show.send.notice %.chan.mn %.targ.mn %.msg.mn
+  var %sendto,%num = $ialchan(%.targ.mn,%.chan.mn,0)
+  if (%num < 1) return
+  :loop
+  if ($ialchan(%.targ.mn,%.chan.mn,%num).nick != $me) %sendto = %sendto $ifmatch
+  if (($numtok(%sendto,32) >= $hget(pnp. $+ $cid,-target)) || ($calc($len(%sendto) + $len(%send)) > 450)) { _qnotice $_s2c(%sendto) %.msg.mn | var %sendto }
+  if (%num > 1) { dec %num | goto loop }
+  if (%sendto) _qnotice $_s2c(%sendto) %.msg.mn
+}
+ 
+alias n ntc $1-
+alias ntc {
+  if ($show == $false) { _qnotice $1- | return }
+  if ($2 == $null) _qhelp /ntc $1
+  var %sendto = $_ncs(44,$1)
+  if (, isin %sendto) {
+    if ($numtok(%sendto,44) < 6) var %msg = $_pvmsg(snotice,%sendto,$ifmatch,$2-)
+    else var %msg = $_pvmsg(lnotice,$numtok(%sendto,44),$numtok(%sendto,44),$2-)
+  }
+  elseif ($_ischan($1)) var %msg = $_mnmsg(cnotice,$1,$2-)
+  else var %msg = $_pvmsg(pnotice,%sendto,%sendto,$2-)
+  notice %sendto %msg
+}
+ 
+;
+; All channel/etc messages
+;
+alias ame if ($chan(0) == 0) ame $1- | elseif ($1 == $null) _qhelp /ame | else _domm -c describe $1-
+alias amsg if ($chan(0) == 0) amsg $1- | elseif ($1 == $null) _qhelp /amsg | else _domm -c msg $1-
+alias aame if ($1 == $null) _qhelp /aame | else _domm -dqc describe $1-
+alias aamsg if ($1 == $null) _qhelp /aamsg | else _domm -dqc msg $1-
+alias acme if ($1 == $null) _qhelp /acme | else _domm -dq describe $1-
+alias acmsg if ($1 == $null) _qhelp /acmsg | else  _domm -dq msg $1-
+; _domm -cqda msg|describe message - massmsg chans/queries/dccs
+; -a means don't msg chans in away exclusion list or that have reaced idle exclusion status (according to away options)
+alias _domm {
+  var %num
+  if (($chat(0)) && (d isin $1)) {
+    %num = $chat(0)
+    :loopD
+    if ($chat(%num).status == active) $2 = $+ $chat(%num) $3-
+    if (%num > 1) { dec %num | goto loopD }
+  }
+  var %sendto,%how = $iif($2 == msg,_privmsg,_qca)
+  if (($server) && ($chan(0)) && (c isin $1)) {
+    %num = $chan(0)
+    :loopC
+    ; Skip?
+    if (a isin $1) {
+      if (($_cfgi(away.ignchan)) && ($istok($_cfgi(away.ignchanlist),$chan(%num),44))) goto skipC
+      ; If idle block on, compare idle to current ctime or ctime of when we set away
+      if (($_cfgi(away.ignidle)) && ($calc($hget(pnp. $+ $cid,-chanidle. $+ $chan(%num)) + 60 * $_cfgi(away.ignidletime)) < $iif($hget(pnp. $+ $cid,away),$gettok($ifmatch,2,32),$ctime))) goto skipC
+    }
+    if ($me !ison $chan(%num)) goto skipC
+    if ($2 == msg) theme.msg Text $chan(%num) $color(own) $3-
+    else theme.msg Action $chan(%num) $color($iif($color(own)  == $color(norm),action,own)) $3-
+    %sendto = %sendto $chan(%num)
+    if (($numtok(%sendto,32) >= $hget(pnp. $+ $cid,-target)) || ($calc($len(%sendto) + $len($3-)) > 450)) { %how $_s2c(%sendto) $3- | var %sendto }
+    :skipC
+    if (%num > 1) { dec %num | goto loopC }
+  }
+  if (($query(0)) && (q isin $1)) {
+    %num = $query(0)
+    :loopQ
+    if (($hget(pnp. $+ $cid,-queryni. $+ $query(%num))) || ($query(%num) == $active)) {
+      if ($2 == msg) theme.msg Text $query(%num) $color(own) $3-
+      else theme.msg Action $query(%num) $color($iif($color(own)  == $color(norm),action,own)) $3-
+      %sendto = %sendto $query(%num)
+      if (($numtok(%sendto,32) >= $hget(pnp. $+ $cid,-target)) || ($calc($len(%sendto) + $len($3-)) > 450)) { %how $_s2c(%sendto) $3- | var %sendto }
+    }
+    if (%num > 1) { dec %num | goto loopQ }
+  }
+  if (%sendto) %how $_s2c(%sendto) $3-
+}
+ 
+;
+; Tracks idleness of queries/chans for /acme/acmsg
+; (purposely allows all cmdline activity to reset idle)
+;
+ 
+on *:TEXT:*:?:hadd -u120 pnp. $+ $cid -queryni. $+ $nick 1
+on *:ACTION:*:?:hadd -u120 pnp. $+ $cid -queryni. $+ $nick 1
+on *:INPUT:?:hadd -u120 pnp. $+ $cid -queryni. $+ $target 1
+on *:CLOSE:?:if ($window(Status Window)) hdel pnp. $+ $cid -queryni. $+ $target
+on *:UNOTIFY:hdel pnp. $+ $cid -queryni. $+ $nick
+on *:QUIT:hdel pnp. $+ $cid -queryni. $+ $nick
+raw 401:*no such*:hdel pnp. $+ $cid -queryni. $+ $2
+; (only update channel idle times if not away- IE while we're away, idle channels is exactly the channels we were idle in before)
+on *:INPUT:#:if (!$hget(pnp. $+ $cid,away)) hadd pnp. $+ $cid -chanidle. $+ $target $ctime
+on me:*:JOIN:#:if (!$hget(pnp. $+ $cid,away)) hadd pnp. $+ $cid -chanidle. $+ $chan $ctime
+on me:*:PART:#:hdel pnp. $+ $cid -chanidle. $+ $chan
+on *:KICK:#:if ($knick == $me) hdel pnp. $+ $cid -chanidle. $+ $chan

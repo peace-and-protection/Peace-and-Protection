@@ -1,0 +1,137 @@
+script\events.mtp
+TextChan <lt><cnick><cmode><nick><gt> <text>
+TextChanOp *<nick>:<target>* <text>
+TextChanSelf !Script %:echo $iif($_optn(0,23),$+(<,%::cnick,%::cmode,%::me,>),>) %::text %:comments
+ActionChan * <nick> <text>
+ActionChanOp * <nick>:<target> <text>
+ActionChanSelf * <me> <text>
+Notice -<nick>- <text>
+NoticeChan -<nick>:<target>- <text>
+NoticeSelf -> -<nick>- <text>
+NoticeSelfChan -> -<target>- <text>
+TextQuery <lt><nick><gt> <text>
+TextQuerySelf !Script %:echo $iif($_optn(0,23),$+(<,%::me,>),>) %::text %:comments
+ActionQuery * <nick> <text>
+ActionQuerySelf * <me> <text>
+TextMsg *<nick>* <text>
+TextMsgSelf -> *<nick>* <text>
+TextSelfChanOp -> *<target>* <text>
+Mode *** [theme:mode:dlg]: <modes>
+ModeUser *** [theme:mode:dlg]: <modes>
+Join !Script %:echo *** $iif($_optn(2,19),[theme:join_short]:) %::nick $iif($_optn(0,2),( $+ %::address $+ )) $iif(!$_optn(2,19),[theme:join_long:chan=%;;chan]) %:comments
+JoinSelf *** [theme:join_you:dlg]
+Part !Script %:echo *** $iif($_optn(2,19),[theme:part_short]:) %::nick $iif($_optn(0,2),( $+ %::address $+ )) $iif(!$_optn(2,19),[theme:part_long:chan=%;;chan]) %::parentext %:comments
+Kick *** [theme:kick:dlg] <parentext>
+KickSelf *** [theme:kick_you:dlg] <parentext>
+Quit !Script %:echo *** $iif($_optn(2,19),[theme:quit_short]:) %::nick $iif($_optn(0,2),( $+ %::address $+ )) $iif(!$_optn(2,19),[theme:quit_long]) %::parentext %:comments
+Topic *** [theme:topic:dlg]
+Nick *** [theme:nick:dlg]
+NickSelf *** [theme:nick_you:dlg]
+Invite <pre> [theme:invite:chan=<bl><chan><br>:dlg]
+ServerError <pre> [word:error:dlg]: <text>
+Rejoin *** [theme:rejoin:dlg]...
+Ctcp !Script %:echo %::pre ¢ [theme:ctcp:ctcp=$iif(%;;ctcp == PING,$;s(PING),CTCP $;s(%;;ctcp) $iif(%;;text != $null,$iif(%;;ctcp == PING,( $+ %;;text $+ ),; $;s(%;;text)))):nick=$;t(%;;nick)] %:comments
+CtcpChan !Script %:echo %::pre [[ $+ $:s(%::chan) $+ ]] ¢ [theme:ctcp:ctcp=$iif(%;;ctcp == PING,$;s(PING),CTCP $;s(%;;ctcp) $iif(%;;text != $null,$iif(%;;ctcp == PING,( $+ %;;text $+ ),; $;s(%;;text)))):nick=$;t(%;;nick)] %:comments
+CtcpSelf !Script %:echo %::pre ¢ $iif($istok(SCRIPT FINGER TIME VERSION USERINFO CLIENTINFO,%::ctcp %::text,32),[theme:ctcp_request:ctcp=$;s(%;;ctcp):nick=$;t(%;;nick)],[theme:ctcp_send:ctcp=$;s(%;;ctcp) $iif(%;;text != $null,; $;s(%;;text)):nick=$;t(%;;nick)]) %:comments
+CtcpChanSelf !Script %:echo %::pre [[ $+ $:s(%::chan) $+ ]] ¢ $iif($istok(SCRIPT FINGER TIME VERSION USERINFO CLIENTINFO,%::ctcp %::text,32),[theme:ctcp_request:ctcp=$;s(%;;ctcp):nick=$;t(%;;chan)],[theme:ctcp_send:ctcp=$;s(%;;ctcp) $iif(%;;text != $null,; $;s(%;;text)):nick=$;t(%;;chan)]) %:comments
+CtcpReply !Script %:echo %::pre $iif(%::chan,[[ $+ $:s(%::chan) $+ ]]) ¢ $iif(%::text == $null,[theme:reply_blank:ctcp=$;s(%;;ctcp):nick=$;t(%;;nick)],[theme:reply:ctcp=$;s(%;;ctcp):reply=$iif($gettok(%;;ctcp,-1,32) == PING,$;s(%;;text),$;q(%;;text)):nick=$;t(%;;nick)]) %:comments
+CtcpReplySelf !Script %:echo %::pre $iif(%::chan,[[ $+ $:s(%::chan) $+ ]]) ¢ [theme:reply_send:ctcp=$;s(%;;ctcp) $iif(%;;text != $null,; $;s(%;;text)):nick=$;t(%;;nick)] %:comments
+Notify !Script _pnptheme.notify
+UNotify !Script _pnptheme.unotify
+Wallop !Script %:echo %::pre $iif(%::nick !isin $gettok(%::text,1,32),! $+ %::nick $+ !,$iif(!%::nick,(w))) %::text %:comments
+NoticeServer !Script %:echo %::pre $iif(%::fromserver != %::server,( $+ %::fromserver $+ ),(s)) %::text %:comments
+DNS !Script %:echo %::pre $iif(%::nick == $null,[theme:dns:address=$;b(%;;address)],[theme:dns_nick:nick=$;b(%;;nick)]) %:comments
+DNSError !Script %:echo %::pre $iif(%::address == $null,[theme:dns_nouser:nick=%;;nick],[theme:dns_fail:address=%;;address]) %:comments
+DNSResolve <pre> [theme:dns_resolve:result=<bl><raddress><br>:dlg]
+Error *** <text> ***
+JoinStatus !Script %:echo *** $iif($_optn(2,19),[theme:join_short] %::chan $+ :) %::nick $iif($_optn(0,2),( $+ %::address $+ )) $iif(!$_optn(2,19),[theme:join_long:chan=%;;chan]) %:comments
+PartStatus !Script %:echo *** $iif($_optn(2,19),[theme:part_short] %::chan $+ :) %::nick $iif($_optn(0,2),( $+ %::address $+ )) $iif(!$_optn(2,19),[theme:part_long:chan=%;;chan]) %::parentext %:comments
+KickStatus *** [theme:kick_status:dlg] <parentext>
+ModeStatus *** [theme:mode_status:dlg]: <modes>
+TopicStatus *** [theme:topic_status:dlg]
+Sound !Script %:echo [[ $+ %::nick  $+ $color(background) $+ , $+ $color(ctcp) %::text $+  $+ $color(background) $+ , $+ $color(ctcp) ] %:comments
+SoundMsgSelf !Script %:echo -> %::target [[ $+ %::me  $+ $color(background) $+ , $+ $color(ctcp) %::text $+  $+ $color(background) $+ , $+ $color(ctcp) ] %:comments
+RAW.Other !Script $iif($left(%::chan,1) isin $chantypes,disprc %::chan,$iif(%::nick != $null,disprn %::nick,%:echo %::pre)) %::text %:comments
+RAW.008 !Script disptn -s %::nick [theme:snotice_mask:mask=$;mc(mode,%;;value,$gettok(%;;text,6,32))] %:comments
+RAW.108 !Script disptn -s %::nick [theme:snotice_mask:mask=$;mc(mode,%;;value,$gettok(%;;text,6,32))] %:comments
+RAW.221 !Script disptn -s %::nick [theme:usermode:mode=$;mc(mode,%;;modes)] %:comments
+RAW.250 !Script %:echo %::pre $:ihn(%::text) %:comments
+RAW.251 !Script %:echo %::pre $:ihn(%::fulltext) %:comments
+RAW.252 !Script %:echo %::pre $:ihn(%::text) %:comments
+RAW.253 !Script %:echo %::pre $:ihn(%::text) %:comments
+RAW.254 !Script %:echo %::pre $:ihn(%::text) %:comments
+RAW.255 !Script %:echo %::pre $:ihn(%::text) %:comments
+RAW.265 !Script %:echo %::pre $:ihn(%::text) %:comments
+RAW.266 !Script %:echo %::pre $:ihn(%::text) %:comments
+RAW.271 !Script _pnptheme.silence271
+RAW.272 !Script disptn -s %::nick $iif(%::empty,[theme:silence_empty],[theme:silence_end]) %:comments
+RAW.301 !Script disprn %::nick [theme:away] « $+ $:h(%::text) $+ » %:comments
+RAW.315 !Script _pnptheme.who315
+RAW.324 !Script disprc %::chan [theme:info_mode]- $:s($iif(%::modes == +,([word:none:lower]),%::modes)) %:comments
+RAW.328 !Script disprc %::chan [theme:info_url]- $:h(%::text) %:comments
+RAW.329 !Script disprc %::chan [theme:info_channelformed]- $:h($_datetime(%::value)) %:comments
+RAW.331 !Script disprc %::chan [theme:info_topic]- $:s(([word:none:lower])) %:comments
+RAW.332 !Script disprc %::chan [theme:info_topic]- $:q(%::text) %:comments
+RAW.333 !Script disprc %::chan [theme:info_topic]- [theme:topic_setby:nick=$;t(%;;nick)] ( $+ $:h($_datetime(%::value)) $+ ) %:comments
+RAW.341 !Script disprc %::chan [theme:invite_you:nick=$;t(%;;nick)]... %:comments
+RAW.352 !Script _pnptheme.who352
+RAW.353 !Script _pnptheme.names353
+RAW.354 <pre> <text>
+RAW.366 !Script return
+RAW.366uc !Script _pnptheme.names366uc
+RAW.371 !Script _pnptheme.info371
+RAW.374 !Script return
+RAW.372 <text>
+RAW.375 [theme:motd_begin:server=<c2><value>:dlg]
+RAW.376 [theme:motd_end:dlg]
+RAW.391 !Script %:echo %::pre [theme:date:server=$;s(%;;value)] $+ - $:h($gettok(%::text,2-,32)) %:comments
+RAW.401 <pre> [<bl><c2><nick><br>] [theme:no_user]
+RAW.401fd !Script _pnptheme.failed401
+RAW.402 <pre> [theme:no_server:server=<c2><value>:dlg]
+RAW.403 !Script disprc %::chan [theme:no_chan] %:comments
+RAW.404 !Script disprc %::chan [theme:no_send] %:comments
+RAW.405 !Script disprc %::chan [theme:no_join_limit:num=$chan(0)] %:comments
+RAW.406 !Script disprn %::nick [theme:no_user_whowas] %:comments
+RAW.408ns !Script %:echo %::pre [theme:no_service:nick=$;t(%;;value)] %:comments
+RAW.409 <pre> [theme:no_origin:dlg]
+RAW.411 !Script %:echo %::pre $gettok(%::text,2-4,32) $:s($gettok(%::text,5-,32)) %:comments
+RAW.412 <pre> [theme:no_text:dlg]
+RAW.413 <pre> [theme:no_toplevel:address=<c2><value>:dlg]
+RAW.414 <pre> [theme:wildcard_toplevel:address=<c2><value>:dlg]
+RAW.416 <pre> [theme:too_much_data:who=<c2><value>:dlg]
+RAW.421 <pre> [theme:no_command:cmd=<c2><value>:dlg]
+RAW.422 <pre> [theme:motd_error:dlg] (<c2><fromserver>)
+RAW.423 <pre> [theme:admin_error:dlg] (<c2><fromserver>)
+RAW.424 <pre> [theme:server_error:dlg] ("<text>")
+RAW.431 <pre> [theme:no_nick:dlg]
+RAW.432 !Script disptn -a %::nick [theme:invalid_nick] $+ $iif($gettok(%::text,3-,32) != $null,- $ifmatch) %:comments
+RAW.433 !Script disptn $wildtok(%:echo,-*,1,32) %::nick [theme:nick_in_use] %:comments
+RAW.433nr !Script disptn -a %::nick [theme:nick_registered] %:comments
+RAW.436 !Script disptn -s %::nick [theme:nick_collision] %:comments
+RAW.437 !Script disprc %::chan [theme:nick_banned] %:comments
+RAW.437tu !Script $iif(%::chan,disprc %::chan [theme:chan_unavailable],disptn -a %::nick [theme:nick_unavailable]) %:comments
+RAW.438 !Script disptn -a %::nick [theme:nick_too_fast] %:comments
+RAW.439 !Script $iif(%::chan,disprc %::chan,disptn -s %::nick) [theme:target_change:target=$iif(%;;chan,$;s(%;;chan),$;t(%;;nick)):num=$;s(%;;value)] %:comments
+RAW.441 !Script disprc %::chan [theme:not_on_chan:nick=$;t(%;;nick)] %:comments
+RAW.442 !Script disprc %::chan [theme:you_not_on_chan] %:comments
+RAW.443 !Script disprc %::chan [theme:already_on_chan:nick=$;t(%;;nick)] $:s((INVITE)) %:comments
+RAW.461 <pre> [theme:no_param:cmd=<c2><value>:dlg]
+RAW.463 <pre> [theme:no_connect_host:dlg] ("<text>")
+RAW.464 <pre> [theme:no_connect_password:dlg]
+RAW.465 <pre> [theme:no_connect_ban:dlg] ("<text>")
+RAW.467 !Script disprc %::chan [theme:key_already_set] $iif(($chan(%::chan).key) && ($chan(%::chan).key != *),( $+ $:s($chan(%::chan).key) $+ )) %:comments
+RAW.468 !Script disprc %::chan [theme:no_mode_change] %:comments
+RAW.471 !Script disprc %::chan [theme:cant_join]- $:w([theme:cant_join_full]) ( $+ [theme:display_mode:mode=$;s(+l)] $+ ) %:comments
+RAW.472 !Script dispw [theme:unknown_mode]- $:mc(mode,[theme:display_mode:mode=+ $+ %;;value]) %:comments
+RAW.473 !Script disprc %::chan [theme:cant_join]- $:w([theme:cant_join_invite]) ( $+ [theme:display_mode:mode=$;s(+i)] $+ ) %:comments
+RAW.474 !Script disprc %::chan [theme:cant_join]- $:w([theme:cant_join_ban]) ( $+ [theme:display_mode:mode=$;s(+b)] $+ ) %:comments
+RAW.477 !Script disprc %::chan [theme:cant_join]- $:w([theme:cant_join_regnick]) ( $+ [theme:display_mode:mode=$;s(+R)] $+ ) %:comments
+RAW.478 !Script disprc %::chan $:w([theme:cant_ban:address=$;b(%;;value)]) %:comments
+RAW.481 <pre> [theme:no_ircop:dlg]
+RAW.482 !Script disprc %::chan [theme:no_chanop] %:comments
+RAW.483 <pre> [theme:no_kill_server:dlg]
+RAW.484 !Script disprc %::chan %::text ( $+ $:t(%::nick) $+ ) %:comments
+RAW.491 <pre> [theme:cant_be_ircop] ("<text>")
+RAW.501 <pre> [theme:unknown_usermode]
+RAW.502 <pre> [theme:cant_change_usermode]
+RAW.511 <pre> [theme:list_full:type=<c2>SILENCE:address=<c2><value>]

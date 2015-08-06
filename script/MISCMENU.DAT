@@ -1,0 +1,16 @@
+[channel]
+.-
+.$iif(($hget(pnp.config,popups.hideop) != 1) || ($me isop #) || ($me ishop #) || ($mouse.key & 2),Mass)
+..$iif(($hget(pnp.config,popups.hideop) != 1) || ($me isop #) || ($mouse.key & 2),Op all users...):_okcancel 1 Op all users on # $+ ? | fop # *
+..$iif(($hget(pnp.config,popups.hideop) != 1) || ($me isop #) || ($mouse.key & 2),Deop all ops...):_okcancel 1 Deop all ops on # $+ ? $chr(40) $+ except you $+ $chr(41) | fdop # *
+..-
+..$iif((% isin $prefix) || ($mouse.key & 2),Halfop all users...):_okcancel 1 Half-op all users on # $+ ? | fhfop # *
+..$iif((% isin $prefix) || ($mouse.key & 2),Dehalfop all halfops...):_okcancel 1 De-Half-op all half-ops on # $+ ? $chr(40) $+ except you $+ $chr(41) | fdhfop # *
+..-
+..Filterkick...:fk # $_entry(-1,$null,Mask to filterkick? $+ $chr(40) $+ For example $+ $chr(44) *.aol.com $+ $chr(41))
+..Kick all non-ops...:_okcancel 1 Kick all non-opped users on # $+ ? | fknop # *
+.Rejoin:rejoin
+.$iif(($hget(pnp.config,popups.hideop) != 1) || ($me isop #) || ($me ishop #) || ($mouse.key & 2),Invite...):inv
+[status]
+[nicklist]
+[query]

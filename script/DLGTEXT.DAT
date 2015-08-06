@@ -1,0 +1,197 @@
+[ignore]
+Everything
+Everything but channel text
+Invites, CTCPs, and DCCs
+Colors etc.
+Everything, plus do SILENCE
+[protlvl]
+Off
+Low
+Medium
+High (strict)
+Custom
+[protcat]
+Censor protection
+CTCP protection
+Join flood protection
+Misc. protection
+Options
+Takeover protection
+Text protection 1
+Text protection 2
+[punish1]
+(custom)
+ban kick (normal)
+ban kick (site)
+ban kick (domain)
+clone ban
+deop
+filter kick (all clones)
+kick
+temp ban
+warn privately
+warn in channel
+warn yourself
+warn ops (opnotice)
+warn via msg
+[punish2]
+(none)
+set mode +i (60 seconds)
+set mode +m (60 seconds)
+set mode +mi (60 seconds)
+warn privately
+warn in channel
+warn yourself
+warn ops (opnotice)
+warn via msg
+[strictm]
+Always enforced:
+Always set when opped:
+Set if none set:
+[theme]
+mIRC colors
+RGB settings
+PnP colors
+Nicklist colors
+Display
+Line separator
+ 
+Text theme
+ 
+Font settings
+Backgrounds
+Toolbars
+Event sounds
+ 
+Theme info
+Load theme
+Save theme
+[bkstyle]
+Center
+Fill
+Normal
+Stretch
+Tile
+Photo
+[soundcat]
+(all)
+Alert
+Away
+Connection
+DCC
+Event
+General
+Message
+Notify
+[ctcp]
+Send reply:
+Random reply:
+Run command:
+Hide and ignore
+[config]
+Away
++ Pager/Log
++ Messages
++ Other
+ 
+Display
++ Nick colors
++ Notify
++ Ping
++ Server notices
++ Text
++ Wallops
++ Whois replies
++ Other
+ 
+Popups
++ Channel
++ Menubar
++ Nicklist
++ Query
++ Status
++ Other
+ 
+Channel options
+DCC accept
+Favorites
+Flashing
+Language
+Messages
+Protection
+Serverlist
+Titlebar
+Other
+[dccaccept]
+Accept
+Ask you
+Reject
+Warn
+[awayopt1]
+Don't close queries
+Close query if you don't react
+Close query immediately
+[awayopt2]
+Involving you
+Wherever you op/halfop
+Anywhere
+[notify]
+Short
+Long
+Hide
+[notifywin]
+Active window
+Status window
+Nowhere (hide)
+Disable PnP notify
+[pingwin1]
+Active window
+Status window
+@Ping window
+Channel pinged
+Nowhere (hide)
+[pingwin2]
+Active window
+Status window
+Query of user pinged
+[snotice]
+Active window
+Status window
+@SNotice window
+[wallop]
+Active window
+Status window
+@Wallop window
+[names]
+Hide
+Show in channel
+Show in status
+[motdwhen]
+Always
+Never
+Only if changed
+[tempban]
+*!*user@host.domain.com
+*!*@host.domain.com
+*!*user@*.domain.com
+nick!*user@host.domain.com
+nick!*@host.domain.com
+nick!*user@*.domain.com
+nick!*@*.domain.com
+[identmask]
+userid
+*userid
+*userid if ~
+just *
+[hostmask]
+*.earthlink.net
+*.us.dialup.earthlink.net
+*-ca.us.dialup.earthlink.net
+*.pop2-ca.us.dialup.earthlink.net
+user*.pop*-ca.us.dialup.earthlink.net
+user004.pop2-ca.us.dialup.earthlink.net
+[whoiswin]
+Active window
+Status window
+@Whois window
+Source window

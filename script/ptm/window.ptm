@@ -1,0 +1,735 @@
+script\window.mrc
+; #= P&P -rs
+; ########################################
+; Peace and Protection
+; Generic and standard custom windows
+; ########################################
+
+;
+; Unhide all windows
+;
+alias unhide {
+  hdel pnp hidden
+  var %scon = $scon(0)
+  while (%scon) {
+    scon %scon
+    window -w "Status Window"
+    var %num = $chan(0) | :loopC | if (%num) { window -w " $+ $chan(%num) $+ " | dec %num | goto loopC }
+    %num = $query(0) | :loopQ | if (%num) { window -w $query(%num) | dec %num | goto loopQ }
+    dec %scon
+  }
+  scon -r
+  %num = $chat(0) | :loopD | if (%num) { window -w = $+ $chat(%num) | dec %num | goto loopD }
+  %num = $hget(0)
+  while (%num) {
+    if (pnp.window.* iswm $hget(%num)) {
+      window -w $mid($hget(%num),$calc($pos($hget(%num),.,2) + 1))
+    }
+    dec %num
+  }
+}
+
+;
+; Hide a window
+;
+; /hide [#chan|query|=chat|@win|status window]
+alias hide {
+  if ($1) var %window = $1- | else var %window = $active
+  if ($window(%window) == %window) {
+    if (($chr(32) isin %window) || (%window ischan)) window -h " $+ %window $+ "
+    else window -h %window
+    hadd pnp hidden 1
+    if ($active == %window) window -aw "Status Window"
+  }
+  else dispa [word:error]- [error:cant_hide:window=$;s(%window)]
+  if ($_dlgi(unhide) != 1) {
+    _ssplay Confirm
+    if ($dialog(howunhide,howunhide,-4)) _dlgw unhide 1
+  }
+}
+dialog howunhide {
+  title "[hide_dialog:title]"
+  icon script\pnp.ico
+  option dbu
+  size -1 -1 125 62
+  text "[hide_dialog:instructions]", 3, 5 5 115 50
+  check "&[dialog:once_only]", 2, 20 30 85 10
+  button "[dialog:ok]", 1, 42 45 40 12, ok default
+  edit "", 4, 1 1 1 1, hide autohs result
+}
+on *:DIALOG:howunhide:sclick:1:did -o $dname 4 1 $did(2).state
+
+;
+; Pick new windows
+;
+
+;
+; Pick new windows
+;
+ 
+alias _newwin {
+  if ($window($1) == $null) return $1
+  var %num = 2
+  while ($window($1 $+ %num) != $null) {
+    inc %num
+  }
+  return $1 $+ %num
+}
+alias _newdlg {
+  if ($dialog($1) == $null) return $1
+  var %num = 1
+  :loop
+  var %try = $1 $+ %num
+  if ($dialog(%try) == $null) return %try
+  inc %num | goto loop
+}
+
+; Multiserver window finding
+; $_mservwin(@prefix,postfix[,cid])
+; returns @prefix[n]postfix where [n] is [2] [3] etc as needed to create a unique window
+; returns existing window if one exists on the given cid
+; returns @prefixpostfix for first window created
+
+alias _mservwin {
+  var %cid = $3
+  if (!%cid) %cid = $cid
+  var %num = 1
+  ; String to match
+  var %match = /^ $+ $_escape($1) $+ (?:\[\d+\])? $+ $_escape($2) $+ $!/i
+  while (%num <= $window(0)) {
+    if ($regex($window(%num),%match)) {
+      if ($window(%num).cid == %cid) return $window(%num)
+    }
+    inc %num
+  }
+  ; Create new window
+  if ($window($1 $+ $2) == $null) return $1 $+ $2
+  %num = 2
+  while ($window($1 $+ $chr(91) $+ %num $+ $chr(93) $+ $2) != $null) {
+    inc %num
+  }
+  return $1 $+ $chr(91) $+ %num $+ $chr(93) $+ $2
+}
+
+; _window n -abcefl[N]noprsx -tN,..,N|+bfmnstx|+ @Name x y w h [/command] [popup]
+; second -+ param is p2s
+; Opens window with remembered settings for position, size, font, and desktopping
+; n is 1 or 2-
+;   Appends a generic window submenu type- (not for picture windows/etc.)
+;   Use 1 for conceptually loggable windows
+;   Use 2 for nonloggable windows
+;   Add .n for listbox Copy cmd (n is first line to select on a select-all)
+; Don't use for quick or hidden windows or windows that change name or settings
+alias _window {
+  var %hash = pnp.window. $+ $4
+  if ($hget(%hash)) hdel -w %hash *
+  else hmake %hash 10
+  hadd %hash flags $remove($2,n,a,r,x,h,w) $3 $9-
+  hadd %hash remember $readini($_cfg(window.ini),n,$4,rem)
+  if ($hget(%hash,remember) == $null) hadd %hash remember 1
+  hadd %hash position $readini($_cfg(window.ini),n,$4,pos)
+  if ($hget(%hash,position) == $null) hadd %hash position $5-8
+  hadd %hash default $5-8
+  ; Font?
+  var %font = $readini($_cfg(window.ini),n,$4,font)
+  if (!%font) %font = $gettok($hget(pnp.theme,FontScript),1,44) $gettok($hget(pnp.theme,FontScript),2,44)
+  if (!%font) %font = $window(Status Window).font $window(Status Window).fontsize
+  ;;; Adjust tabs for font? (may be able to fix up or remove later)
+  var %mid = $_p2s($3)
+  if ((-t* iswm %mid) && ($deltok(%font,-1,32) == Arial)) {
+    var %tabs = $remove($gettok(%mid,1,32),-t)
+    var %size = $width(WWWWW,$deltok(%font,-1,32),$gettok(%font,-1,32))
+    var %target = $width(aaaaa,$deltok(%font,-1,32),$gettok(%font,-1,32))
+    var %ratio = $calc(%target / %size)
+    var %p = $numtok(%tabs,44)
+    :loop
+    var %new = $int($calc($gettok(%tabs,%p,44) * %ratio))
+    if (%new < 1) %new = 1
+    %tabs = $puttok(%tabs,%new,%p,44)
+    dec %p
+    if (%p) goto loop
+    %mid = -t $+ %tabs $gettok(%mid,2-,32)
+  }
+  window $iif($readini($_cfg(window.ini),n,$4,desk),$2 $+ d,$2) %mid $4 $hget(%hash,position) $9- " $+ $deltok(%font,-1,32) $+ " $gettok(%font,-1,32) script\pnp.ico
+  ; Desktop windows must be re-hidden
+  if ((h isin $2) && ($readini($_cfg(window.ini),n,$4,desk))) window -h $4
+  if ($1 < 4) hadd %hash help 1
+  if ($1 < 3) hadd %hash window 1
+  if ($1 < 2) hadd %hash log 1
+  if (. isin $1) { hadd %hash select $gettok($1,2,46) | hadd %hash copy 1 }
+  ; Apply background setting?
+  if ((p !isin $2) && (l !isin $2)) {
+    var %bk = $hget(pnp.theme,ImageScript)
+    if ($theme.ff($hget(pnp.theme,Filename),$gettok(%bk,2-,32))) _blackbox .background - $+ $mid(cfnrtp,$findtok(center fill normal stretch tile photo,$gettok(%bk,1,32),1,32),1) $4 " $+ $ifmatch $+ "
+    else .background -x $4
+  }
+}
+
+; _windowreg @window call-on-close
+; Registers an alias to call when the window closes (with window name as parameter)
+alias _windowreg hadd pnp.window. $+ $1 onclose $2-
+
+; select all items or all matching items
+alias _selectall {
+  sline -r $1
+  var %num = $line($1,0)
+  :loop
+  if (%num >= $2) { sline -a $1 %num | dec %num | goto loop }
+}
+alias _selectallw {
+  sline -r $1
+  var %num = $line($1,0)
+  :loop
+  if (%num >= $2) { if ($3- iswm $line($1,%num)) sline -a $1 %num | dec %num | goto loop }
+}
+
+;
+; Sort a window
+; _dosort @window firstline tokennum tokentype numeric? descend?
+;
+alias _dosort {
+  var %range = $2 $+ - $+ $line($1,0)
+  filter -tr $+ $iif($5,u) $+ $iif($6,e) %range $3 $4 $1 $1 *
+  dline $1 %range
+}
+
+;
+; Move selected items up or down in a window
+; firstline is first line you allow to be modified; does checks in this routine
+; _doslideup @window firstline
+; _doslidedn @window
+;
+alias _doslideup {
+  if ($sline($1,1).ln <= $2) return
+  var %num = 1
+  :loop
+  if ($sline($1,%num).ln) {
+    iline -a $1 $calc($ifmatch - 1) $sline($1,%num)
+    inc %num
+    dline $1 $sline($1,%num).ln
+    goto loop
+  }
+}
+alias _doslidedn {
+  if ($sline($1,$sline($1,0)).ln == $line($1,0)) return
+  var %num = $sline($1,0)
+  :loop
+  if (%num) {
+    iline -a $1 $calc($sline($1,%num).ln + 2) $sline($1,%num)
+    dline $1 $sline($1,%num).ln
+    dec %num
+    goto loop
+  }
+}
+
+;
+; Randomizes selected items in a window
+; firstline is first line you allow to be modified; does checks in this routine
+; _doshuffle @window firstline
+;
+alias _doshuffle {
+  if (($sline($1,1).ln < $2) || ($sline($1,1).ln == $null)) return
+  var %new,%line,%num = 1
+  :loop
+  if ($sline($1,%num).ln) {
+    %new = $sline($1,$_pprand($sline($1,0))).ln
+    if ($ifmatch != %new) {
+      %line = $line($1,%new)
+      rline $1 %new $line($1,$ifmatch)
+      rline $1 $ifmatch %line
+    }
+    inc %num
+    goto loop
+  }
+}
+
+;
+; Randomizes all items in a window
+; firstline is first line you allow to be modified
+; _doshufflea @window firstline
+;
+alias _doshufflea {
+  if ($line($1,0) < $2) return
+  var %line,%num = $line($1,0)
+  :loop
+  %new = $calc($_pprand($calc($line($1,0) - $2 + 1)) + $2 - 1)
+  if (%num != %new) {
+    %line = $line($1,%new)
+    rline $1 %new $line($1,%num)
+    rline $1 %num %line
+  }
+  if (%num > $2) { dec %num | goto loop }
+}
+
+;
+; Replace a line but using iline/dline combo to preserve sorting
+; _ridline [-a|s] [col] @win ln new line
+;
+alias _ridline if (-* iswm $1) { dline $2-4 | iline $1- } | else { dline $1-3 | iline $1- }
+
+;
+; Quick-error box
+;
+
+on *:KEYDOWN:@Error:13,27:window -c @Error | _check.specwins
+alias _error _doerror [word:error]- $1-
+alias _doerror {
+  if ($show == $false) $$$
+  _lock.tb
+  ; Window
+  window -c @Error
+  window -pfdhkaBz +bLt @Error $_center(400,68,1,-7,-25) @Close2
+  drawrect -frn @Error $rgb(face) 2 0 0 400 68
+  drawpic -nt @Error $rgb(255,255,255) 334 1 130 65 64 64 script\icons.bmp
+  ; Text
+  drawtext -nr @Error $rgb(text) "ms sans serif" 16 5 2 $1
+  drawtext -nr @Error $rgb(text) "ms sans serif" 16 5 23 $gettok($2-,1,127)
+  if ( isin $2-) drawtext -nr @Error $rgb(text) "ms sans serif" 12 5 47 $gettok($2-,2,127)
+  drawdot @Error
+  _ssplay Error
+  halt
+}
+on *:ACTIVE:*:_check.specwins
+alias -l _check.specwins {
+  if ($hget(pnp,locked.title)) {
+    if ($active != @Error) window -c @Error
+    if ($active != @Quick) { window -c @Quick | .timer.quickflash off | hdel -w pnp qhelp.* }
+    if ($window(@Progress).state != normal) close -@ @Progress @.pbmp
+    if (($window(@Error) == $null) && ($window(@Progress) == $null) && ($window(@Quick) == $null)) _unlock.tb
+  }
+}
+
+;
+; Quick-help box
+;
+
+on *:INPUT:@Quick:window -c @Quick | .timer.quickflash off | hdel -w pnp qhelp.* | _check.specwins | _juryrig2 $1- | halt
+; if info is in quikhelp.dat- _qhelp /cmd (what was entered)
+; otherwise- _qhelp $_s2f(quikhelp.dat info) (what was entered)
+alias _qhelp {
+  hdel -w pnp qhelp.*
+  ; timers
+  _lock.tb
+  ; window
+  window -c @Quick
+  window -pfdehkaBzi +bLt @Quick $_center(400,68,1,-7,-50) @Close ms sans serif 16
+  drawrect -frn @Quick $rgb(face) 2 0 0 400 68
+  titlebar @Quick Help- $gettok($1,1,160)
+  editbox -p @Quick $gettok($1,1,160) $2-
+  ; display parameters in their boxes
+  var %type,%parm,%num = 1,%x = 1,%read = $read(script\quikhelp.dat,ts,$1)
+  if (%read == $null) %read = $gettok($_f2s($1),2-,32)
+  if ($findtok(%read,*,1,32)) {
+    hadd pnp qhelp.final $ifmatch
+    %read = $remtok(%read,*,32)
+  }
+  else hadd pnp qhelp.final 999
+  var %text = $gettok($1,1,160) $2- $gettok($gettok(%read,$numtok($1-,32) $+ -,32),1,33)
+  :loop
+  %parm = $gettok(%text,%num,32)
+  if (%parm) {
+    if ($ [ $+ [ %num ] ] == $null) {
+      %type = $left(%parm,1)
+      %parm = $_p2s($right(%parm,-1))
+      if (($chr(91) isin %parm) || (%type == +)) hadd pnp qhelp.n. $+ %num req
+      else hadd pnp qhelp.n. $+ %num %parm
+      if ([ isin %parm) {
+        drawrect -nrf @Quick $rgb(hilight) 2 $calc(%x + $width($gettok(%parm,1,91),ms sans serif,16,0,0) - 1) 45 $calc($width($gettok($gettok(%parm,2,91),1,93),ms sans serif,16,0,0) + 2) 18
+        %parm = $remove(%parm,$chr(91),$chr(93))
+      }
+      drawrect $iif(%type == +,-nrf,-nr) @Quick $rgb(hilight) 1 $calc(%x - 1) 45 $calc($width($remove(%parm,$chr(91),$chr(93)),ms sans serif,16,0,0) + 3) 18
+      var %wide = $width(%parm,ms sans serif,16,0,0)
+      hadd pnp qhelp. $+ %num 1 $calc(%x - 2) 44 $calc(%x + %wide) 44 $calc(%x + %wide) 61 $calc(%x - 2) 61 $calc(%x - 2) 44
+      drawline -nr @Quick $rgb(shadow) $hget(pnp,qhelp. $+ %num)
+    }
+    drawtext -nr @Quick $rgb(text) "ms sans serif" 16 %x 44 %parm
+    inc %x $calc($width(%parm,ms sans serif,16,0,0) + $iif($ [ $+ [ %num ] ] ,4,7))
+    inc %num
+    goto loop
+  }
+  ; info on what to enter
+  drawrect -nrf @Quick $rgb(hilight) 2 66 6 54 14
+  drawtext -nr @Quick $rgb(text) "ms sans serif" 12 5 6 [quick:prompt:cmd=$gettok($1,1,160)] $+ -
+  drawtext -nr @Quick $rgb(text) "ms sans serif" 12 5 22 $gettok(%read,2-,33)
+  drawpic -nt @Quick $rgb(255,255,255) 334 1 65 65 64 64 script\icons.bmp
+  drawdot @Quick
+  _ssplay Question Error
+  _qflash | .timer.quickflash -mio 0 500 _qflash
+  halt
+}
+alias -l _qflash {
+  if ($window(@Quick) == $null) halt
+  var %box = 0,%num = 1
+  :loop
+  if ($gettok($editbox(@Quick),%num,32)) {
+    :loopN
+    inc %box
+    if ($hget(pnp,qhelp. $+ %box)) if ($left($hget(pnp,qhelp.n. $+ %box),1) isin -#) if ($left($gettok($editbox(@Quick),%num,32),1) != $left($hget(pnp,qhelp.n. $+ %box),1)) goto loopN
+    inc %num
+    goto loop
+  }
+  if ($right($editbox(@Quick),1) == $chr(32)) inc %box
+  if (%box > $hget(pnp,qhelp.final)) %box = $hget(pnp,qhelp.final)
+  if ($hget(pnp,qhelp.flip)) {
+    hdel pnp qhelp.flip
+    drawline -ri @Quick $rgb(shadow) $hget(pnp,qhelp. $+ $hget(pnp,qhelp.last))
+    if (%box != $hget(pnp,qhelp.last)) goto flip
+  }
+  else {
+    :flip
+    if ($hget(pnp,qhelp. $+ %box)) {
+      hadd pnp qhelp.flip 1
+      hadd pnp qhelp.last %box
+      drawline -ri @Quick $rgb(shadow) $hget(pnp,qhelp. $+ %box)
+    }
+  }
+}
+
+;
+; Progress meter display
+;
+
+on *:KEYDOWN:@Progress:13,27:close -@ @Progress @.pbmp | _check.specwins
+alias _progress.1 {
+  close -@ @Progress @.pbmp | _lock.tb
+  window -pfdohkaBz +bLt @Progress $calc($window(-1).w - 330) $calc($window(-1).h - 160) 319 104
+  drawrect -frn @Progress $rgb(face) 2 0 0 319 104
+  _gradient @Progress 9 69 300 25
+  _bevel @Progress 7 67 304 29
+  drawrect -rn @Progress $rgb(face) 7 0 60 319 44
+  drawtext -nr @Progress $rgb(text) "ms sans serif" 16 8 25 $1-
+  drawpic -nt @Progress $rgb(255,255,255) 247 1 195 65 64 64 script\icons.bmp
+  drawdot @Progress
+  window -hpf @.pbmp 0 0 301 30
+  drawcopy @Progress 9 69 300 28 @.pbmp 0 0
+}
+alias _progress.2 {
+  if ($window(@Progress) == $null) return
+  if ($1 > 100) { _recurse _progress.2 100 $2- | return }
+  drawcopy -n @.pbmp 0 0 300 28 @Progress 9 69
+  drawtext -nro @Progress $rgb(text) "arial" 24 $calc(159 - $width($1%,arial,24,1,0) / 2) 67 $1%
+  drawrect -nrif @Progress 1 0 9 69 $calc($1 * 3 + 1) 26
+  drawrect -frn @Progress $rgb(face) 2 8 45 236 21
+  drawtext -cnr @Progress $rgb(text) "ms sans serif" 12 8 48 235 99 $2-
+  titlebar @Progress - $1%
+  drawdot @Progress
+  if ($1 == 100) {
+    .timer.kill.progress -mio 1 500 close -@ @Progress @.pbmp $chr(124) _check.specwins
+    _ssplay Complete
+  }
+}
+alias -l _bevel {
+  drawrect -nr $1 $rgb(frame) 1 $calc($2 + 1) $calc($3 + 1) $calc($4 - 1) $calc($5 - 1)
+  drawrect -frn $1 $rgb(3dlight) 2 $calc($2 + 1) $calc($3 + $5 - 1) $calc($4 - 1) 2
+  drawrect -frn $1 $rgb(3dlight) 2 $calc($2 + $4 - 1) $calc($3 + 1) 2 $calc($5 - 1)
+  drawrect -nr $1 $rgb(hilight) 1 $2 $3 $calc($4 + 1) $calc($5 + 1)
+  drawline -nr $1 $rgb(shadow) 1 $2 $calc($3 + $5 - 1) $2 $3 $calc($2 + $4) $3
+}
+alias -l _gradient {
+  ; Left side
+  var %place = $calc($4 / 2 + $5 / 2 + $2),%r = $calc($rgb(face) % 256),%g = $calc($rgb(face) / 256 % 256),%b = $calc($rgb(face) / 65536)
+  :loopL
+  drawline -nr $1 $rgb(%r,%g,%b) 7 $calc(%place - 3) $calc($3 - 3) $calc(%place - $5) $calc($3 + $5)
+  if (%place > $2) {
+    if (%r > 2) dec %r 3
+    if (%g > 2) dec %g 3
+    if (%b > 2) dec %b 3
+    dec %place 8
+    goto loopL
+  }
+  ; Right side
+  %place = $calc($4 / 2 + $5 / 2 + $2)
+  %r = $calc($rgb(face) % 256)
+  %g = $calc($rgb(face) / 256 % 256)
+  %b = $calc($rgb(face) / 65536)
+  var %goal = $calc($2 + $4 + $5)
+  :loopR
+  drawline -nr $1 $rgb(%r,%g,%b) 7 $calc(%place - 3) $calc($3 - 3) $calc(%place - $5) $calc($3 + $5)
+  if (%place < %goal) {
+    if (%r < 250) inc %r 3
+    if (%g < 250) inc %g 3
+    if (%b < 250) inc %b 3
+    inc %place 8
+    goto loopR
+  }
+}
+
+;
+; @Info
+;
+
+alias _info if ($show == $false) return | if ($window(@Info)) dispr-div @Info | else _window 2 -ezi + @Info $_center(500,300) $1 @(nopopups) | .timer -mio 1 0 editbox -p @Info $1-
+
+; Remembers window settings on closing
+on *:CLOSE:@:_dowclose $target
+alias _dowclose {
+  var %hash = pnp.window. $+ $1
+  if ($hget(%hash)) {
+    ; Position
+    if ($hget(%hash,remember)) {
+      if (f isin $hget(%hash,flags)) var %pos = $window($1).x $window($1).y $window($1).dw $window($1).dh
+      else var %pos = $window($1).x $window($1).y $window($1).w $window($1).h
+      if (%pos == $hget(%hash,default)) remini $_cfg(window.ini) $1 pos
+      else writeini $_cfg(window.ini) $1 pos %pos
+    }
+    ; Font (hidden window is to grab default font for comparison)
+    window -h @.fontgrab
+    if (($window($1).font != $window(@.fontgrab).font) || ($window($1).fontsize != $window(@.fontgrab).fontsize) || ($window($1).fontbold != $window(@.fontgrab).fontbold)) writeini $_cfg(window.ini) $1 font $window($1).font $iif($window($1).fontbold,bold) $window($1).fontsize
+    else remini $_cfg(window.ini) $1 font
+    window -c @.fontgrab
+    ; On close routine?
+    if ($hget(%hash,onclose)) $ifmatch $1
+    ; Cleanup
+    _dowcleanup $1
+  }
+}
+alias _dowcleanup {
+  if ($hget(pnp.window. $+ $1)) hfree pnp.window. $+ $1
+  ; Image window junk
+  hdel pnp picture. $+ $1
+  hdel pnp calibrate. $+ $1
+}
+
+;
+; Picture windows (/viewpic)
+;
+
+on *:KEYDOWN:@:*:{
+  if ($window($target).font == Picture Window) {
+    ; ESC
+    if ($keyval == 27) { hdel pnp picture. $+ $target | hdel pnp calibrate. $+ $target | window -c $target }
+    ; Enter
+    elseif ($keyval == 13) _picnew $target
+    ; +
+    elseif ($keyval == 187) _picin $target
+    ; -
+    elseif ($keyval == 189) _picout $active
+    ; Up Down Left Right
+    elseif ($keyval == 38) window $target -1 $calc($window($target).dy - 10) -1 -1
+    elseif ($keyval == 40) window $target -1 $calc($window($target).dy + 10) -1 -1
+    elseif ($keyval == 37) window $target $calc($window($target).dx - 10) -1 -1 -1
+    elseif ($keyval == 39) window $target $calc($window($target).dx + 10) -1 -1 -1
+    ; Home
+    elseif ($keyval == 36) _picfirst $target
+    ; End
+    elseif ($keyval == 35) _piclast $target
+    ; BkSp
+    elseif ($keyval == 8) _picdel $target
+  }
+}
+
+on *:KEYUP:@:*:{
+  if ($window($target).font == Picture Window) {
+    ; PgUp
+    if ($keyval == 33) _picprev $target
+    ; PgDn
+    elseif ($keyval == 34) _picnext $target
+  }
+}
+
+on *:CLOSE:@:{
+  if ($window($target).font == Picture Window) {
+    hdel pnp picture. $+ $target | hdel pnp calibrate. $+ $target
+  }
+}
+
+menu @PictureWin {
+  sclick:{ .timer.movepic -mio 0 50 _picmouse $calc($mouse.dx - $window($active).dx) $calc($mouse.dy - $window($active).dy) $active }
+  dclick:{ _picnew $active }
+  Prev	PgUp:{ _picprev $active }
+  Next	PgDn:{ _picnext $active }
+  -
+  Zoom
+  .In	+:{ _picin $active }
+  .Out	-:{ _picout $active }
+  .-
+  .$iif($gettok($window($active).titlebar,1,32) == [20%],$style(1)) 20%:{ viewpic 20 $hget(pnp,picture. $+ $active) }
+  .$iif($gettok($window($active).titlebar,1,32) == [33%],$style(1)) 33%:{ viewpic 33 $hget(pnp,picture. $+ $active) }
+  .$iif($gettok($window($active).titlebar,1,32) == [50%],$style(1)) 50%:{ viewpic 50 $hget(pnp,picture. $+ $active) }
+  .$iif($gettok($window($active).titlebar,1,32) == [66%],$style(1)) 66%:{ viewpic 66 $hget(pnp,picture. $+ $active) }
+  .$iif($gettok($window($active).titlebar,1,32) == [80%],$style(1)) 80%:{ viewpic 80 $hget(pnp,picture. $+ $active) }
+  .$iif($gettok($window($active).titlebar,1,32) == [100%],$style(1)) 100%:{ viewpic 100 $hget(pnp,picture. $+ $active) }
+  .$iif($gettok($window($active).titlebar,1,32) == [150%],$style(1)) 150%:{ viewpic 150 $hget(pnp,picture. $+ $active) }
+  .$iif($gettok($window($active).titlebar,1,32) == [200%],$style(1)) 200%:{ viewpic 200 $hget(pnp,picture. $+ $active) }
+  .$iif($gettok($window($active).titlebar,1,32) == [300%],$style(1)) 300%:{ viewpic 300 $hget(pnp,picture. $+ $active) }
+  .-
+  .$iif(!$istok([20%] [33%] [50%] [66%] [80%] [100%] [150%] [200%] [300%],$gettok($window($active).titlebar,1,32),32),$style(1) $remove($gettok($window($active).titlebar,1,32),$chr(91),$chr(93))):{ }
+  Select file...	Enter:{ _picnew $active }
+  -
+  Apply
+  .$submenu($_picwin($1))
+  .All windows:_picbk $active *
+  .-
+  .mIRC background:_picbk $active 0 -m
+  .Switchbar background:_picbk $active 0 -h
+  .Toolbar background:_picbk $active 0 -l
+  .Toolbar buttons:_picbk $active 0 -u
+  -
+  Delete	BkSp:{ _picdel $active }
+  Close	ESC:{ window -c $active | hdel pnp picture. $+ $active | hdel pnp calibrate. $+ $target }
+}
+alias -l _picmouse if ($mouse.key !& 1) .timer.movepic off | else window $3 $calc($mouse.dx - $1) $calc($mouse.dy - $2)
+alias -l _picwin {
+  if ($1 == begin) { %.scon = 1 | %.win = 0 | %.num = 0 | return }
+  if ($1 == end) { unset %.scon %.win %.num | return }
+  if (%.win == 0) {
+    if (!$scon(%.scon)) return
+    inc %.win
+    return $hget(pnp. $+ $scon(%.scon),net) $chr(40) $+ $scon(%.scon).me $+ $chr(41) $+ :_picbk $active $scon(%.scon) -s
+  }
+  scon %.scon
+  if (%.win == 1) {
+    inc %.num
+    if ($chan(%.num)) return $ifmatch $+ :_picbk $active $scon(%.scon) $ifmatch
+    inc %.win
+    %.num = 0
+  }
+  if (%.win == 2) {
+    inc %.num
+    if ($query(%.num)) return $ifmatch $+ :_picbk $active $scon(%.scon) $ifmatch
+    inc %.win
+    %.num = 0
+  }
+  %.win = 0
+  inc %.scon
+  return -
+}
+alias -l _piccalibrate {
+  window -hnl @.files
+  var %pos = $findfile($nofile($1-),*,0,1,@.files)
+  while (%pos) {
+    if ($line(@.files,%pos) == $1-) break
+    dec %pos
+  }
+  window -c @.files
+  if (%pos == 0) halt
+  return %pos
+}
+alias -l _picprev {
+  var %prev = $hget(pnp,calibrate. $+ $1)
+  var %file = $hget(pnp,picture. $+ $1)
+  if (!%prev) %prev = $_piccalibrate(%file)
+  dec %prev
+  while (%prev) {
+    var %found = $findfile($nofile(%file),*,%prev,1)
+    if ($pic(%found).width) {
+      hadd pnp calibrate. $+ $1 %prev
+      viewpic -w: $+ $1 %found
+      halt
+    }
+    dec %prev
+  }
+  halt
+}
+alias -l _picnext {
+  var %prev = $hget(pnp,calibrate. $+ $1)
+  var %file = $hget(pnp,picture. $+ $1)
+  if (!%prev) %prev = $_piccalibrate(%file)
+  if (!$2) inc %prev
+  while ($true) {
+    var %found = $findfile($nofile(%file),*,%prev,1)
+    if (%found == $null) {
+      if ($2) _picprev $1
+      halt
+    }
+    if ($pic(%found).width) {
+      hadd pnp calibrate. $+ $1 %prev
+      viewpic -w: $+ $1 %found
+      halt
+    }
+    inc %prev
+  }
+}
+alias -l _picfirst {
+  var %file = $hget(pnp,picture. $+ $1)
+  var %prev = 1
+  while ($true) {
+    var %found = $findfile($nofile(%file),*,%prev,1)
+    if (%found == $null) halt
+    if ($pic(%found).width) {
+      hadd pnp calibrate. $+ $1 %prev
+      viewpic -w: $+ $1 %found
+      halt
+    }
+    inc %prev
+  }
+}
+alias -l _piclast {
+  var %file = $hget(pnp,picture. $+ $1)
+  var %prev = $findfile($nofile(%file),*,0,1)
+  while (%prev) {
+    var %found = $findfile($nofile(%file),*,%prev,1)
+    if ($pic(%found).width) {
+      hadd pnp calibrate. $+ $1 %prev
+      viewpic -w: $+ $1 %found
+      halt
+    }
+    dec %prev
+  }
+  halt
+}
+alias -l _picdel {
+  var %file = $hget(pnp,picture. $+ $1)
+  var %prev = $hget(pnp,calibrate. $+ $1)
+  if (!%prev) {
+    %prev = $_piccalibrate(%file)
+    hadd pnp calibrate. $+ $1 %prev
+  }
+  _remove %file
+  _picnext $1 1
+}
+alias -l _picnew {
+  viewpic -w: $+ $1 $nofile($hget(pnp,picture. $+ $1))
+}
+alias -l _picin {
+  viewpic $calc($remove($gettok($window($1).titlebar,1,32),$chr(91),$chr(93),%) + 10) $hget(pnp,picture. $+ $1)
+}
+alias -l _picout {
+  viewpic $calc($remove($gettok($window($1).titlebar,1,32),$chr(91),$chr(93),%) - 10) $hget(pnp,picture. $+ $1)
+}
+alias -l _picbk {
+  if ($2 == *) {
+    var %method = $_picbkmethod
+    var %scon = $scon(0)
+    while (%scon) {
+      scon %scon
+      var %num = $chan(0)
+      while (%num) {
+        background %method " $+ $chan(%num) $+ " $hget(pnp,picture. $+ $1)
+        dec %num
+      }
+      %num = $query(0)
+      while (%num) {
+        background %method $query(%num) $hget(pnp,picture. $+ $1)
+        dec %num
+      }
+      background %method $+ s $hget(pnp,picture. $+ $1)
+      dec %scon
+    }
+    scon -r
+    %num = $chat(0)
+    while (%num) {
+      background %method = $+ $chat(%num) $hget(pnp,picture. $+ $1)
+      dec %num
+    }
+  }
+  elseif ($2 == 0) {
+    if ($3 == -m) background $_picbkmethod $+ m $hget(pnp,picture. $+ $1)
+    else background $3 $hget(pnp,picture. $+ $1)
+  }
+  else {
+    _cidexists $2
+    scon $2
+    if ($3 == -s) background $_picbkmethod $+ s $hget(pnp,picture. $+ $1)
+    else background $_picbkmethod " $+ $3 $+ " $hget(pnp,picture. $+ $1)
+    scon -r
+  }
+}
+alias -l _picbkmethod {
+  set %.fullmsg [theming:sel_bk_style]:
+  var %items = [theme_dialog:bk_center:notdlg],[theme_dialog:bk_fill:notdlg],[word:normal],[theme_dialog:bk_stretch:notdlg],[theme_dialog:bk_tile:notdlg],[theme_dialog:bk_photo:notdlg]
+  set %.found %items
+  _ssplay Question
+  var %sel = $$dialog(nickcomp,nickcomp,-4)
+  return $gettok(-c -f -n -r -t -p,$findtok(%items,%sel,1,44),32)
+}
