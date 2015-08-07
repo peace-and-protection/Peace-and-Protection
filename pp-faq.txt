@@ -9,7 +9,8 @@ See the end of this file for known issues with PnP and specific software,
 OSes, or scripts.
 
 Q; Where should I send bug reports?
-A; Use our forum on www.kristshell.net/pnp/
+A; Use our forum on www.kristshell.net/pnp/ 
+   or open an issue on https://github.com/solbu/Peace-and-Protection/issues
 
 Q: The command "/load -rs script\first.mrc" say that the file
    does not exist. Now what?

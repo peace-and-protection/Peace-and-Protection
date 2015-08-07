@@ -16,7 +16,7 @@ regardless of any settings. This is now fixed.
 *** 4.22.1 changes ***
 
 * New version number system. Because 4.22 was the last release by the developer (Pai)
-  we implementet the open source version number system to reflect bug fixes.
+  we implementet the Free and open source software version number system to reflect bug fixes.
 * A bug in P&P and a fix was brougt to our attention by Paul, an IRC-Operator on Quakenet. (Thank you)
   A hole in the file "last.mrc" allows an attacker to remotely execute arbitrarly code,
   by sending a private message (msg/query). The fix closes this hole.
