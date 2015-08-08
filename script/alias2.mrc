@@ -285,8 +285,8 @@ _progress.2 100 Done!
   savebuf @.servlist $_cfg(servers.mrc)
   window -c @.servlist
  
-  _broadcastp .unload -rs " $!+ $!script(servers.mrc) $!+ " $chr(124) .load -rs2 $_cfg(servers.mrc)
-  .unload -rs " $+ $script(servers.mrc) $+ "
+  _broadcastp if ($!script(servers.mrc)) .unload -rs " $!+ $!script(servers.mrc) $!+ " $chr(124) .load -rs2 $_cfg(servers.mrc)
+  if ($script(servers.mrc)) .unload -rs " $+ $script(servers.mrc) $+ "
   .load -rs2 $_cfg(servers.mrc)
 }
  
