@@ -1070,7 +1070,7 @@ else _error You must use /xwa in a channel $+ $chr(40) $+ or specify a target c
   else {
     if (%how !isnum 0-500) %how = 0
     if (%how) writeini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) a $+ %chan %how
-    else remini $_cfg(pw.ini) xw a- $+ $hget(pnp. $+ $cid,net) $+ %chan
+    else remini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) a $+ %chan
     if (($hget(pnp. $+ $cid,-xwacc. $+ %chan) != $null) || ($hget(pnp. $+ $cid,-xwacc.username))) hadd pnp. $+ $cid -xwacc. $+ %chan %how
   }
 dispa You have set yourself as access level $:s(%how) on $:s(%chan)
