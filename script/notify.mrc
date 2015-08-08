@@ -243,7 +243,7 @@ on *:DIALOG:addnotif:sclick:101:{
       scid -at1 _nickcol.updatenick $did(241) 1
       .notify -r $did(1)
     }
-    notify $iif($did(6).state,+) $+ $did(1) %mask
+    notify $iif($did(3).state && $did(4),-n) $iif($did(6).state,+) $+ $did(1) $iif($did(3).state && $did(4),$did(4)) %mask
     scid -at1 _nickcol.updatenick $did(1) 1
   }
 }
