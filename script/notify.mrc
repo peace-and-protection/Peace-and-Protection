@@ -232,12 +232,10 @@ on *:DIALOG:addnotif:sclick:2:did -b $dname 4
 on *:DIALOG:addnotif:sclick:3:did -e $dname 4
 on *:DIALOG:addnotif:sclick:101:{
   if ($did(1)) {
-    var %mask, %mask2
-    if (($did(3).state) && ($did(4))) %mask = $did(4)
-    %mask2 = $did(5)
-    if (%mask2 == None) var %mask2
-    elseif ((@ !isin %mask2) && (* !isin %mask2)) %mask2 = * $+ %mask2 $+ *
-    %mask = %mask %mask2
+    var %mask = $did(5)
+    if (%mask == None) var %mask
+    elseif ((@ !isin %mask) && (* !isin %mask)) %mask = * $+ %mask $+ *
+    if (($did(3).state) && ($did(4))) %mask = %mask $+ $ $+ $did(4)
     %mask = %mask $did(7)
     if ($notify($did(241))) {
       if (($did(1) == $did(241)) && ($notify($did(241)).note == %mask) && ($_tf($notify($did(241)).whois) == $did(6).state)) return
@@ -245,7 +243,7 @@ on *:DIALOG:addnotif:sclick:101:{
       scid -at1 _nickcol.updatenick $did(241) 1
       .notify -r $did(1)
     }
-    notify $iif($did(3).state,-n) $iif($did(6).state,+) $+ $did(1) %mask
+    notify $iif($did(6).state,+) $+ $did(1) %mask
     scid -at1 _nickcol.updatenick $did(1) 1
   }
 }
