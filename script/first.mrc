@@ -725,7 +725,7 @@ alias _broadcast {
 }
 ; _broadcastp command
 ; Causes all other copies of PnP with same profile to run a command
-alias _broadcast {
+alias _broadcastp {
   if ($lof(script\temp\mircids.) > 0) {
     var %dat,%num = 1
     :loop
