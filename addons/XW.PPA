@@ -1069,7 +1069,7 @@ else _error You must use /xwa in a channel $+ $chr(40) $+ or specify a target c
   }
   else {
     if (%how !isnum 0-500) %how = 0
-    if (%how isnum 0-500) writeini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) a $+ %chan %how
+    if (%how) writeini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) a $+ %chan %how
     else remini $_cfg(pw.ini) xw a- $+ $hget(pnp. $+ $cid,net) $+ %chan
     if (($hget(pnp. $+ $cid,-xwacc. $+ %chan) != $null) || ($hget(pnp. $+ $cid,-xwacc.username))) hadd pnp. $+ $cid -xwacc. $+ %chan %how
   }
