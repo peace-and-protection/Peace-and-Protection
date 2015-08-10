@@ -1101,7 +1101,7 @@ alias _pnp.upgrade {
     ; Recent topics/kicks should have &chan&, not &channel&
     var %file = $_cfg(topic.lis)
     if ($isfile(%file)) {
-      window -hl @.recent
+      window -Hl @.recent
       loadbuf @.recent %file
       var %ln = $line(@.recent,0)
       while (%ln) {
@@ -1113,7 +1113,7 @@ alias _pnp.upgrade {
     }
     var %file = $_cfg(kick.lis)
     if ($isfile(%file)) {
-      window -hl @.recent
+      window -Hl @.recent
       loadbuf @.recent %file
       var %ln = $line(@.recent,0)
       while (%ln) {
@@ -1223,8 +1223,8 @@ alias _pnp.upgrade {
     ; Load in settings from display.dat if stil present
     if ($isfile($_cfg(display.dat))) {
       var %file = " $+ $_cfg(theme.mtp) $+ "
-      window -hln @.display
-      window -hln @.msgs
+      window -Hln @.display
+      window -Hln @.msgs
       loadbuf @.display " $+ $_cfg(display.dat) $+ "
       ; (use display color as default color for ctcps)
       color ctcp $line(@.display,3)
@@ -1359,7 +1359,7 @@ alias _pnp.upgrade {
     
     ; Correct $chr(1) in msgs
     if ($isfile($_cfg(msgs.dat))) {
-      window -hln @.msgs
+      window -Hln @.msgs
       loadbuf @.msgs " $+ $_cfg(msgs.dat) $+ "
       var %ln = $line(@.msgs,0)
       while (%ln) {
@@ -1375,7 +1375,7 @@ alias _pnp.upgrade {
  
     ; Correct <$:t$&nick&>$:t$ in actions.dat
     if ($isfile($_cfg(actions.dat))) {
-      window -hln @.actions
+      window -Hln @.actions
       loadbuf @.actions " $+ $_cfg(actions.dat) $+ "
       var %ln = $line(@.actions,0)
       while (%ln) {
