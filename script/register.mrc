@@ -70,7 +70,7 @@ on *:DIALOG:bugrep:init:*:{
 }
 on *:DIALOG:bugrep:sclick:21:{
   window -c @.bug
-  window -hln @.bug
+  window -Hln @.bug
   if ($did(2).state) {
     aline @.bug Subject: [AUTO] Bug report ( $+ $:ver $+ )
   }
@@ -364,7 +364,7 @@ menu @PNP3D {
   $fix3d:{ }
 }
 alias -l fix3d dialog -v aboutpnp
-alias -l do3d window -pfdohaB +dL @PNP3D $calc($dialog(aboutpnp).x + 145) $calc($dialog(aboutpnp).x + $dialog(aboutpnp).h - $dialog(aboutpnp).ch + 2) 100 100 @PNP3D | hadd pnp.about cx 0 | hadd pnp.about cy 0 | hadd pnp.about cz 0 | .timer3d -mio 0 50 drawbox | dialog -v aboutpnp
+alias -l do3d window -pfdoHaB +dL @PNP3D $calc($dialog(aboutpnp).x + 145) $calc($dialog(aboutpnp).x + $dialog(aboutpnp).h - $dialog(aboutpnp).ch + 2) 100 100 @PNP3D | hadd pnp.about cx 0 | hadd pnp.about cy 0 | hadd pnp.about cz 0 | .timer3d -mio 0 50 drawbox | dialog -v aboutpnp
 alias -l draw3d { drawline -rn @PNP3D $rgb(frame) 1 $calc($1 + 50 + $calc($3 / 4)) $calc($2 + 50 - $calc($3 / 4)) $calc($4 + 50 + $calc($6 / 4)) $calc($5 + 50 - $calc($6 / 4)) }
 alias -l drawbox {
   hadd pnp.about cx $calc(($hget(pnp.about,cx) + 4) % 256)
@@ -378,7 +378,7 @@ alias -l dodraws {
   draw3d $13-18 | draw3d $16-21 | draw3d $19-24 | draw3d $22-24 $13-15
   draw3d $1-3 $13-15 | draw3d $4-6 $16-18 | draw3d $7-9 $19-21 | draw3d $10-12 $22-24
   drawdot @PNP3D | window @PNP3D $calc($dialog(aboutpnp).x + 145) $calc($dialog(aboutpnp).y + 25)
-  if ($appactive) window -ro @PNP3D | else window -h @PNP3D
+  if ($appactive) window -ro @PNP3D | else window -H @PNP3D
 }
 alias -l dorots dodraws $hget(pnp.about,cq) $bitrot(-30,-30,30,$1,$2,$3,$4,$5,$6) $bitrot(30,-30,30,$1,$2,$3,$4,$5,$6) $bitrot(30,30,30,$1,$2,$3,$4,$5,$6) $bitrot(-30,30,30,$1,$2,$3,$4,$5,$6) $bitrot(-30,-30,-30,$1,$2,$3,$4,$5,$6) $bitrot(30,-30,-30,$1,$2,$3,$4,$5,$6) $bitrot(30,30,-30,$1,$2,$3,$4,$5,$6) $bitrot(-30,30,-30,$1,$2,$3,$4,$5,$6)
 alias -l bitrot return $calc((($2 * $5 + $3 * $4) * $7 + $1 * $6) * $8 - ($2 * $4 - $3 * $5) * $9) $calc((($2 * $5 + $3 * $4) * $7 + $1 * $6) * $9 + ($2 * $4 - $3 * $5) * $8) $calc(($2 * $5 + $3 * $4) * $6 - $1 * $7)
