@@ -149,7 +149,7 @@ _st.error Error during ' $+ %event $+ '
   ; Splash
   if ($readini(config\ $+ $hget(pnp,user) $+ \config.ini,n,cfg,hidesplash)) window -c @Startup
   elseif (!$window(@Startup)) {
-    window -pfarodhkBz +bdL @Startup $int($calc(($window(-1).w - 250) / 2)) $int($calc(($window(-1).h - 350) / 2)) 250 350
+    window -pfarodHkBz +bdL @Startup $int($calc(($window(-1).w - 250) / 2)) $int($calc(($window(-1).h - 350) / 2)) 250 350
     titlebar @Startup $findfile(script\,pp4title*.png,$r(1,$findfile(script\,pp4title*.png,0)))
     if ($exists($window(@Startup).title)) {
       drawpic -c @Startup 0 0 " $+ $window(@Startup).title $+ "
@@ -451,7 +451,7 @@ if ((%moved) && (!$hget(pnp.startup,firsttime))) _stecho Moved %moved scripts
 ; Check addons loaded; check 3.20 compat
 alias _ck.addon {
   ; First, list all non-PnP scripts
-  window -hnl @.allscript
+  window -Hnl @.allscript
   var %num = 1
   while ($script(%num)) {
     if (*#= P&P* -rs* !iswm $read($script(%num),tn,1)) aline @.allscript $script(%num)
@@ -577,7 +577,7 @@ alias _ck.order2 {
   var %top,%bad,%file
  
   ; Determine scripts to be reordered
-  window -hnls @.reload
+  window -Hnls @.reload
   var %num = $script(0)
   :loop1
   %top = $read($script(%num),tn,1)
@@ -643,7 +643,7 @@ _stecho Performing PnP startup... $chr(40) $+ profile - $hget(pnp,user) $+ $chr(
   .enable #pnpdde
   ; Only one copy should do this at a time
   if ($lof(script\temp\semaphor.) > 0) {
-    if ($window(@Startup)) window -h @Startup
+    if ($window(@Startup)) window -H @Startup
     ; Timestamp in semaphor too old? possible problem, auto disable DDE
     if ($read(script\temp\semaphor.,n,1) < $calc($ctime - 60)) {
 echo 4 -sti2 $iif($:*,$:*,***) Startup problems detected from earlier- Disabling DDE $chr(40) $+ may cause problems if you open multiple mIRCs $+ $chr(41)
@@ -935,7 +935,7 @@ alias _pnp.upgrade {
       filter -ffxc $_cfg(pw.ini) $_cfg(pw.ini) !all=*
     
       ; Changes to nsforce/csforce sections
-      window -hnl @.force
+      window -Hnl @.force
       if ($ini($_cfg(pw.ini),nsforce)) {
         loadbuf -tnsforce @.force $_cfg(pw.ini)
         var %ln = 1
@@ -965,7 +965,7 @@ alias _pnp.upgrade {
       
       ; Changes to xw section
       if ($ini($_cfg(pw.ini),xw)) {
-        window -hnl @.xw
+        window -Hnl @.xw
         loadbuf -txw @.xw $_cfg(pw.ini)
         if (($readini($_cfg(pw.ini),n,xw,nets) == $null) && ($line(@.xw,0))) {
           var %ln = 1,%xall,%zall,%xnets
@@ -1391,7 +1391,7 @@ alias _pnp.upgrade {
   
   if (%lastver < 4.22) {
     ; Fixes to nsforce/csforce sections
-    window -hnl @.force
+    window -Hnl @.force
     if ($ini($_cfg(pw.ini),nsforce)) {
       loadbuf -tnsforce @.force $_cfg(pw.ini)
       var %ln = 1

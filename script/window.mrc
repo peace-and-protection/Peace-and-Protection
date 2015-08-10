@@ -391,7 +391,7 @@ alias -l _qflash {
 on *:KEYDOWN:@Progress:13,27:close -@ @Progress @.pbmp | _check.specwins
 alias _progress.1 {
   close -@ @Progress @.pbmp | _lock.tb
-  window -pfdohkaBz +bLt @Progress $calc($window(-1).w - 330) $calc($window(-1).h - 160) 319 104
+  window -pfdoHkaBz +bLt @Progress $calc($window(-1).w - 330) $calc($window(-1).h - 160) 319 104
   drawrect -frn @Progress $rgb(face) 2 0 0 319 104
   _gradient @Progress 9 69 300 25
   _bevel @Progress 7 67 304 29
@@ -399,7 +399,7 @@ alias _progress.1 {
   drawtext -nr @Progress $rgb(text) "ms sans serif" 16 8 25 $1-
   drawpic -nt @Progress $rgb(255,255,255) 247 1 195 65 64 64 script\icons.bmp
   drawdot @Progress
-  window -hpf @.pbmp 0 0 301 30
+  window -Hpf @.pbmp 0 0 301 30
   drawcopy @Progress 9 69 300 28 @.pbmp 0 0
 }
 alias _progress.2 {
