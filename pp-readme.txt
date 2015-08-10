@@ -1,11 +1,16 @@
 
-PnP 4.22.3
-mIRC 6.16
+PnP 4.22.4
+mIRC 7.43
 
 
-This script *requires* and is designed for mIRC v6.16 or later, not included.
-Using an earlire version of mIRC will not work. Please see
-http://www.kristshell.net/pnp/ for updates and other PnP-related information.
+This script *requires* and is designed for mIRC v7.43 or later, not included.
+Using an earlier version of mIRC will not work. Please see:
+
+http://www.kristshell.net/pnp/ 
+or
+https://github.com/solbu/Peace-and-Protection
+
+for updates and other PnP-related information.
 
 See pp-faq.txt for frequently asked questions and known issues with
 other software.
@@ -25,8 +30,10 @@ and powerful features. Browse through configuration and the popups
 for just a glimpse of the many features available... or just run it
 with the default configuration and learn as you go.
 
-Have a bug report, problem, or feedback? Just type /bug, hit Enter,
-and send it off!
+Have a bug report, problem, or feedback? Our forum is:
+http://www.kristshell.net/pnp/forum/
+Also, issues can be raised over at:
+https://github.com/solbu/Peace-and-Protection/issues
 
 --- WHAT'S NEW? ---
 
@@ -44,7 +51,7 @@ spectacular, just some more basic options to choose from.
 A lot of bugs have also been fixed from 4.20 and 4.21. Everything
 seems to be fairly stable at this point- I think the majority of
 the bugs from the mIRC 6.01 changes and multi-server revamps have
-been fixed. As always, let me know if you find anything.
+been fixed. As always, let us know if you find anything.
 
 If you missed 4.20, then you're in for a treat. Since 4.06, a LOT of
 major changes have been made. PnP is now fully mIRC 6.01 compatible.
@@ -62,64 +69,24 @@ ever-present bug fixes.
 
 --- WHAT'S COMING? ---
 
-Expect to see an updated addons page on www.pairc.com soon.
-I'm also working on automated upgrade/patch support within the script
-itself. I've also started on writing documentation- it's coming
-slowly, but something should be ready for the next major version.
-
-At some point I will be making the userlist and more of the options
-network-specific, but this may be a while.
-
-A number of hard-working individuals are working on translations for
-PnP- look for these on www.pairc.com sometime in the near future. 
-(see Script\Trans\English.ini for details on translating PnP.)
-
---- TO UPGRADE AN EXISTING INSTALLATION OF PnP ---
-
-If you don't have mIRC 6.01 installed yet, download it
-from http://www.mirc.com/get.html. Install it over your
-existing PnP/mIRC. When prompted, elect to *keep* existing
-settings. Note that PnP 4.22 will *not* work with mIRC
-versions prior to 6.01.
-
-Then, just unzip (or copy) all of the PnP files to your existing PnP
-directory. Make sure you retain the directories, and overwrite
-any existing files. In WinZip, this option is called "Use folder
-names". Make sure mIRC is NOT RUNNING when you do this. mIRC may
-restart once or twice the first time you run it, to clean up any
-new settings.
-
-When upgraded properly, you will not lose any of your existing
-settings. Do not install this over a copy of PnP earlier than
-4.00.
+So far the only translation available is Turkish. If you are fluent
+in a language other than English and wish to help translate, please  
+see Script\Trans\English.ini for details on translating PnP.
 
 --- IF THIS IS A NEW INSTALLATION ---
 
-1) Make sure no copies of mIRC are running. This is simply a
-   safety precaution- PnP only installs to the mIRC directory
-   you place it in.
-2) If you like, make a backup of your mIRC directory.
-3) If you don't have mIRC 6.01 installed yet, download it
-   from http://www.mirc.com/get.html and install it. Note that
-   PnP 4.22 will *not* work with mIRC versions prior to 6.01.
-4) Unzip or copy all files into your mIRC directory.
-     There are two ways to locate the mIRC folder
-       1. Logokey + R (or Start -> Run) and type: %APPDATA%\mIRC
-       2. Inside mIRC, type: //run $mircdir
-   Retain all directories. In WinZip, this option is called
-   "Use folder names". You should now have SCRIPT, ADDONS, and
-   THEMES directories within your MIRC directory. If you do not,
-   you did something wrong.
-5) You should now have all of the above directories, as well
-   as mirc.exe in the directory. You will also have other mIRC
-   files such as mirc.ini and servers.ini- this is normal and
-   not a problem.
-6) Start mIRC.
-7) In your status window, type /load -rs script\first.mrc
+1) mIRC installs itself in the %programfiles% folder or the 
+   %systemdrive%\Program Files (x86) folder if you are running
+   a 64 bit version of windows.
+2) Unzip the contents of the ZIP file and copy everything (the ADDONS,
+   SCRIPT, THEMES folders including the files kicks.txt, pp-faq.txt
+   pp-readme.txt, quits.txt and whatsnew.txt) to your 
+   %appdata%\mIRC folder.
+3) In your status window, type /load -rs script\first.mrc
    (and press Enter)
-8) Anytime mIRC asks if you'd like to run initialization
+4) Any time mIRC asks if you'd like to run initialization
    commands, click "Yes".
-9) mIRC will restart once or twice while installing PnP.
+5) mIRC will restart once or twice while installing PnP.
    Then you are ready to go!
    
 If mIRC crashes any time during this installation, you should
@@ -146,16 +113,8 @@ to common questions, see PP-FAQ.TXT.
 
 Feel free to visit #peace&protection on EFnet for help and questions.
 
-Bug reporting and feedback features have been enabled. Use
-/bug to report a bug or /feedback to leave feedback. However,
-don't expect replies to every report or e-mail. I don't
-mean to be rude- I simply do not have the time to reply to each
-individual e-mail. If you have a legitimate question or problem,
-I will try to send a response.
-
-IMPORTANT NOTE: Although I try to make this as bug free and usable
-as possible, there will definately be bugs, and some features
-aren't complete, or are undocumented.
+Bug reporting and feedback features are not working currently.
+Please raise your issue on the kristhshell forum or @ GitHub.
 
 
 --- A brief list of some commands ---

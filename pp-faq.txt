@@ -16,7 +16,7 @@ Q: The command "/load -rs script\first.mrc" say that the file
    does not exist. Now what?
 A: From v6.3 and onwards, mIRC changed the way it installs itself on a system.
    mIRC v6.3 and later now install it self into
-   "C:\Documents and Settings\-username-\Application Data\mIRC\".
+   %appdata%\mIRC\
    We have been told that this is because of compatibility issues with Windows Vista.
    You should therefore also install Pnp into that directory and not
    "C:\Program files\mIRC\" as before, even when you do not have Vista.
@@ -72,11 +72,11 @@ Q; How do I fix the "/run: Command disabled" error?
 A; To fix the /run disable, do the following-
 
    1) Open mIRC options (Alt+O)
-   2) Go to the last section listed, 'General', and make sure it's
-      sub-tree is open (if there is a + next to 'General', click it
+   2) Go to the last section listed, 'Other', and make sure it's
+      sub-tree is open (if there is a + next to 'Other', click it
       to expand the tree)
    3) Go to the Lock section.
-   4) Find the option under 'Disable commands' for /run, and
+   4) Find the option under 'Disable features' for Run, and
       uncheck it.
    5) Click OK.
 
