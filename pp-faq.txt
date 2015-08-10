@@ -60,11 +60,8 @@ A; Some 3.20 addons may work. If you encounter odd problems, unload
    now may not work at all.
 
 Q; How can I help out?
-A; If you are fluent in English and another language, and want to
-   help write translations for PnP, contact me at pai@kristshell.net/pnp/.
-   You can see the file "english.ini" in the Script\Trans subfolder
-   for an idea of what is involved in translation. I currently do
-   not want help actually writing the script, thanks.
+A; Join us. On the kristshell forum, at github or 
+   irc://irc.efnet.org/peace&protection or all of the above.
 
 Q; How do I fix the "/run: Command disabled" error?
    (also known as "why can't I play my sounds" and "PnP tells me
