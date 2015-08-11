@@ -149,7 +149,7 @@ _st.error Error during ' $+ %event $+ '
   ; Splash
   if ($readini(config\ $+ $hget(pnp,user) $+ \config.ini,n,cfg,hidesplash)) window -c @Startup
   elseif (!$window(@Startup)) {
-    window -pfarodHkBz +bdL @Startup $int($calc(($window(-1).w - 250) / 2)) $int($calc(($window(-1).h - 350) / 2)) 250 350
+    window -pfarodHkBz +bdL @Startup $int($calc(($window(-1).w - 250) / 2)) $int($calc(($window(-1).h - 350) / 2)) 250 350 | window -a @Startup
     titlebar @Startup $findfile(script\,pp4title*.png,$r(1,$findfile(script\,pp4title*.png,0)))
     if ($exists($window(@Startup).title)) {
       drawpic -c @Startup 0 0 " $+ $window(@Startup).title $+ "
@@ -451,7 +451,7 @@ if ((%moved) && (!$hget(pnp.startup,firsttime))) _stecho Moved %moved scripts
 ; Check addons loaded; check 3.20 compat
 alias _ck.addon {
   ; First, list all non-PnP scripts
-  window -Hnl @.allscript
+  window -hnl @.allscript
   var %num = 1
   while ($script(%num)) {
     if (*#= P&P* -rs* !iswm $read($script(%num),tn,1)) aline @.allscript $script(%num)
@@ -577,7 +577,7 @@ alias _ck.order2 {
   var %top,%bad,%file
  
   ; Determine scripts to be reordered
-  window -Hnls @.reload
+  window -hnls @.reload
   var %num = $script(0)
   :loop1
   %top = $read($script(%num),tn,1)
@@ -643,7 +643,7 @@ _stecho Performing PnP startup... $chr(40) $+ profile - $hget(pnp,user) $+ $chr(
   .enable #pnpdde
   ; Only one copy should do this at a time
   if ($lof(script\temp\semaphor.) > 0) {
-    if ($window(@Startup)) window -H @Startup
+    if ($window(@Startup)) window -h @Startup
     ; Timestamp in semaphor too old? possible problem, auto disable DDE
     if ($read(script\temp\semaphor.,n,1) < $calc($ctime - 60)) {
 echo 4 -sti2 $iif($:*,$:*,***) Startup problems detected from earlier- Disabling DDE $chr(40) $+ may cause problems if you open multiple mIRCs $+ $chr(41)
@@ -935,7 +935,7 @@ alias _pnp.upgrade {
       filter -ffxc $_cfg(pw.ini) $_cfg(pw.ini) !all=*
     
       ; Changes to nsforce/csforce sections
-      window -Hnl @.force
+      window -hnl @.force
       if ($ini($_cfg(pw.ini),nsforce)) {
         loadbuf -tnsforce @.force $_cfg(pw.ini)
         var %ln = 1
@@ -965,7 +965,7 @@ alias _pnp.upgrade {
       
       ; Changes to xw section
       if ($ini($_cfg(pw.ini),xw)) {
-        window -Hnl @.xw
+        window -hnl @.xw
         loadbuf -txw @.xw $_cfg(pw.ini)
         if (($readini($_cfg(pw.ini),n,xw,nets) == $null) && ($line(@.xw,0))) {
           var %ln = 1,%xall,%zall,%xnets
@@ -1101,7 +1101,7 @@ alias _pnp.upgrade {
     ; Recent topics/kicks should have &chan&, not &channel&
     var %file = $_cfg(topic.lis)
     if ($isfile(%file)) {
-      window -Hl @.recent
+      window -hl @.recent
       loadbuf @.recent %file
       var %ln = $line(@.recent,0)
       while (%ln) {
@@ -1113,7 +1113,7 @@ alias _pnp.upgrade {
     }
     var %file = $_cfg(kick.lis)
     if ($isfile(%file)) {
-      window -Hl @.recent
+      window -hl @.recent
       loadbuf @.recent %file
       var %ln = $line(@.recent,0)
       while (%ln) {
@@ -1223,8 +1223,8 @@ alias _pnp.upgrade {
     ; Load in settings from display.dat if stil present
     if ($isfile($_cfg(display.dat))) {
       var %file = " $+ $_cfg(theme.mtp) $+ "
-      window -Hln @.display
-      window -Hln @.msgs
+      window -hln @.display
+      window -hln @.msgs
       loadbuf @.display " $+ $_cfg(display.dat) $+ "
       ; (use display color as default color for ctcps)
       color ctcp $line(@.display,3)
@@ -1359,7 +1359,7 @@ alias _pnp.upgrade {
     
     ; Correct $chr(1) in msgs
     if ($isfile($_cfg(msgs.dat))) {
-      window -Hln @.msgs
+      window -hln @.msgs
       loadbuf @.msgs " $+ $_cfg(msgs.dat) $+ "
       var %ln = $line(@.msgs,0)
       while (%ln) {
@@ -1375,7 +1375,7 @@ alias _pnp.upgrade {
  
     ; Correct <$:t$&nick&>$:t$ in actions.dat
     if ($isfile($_cfg(actions.dat))) {
-      window -Hln @.actions
+      window -hln @.actions
       loadbuf @.actions " $+ $_cfg(actions.dat) $+ "
       var %ln = $line(@.actions,0)
       while (%ln) {
@@ -1391,7 +1391,7 @@ alias _pnp.upgrade {
   
   if (%lastver < 4.22) {
     ; Fixes to nsforce/csforce sections
-    window -Hnl @.force
+    window -hnl @.force
     if ($ini($_cfg(pw.ini),nsforce)) {
       loadbuf -tnsforce @.force $_cfg(pw.ini)
       var %ln = 1
