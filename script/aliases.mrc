@@ -714,7 +714,7 @@ elseif ($1 == Flood) _ssplay ProtectSelf Alert
   return %str
 }
 :mc return  $+ $color($1).dd $+ $2- $+ 
-:bver return 4.22.4
-:ver return 4.22.4
+:bver return 4.22
+:ver return 4.22.5
  
 ; Dynamic 'aliases' will appear in $_cfg(themeals.mrc).

@@ -3,10 +3,16 @@ Complete details on everything added here. See pp-readme.txt for a summary of th
 
 As of Sunday October 21 2012, the support channel #peace&protection has moved to EFnet.
 
+*** 4.22.5 changes ***
+
+* Revert window -H to window -h and added | window -a @Windowname to all window initialization commands.
+  (This seems to have also fixed the error dialogs such as when typing /quit when not connected)
+  (Option to hide splash screen now works again)
+  
 *** 4.22.4 changes ***
 
 * Updated window -h command to window -H command.
-  (Splashscreen, initial startup progress bar and progress bar display issue)
+  (Splash screen, initial start up progress bar and progress bar display issue)
 * Alias2.mrc - Error: /unload: no such file (line 289, alias2.mrc)
   (Dynamically generated servers.mrc)
 * XW.PPA - Error not being able to set access level back to 0 (no access)
