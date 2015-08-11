@@ -149,7 +149,7 @@ _st.error Error during ' $+ %event $+ '
   ; Splash
   if ($readini(config\ $+ $hget(pnp,user) $+ \config.ini,n,cfg,hidesplash)) window -c @Startup
   elseif (!$window(@Startup)) {
-    window -pfarodHkBz +bdL @Startup $int($calc(($window(-1).w - 250) / 2)) $int($calc(($window(-1).h - 350) / 2)) 250 350 | window -a @Startup
+    window -pfarodw0kBz +bdL @Startup $int($calc(($window(-1).w - 250) / 2)) $int($calc(($window(-1).h - 350) / 2)) 250 350
     titlebar @Startup $findfile(script\,pp4title*.png,$r(1,$findfile(script\,pp4title*.png,0)))
     if ($exists($window(@Startup).title)) {
       drawpic -c @Startup 0 0 " $+ $window(@Startup).title $+ "

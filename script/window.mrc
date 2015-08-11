@@ -277,7 +277,7 @@ alias _doerror {
   _lock.tb
   ; Window
   window -c @Error
-  window -pfdhkaBz +bLt @Error $_center(400,68,1,-7,-25) @Close2 | window -a @Error
+  window -pfdw0kaBz +bLt @Error $_center(400,68,1,-7,-25) @Close2
   drawrect -frn @Error $rgb(face) 2 0 0 400 68
   drawpic -nt @Error $rgb(255,255,255) 334 1 130 65 64 64 script\icons.bmp
   ; Text
@@ -311,7 +311,7 @@ alias _qhelp {
   _lock.tb
   ; window
   window -c @Quick
-  window -pfdehkaBzi +bLt @Quick $_center(400,68,1,-7,-50) @Close ms sans serif 16 | window -a @Quick
+  window -pfdew0kaBzi +bLt @Quick $_center(400,68,1,-7,-50) @Close ms sans serif 16
   drawrect -frn @Quick $rgb(face) 2 0 0 400 68
   titlebar @Quick Help- $gettok($1,1,160)
   editbox -p @Quick $gettok($1,1,160) $2-
@@ -391,7 +391,7 @@ alias -l _qflash {
 on *:KEYDOWN:@Progress:13,27:close -@ @Progress @.pbmp | _check.specwins
 alias _progress.1 {
   close -@ @Progress @.pbmp | _lock.tb
-  window -pfdohkaBz +bLt @Progress $calc($window(-1).w - 330) $calc($window(-1).h - 160) 319 104 | window -a @Progress
+  window -pfdow0kaBz +bLt @Progress $calc($window(-1).w - 330) $calc($window(-1).h - 160) 319 104
   drawrect -frn @Progress $rgb(face) 2 0 0 319 104
   _gradient @Progress 9 69 300 25
   _bevel @Progress 7 67 304 29
