@@ -12,13 +12,13 @@ alias unhide {
   var %scon = $scon(0)
   while (%scon) {
     scon %scon
-    window -w1 "Status Window"
-    var %num = $chan(0) | :loopC | if (%num) { window -w1 " $+ $chan(%num) $+ " | dec %num | goto loopC }
-    %num = $query(0) | :loopQ | if (%num) { window -w1 $query(%num) | dec %num | goto loopQ }
+    window -w "Status Window"
+    var %num = $chan(0) | :loopC | if (%num) { window -w " $+ $chan(%num) $+ " | dec %num | goto loopC }
+    %num = $query(0) | :loopQ | if (%num) { window -w $query(%num) | dec %num | goto loopQ }
     dec %scon
   }
   scon -r
-  %num = $chat(0) | :loopD | if (%num) { window -w1 = $+ $chat(%num) | dec %num | goto loopD }
+  %num = $chat(0) | :loopD | if (%num) { window -w = $+ $chat(%num) | dec %num | goto loopD }
   %num = $hget(0)
   while (%num) {
     if (pnp.window.* iswm $hget(%num)) {
@@ -38,7 +38,7 @@ alias hide {
     if (($chr(32) isin %window) || (%window ischan)) window -h " $+ %window $+ "
     else window -h %window
     hadd pnp hidden 1
-    if ($active == %window) window -aw1 "Status Window"
+    if ($active == %window) window -aw "Status Window"
   }
 else dispa Error- Can't hide $:s(%window)
   if ($_dlgi(unhide) != 1) {

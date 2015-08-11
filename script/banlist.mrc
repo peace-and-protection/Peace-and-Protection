@@ -36,7 +36,7 @@ iline %win 2 Changes will *not* be made until you close the window.
   iline %win 3  
 iline %win 4  	 $+ $1 $+ 	Days old	Set by
   iline %win 5  
-  window -aw1b %win
+  window -awb %win
   _banupd %win
   halt
 }

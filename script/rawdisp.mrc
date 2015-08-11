@@ -701,7 +701,7 @@ set -u %::text - %motdserver Message of the Day -
     set -u %::numeric 376
 set -u %::text End of /MOTD command.
     theme.text RAW.376
-    window -aw1 %win
+    window -aw %win
   }
   else {
     ; 'Why' line
