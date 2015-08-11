@@ -311,7 +311,7 @@ alias _qhelp {
   _lock.tb
   ; window
   window -c @Quick
-  window -pfdehkaBzi +bLt @Quick $_center(400,68,1,-7,-50) @Close ms sans serif 16 | window -a Quick
+  window -pfdehkaBzi +bLt @Quick $_center(400,68,1,-7,-50) @Close ms sans serif 16 | window -a @Quick
   drawrect -frn @Quick $rgb(face) 2 0 0 400 68
   titlebar @Quick Help- $gettok($1,1,160)
   editbox -p @Quick $gettok($1,1,160) $2-
