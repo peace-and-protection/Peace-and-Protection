@@ -123,7 +123,7 @@ did -o $dname 10 1 (no packs selected)
     did -b $dname 4,6,7,8,9,10
     did -e $dname 5
     did -r $dname 6
-did -o $dname 10 1 ( $+ $+ )
+did -o $dname 10 1 ( $+ $did(2,0).sel packs selected $+ )
     var %line,%where = 1,%total = 0,%file = $_cfg(xdcc.dat)
     :loopc
     %line = $read(%file,n,$did(2,%where).sel)
