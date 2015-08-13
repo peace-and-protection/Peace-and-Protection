@@ -505,7 +505,7 @@ dns {
   if ($1 == $null) { dns | return }
   elseif ($1 == -c) { dns -c | return }
   var %dns,%type
-  if ($1 == -h) { %dns = $2 | %type = -h }
+  if (-* iswm $1) { %dns = $2 | %type = $1 }
   elseif ((. isin $1) || (: isin $1)) { if (@ isin $1) %dns = $gettok($1,2,64) | else %dns = $1 | %type = -h }
   else { %dns = $_nc($1) | %type = -n }
   if ($show) {
@@ -527,7 +527,7 @@ _Q.dns {
   :loop
   var %whom = $cid $+ . $+ $iif($3 == -n,:) $+ $iif(@ isin $4,$gettok($4,2-,64),$4)
   hadd pnp.qdns %whom $hget(pnp.qdns,%whom) $1-2
-  .!dns $iif($3 == -h,-h) $4
+  .!dns $iif(-* iswm $3,$3) $4
   if ($5) {
     tokenize 32 $1-3 $5-
     goto loop
