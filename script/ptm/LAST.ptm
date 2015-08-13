@@ -1496,7 +1496,7 @@ on *:DISCONNECT:{
 ; flash/sounds that must be last
 ctcp &*:DCC CHAT:?:_ssplay DCC
 ctcp &*:DCC SEND:?:_ssplay DCCSend
-on &^*:OPEN:?:*:_ssplay Open | if ($mid($hget(pnp.config,flash.opt),$iif($hget(pnp. $+ $cid,away),2,1),1)) flash $chr(91) $+ [word:query]- $nick: $strip($1-) $+ $chr(93)
+on &^*:OPEN:?:*:_ssplay Open | if ($mid($hget(pnp.config,flash.opt),$iif($hget(pnp. $+ $cid,away),2,1),1)) flash $chr(91) $+ [word:query]- $nick: $strip($replace($1-,$chr(32),$chr(160))) $+ $chr(93)
 on &*:CHAT:*:if ($mid($hget(pnp.config,flash.opt),$iif($hget(pnp. $+ $cid,away),6,5),1)) flash $chr(91) $+ [word:dcc]- $nick: $strip($iif($1 == ACTION,$remove($2-,),$1-)) $+ $chr(93)
 on &*:TEXT:*:?:if ($mid($hget(pnp.config,flash.opt),$iif($hget(pnp. $+ $cid,away),4,3),1)) flash $chr(91) $+ [word:msg]- $nick: $strip($1-) $+ $chr(93)
 on &*:ACTION:*:?:if ($mid($hget(pnp.config,flash.opt),$iif($hget(pnp. $+ $cid,away),4,3),1)) flash $chr(91) $+ [word:msg]- $nick: $strip($1-) $+ $chr(93)

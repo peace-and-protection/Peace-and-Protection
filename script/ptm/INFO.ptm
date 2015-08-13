@@ -82,7 +82,7 @@ alias clones {
   }
 }
 
-alias -l _clonepop set -u %.clonepop $iif(($sline($active,1).ln > 4) && ($numtok($sline($active,1),9) > 1),1,0)
+alias -l _clonepop set -u1 %.clonepop $iif(($sline($active,1).ln > 4) && ($numtok($sline($active,1),9) > 1),1,0)
 menu @Clones {
   $_clonepop:{ }
   $iif(%.clonepop,[popups_clones:ping]):ping $_clonesel

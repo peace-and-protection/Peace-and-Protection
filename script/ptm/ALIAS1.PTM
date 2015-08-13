@@ -506,7 +506,7 @@ dns {
   elseif ($1 == -c) { dns -c | return }
   var %dns,%type
   if ($1 == -h) { %dns = $2 | %type = -h }
-  elseif (. isin $1) { if (@ isin $1) %dns = $gettok($1,2,64) | else %dns = $1 | %type = -h }
+  elseif ((. isin $1) || (: isin $1)) { if (@ isin $1) %dns = $gettok($1,2,64) | else %dns = $1 | %type = -h }
   else { %dns = $_nc($1) | %type = -n }
   if ($show) {
     _Q.dns _dnsshow _dnsfail %type %dns

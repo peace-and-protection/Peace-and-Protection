@@ -365,7 +365,7 @@ menu @PNP3D {
   $fix3d:{ }
 }
 alias -l fix3d dialog -v aboutpnp
-alias -l do3d window -pfdohaB +dL @PNP3D $calc($dialog(aboutpnp).x + 145) $calc($dialog(aboutpnp).x + $dialog(aboutpnp).h - $dialog(aboutpnp).ch + 2) 100 100 @PNP3D | hadd pnp.about cx 0 | hadd pnp.about cy 0 | hadd pnp.about cz 0 | .timer3d -mio 0 50 drawbox | dialog -v aboutpnp
+alias -l do3d window -pfdow0aB +dL @PNP3D $calc($dialog(aboutpnp).x + 145) $calc($dialog(aboutpnp).x + $dialog(aboutpnp).h - $dialog(aboutpnp).ch + 2) 100 100 @PNP3D | hadd pnp.about cx 0 | hadd pnp.about cy 0 | hadd pnp.about cz 0 | .timer3d -mio 0 50 drawbox | dialog -v aboutpnp
 alias -l draw3d { drawline -rn @PNP3D $rgb(frame) 1 $calc($1 + 50 + $calc($3 / 4)) $calc($2 + 50 - $calc($3 / 4)) $calc($4 + 50 + $calc($6 / 4)) $calc($5 + 50 - $calc($6 / 4)) }
 alias -l drawbox {
   hadd pnp.about cx $calc(($hget(pnp.about,cx) + 4) % 256)

@@ -69,10 +69,10 @@ _chanbot {
   }
 }
 ; $_isserv(type)
-_isserv return $istok($hget(pnp. $+ $cid,-serv),$1,32)
+_isserv return $istok($hget(pnp. $+ $cid,-serv),$1,44)
 ; _rembot code nick (removes bot from access lists)
 _rembot {
-  hadd pnp. $+ $cid -serv $remtok($hget(pnp. $+ $cid,-serv),$1,32)
+  hadd pnp. $+ $cid -serv $remtok($hget(pnp. $+ $cid,-serv),$1,44)
   if ($findtok($hget(pnp. $+ $cid,-servnick),$2,1,32)) {
     var %pos = $ifmatch
     hadd pnp. $+ $cid -servnick $deltok($hget(pnp. $+ $cid,-servnick),%pos,32)
@@ -82,7 +82,7 @@ _rembot {
 ; _addbot code nick nick@blah (removes any dupes first from current access lists)
 _addbot {
   _rembot $1 $2
-  hadd pnp. $+ $cid -serv $hget(pnp. $+ $cid,-serv) $1
+  hadd pnp. $+ $cid -serv $addtok($hget(pnp. $+ $cid,-serv),$1,44)
   hadd pnp. $+ $cid -servnick $hget(pnp. $+ $cid,-servnick) $2
   hadd pnp. $+ $cid -servaddr $hget(pnp. $+ $cid,-servaddr) $3
 }

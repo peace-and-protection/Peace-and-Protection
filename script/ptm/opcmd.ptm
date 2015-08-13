@@ -682,23 +682,23 @@ on *:UNBAN:#:{
 alias _banpop {
   if ($snick(#,1)) {
     if ($address($snick(#,1),5)) {
-      set -u %.ban2 $_ppmask($snick(#,1),0,$_getchopt(#,3),2)
-      if ($_ppmask($snick(#,1),0,$_getchopt(#,3),4) != %.ban2) set -u %.ban3 $ifmatch
+      set -u1 %.ban2 $_ppmask($snick(#,1),0,$_getchopt(#,3),2)
+      if ($_ppmask($snick(#,1),0,$_getchopt(#,3),4) != %.ban2) set -u1 %.ban3 $ifmatch
       else unset %.ban3
-      set -u %.ban4 $_ppmask($snick(#,1),0,$_getchopt(#,3),3)
+      set -u1 %.ban4 $_ppmask($snick(#,1),0,$_getchopt(#,3),3)
       if ((%.ban4 == %.ban2) || (%.ban4 == %.ban3)) unset %.ban4
-      set -u %.ban5 $_ppmask($snick(#,1),0,$_getchopt(#,3),6)
+      set -u1 %.ban5 $_ppmask($snick(#,1),0,$_getchopt(#,3),6)
       if ((%.ban5 == %.ban2) || (%.ban5 == %.ban3) || (%.ban5 == %.ban4)) unset %.ban5
-      set -u %.banD $_ppmask($snick(#,1),$_stmask(4,#))
-      if ($_ppmask($snick(#,1),$_stmask(2,#)) != %.banD) set -u %.banS $ifmatch
+      set -u1 %.banD $_ppmask($snick(#,1),$_stmask(4,#))
+      if ($_ppmask($snick(#,1),$_stmask(2,#)) != %.banD) set -u1 %.banS $ifmatch
       else unset %.banS
-      set -u %.banN $snick(#,1) $+ !*@*
+      set -u1 %.banN $snick(#,1) $+ !*@*
     }
     else {
-      set -u %.ban2 [popups_nick:ban_standard]
-      set -u %.banD [popups_nick:ban_domain]
-      set -u %.banS [popups_nick:ban_site]
-      set -u %.banN [popups_nick:ban_nick]
+      set -u1 %.ban2 [popups_nick:ban_standard]
+      set -u1 %.banD [popups_nick:ban_domain]
+      set -u1 %.banS [popups_nick:ban_site]
+      set -u1 %.banN [popups_nick:ban_nick]
       unset %.ban3 %.ban4 %.ban5
     }
   }
