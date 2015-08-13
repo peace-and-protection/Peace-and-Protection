@@ -3,11 +3,21 @@ Complete details on everything added here. See pp-readme.txt for a summary of th
 
 As of Sunday October 21 2012, the support channel #peace&protection has moved to EFnet.
 
+*** 4.22.6 changes ***
+
+* Fixed 11 PTM files so that they have the important bugfixes as well. (After translation)
+* Reverted change in aliases.mrc to pai's old code. L72,L75,L85 istok/remtok/addtok token 32 back to 44
+  (Also see script.mrc - L715)
+* Fixed XDCC.ptm bug that prevented translation to Turkish (only included language file)
+
 *** 4.22.5 changes ***
 
-* Revert window -H to window -h and added | window -a @Windowname to all window initialization commands.
-  (This seems to have also fixed the error dialogs such as when typing /quit when not connected)
-  (Option to hide splash screen now works again)
+* Revert window -H to window -h. Window -h in the old version of mIRC is now -w0 in newer version of mIRC. 
+  Replaced window -h to window -w0 for:
+  - first.mrc - L152 - Splashscreen now showing
+  - dofirst.ini - L111 - Progressbars on initial installation
+  - window.mrc - L280,L314,L394 - @Error and @Quick windows as well as progress bar.
+  - register.mrc - L367 - @PNP3D
   
 *** 4.22.4 changes ***
 
