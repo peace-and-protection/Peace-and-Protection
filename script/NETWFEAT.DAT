@@ -9,4 +9,4 @@ ChatNet k9 0 K9
 BrasNet cs,ns,ms,hs,ih pn ChanServ@/chanserv NickServ@/nickserv MemoServ@/memoserv HelpServ IrcIIHelp
 Webchat cs,ns,ms,os,as ar ChanServ@/chanserv NickServ@/nickserv MemoServ@/memoserv OperServ AdminServ
 Webnet cs,ns,ms,os,as 0 ChanServ NickServ MemoServ OperServ AdminServ
-Planetarion xw u P@cservice.planetarion.com
+Netgamers xw u P@cservice.netgamers.org
