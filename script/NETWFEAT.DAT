@@ -4,7 +4,7 @@ EFnet
 IRCnet ??? 0 ???
 Austnet chop,noop,niop,heop,loop 0 ChanOP NoteOP NickOP HelpOP LoveOP
 Newnet cs,ns dn ChanServ@services.newnet.net NickServ@services.newnet.net
-Ozorg xw 0 Z@channels.oz.org
+Oz_org xw 0 Z@services.oz.org
 ChatNet k9 0 K9
 BrasNet cs,ns,ms,hs,ih pn ChanServ@/chanserv NickServ@/nickserv MemoServ@/memoserv HelpServ IrcIIHelp
 Webchat cs,ns,ms,os,as ar ChanServ@/chanserv NickServ@/nickserv MemoServ@/memoserv OperServ AdminServ
