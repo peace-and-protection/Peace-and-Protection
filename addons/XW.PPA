@@ -380,7 +380,7 @@ if (%pw !=== $$input(Please retype password to confirm:,2)) _error Passwords do 
 :INVITE | %send $iif(u !isin $hget(pnp. $+ $cid,-servopt),$_entry(-1,$iif(%chan !ischan,$me),User to invite to channel?)) | return
 :UNBAN | %send $_entry(-1,$null,User to unban?Enter a nickname or address mask.) | return
 :TOPIC | %send $_rentry(topic,%chan,$_s2p($chan(%chan).topic),New channel topic?) | return
-:LBANLIST | %send $_entry(-1,*,Show <banbot banlist entries matching what mask?Use * to list all entries) | return
+:LBANLIST | %send $_entry(-1,*,Show %xw banlist entries matching what mask?Use * to list all entries) | return
 :VERIFY | msgxw %xw VERIFY $_entry(-1,$null,Nickname of user to verify?) | return
 :SEARCH | msgxw %xw SEARCH $_entry(0,$null,Enter a word or topic to search for:This will search %xw $+ 's database for matching channels.) | return
 :INFO | msgxw %xw INFO $_entry(-1,$null,Username to get info on? $+ $chr(40) $+ or enter a nickname prefixed with = $+ $chr(41)) | return
