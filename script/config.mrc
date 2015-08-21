@@ -1011,7 +1011,7 @@ did -i $+ $iif($did(470).lines < 2,c) $dname 470 1 (all networks)
   ; Language
   :28
   if ($read(script\transup.ini,n,translation,enabled) == no) {
-    did -ra $dname 524 This installation of PnP does not currenlty support translation. You may download a version that supports translation at www.pairc.com.
+    did -ra $dname 524 This installation of PnP does not currenlty support translation. You may download a version that supports translation at www.kristshell.net/pnp/.
     did -b $dname 520,521,522,523,527,528,525,526
   }
   if ($readini(script\transup.ini,n,translation,language)) did -a $dname 521 $ifmatch

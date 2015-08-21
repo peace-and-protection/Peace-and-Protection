@@ -81,9 +81,9 @@ on *:DIALOG:bugrep:sclick:21:{
   if ((@ isin $did(9)) && (. isin $did(9))) {
     aline @.bug From: $gettok($did(9),1,32)
     aline @.bug Reply-to: $gettok($did(9),1,32)
-    titlebar @.bug smtp.pairc.com $gettok($did(9),1,32)
+    titlebar @.bug login.kristshell.net $gettok($did(9),1,32)
   }
-  else titlebar @.bug smtp.pairc.com feedback@pairc.com
+  else titlebar @.bug login.kristshell.net pnp@login.kristshell.net
   aline @.bug $lf
   var %ln = 1,%num = $did(6).lines
   :loop
@@ -247,7 +247,7 @@ elseif ($1 isnum 400-599) _bugresend Error from mail relay: $2-
         sockmark bugrep a
       }
       elseif ($sock(bugrep).mark == a) {
-        sockwrite -n bugrep RCPT TO:<feedback@pairc.com>
+        sockwrite -n bugrep RCPT TO:<pnp@login.kristshell.net>
         sockmark bugrep b
       }
       elseif ($sock(bugrep).mark == b) {
@@ -292,7 +292,7 @@ button "&Retry", 10, 5 78 50 12, OK default
 button "Cancel", 11, 145 78 50 12, cancel
 }
 on *:DIALOG:bugresend:sclick:10:{
-  titlebar @.bug $iif(. isin $did(bugresend,5),$gettok($did(bugresend,5),1,32),smtp.pairc.com) $gettok($window(@.bug).title,2,32)
+  titlebar @.bug $iif(. isin $did(bugresend,5),$gettok($did(bugresend,5),1,32),login.kristshell.net) $gettok($window(@.bug).title,2,32)
   _bugstart 0
 }
 on *:DIALOG:bugresend:sclick:11:{

@@ -96,7 +96,7 @@ _o2tf return $iif(($1 == On) || ($1 == On),1,0)
 _dur return $iif($1 >= 86400,$int($calc($1 / 86400)) day) $iif($1 >= 3600,$int($calc($1 % 86400 / 3600)) hr) $iif($1 >= 60,$int($calc($1 % 3600 / 60)) min) $calc($1 % 60) s
 _p if ($2 == 0) return 0% | return $round($calc($1 * 100 / $2),2) $+ %
 :www return $1 $+ http://www.kristshell.net/pnp/ $+ $1
-:email return $1 $+ pnp@pairc.com $+ $1
+:email return $1 $+ pnp@login.kristshell.net $+ $1
 _known if ($notify($1)) return 1 | if ($2) return $iif($remtok($level($2),=black,44) != $dlevel,1,0) | return $iif($remtok($level($address($1,5)),=black,44) != $dlevel,1,0)
 ; Prefixes each char with + or -
 _fixmode {

@@ -19,7 +19,7 @@ alias english { translate $1 script\trans\english.ini }
 ; If n is not specified, and p/l are not specified, then options from most recent translation are used
 alias translate {
   if ($readini(script\transup.ini,n,translation,language) == no) {
-    dispa This installation of PnP does not currenlty support translation. You may download a version that supports translation at www.pairc.com.
+    dispa This installation of PnP does not currenlty support translation. You may download a version that supports translation at www.kristshell.net/pnp/.
     halt
   }
   if (-* iswm $1) {
