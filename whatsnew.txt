@@ -11,6 +11,7 @@ As of Sunday October 21 2012, the support channel #peace&protection has moved to
 * Fixed XDCC.ptm bug that prevented translation from working properly
 * Added Nederlands/Dutch translation file
 * Add Unicode support to regular expressions in functions.
+* Increment mIRC version requirement from 6.01 to 7.43.
 
 *** 4.22.5 changes ***
 
