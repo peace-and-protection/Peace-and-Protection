@@ -9,7 +9,7 @@ As of Sunday October 21 2012, the support channel #peace&protection has moved to
 * Reverted change in aliases.mrc to pai's old code. L72,L75,L85 istok/remtok/addtok token 32 back to 44
   (Also see script.mrc - L715)
 * Fixed XDCC.ptm bug that prevented translation from working properly
-* Added Nederlands.ini (Dutch translation file)
+* Added Nederlands/Dutch translation file
 * Add Unicode support to regular expressions in functions.
 
 *** 4.22.5 changes ***
