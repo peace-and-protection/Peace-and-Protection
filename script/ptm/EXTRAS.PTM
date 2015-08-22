@@ -12,7 +12,7 @@ group=[addon:core:dlg]
 popup=[extras:name]
 author=pai
 version=1.01
-url=http://www.pairc.com/
+url=http://www.kristshell.net/pnp/
 email=pnp@pairc.com
 id=ppextra
 ppver=4.22
@@ -33,7 +33,7 @@ on *:LOAD:{
   ; PnP check
   if (!$_ispnp) {
     echo 4 -ati2 *** This addon requires Peace and Protection by pai to use.
-    echo 4 -ati2 *** You can download Peace and Protection at http://www.pairc.com/
+    echo 4 -ati2 *** You can download Peace and Protection at http://www.kristshell.net/pnp/
     .timer -mio 1 0 .unload -rs " $+ $script $+ "
     halt
   }
