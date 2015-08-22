@@ -30,10 +30,10 @@ _glurp {
 }
  
 ; Escapes all non-alpha characters
-_escape var %text = $1- | var %junk = $regsub(%text,/([^a-zA-Z0-9 ])/g,\\\1,%text) | return %text
- 
+_escape var %text = $1- | var %junk = $regsub(%text,/(*UTF)([^a-zA-Z0-9 ])/g,\\\1,%text) | return %text
+
 ; Replaces all non-alpha characters
-_escape2 var %text = $1- | var %junk = $regsub(%text,/([^a-zA-Z0-9])/g,_,%text) | return %text
+_escape2 var %text = $1- | var %junk = $regsub(%text,/(*UTF)([^a-zA-Z0-9])/g,_,%text) | return %text
  
 ; Randomer than $r()? returns 1 to n given
 _pprand return $calc(($r(1,$1) + $ticks) % $1 + 1)
