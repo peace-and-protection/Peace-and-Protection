@@ -339,7 +339,7 @@ dialog aboutpnp {
   icon 9, 70 85 50 50
   button "&[bug_dialog:bug]...", 11, 5 99 57 11
   button "&[bug_dialog:feedback]...", 12, 5 112 57 11
-  button "&[about_dialog:donate]...", 13, 5 125 57 11
+  button "&[about_dialog:donate]...", 13, 5 125 57 11, disable
 }
 on *:DIALOG:aboutpnp:init:*:{
   hmake pnp.about 10

@@ -338,7 +338,7 @@ button "&Close", 1, 5 80 24 10, cancel default
   icon 9, 70 85 50 50
 button "&Report a bug...", 11, 5 99 57 11
 button "&Send feedback...", 12, 5 112 57 11
-button "&Make donation...", 13, 5 125 57 11
+button "&Make donation...", 13, 5 125 57 11, disable
 }
 on *:DIALOG:aboutpnp:init:*:{
   hmake pnp.about 10
