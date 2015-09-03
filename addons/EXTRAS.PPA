@@ -151,7 +151,7 @@ on *:DIALOG:ezping:sclick:*:{
   elseif ($did == 6) did -d $dname 4 $did(4,1).sel
   elseif ($did == 7) did -r $dname 4
   elseif ($did == 8) _loadepp !ping,ping pl,ping me
-elseif ($did isnum 15-17) did -ra $dname 14 $gettok(Your ping reply was &dur& from server &server&Your ping time: &meter& $chr(40) $+ &time& secs $+ $chr(41)Your ping: &metercol& $chr(40) $+ &time& secs $+ $chr(41),$calc($did - 14),127)
+elseif ($did isnum 15-17) did -ra $dname 14 $gettok(Your ping reply was &dur& from server &server&Your ping time: &meter& $chr(40) $+ &time& secs $+ $chr(41) Your ping: &metercol& $chr(40) $+ &time& secs $+ $chr(41),$calc($did - 14),127)
   _ezdu
 }
 on *:DIALOG:ezping:edit:4:_ezdu
@@ -251,7 +251,7 @@ alias -l _lagbar {
       if ($_cfgx(extras,lagpos)) var %pos = $ifmatch
       else var %pos = $_lagdefpos
       if ($_cfgx(extras,lagdock)) %pos = $calc($gettok(%pos,1,32) + $window(-2).x) $calc($gettok(%pos,2,32) + $window(-2).y)
-      window -fpdohBzi +dL @LagBar %pos 202 17 @LagBar
+      window -fpdow0Bzi +dL @LagBar %pos 202 17 @LagBar
       if ($appactive) showmirc -s
       else window -uh @LagBar
       hadd pnp lagbar.oldmirc.x $window(-2).x

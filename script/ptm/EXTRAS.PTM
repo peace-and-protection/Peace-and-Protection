@@ -252,7 +252,7 @@ alias -l _lagbar {
       if ($_cfgx(extras,lagpos)) var %pos = $ifmatch
       else var %pos = $_lagdefpos
       if ($_cfgx(extras,lagdock)) %pos = $calc($gettok(%pos,1,32) + $window(-2).x) $calc($gettok(%pos,2,32) + $window(-2).y)
-      window -fpdohBzi +dL @LagBar %pos 202 17 @LagBar
+      window -fpdow0Bzi +dL @LagBar %pos 202 17 @LagBar
       if ($appactive) showmirc -s
       else window -uh @LagBar
       hadd pnp lagbar.oldmirc.x $window(-2).x
