@@ -298,32 +298,32 @@ alias _ck.script {
   ; First, unload/remove any outdated script files
   if ($exists(addons\chanserv.mrc)) {
     _not.on.top
-    if ($script(chanserv.mrc)) { .unload -rs addons\chanserv.mrc | .load -rs $+ $calc(script(0) - 2) addons\chanserv.ppa }
+    if ($script(chanserv.mrc)) { .unload -rs addons\chanserv.mrc | .load -rs $+ $calc($script(0) - 2) addons\chanserv.ppa }
     .remove script\chanserv.mrc
   }
   if ($exists(addons\login.mrc)) {
     _not.on.top
-    if ($script(login.mrc)) { .unload -rs addons\login.mrc | .load -rs $+ $calc(script(0) - 2) addons\login.ppa }
+    if ($script(login.mrc)) { .unload -rs addons\login.mrc | .load -rs $+ $calc($script(0) - 2) addons\login.ppa }
     .remove script\login.mrc
   }
   if ($exists(addons\xdcc.mrc)) {
     _not.on.top
-    if ($script(xdcc.mrc)) { .unload -rs addons\xdcc.mrc | .load -rs $+ $calc(script(0) - 2) addons\xdcc.ppa }
+    if ($script(xdcc.mrc)) { .unload -rs addons\xdcc.mrc | .load -rs $+ $calc($script(0) - 2) addons\xdcc.ppa }
     .remove script\xdcc.mrc
   }
   if ($exists(addons\xw.mrc)) {
     _not.on.top
-    if ($script(xw.mrc)) { .unload -rs addons\xw.mrc | .load -rs $+ $calc(script(0) - 2) addons\xw.ppa }
+    if ($script(xw.mrc)) { .unload -rs addons\xw.mrc | .load -rs $+ $calc($script(0) - 2) addons\xw.ppa }
     .remove script\xw.mrc
   }
   if ($exists(addons\nickserv.mrc)) {
     _not.on.top
-    if ($script(nickserv.mrc)) { .unload -rs addons\nickserv.mrc | .load -rs $+ $calc(script(0) - 2) addons\nickserv.ppa }
+    if ($script(nickserv.mrc)) { .unload -rs addons\nickserv.mrc | .load -rs $+ $calc($script(0) - 2) addons\nickserv.ppa }
     .remove script\nickserv.mrc
   }
   if ($exists(addons\sound.mrc)) {
     _not.on.top
-    if ($script(sound.mrc)) { .unload -rs addons\sound.mrc | .load -rs $+ $calc(script(0) - 2) addons\sound.ppa }
+    if ($script(sound.mrc)) { .unload -rs addons\sound.mrc | .load -rs $+ $calc($script(0) - 2) addons\sound.ppa }
     .remove script\sound.mrc
     ; Load this here, it is new to 4.20
     .load -rs $+ $calc($script(0) - 2) script\cfgalias.mrc
