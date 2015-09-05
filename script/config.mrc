@@ -1010,7 +1010,7 @@ did -i $+ $iif($did(470).lines < 2,c) $dname 470 1 (all networks)
   
   ; Language
   :28
-  if ($read(script\transup.ini,n,translation,enabled) == no) {
+  if ($readini(script\transup.ini,n,translation,enabled) == no) {
     did -ra $dname 524 This installation of PnP does not currenlty support translation. You may download a version that supports translation at www.kristshell.net/pnp/.
     did -b $dname 520,521,522,523,527,528,525,526
   }
@@ -1443,7 +1443,7 @@ if (%chans) %=chan.clr = Clear this list
   
   ; Language
   :28
-  if ($read(script\transup.ini,n,translation,enabled) == no) return
+  if ($readini(script\transup.ini,n,translation,enabled) == no) return
   var %flags = $iif($did(527).state,p) $+ $iif($did(528).state,l)
   var %oldflags = $iif(p isin $did(529),p) $+ $iif(l isin $did(529),l)
   if ($did(523) == $null) did -a $dname 523 $did(521)
@@ -1980,7 +1980,7 @@ did -ra $dname 485 $iif(%ln == 2,&Auto-fill menu to,&Join on connect)
  
   ; Language  
   :28
-  if ($read(script\transup.ini,n,translation,enabled) == no) return
+  if ($readini(script\transup.ini,n,translation,enabled) == no) return
   if ((($devent == dclick) && ($did == 525)) || (($devent == sclick) && ($did == 526))) {
     did -ra $dname 523 $did(525).seltext
   }
