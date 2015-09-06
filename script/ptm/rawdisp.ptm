@@ -1812,15 +1812,15 @@ on &^*:ACTION:*:?:if ($hget(pnp. $+ $cid,away)) _away.remind
 ;
 ; CTCP stuff
 ;
-ctcp *:SOUND:*:return
-ctcp *:MP3:*:return
-ctcp *:SLOTS:*:return
-ctcp &175:DO:*:{
+ctcp *:SOUND:return
+ctcp *:MP3:return
+ctcp *:SLOTS:return
+ctcp &175:DO:{
   if ($_cfgi(doaccess)) {
     $2-
     set -u %.ctcp.reply 0
   }
   _do.rctcp $1-
 }
-ctcp &*:*:*:_do.rctcp $1-
+ctcp &*:*:_do.rctcp $1-
 on &*:CTCPREPLY:*:_do.creply $1-
