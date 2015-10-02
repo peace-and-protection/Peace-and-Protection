@@ -768,7 +768,7 @@ ctcp &*:PASS:?:{
     }
   }
   if (%chan == *) %chan = ?????
-  if (%error) disptc -s %chan disps [userlist:opctcp_failed:ctcp=PASS:nick=$;t($nick):error=%error]
+  if (%error) disptc -s %chan [userlist:opctcp_failed:ctcp=PASS:nick=$;t($nick):error=%error]
   else disptc -s %chan [userlist:opctcp_passchange:nick=$;t($nick):num=%changes]
   halt
 }
