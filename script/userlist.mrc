@@ -767,7 +767,7 @@ _linedance _qnotice $nick Password incorrect- Ignoring CTCPs for 30 seconds.
     }
   }
   if (%chan == *) %chan = ?????
-if (%error) disptc -s %chan disps PASS request from $:t($nick) failed $chr(40) $+ %error $+ $chr(41)
+if (%error) disptc -s %chan PASS request from $:t($nick) failed $chr(40) $+ %error $+ $chr(41)
 else disptc -s %chan $:t($nick) requested PASS change $chr(40) $+ %changes change $+ $chr(40) $+ s $+ $chr(41) granted $+ $chr(41)
   halt
 }
