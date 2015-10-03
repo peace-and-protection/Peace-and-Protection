@@ -63,7 +63,7 @@ alias _xwall if ($_isserv(xw)) return $replace($hget(pnp. $+ $cid,-servnick),$ch
 alias z xw $1-
 alias x xw $1-
 alias xw {
-if (($_isserv(xw) == $false) && (($1 != auto) || ($istok(view clear,$2,32) == $false))) _error You cannot use /x on this network. $+ /x only works on networks with X / Z / Q.
+if (($_isserv(xw) == $false) && (($1 != auto) || ($istok(view clear,$2,32) == $false))) _error You cannot use /x on this network. $+ /x only works on networks with X / Z / P.
   if (($_isbot($1) == $false) && ($1 !isin !?)) tokenize 32 ? $1-
   var %chan,%param,%xw,%pw,%send,%who,%new,%old
 if ($2 == $null) { var %cmd = $_xwcmd +command -#channel -parameters * ! $+ $_xwall command to perform | _qhelp $_s2f(%cmd) }
@@ -1059,7 +1059,7 @@ if (u !isin $hget(pnp. $+ $cid,-servopt)) dispa Any channel modes set $chr(40) $
 ; view or set xw access
 alias xwa {
 if ($server == $null) _error You must be connected to use that command
-if ($_isserv(xw) == $false) _error You cannot use /xwa on this network. $+ /xwa only works on networks with X / Z / Q.
+if ($_isserv(xw) == $false) _error You cannot use /xwa on this network. $+ /xwa only works on networks with X / Z / P.
   if ($_ischan($1)) { var %chan = $1,%how = $2 }
   elseif ($active ischan) { var %chan = $active,%how = $1 }
 else _error You must use /xwa in a channel $+ $chr(40) $+ or specify a target channel $+ $chr(41)
