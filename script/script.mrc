@@ -698,7 +698,7 @@ raw 376:*:_fin.signon
 alias -l _fin.signon {
   if ($hget(pnp. $+ $cid,-signon) != progress) return
   hdel pnp. $+ $cid -signon
-  if ($hget(pnp. $+ $cid,net) == internet) hadd pnp. $+ $cid net $iif(*.oz.org iswm $server,OzORG,$_cap1st($gettok($server,$count($server,.),46)))
+  if ($hget(pnp. $+ $cid,net) == internet) hadd pnp. $+ $cid net $iif(*.oz.org iswm $server,Oz_ORG,$_cap1st($gettok($server,$count($server,.),46)))
   ; Always override with favorites network setting
   if ($_favfindnet($server)) hadd pnp. $+ $cid net $ifmatch
   

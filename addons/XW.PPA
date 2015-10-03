@@ -843,13 +843,13 @@ menu status {
 .$iif($hget(pnp. $+ $cid,net) == undernet,Webpages)
 ..CService home:http http://cservice.undernet.org/
   ..-
-..Username registration:http http://cservice.undernet.org/live/newuser.php3
+..Username registration:http http://cservice.undernet.org/live/newuser.php
 ..CService login:http http://cservice.undernet.org/live/
   ..-
 ..X commands list:http http://cservice.undernet.org/docs/xcmds.txt
-.$iif($hget(pnp. $+ $cid,net) == ozorg,Webpages)
+.$iif($hget(pnp. $+ $cid,net) == oz_org,Webpages)
 ..oz.org home:http http://www.oz.org/
-..Register a channel:http http://www.oz.org/aucs/
+..Register a channel:http http://aucs.oz.org/
 }
  
 menu @Banlist {
