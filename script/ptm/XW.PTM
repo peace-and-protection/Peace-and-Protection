@@ -844,13 +844,13 @@ menu status {
   .$iif($hget(pnp. $+ $cid,net) == undernet,[popups_status:xw_web])
   ..[popups_status:xw_web_home]:http http://cservice.undernet.org/
   ..-
-  ..[popups_status:xw_web_username]:http http://cservice.undernet.org/live/newuser.php3
+  ..[popups_status:xw_web_username]:http http://cservice.undernet.org/live/newuser.php
   ..[popups_status:xw_web_login]:http http://cservice.undernet.org/live/
   ..-
   ..[popups_status:xw_web_cmds]:http http://cservice.undernet.org/docs/xcmds.txt
-  .$iif($hget(pnp. $+ $cid,net) == ozorg,[popups_status:xw_web])
+  .$iif($hget(pnp. $+ $cid,net) == oz_org,[popups_status:xw_web])
   ..[popups_status:xw_web_ozorg]:http http://www.oz.org/
-  ..[popups_status:xw_web_channel]:http http://www.oz.org/aucs/
+  ..[popups_status:xw_web_channel]:http http://aucs.oz.org/
 }
 
 menu @Banlist {
