@@ -1537,7 +1537,7 @@ raw &475:*:{
   }
   ; Display message, possibly with fkey
   if (%next) {
-    set -u %:comments [channel:retry_keys:num=$;t($findtok(%key,%next,1,32)):total=$;t($numtok(%key,32))]
+    set -u %:comments - [channel:retry_keys:num=$;t($findtok(%key,%next,1,32)):total=$;t($numtok(%key,32))]
     ; (play sound as we're not calling $chan.cantjoin to do this)
     _ssplay NoJoin
   }
