@@ -1536,7 +1536,7 @@ raw &475:*:{
   }
   ; Display message, possibly with fkey
   if (%next) {
-set -u %:comments Attempting stored key $+ $chr(40) $+ s $+ $chr(41) $+ ... $chr(40) $+ $:t($findtok(%key,%next,1,32)) of $:t($numtok(%key,32)) $+ $chr(41)
+set -u %:comments - Attempting stored key $+ $chr(40) $+ s $+ $chr(41) $+ ... $chr(40) $+ $:t($findtok(%key,%next,1,32)) of $:t($numtok(%key,32)) $+ $chr(41)
     ; (play sound as we're not calling $chan.cantjoin to do this)
     _ssplay NoJoin
   }
