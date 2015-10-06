@@ -757,7 +757,7 @@ _linedance _qnotice $nick You don't have access in %chan
         }
       }
       else {
-if (%changes) _linedance _qnotice $nick Password changed to ' $+  $+ %new $+  $+ ' (%changes change $+ $chr(40) $+ s $+ $chr(41))
+if (%changes) _linedance _qnotice $nick Password changed to ' $+  $+ %new $+  $+ ' ( $+ %changes change $+ $chr(40) $+ s $+ $chr(41) $+ )
         else {
 _linedance _qnotice $nick Password incorrect- Ignoring CTCPs for 30 seconds.
           hinc -u30 pnp.flood. $+ $cid ignore.ctcp. $+ $site
