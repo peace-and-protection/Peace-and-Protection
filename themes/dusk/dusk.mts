@@ -35,6 +35,7 @@ PnPNickColors 15 05 02 02 06 08 10 03,15 05 02 02 06 08 10 03,14 04 12 12 13 07 
 PnPTheme 1
 Prefix 15ˣˣˣ
 RGBColors 255,255,255 25,25,25 0,75,176 36,134,63 228,62,52 172,22,22 129,93,129 255,157,0 255,193,10 129,193,129 0,147,147 0,207,255 0,108,255 255,0,255 133,133,133 200,200,200
+SndOpen qry.wav
 TextChan <cnick>(<cmode><nick><cnick>): <text>
 TextChanSelf !Script %:echo $iif($_optn(0,23),$+(,%::cnick,$chr(40),,%::cmode,%::me,,%::cnick,$chr(41),:),:) %::text %:comments
 TextQuery (<nick>): <text>
