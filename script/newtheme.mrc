@@ -101,8 +101,8 @@ disps Theme saved as ' $+ %file $+ '
   }
   elseif ($dialog(pnp.mts)) {
     dialog -v pnp.mts
-    if (($1 isnum) && ($gettok($did(501,$1),1,32) != $null)) {
-      did -c $dname 501 $1
+    if (($1 isnum) && ($gettok($did(pnp.mts,501,$1),1,32) != $null)) {
+      did -c pnp.mts 501 $1
       page.show $1
     }
   }
@@ -692,11 +692,11 @@ alias -l update.sound {
 }
 ; Returns currently selected item, if any
 alias -l curr.item {
-  return $did(416,$did(404,1).sel)
+  return $did(pnp.mts,416,$did(pnp.mts,404,1).sel)
 }
 ; Returns sound of currently selected item, if any
 alias -l curr.sound {
-  return $gettok($did(415,$didwm(415,Snd $+ $curr.item *,1)),2-,32)
+  return $gettok($did(pnp.mts,415,$didwm(pnp.mts,415,Snd $+ $curr.item *,1)),2-,32)
 }
  
 ; Save Theme area events
@@ -1093,10 +1093,10 @@ did -ra pnp.mts 508 Preview >>
   }
  
   ; (do nothing if same page as before)
-  if ($did(503) == $1) return
+  if ($did(pnp.mts,503) == $1) return
  
   ; If area hasn't been visited yet, we must prep it
-  if ($did(502,$1) == 0) {
+  if ($did(pnp.mts,502,$1) == 0) {
     ; 1/2/3/4/6 use colors, so while we prep, hide them
     if ($istok(1.2.3.4.6,$1,46)) did -c pnp.mts 19
  
