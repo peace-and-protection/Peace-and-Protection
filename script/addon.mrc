@@ -113,7 +113,7 @@ _progress.2 100 Addon installed!
     return
   }
   if ($1 == u) {
-if ($istok($hget(pnp,addon.ids),$readini(%addon,n,addon,id),32) == $null) _error That addon is not installed!Restart PnP if you are having problems.
+if ($istok($hget(pnp,addon.ids),$readini(%addon,n,addon,id),32) == $false) _error That addon is not installed!Restart PnP if you are having problems.
  
     ; Unload command? Clear vars? Windows? Dialogs? Timers? Hash settings?
     %cmd = $readini(%addon,n,addon,unload) | if (%cmd) %cmd
@@ -240,14 +240,14 @@ _progress.2 100 Addon uninstalled!
     return
   }
   if ($1 == c) {
-if ($istok($hget(pnp,addon.ids),$readini(%addon,n,addon,id),32) == $null) _error That addon is not installed!Restart PnP if you are having problems.
+if ($istok($hget(pnp,addon.ids),$readini(%addon,n,addon,id),32) == $false) _error That addon is not installed!Restart PnP if you are having problems.
     %cmd = $readini(%addon,n,addon,config)
 if (%cmd == $null) _doerror Sorry- This addon has no configuration.Check the addon's documentation for assistance.
     _juryrig2 %cmd
     return
   }
   if ($1 == h) {
-if ($istok($hget(pnp,addon.ids),$readini(%addon,n,addon,id),32) == $null) _error That addon is not installed!Restart PnP if you are having problems.
+if ($istok($hget(pnp,addon.ids),$readini(%addon,n,addon,id),32) == $false) _error That addon is not installed!Restart PnP if you are having problems.
     %cmd = $readini(%addon,n,addon,help)
 if (%cmd == $null) _doerror Sorry- This addon has no defined help.Try reading any text files that came with the addon.
     _juryrig2 %cmd

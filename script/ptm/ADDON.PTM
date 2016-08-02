@@ -114,7 +114,7 @@ alias addon {
     return
   }
   if ($1 == u) {
-    if ($istok($hget(pnp,addon.ids),$readini(%addon,n,addon,id),32) == $null) _error [error:addon_not_installed]
+    if ($istok($hget(pnp,addon.ids),$readini(%addon,n,addon,id),32) == $false) _error [error:addon_not_installed]
 
     ; Unload command? Clear vars? Windows? Dialogs? Timers? Hash settings?
     %cmd = $readini(%addon,n,addon,unload) | if (%cmd) %cmd
@@ -241,14 +241,14 @@ alias addon {
     return
   }
   if ($1 == c) {
-    if ($istok($hget(pnp,addon.ids),$readini(%addon,n,addon,id),32) == $null) _error [error:addon_not_installed]
+    if ($istok($hget(pnp,addon.ids),$readini(%addon,n,addon,id),32) == $false) _error [error:addon_not_installed]
     %cmd = $readini(%addon,n,addon,config)
     if (%cmd == $null) _doerror [word:sorry]- [error:addon_no_config]
     _juryrig2 %cmd
     return
   }
   if ($1 == h) {
-    if ($istok($hget(pnp,addon.ids),$readini(%addon,n,addon,id),32) == $null) _error [error:addon_not_installed]
+    if ($istok($hget(pnp,addon.ids),$readini(%addon,n,addon,id),32) == $false) _error [error:addon_not_installed]
     %cmd = $readini(%addon,n,addon,help)
     if (%cmd == $null) _doerror [word:sorry]- [error:addon_no_help]
     _juryrig2 %cmd
