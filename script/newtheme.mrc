@@ -2133,7 +2133,7 @@ return File ' $+ %data $+ ' not found
   if (%scriptfile) {
     if (-d * iswm %script) savebuf -o $gettok(%script,2-,32) " $+ %scriptfile $+ "
     else .copy -o " $+ %script $+ " " $+ %scriptfile $+ "
-    if (h isin $1) write -il1 " $+ %script $+ " ; #= P&P.theme -rs
+    if (h isin $1) write -il1 " $+ %scriptfile $+ " ; #= P&P.theme -rs
     aline @.mtssave Script $nopath(%scriptfile)
     hadd $3 Script %scriptfile
   }
