@@ -382,7 +382,7 @@ aline @.adpopups .More...:addon
  
   close -@ @.apops @.adpopups
  
-  _broadcastp .reload -rs2 -rs2 $_cfg(adpopups.mrc)
+  _broadcastp .reload -rs2 $_cfg(adpopups.mrc)
   .reload -rs2 $_cfg(adpopups.mrc)
 }
  
