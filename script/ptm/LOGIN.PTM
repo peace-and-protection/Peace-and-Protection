@@ -181,7 +181,7 @@ alias -l _updnuke {
   if ((%old isnum) && (%old < $2)) {
     var %time = $calc(($ticks - $did(nukedet,60)) / 1000),%persec = $int($calc(($2 - %old) / %time / $4))
     if (%persec > 2) %persec = 2
-    did -o nukedet $3 1 $str(ø,$calc(%persec + 1))
+    did -o nukedet $3 1 $str(Ã¸,$calc(%persec + 1))
   }
   else did -r nukedet $3
   did -o nukedet $1 1 $2
@@ -500,4 +500,4 @@ alias service {
   }
   else dispa [porttool:no_service:service=$;s($1-)]
 }
-0
+
