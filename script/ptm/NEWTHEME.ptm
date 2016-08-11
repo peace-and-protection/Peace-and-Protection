@@ -3341,9 +3341,9 @@ alias -l theme.def {
     ; Start with base color, create list of all similar colors (including itself)
     var %stack = $col.similar($gettok($hget($1,BaseColors),1,44),$1,%cols,%d1)
     ; Save to PnPLineSep
-    hadd $1 PnPLineSep 40 · $replace(%stack,$chr(44),$chr(32))
+    hadd $1 PnPLineSep 40 Â· $replace(%stack,$chr(44),$chr(32))
     ; Create normal version
-    hadd $1 LineSep $_cfade($replace(%stack,$chr(44),.),$str(·,40))
+    hadd $1 LineSep $_cfade($replace(%stack,$chr(44),.),$str(Â·,40))
   }
 
   ; Use a single dash
@@ -3407,7 +3407,7 @@ alias -l theme.def {
   ; Pick character
   var %font = $gettok($hget($1,FontDefault),1,44)
   ; Font for *? (only search fairly common fonts)
-  var %char = •
+  var %char = â€¢
   if ($istok(Fixedsys*Courier*Goudy Medieval*MS Sans Serif*MS Serif*System*Terminal*IBM PC,%font,42)) %char = *
   ; Create
   hadd $1 Prefix %d1 $+ %char $+ %d2 $+ %char $+ %d3 $+ %char $+ 

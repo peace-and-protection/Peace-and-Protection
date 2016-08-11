@@ -130,14 +130,14 @@ _genflood {
 _recurse $1- | return $result
  
 ; perform without abort (errors will not halt script) although without return value
-_blackbox .timer.blackbox 1 1 _unkludge  $+ $replace($1-,$chr(32),) | .timer.blackbox -e
+_blackbox .timer.blackbox 1 1 _unkludge Â $+ $replace($1-,$chr(32),Â) | .timer.blackbox -e
  
 ; perform using timer, to allow $?/$dialog/$dir; remember to $! identifiers, etc, and that it doesn't halt the script
 _juryrig .timer -mo 1 0 $1-
  
 ; Same as _juryrig but w/o reevaluation
-_juryrig2 .timer -mo 1 0 _unkludge  $+ $replace($1-,$chr(32),)
-_unkludge $replace($right($1-,-1),,$chr(32))
+_juryrig2 .timer -mo 1 0 _unkludge Â $+ $replace($1-,$chr(32),Â)
+_unkludge $replace($right($1-,-1),Â,$chr(32))
  
 ; Lines up commands, doing max one per second.
 ; First few commands executed much faster
@@ -201,9 +201,9 @@ _s2p return $replace($1-,$chr(32),)
 ; replaces ctrl+bksp with spaces
 _p2s return $replace($1-,,$chr(32))
 ; replaces spaces with chr 160
-_s2f return $replace($1-,$chr(32), )
+_s2f return $replace($1-,$chr(32),Â )
 ; replaces chr 160 with spaces
-_f2s return $replace($1-, ,$chr(32))
+_f2s return $replace($1-,Â ,$chr(32))
 ; Capitalizes first letter, leaves rest alone
 _cap1st return $upper($left($1,1)) $+ $right($1,-1)
 ; Makes a number exactly two digits
@@ -464,16 +464,16 @@ _Q.fkey.clr alias f7 halt | alias sf7 halt | alias cf7 halt | alias f10 halt | a
 ;
  
 ; $_level(#channel,levels)
-_level var %level = $chr(44) $+ = $+ $1¬ | if (%level isin $2) return $gettok($mid($2,$calc($pos($2,%level,1) + $len(%level)),$len($2)),1,44) | else return $gettok($2,1,44)
+_level var %level = $chr(44) $+ = $+ $1Â¬ | if (%level isin $2) return $gettok($mid($2,$calc($pos($2,%level,1) + $len(%level)),$len($2)),1,44) | else return $gettok($2,1,44)
  
 ; $_chanlevel(#channel,levels)
 ; same as $_level except returns null if a channel doesn't have a spec level.
-_chanlevel var %level = $chr(44) $+ = $+ $1¬ | if (%level isin $2) return $gettok($mid($2,$calc($pos($2,%level,1) + $len(%level)),$len($2)),1,44)
+_chanlevel var %level = $chr(44) $+ = $+ $1Â¬ | if (%level isin $2) return $gettok($mid($2,$calc($pos($2,%level,1) + $len(%level)),$len($2)),1,44)
  
 ; $_leveledit(#channel,levels[,new]) (leave off new to remove; #channel can be *)
 _leveledit {
   if ($1 == *) return $puttok($2,$iif($3 == $null,$dlevel,$3),1,44)
-  var %replace = = $+ $1¬ $+ $3,%match = = $+ $1¬*
+  var %replace = = $+ $1Â¬ $+ $3,%match = = $+ $1Â¬*
   if ($3 == $null) {
     if ($wildtok($2,%match,1,44)) return $remtok($2,$ifmatch,1,44)
     return $2
@@ -524,12 +524,12 @@ _ppmask {
     return $1
   }
   if (((! isin $1) || (. isin $1) || (@ isin $1) || (: isin $1)) && (*!*@* !iswm $1)) return $_fixmask($1)
-  if (! isin $1) return $_ppmask²($1,$2,$3,$4,$5)
-  if (($1 == $me) && ($hget(pnp. $+ $cid,-myself))) return $_ppmask²($hget(pnp. $+ $cid,-myself),$2,$3,$4,$5)
+  if (! isin $1) return $_ppmaskÂ²($1,$2,$3,$4,$5)
+  if (($1 == $me) && ($hget(pnp. $+ $cid,-myself))) return $_ppmaskÂ²($hget(pnp. $+ $cid,-myself),$2,$3,$4,$5)
   if ($address($1,5) == $null) return
-  return $_ppmask²($address($1,5),$2,$3,$4,$5)
+  return $_ppmaskÂ²($address($1,5),$2,$3,$4,$5)
 }
-_ppmask² {
+_ppmaskÂ² {
   if ($5) { if ($_fuser($1)) return $ifmatch }
   var %nick = $gettok($1,1,33),%dom = $gettok($1,$numtok($1,64),64),%ident = $mid($1,$calc($len(%nick) + 2),$calc($len($1) - $len(%dom) - $len(%nick) - 2))
   if ($2 == 0) %nick = *

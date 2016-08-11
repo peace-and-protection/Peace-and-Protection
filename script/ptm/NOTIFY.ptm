@@ -61,7 +61,7 @@ alias _run.notify {
   if ($_cfgi(notify.beep $+ %match)) { beep 1 1 | flash [word:notify]- $1 $gettok(([misc:notify_verified:lower]) ([misc:notify_wrong:lower]),$findtok(match fail,%match,1,32),32) }
   _recseen 10 user $1
   if (%note != $null) %note = ( $+ %note $+ )
-  _away.logit @ 8 $cid ([word:notify]) »»» $1 [theme:on_irc] $+ $iif(%match == match,- [misc:notify_match],$iif(%match == fail,- [misc:notify_fail])) %note $iif($3 == -,([word:away:lower]),([word:here:lower]))
+  _away.logit @ 8 $cid ([word:notify]) Â»Â»Â» $1 [theme:on_irc] $+ $iif(%match == match,- [misc:notify_match],$iif(%match == fail,- [misc:notify_fail])) %note $iif($3 == -,([word:away:lower]),([word:here:lower]))
   ; don't play notify sound if playing song or playing that sound already
   if ($notify($1).sound) {
     if (($ifmatch !isin $inwave.fname) && (!$inmidi) && (!$insong)) .splay " $+ $notify($1).sound $+ "
@@ -93,7 +93,7 @@ on ^*:UNOTIFY:{
   theme.text UNotify p
   
   _recseen 10 user %nick +
-  _away.logit @ 8 $cid ([word:notify]) ««« %nick [theme:left_irc] ( $+ $_dur(%time) $+ ) $iif(%match == match,- [misc:notify_match],$iif(%match == fail,- [misc:notify_fail]))
+  _away.logit @ 8 $cid ([word:notify]) Â«Â«Â« %nick [theme:left_irc] ( $+ $_dur(%time) $+ ) $iif(%match == match,- [misc:notify_match],$iif(%match == fail,- [misc:notify_fail]))
   _ssplay $iif(%match == fail,UNotifyFail,UNotify)
   halt
 }
@@ -115,10 +115,10 @@ alias _pnptheme.notify {
     if ((%::address) || (%away) || (%::parentext)) %show = %show - CtrlF1 [word:whois:lower]; ShiftF1 [word:query:lower]
     else %show = %show $+ - CtrlF1 [word:whois:lower]; ShiftF1 [word:query:lower]
   }
-  %:echo $str(»,$len($strip($:*))) %show
+  %:echo $str(Â»,$len($strip($:*))) %show
 }
 alias _pnptheme.unotify {
-  %:echo $str(«,$len($strip($:*))) $:b(%::nick) [theme:left_irc] $+ %:comments $iif(%::address,$:b($chr(40)) $+ %::address $+ $:b($chr(41)) -) ( $+ [theme:was_on:duration=%;;text] $+ ) $iif($hget(pnp.config,show.fkeys),- CtrlF1 [word:whowas:lower])
+  %:echo $str(Â«,$len($strip($:*))) $:b(%::nick) [theme:left_irc] $+ %:comments $iif(%::address,$:b($chr(40)) $+ %::address $+ $:b($chr(41)) -) ( $+ [theme:was_on:duration=%;;text] $+ ) $iif($hget(pnp.config,show.fkeys),- CtrlF1 [word:whowas:lower])
 }
 
 

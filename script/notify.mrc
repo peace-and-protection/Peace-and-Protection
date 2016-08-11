@@ -60,7 +60,7 @@ set -u %:comments $iif(%match == match,- address verified,$iif(%match == fail,- 
 if ($_cfgi(notify.beep $+ %match)) { beep 1 1 | flash Notify- $1 $gettok((verified) (wrong address),$findtok(match fail,%match,1,32),32) }
   _recseen 10 user $1
   if (%note != $null) %note = ( $+ %note $+ )
-_away.logit @ 8 $cid (Notify) »»» $1 is on IRC $+ $iif(%match == match,- address verified,$iif(%match == fail,- address check failed)) %note $iif($3 == -,(away),(here))
+_away.logit @ 8 $cid (Notify) Â»Â»Â» $1 is on IRC $+ $iif(%match == match,- address verified,$iif(%match == fail,- address check failed)) %note $iif($3 == -,(away),(here))
   ; don't play notify sound if playing song or playing that sound already
   if ($notify($1).sound) {
     if (($ifmatch !isin $inwave.fname) && (!$inmidi) && (!$insong)) .splay " $+ $notify($1).sound $+ "
@@ -92,7 +92,7 @@ set -u %:comments $iif(%match == match,- address verified,$iif(%match == fail,- 
   theme.text UNotify p
   
   _recseen 10 user %nick +
-_away.logit @ 8 $cid (Notify) ««« %nick left IRC ( $+ $_dur(%time) $+ ) $iif(%match == match,- address verified,$iif(%match == fail,- address check failed))
+_away.logit @ 8 $cid (Notify) Â«Â«Â« %nick left IRC ( $+ $_dur(%time) $+ ) $iif(%match == match,- address verified,$iif(%match == fail,- address check failed))
   _ssplay $iif(%match == fail,UNotifyFail,UNotify)
   halt
 }
@@ -114,10 +114,10 @@ var %show = $:b(%::nick) is on IRC $+ %:comments
 if ((%::address) || (%away) || (%::parentext)) %show = %show - CtrlF1 whois; ShiftF1 query
 else %show = %show $+ - CtrlF1 whois; ShiftF1 query
   }
-  %:echo $str(»,$len($strip($:*))) %show
+  %:echo $str(Â»,$len($strip($:*))) %show
 }
 alias _pnptheme.unotify {
-%:echo $str(«,$len($strip($:*))) $:b(%::nick) left IRC $+ %:comments $iif(%::address,$:b($chr(40)) $+ %::address $+ $:b($chr(41)) -) ( $+ was on %::text $+ ) $iif($hget(pnp.config,show.fkeys),- CtrlF1 whowas)
+%:echo $str(Â«,$len($strip($:*))) $:b(%::nick) left IRC $+ %:comments $iif(%::address,$:b($chr(40)) $+ %::address $+ $:b($chr(41)) -) ( $+ was on %::text $+ ) $iif($hget(pnp.config,show.fkeys),- CtrlF1 whowas)
 }
  
  

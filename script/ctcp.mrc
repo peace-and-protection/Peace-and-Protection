@@ -79,7 +79,7 @@ alias _do.rctcp {
     if ($hget(pnp.config,myflood.prot) !& 2) return
     ; if (standard) DCC, check for invalid
     if (%.dcc.invalid) {
-$iif($chan,disprc $chan,disp) ¢ Invalid DCC from $:t($nick) - %.dcc.invalid $chr(40) $+ $1- $+ $chr(41) $iif(($me isop $chan) || ($me ishop $chan),(F8 to punish))
+$iif($chan,disprc $chan,disp) Â¢ Invalid DCC from $:t($nick) - %.dcc.invalid $chr(40) $+ $1- $+ $chr(41) $iif(($me isop $chan) || ($me ishop $chan),(F8 to punish))
       halt
     }
  
@@ -302,16 +302,16 @@ alias _show.reply.send {
 alias _ping.avg { disprc $1 $_ping.summary($3,$2) }
 ; $1 = average lag dur $2 = count waiting for
 alias _ping.summary {
-if (!$1) return ¢ Average ping unknown
-elseif ($2) return ¢ Average ping $:s($_dur($calc($1 / 1000))) - Waiting for $:t($2) reply $+ $chr(40) $+ s $+ $chr(41)
-else return ¢ Average ping $:s($_dur($calc($1 / 1000))) $chr(91) $+ ping complete $+ $chr(93)
+if (!$1) return Â¢ Average ping unknown
+elseif ($2) return Â¢ Average ping $:s($_dur($calc($1 / 1000))) - Waiting for $:t($2) reply $+ $chr(40) $+ s $+ $chr(41)
+else return Â¢ Average ping $:s($_dur($calc($1 / 1000))) $chr(91) $+ ping complete $+ $chr(93)
 }
  
 ;
 ; Self pings
 ;
  
-raw 421:& *§ *:{
+raw 421:& *Â§ *:{
   if ($hget(pnp. $+ $cid,-sp. $+ $round($2,0))) {
     hadd pnp. $+ $cid -self.ticks $calc($ticks - $ifmatch)
     hadd pnp. $+ $cid -self.lag $_dur($calc(($ticks - $ifmatch) / 1000))
@@ -341,7 +341,7 @@ alias sp _notconnected (self-ping) | _qsp R | disp Self-Ping...
 alias _qsp {
   hinc pnp. $+ $cid -sp.index
   hadd pnp. $+ $cid -sp. $+ $hget(pnp. $+ $cid,-sp.index) $ticks
-  $hget(pnp. $+ $cid,-sp.index) $+ $1 $+ §
+  $hget(pnp. $+ $cid,-sp.index) $+ $1 $+ Â§
   if ($_cfgi(sptime)) .timer.selfping. $+ $cid 1 $int($calc($ifmatch * 1.5)) _qsp X
   else {
     .timer.selfping. $+ $cid 0 99 if ($_cfgi(sptime)) _qsp

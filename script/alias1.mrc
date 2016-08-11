@@ -539,12 +539,12 @@ _Q.dns {
 _title.win {
   var %away = $hget(pnp. $+ $cid,away)
   if (%away) return [[ $+ $gettok(%away,4-,32) $+ ]] for [[ $+ $_dur($calc($ctime - $gettok(%away,2,32))) $+ ]]
-  elseif ($active ischan) return [[ $+ $nick($active,0) $iif($nick($active,0,o),@ $+ $ifmatch) $iif($nick($active,0,h,o),% $+ $ifmatch) $iif($nick($active,0,v,ho),+ $+ $ifmatch) ¯ $+ $nick($active,0,r) $+ ]] on [[ $+ $active $+ ]] $hget(pnp. $+ $cid,-titleavg. $+ $active)
-  elseif ($_targ(=?)) return [[ $+ $ifmatch $+ ]] on [[ $+ $_title.win≤($ifmatch) $+ ]]
+  elseif ($active ischan) return [[ $+ $nick($active,0) $iif($nick($active,0,o),@ $+ $ifmatch) $iif($nick($active,0,h,o),% $+ $ifmatch) $iif($nick($active,0,v,ho),+ $+ $ifmatch) √∏ $+ $nick($active,0,r) $+ ]] on [[ $+ $active $+ ]] $hget(pnp. $+ $cid,-titleavg. $+ $active)
+  elseif ($_targ(=?)) return [[ $+ $ifmatch $+ ]] on [[ $+ $_title.win¬≤($ifmatch) $+ ]]
   elseif ($server) return [[ $+ $usermode $+ ]] on [[ $+ $server $port $+ ]]
   else return $chr(91) $+ offline $+ $chr(93)
 }
-_title.win≤ {
+_title.win¬≤ {
   var %num = $comchan($1,0),%ret
   :loop
   if (%num) {
@@ -662,9 +662,9 @@ cf12 if (@AwayLog* iswm $active) { _dowclose $active | window -c $active } | els
 ; "Color/talker" identifiers
 ;
 _pat.rand {
-  var %num = $numtok($1,46),%pos = $len($2-),%text = $replace($2-,$chr(32),è),%tok,%ret
+  var %num = $numtok($1,46),%pos = $len($2-),%text = $replace($2-,$chr(32),¬è),%tok,%ret
   :loop | %tok = $gettok($1,$_pprand(%num),46) | if (%tok == $) var %tok | %ret = %tok $+ $mid(%text,%pos,1) $+ %ret | if (%pos > 1) { dec %pos | goto loop }
-  return $replace(%ret,è,$chr(32))
+  return $replace(%ret,¬è,$chr(32))
 }
 colori return $_pat.rand(02.03.04.05.06.07.09.10.12.13,$1-)
 color2i return $_pat.rand(01.02.03.04.05.06.07.09.10.12.13.14.15,$1-)
@@ -676,13 +676,13 @@ uvoweli return $replace($lower($1-),a,A,e,E,i,I,o,O,u,U,y,Y)
 lvoweli return $replace($upper($1-),A,a,E,e,I,i,O,o,U,u,Y,y)
 
 _cfade {
-  var %ret,%tok = 1,%len = $len($2-),%str = $replace($2-,$chr(32),è),%sect = $int($calc(%len / $numtok($1,46))) + 1,%extra = $calc(%len % $numtok($1,46)) + 1
+  var %ret,%tok = 1,%len = $len($2-),%str = $replace($2-,$chr(32),¬è),%sect = $int($calc(%len / $numtok($1,46))) + 1,%extra = $calc(%len % $numtok($1,46)) + 1
   :loop
   dec %extra | if (%extra == 0) dec %sect
   %ret = %ret $+  $+ $gettok($1,%tok,46) $+ $left(%str,%sect)
   %str = $right(%str,$calc(- %sect))
   if (%tok < $numtok($1,46)) { inc %tok | goto loop }
-  return $replace(%ret,è,$chr(32))
+  return $replace(%ret,¬è,$chr(32))
 }
 
 _u return  $+ $1- $+ 

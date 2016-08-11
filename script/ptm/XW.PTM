@@ -981,7 +981,7 @@ menu channel {
   ..[popups_status:xw_youraccess]	[0]:xw ACCESS $iif(u isin $hget(pnp. $+ $cid,-servopt),$iif($hget(pnp. $+ $cid,-xwacc.username),$hget(pnp. $+ $cid,-xwacc.username),= $+ $me),$me)
   ..[popups_status:xw_yourcmd]	[0]:xw SHOWCOMMANDS
   .-
-  .$iif(%.xwaccess > 49,[popups_status:xw_topic]...  [50]):xw TOPIC
+  .$iif(%.xwaccess > 49,[popups_status:xw_topic]...Â  [50]):xw TOPIC
   .$iif((%.xwaccess > 99) && (u !isin $hget(pnp. $+ $cid,-servopt)),[popups_status:xw_invite]... [100]):xw INVITE
   .-
   .[popups_status:xw_bans]

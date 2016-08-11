@@ -64,9 +64,9 @@ raw 324:*:{
 alias bans ban $1-
 
 ; ban [-u#] [#chan] [who[ who][,who]] [n]
-alias ban _ssplit ban /ban $1- | if (%.targ.ban == $null) mode %.chan.ban b | elseif ($gettok(%.msg.ban,$numtok(%.msg.ban,32),32) isnum) _ban² %.opt.ban %.chan.ban $ifmatch %.targ.ban $remtok(%.msg.ban,$ifmatch,32) | else _ban² %.opt.ban %.chan.ban 3 %.targ.ban %.msg.ban
-alias _ban² _ban³ $1-3 $_c2s($4-)
-alias _ban³ {
+alias ban _ssplit ban /ban $1- | if (%.targ.ban == $null) mode %.chan.ban b | elseif ($gettok(%.msg.ban,$numtok(%.msg.ban,32),32) isnum) _banÂ² %.opt.ban %.chan.ban $ifmatch %.targ.ban $remtok(%.msg.ban,$ifmatch,32) | else _banÂ² %.opt.ban %.chan.ban 3 %.targ.ban %.msg.ban
+alias _banÂ² _banÂ³ $1-3 $_c2s($4-)
+alias _banÂ³ {
   _operr $2 ban
   ; Must nick complete OUTSIDE loop
   var %total,%ban,%ban2,%usebot = %.usebot,%bans = $_nccs(32,$2,$4-),%num = 1
@@ -125,10 +125,10 @@ alias unban {
     }
     inc %tok
   }
-  _unban² %.opt.ban %.chan.ban %targets
+  _unbanÂ² %.opt.ban %.chan.ban %targets
 }
-alias _unban² _unban³ $1-2 $_c2s($3-)
-alias _unban³ {
+alias _unbanÂ² _unbanÂ³ $1-2 $_c2s($3-)
+alias _unbanÂ³ {
   _operr $2 unban
   if ($1 == -s) {
     var %hash = $+(pnp.scanunban.,$cid,.,$chan)
@@ -272,8 +272,8 @@ alias fk {
 
 ; tempban [-u#] [#chan] who|mask[,who|mask] [n] [comment]
 alias tempban {
-  if (-u* iswm $1) _kb² 0 /tempban $1-
-  else _kb² 0 /tempban -u $1-
+  if (-u* iswm $1) _kbÂ² 0 /tempban $1-
+  else _kbÂ² 0 /tempban -u $1-
 }
 
 dialog tempban {
@@ -318,22 +318,22 @@ on *:DIALOG:tempban:sclick:103:{
 ; kb/kb0/kb2/cb [-u[#]] [#chan] who|mask[,who|mask] [n] [comment]
 ; -u without # uses default tempban time
 alias bk kb $1-
-alias kb _kb² 3 /kb $1-
+alias kb _kbÂ² 3 /kb $1-
 alias bk0 kb0 $1-
-alias kb0 _kb² 2 /kb0 $1-
+alias kb0 _kbÂ² 2 /kb0 $1-
 alias bk2 kb2 $1-
-alias kb2 _kb² 4 /kb2 $1-
+alias kb2 _kbÂ² 4 /kb2 $1-
 alias bc cb $1-
-alias cb _kb² -1 /cb $1-
-alias _kb² {
+alias cb _kbÂ² -1 /cb $1-
+alias _kbÂ² {
   if ($3 == $null) _qhelp $2
   _ssplit k $2 $3-
   if (%.targ.k == $null) _qhelp $iif($2 == /tempban,$deltok($2-,2,32),$2-)
   if ((-u* iswm %.opt.k) && ($remove(%.opt.k,-u) !isnum)) %.opt.k = -u $+ $_getchopt(%.chan.k,1)
   ; Passed a 0 for default bantype ($1) means use default tempban type
-  _kb³ %.opt.k %.chan.k %.targ.k $iif($gettok(%.msg.k,1,32) !isnum,$iif($1 == 0,$_getchopt(%.chan.k,2),$1)) %.msg.k
+  _kbÂ³ %.opt.k %.chan.k %.targ.k $iif($gettok(%.msg.k,1,32) !isnum,$iif($1 == 0,$_getchopt(%.chan.k,2),$1)) %.msg.k
 }
-alias _kb³ {
+alias _kbÂ³ {
   _operr $2 ban
   var %targ.ban,%targ.kick,%who,%mask,%mask2,%num2,%wrap,%dur,%usebot = %.usebot,%num = $numtok($3,44)
   :loop1
@@ -430,21 +430,21 @@ alias unop {
 
 ; op/deop/hfop/dehfop/voc/devoc [#chan] who[ who][,who]|mask
 alias opme op $1- $me
-alias op _op² /op fop op + o $1-
-alias deop _op² /deop fdeop deop - o $1-
+alias op _opÂ² /op fop op + o $1-
+alias deop _opÂ² /deop fdeop deop - o $1-
 alias dop deop $1-
-alias hfop _op² /hfop fhfop halfop + h $1-
+alias hfop _opÂ² /hfop fhfop halfop + h $1-
 alias halfop hfop $1-
-alias dehfop _op² /dehfop fdehfop dehalfop - h $1-
+alias dehfop _opÂ² /dehfop fdehfop dehalfop - h $1-
 alias dhfop dehfop $1-
 alias dehalfop dehfop $1-
-alias voc _op² /voc fvoc voice + v $1-
+alias voc _opÂ² /voc fvoc voice + v $1-
 alias voice voc $1-
-alias devoc _op² /devoc fdevoc devoice - v $1-
+alias devoc _opÂ² /devoc fdevoc devoice - v $1-
 alias dvoc devoc $1-
 alias devoice devoice $1-
-; _op² /cmd filtercmd botcommand -|+ modechar [chan] who
-alias _op² {
+; _opÂ² /cmd filtercmd botcommand -|+ modechar [chan] who
+alias _opÂ² {
   if ($6 == $null) _qhelp $1 | _simsplit o $1 $6- | if (%.msg.o == $null) _qhelp $1 $6-
   if ($_ismask(%.msg.o)) $2 $6-
   else {
@@ -462,20 +462,20 @@ alias _op² {
 }
 
 ; funop [#chan] who|mask - deop AND/OR dehop as needed
-alias funop _fop² /funop deop - oh oh q $1-
+alias funop _fopÂ² /funop deop - oh oh q $1-
 
 ; fop/fdeop/fhfop/fdehfop/fvoc/fdevoc [#chan] who|mask
-alias fop _fop² /fop op + o rvh oq $1-
+alias fop _fopÂ² /fop op + o rvh oq $1-
 alias fdop fdeop $1-
-alias fdeop _fop² /fdeop deop - o o q $1-
-alias fhfop _fop² /fhfop halfop + h rv hoq $1-
+alias fdeop _fopÂ² /fdeop deop - o o q $1-
+alias fhfop _fopÂ² /fhfop halfop + h rv hoq $1-
 alias fdhfop fdehfop $1-
-alias fdehfop _fop² /fdehfop dehalfop - h h oq $1-
-alias fvoc _fop² /fvoc voice + v r vhoq $1-
+alias fdehfop _fopÂ² /fdehfop dehalfop - h h oq $1-
+alias fvoc _fopÂ² /fvoc voice + v r vhoq $1-
 alias fdvoc fdevoc $1-
-alias fdevoc _fop² /fdevoc devoice - v v hoq $1-
-; _fop² /cmd botcommand -|+ modechar allow disalllow [chan] who
-alias _fop² {
+alias fdevoc _fopÂ² /fdevoc devoice - v v hoq $1-
+; _fopÂ² /cmd botcommand -|+ modechar allow disalllow [chan] who
+alias _fopÂ² {
   if ($7 == $null) _qhelp $1 | _split o $1 $7- | if (%.targ.o == $null) _qhelp $1 $7-
   if ($ial == $false) _error The IAL is not enabled!You need the IAL for that command.
   if ($chan(%.chan.o).inwho) $_doerror(Please wait-,The IAL is not fully updated.Wait a few seconds and try again.)

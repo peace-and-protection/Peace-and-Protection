@@ -29,12 +29,12 @@ NickSelf *** Your nick is now <newnick>
 Invite <pre> You were invited to <bl><chan><br> by <nick>
 ServerError <pre> Error: <text>
 Rejoin *** Attempting to rejoin...
-Ctcp !Script %:echo %::pre ¢ $iif(%::ctcp = PING,$:s(PING),CTCP $:s(%::ctcp) $iif(%::text != $null,$iif(%::ctcp = PING,( $+ %::text $+ ),: $:s(%::text)))) from $:t(%::nick) %:comments
-CtcpChan !Script %:echo %::pre [[ $+ $:s(%::chan) $+ ]] ¢ $iif(%::ctcp = PING,$:s(PING),CTCP $:s(%::ctcp) $iif(%::text != $null,$iif(%::ctcp = PING,( $+ %::text $+ ),: $:s(%::text)))) from $:t(%::nick) %:comments
-CtcpSelf !Script %:echo %::pre ¢ $iif($istok(SCRIPT FINGER TIME VERSION USERINFO CLIENTINFO,%::ctcp %::text,32),$:s(%::ctcp) info requested from $:t(%::nick),$:s(%::ctcp) $iif(%::text != $null,: $:s(%::text)) sent to $:t(%::nick)) %:comments
-CtcpChanSelf !Script %:echo %::pre [[ $+ $:s(%::chan) $+ ]] ¢ $iif($istok(SCRIPT FINGER TIME VERSION USERINFO CLIENTINFO,%::ctcp %::text,32),$:s(%::ctcp) info requested from $:t(%::chan),$:s(%::ctcp) $iif(%::text != $null,: $:s(%::text)) sent to $:t(%::chan)) %:comments
-CtcpReply !Script %:echo %::pre $iif(%::chan,[[ $+ $:s(%::chan) $+ ]]) ¢ $iif(%::text == $null,$:s(%::ctcp) reply from $:t(%::nick),$:s(%::ctcp) reply of $iif($gettok(%::ctcp,-1,32) = PING,$:s(%::text),$:q(%::text)) from $:t(%::nick)) %:comments
-CtcpReplySelf !Script %:echo %::pre $iif(%::chan,[[ $+ $:s(%::chan) $+ ]]) ¢ Reply of $:s(%::ctcp) $iif(%::text != $null,: $:s(%::text)) sent to $:t(%::nick) %:comments
+Ctcp !Script %:echo %::pre Â¢ $iif(%::ctcp = PING,$:s(PING),CTCP $:s(%::ctcp) $iif(%::text != $null,$iif(%::ctcp = PING,( $+ %::text $+ ),: $:s(%::text)))) from $:t(%::nick) %:comments
+CtcpChan !Script %:echo %::pre [[ $+ $:s(%::chan) $+ ]] Â¢ $iif(%::ctcp = PING,$:s(PING),CTCP $:s(%::ctcp) $iif(%::text != $null,$iif(%::ctcp = PING,( $+ %::text $+ ),: $:s(%::text)))) from $:t(%::nick) %:comments
+CtcpSelf !Script %:echo %::pre Â¢ $iif($istok(SCRIPT FINGER TIME VERSION USERINFO CLIENTINFO,%::ctcp %::text,32),$:s(%::ctcp) info requested from $:t(%::nick),$:s(%::ctcp) $iif(%::text != $null,: $:s(%::text)) sent to $:t(%::nick)) %:comments
+CtcpChanSelf !Script %:echo %::pre [[ $+ $:s(%::chan) $+ ]] Â¢ $iif($istok(SCRIPT FINGER TIME VERSION USERINFO CLIENTINFO,%::ctcp %::text,32),$:s(%::ctcp) info requested from $:t(%::chan),$:s(%::ctcp) $iif(%::text != $null,: $:s(%::text)) sent to $:t(%::chan)) %:comments
+CtcpReply !Script %:echo %::pre $iif(%::chan,[[ $+ $:s(%::chan) $+ ]]) Â¢ $iif(%::text == $null,$:s(%::ctcp) reply from $:t(%::nick),$:s(%::ctcp) reply of $iif($gettok(%::ctcp,-1,32) = PING,$:s(%::text),$:q(%::text)) from $:t(%::nick)) %:comments
+CtcpReplySelf !Script %:echo %::pre $iif(%::chan,[[ $+ $:s(%::chan) $+ ]]) Â¢ Reply of $:s(%::ctcp) $iif(%::text != $null,: $:s(%::text)) sent to $:t(%::nick) %:comments
 Notify !Script _pnptheme.notify
 UNotify !Script _pnptheme.unotify
 Wallop !Script %:echo %::pre $iif(%::nick !isin $gettok(%::text,1,32),! $+ %::nick $+ !,$iif(!%::nick,(w))) %::text %:comments
@@ -64,7 +64,7 @@ RAW.265 !Script %:echo %::pre $:ihn(%::text) %:comments
 RAW.266 !Script %:echo %::pre $:ihn(%::text) %:comments
 RAW.271 !Script _pnptheme.silence271
 RAW.272 !Script disptn -s %::nick $iif(%::empty,No silence list found,End of silence list) %:comments
-RAW.301 !Script disprn %::nick User is away « $+ $:h(%::text) $+ » %:comments
+RAW.301 !Script disprn %::nick User is away Â« $+ $:h(%::text) $+ Â» %:comments
 RAW.315 !Script _pnptheme.who315
 RAW.324 !Script disprc %::chan mode- $:s($iif(%::modes == +,(none),%::modes)) %:comments
 RAW.328 !Script disprc %::chan url- $:h(%::text) %:comments

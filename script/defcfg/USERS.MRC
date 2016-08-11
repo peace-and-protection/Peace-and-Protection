@@ -20,6 +20,6 @@
 ; Add non-channel levels-
 ;   5,=dcc:address
 ; Channel levels-
-;   1,=#chan¬50:address
+;   1,=#chanÂ¬50:address
 ; Multiple levels-
-;   5+,=#anime¬50@,=#mirc¬25:address
+;   5+,=#animeÂ¬50@,=#mircÂ¬25:address

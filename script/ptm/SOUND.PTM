@@ -1010,8 +1010,8 @@ on *:DIALOG:scfg:init:*:{
       elseif (%type == ogg) did -a $dname 15 $sound(ogg)
       did -c $dname 29
     }
-    did -a $dname 9 &play& ø &file& ø %extra ø
-    did -a $dname 11 &play& ø &desc& ø %extra ø
+    did -a $dname 9 &play& Ã¸ &file& Ã¸ %extra Ã¸
+    did -a $dname 11 &play& Ã¸ &desc& Ã¸ %extra Ã¸
     if ($findtok(wav mid mp3 wma ogg,%type,1,32)) {
       did -a $dname 3 $gettok(Wave MIDI MPEG WMA Ogg,$ifmatch,32)
       did -a $dname 5 $gettok(wav.mid.mp2 mp3.wma.ogg,$ifmatch,46)
@@ -1848,7 +1848,7 @@ on *:TEXT:*:*:{
     if ($gettok($hget(pnp. $+ $cid,leechcmds),4,32)) %reply = %reply $+ - [public_sound:list_cmd:cmd=$ifmatch]
     goto reply
   }
-  %usecmd = _unkludge  $+ %usecmd $+  $+ $nick
+  %usecmd = _unkludge Â $+ %usecmd $+ Â $+ $nick
   .timer 1 2 %usecmd [public_sound:found:num=%found:text=%match]
   var %delay = 3,%file = 1
   :fileloop

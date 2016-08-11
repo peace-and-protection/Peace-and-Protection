@@ -531,7 +531,7 @@ on !*:JOIN:#:{
     if ($istok(%lvl,=black,44)) _runblack $chan $maddress
     elseif ((@ isin %level) || (+ isin %level) || (% isin %level)) {
       ; Find out if we use pw info for channel or global
-      var %scan = $chr(44) $+ = $+ $chan $+ ¬
+      var %scan = $chr(44) $+ = $+ $chan $+ Â¬
       if (%scan isin %lvl) var %chan = $chan
       else var %chan = *
       if ((*@ iswm %level) && ($me isop $chan)) {

@@ -342,8 +342,8 @@ alias _pnptheme.whois {
   ; Hide or blank for later nicknames?
   var %echo = %:echo %::pre $iif($hget(pnp.config,whois.nick) == on,$:t(%::nick),$iif($hget(pnp.config,whois.nick) == hide,$:b($:mc(back,%::nick)),   ))
  
-%echo $iif($1,was,is) « $+ $:h(%::realname) $+ »
-if (%::wserver) %echo $iif($1,was on $:s(%::wserver),on $:s(%::wserver)) $iif(($_cfgi(whois.serv)) && (%sinfo),« $+ $:h(%sinfo) $+ »)
+%echo $iif($1,was,is) Â« $+ $:h(%::realname) $+ Â»
+if (%::wserver) %echo $iif($1,was on $:s(%::wserver),on $:s(%::wserver)) $iif(($_cfgi(whois.serv)) && (%sinfo),Â« $+ $:h(%sinfo) $+ Â»)
   if (%::operline) %echo %::operline
 if (%::isregd == is) %echo $iif($1,was using a registered nickname,is using a registered nickname)
   if (%::text) %echo %::text
@@ -388,9 +388,9 @@ elseif ($strip(%chan) != %chan) %echo on channel " $+ $:s(%chan $+ ) $+ " conta
       inc %num
     }
   }
-if (%::away) %echo $iif($1,was away « $+ $:h(%::away) $+ »,away « $+ $:h(%::away) $+ »)
+if (%::away) %echo $iif($1,was away Â« $+ $:h(%::away) $+ Â»,away Â« $+ $:h(%::away) $+ Â»)
 if (%signoff) %echo signed off $:h(%signoff)
-if (%::signontime) %echo idle $:h($_dur(%::idletime)) $+ $chr(44) signed on « $+ $:h($_datetime(%::signontime)) $+ »
+if (%::signontime) %echo idle $:h($_dur(%::idletime)) $+ $chr(44) signed on Â« $+ $:h($_datetime(%::signontime)) $+ Â»
 elseif (%::idletime) %echo idle $:h($_dur(%::idletime))
 }
 alias _pnptheme.endofwhois {
@@ -559,7 +559,7 @@ if (d isincs $gettok(%::text,6,32)) %away = %away $+ ; deaf
 if (r isincs $gettok(%::text,6,32)) %away = %away $+ ; registered
 if ((%::chan == *) || (%::chan == $null)) %:echo %::pre $:t(%::nick) is $:s($gettok(%::address,1,64)) $+ @ $+ $:s($gettok(%::address,2-,64)) $+  $chr(40) $+ %away $+ $chr(41)
 else %:echo %::pre $:t(%::nick) is $:s($gettok(%::address,1,64)) $+ @ $+ $:s($gettok(%::address,2-,64)) $+  $+ $chr(44) on %::cmode $+ $:s(%::chan) $+  $chr(40) $+ %away $+ $chr(41)
-%:echo %::pre $iif($hget(pnp.config,whois.nick) == on,$:t(%::nick),$iif($hget(pnp.config,whois.nick) == hide,$:b($:mc(back,%::nick)),   )) is « $+ $:h(%::realname) $+ » on $:s(%::wserver) $chr(40) $+ %::value hops $+ $chr(41) %:comments
+%:echo %::pre $iif($hget(pnp.config,whois.nick) == on,$:t(%::nick),$iif($hget(pnp.config,whois.nick) == hide,$:b($:mc(back,%::nick)),   )) is Â« $+ $:h(%::realname) $+ Â» on $:s(%::wserver) $chr(40) $+ %::value hops $+ $chr(41) %:comments
 }
  
 alias _pnptheme.who315 {
@@ -1797,7 +1797,7 @@ on &^*:NOTICE:*:*:{
   elseif (%.opnotice) _awaylog ! 3 $cid @ $+ %.opnotice $+  (?) - $+ $nick $+ - $1-
   else _awaylog ! 4 $cid - $+ $nick $+ - $1-
 }
-on &*:INVITE:#:if ($hget(pnp. $+ $cid,away)) _awaylog @ 10 $cid ( $+ $chan $+ ) »»» Invited by $nick
+on &*:INVITE:#:if ($hget(pnp. $+ $cid,away)) _awaylog @ 10 $cid ( $+ $chan $+ ) Â»Â»Â» Invited by $nick
 ; Nick/highlight in channel
 on &^*:TEXT:*:#:if ($hget(pnp. $+ $cid,away)) { _doahl 13 < $+ $nick $+ > $strip($1-) | _doaww $1- }
 on &^*:ACTION:*:#:if ($hget(pnp. $+ $cid,away)) { _doahl 14 * $+ $nick $strip($1-) | _doaww $1- }

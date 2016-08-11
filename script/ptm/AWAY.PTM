@@ -19,7 +19,7 @@ on *:EXIT:{ if ($hget(pnp,away)) qb +k }
 
 on *:CONNECT:{
   if ($hget(pnp. $+ $cid,away)) {
-    if ($group(#awaylog) == on) _awaylog @ 12 $cid »»» [away:log_connect:server=$server:port=$port]
+    if ($group(#awaylog) == on) _awaylog @ 12 $cid Â»Â»Â» [away:log_connect:server=$server:port=$port]
     disps [away:connect_away]
     _upd.away
   }
@@ -255,15 +255,15 @@ alias away {
 
   ; Log
   if (%setaway isnum) {
-    if (%setaway > 0) _awaylog - 9 0 ««« [away:log_away_count:num=%setaway] ( $+ %reason $+ )
+    if (%setaway > 0) _awaylog - 9 0 Â«Â«Â« [away:log_away_count:num=%setaway] ( $+ %reason $+ )
   }
-  else _awaylog - 9 0 ««« [away:log_away:server=%setaway] ( $+ %reason $+ )
+  else _awaylog - 9 0 Â«Â«Â« [away:log_away:server=%setaway] ( $+ %reason $+ )
   if (%changedaway isnum) {
-    if (%changedaway > 0) _awaylog - 9 0 ««« [away:log_newaway_count:num=%changedaway] ( $+ %reason $+ )
+    if (%changedaway > 0) _awaylog - 9 0 Â«Â«Â« [away:log_newaway_count:num=%changedaway] ( $+ %reason $+ )
   }
-  else _awaylog - 9 0 ««« [away:log_newaway:server=%changedaway] ( $+ %reason $+ )
-  if (%closedquery) _awaylog - 9 0 ««« [away:log_closequery:num=%closedquery]
-  if (%deopped) _awaylog - 9 0 ««« [away:log_autodeop:num=%deopped]
+  else _awaylog - 9 0 Â«Â«Â« [away:log_newaway:server=%changedaway] ( $+ %reason $+ )
+  if (%closedquery) _awaylog - 9 0 Â«Â«Â« [away:log_closequery:num=%closedquery]
+  if (%deopped) _awaylog - 9 0 Â«Â«Â« [away:log_autodeop:num=%deopped]
 
   ; Sound, display
   if (+k !isin %awmode) _ssplay Away 1
@@ -427,8 +427,8 @@ alias back {
   ; Log back status
   if (%longestgone == 0) %longestgone = ??
   else %longestgone = $_dur(%longestgone)
-  if ($numtok(%backon,32) < 3) _awaylog - 9 0 »»» [away:log_back:server=$gettok(%backon,2,32):duration=%longestgone]
-  else _awaylog - 9 0 »»» [away:log_back_count:num=$calc($numtok(%backon,32) - 1):duration=%longestgone]
+  if ($numtok(%backon,32) < 3) _awaylog - 9 0 Â»Â»Â» [away:log_back:server=$gettok(%backon,2,32):duration=%longestgone]
+  else _awaylog - 9 0 Â»Â»Â» [away:log_back_count:num=$calc($numtok(%backon,32) - 1):duration=%longestgone]
 
   ; Sound, display msg, log, pager
   if (+ !isin %mode) _ssplay Back 1
@@ -502,7 +502,7 @@ alias -l _paged {
   var %pager
   if (%error) %pager = [away:page_display_ignore]
   else %pager = $upper($iif($hget(pnp,pager),[word:on],[word:off]))
-  $iif($chan ischan,disprc $chan,dispr $2) ¢ [away:page_display:nick=$;t($nick):method=$_p2s($1):onoff=%pager] $iif($3-,[away:page_display_msg:msg=$;q($3-)])
+  $iif($chan ischan,disprc $chan,dispr $2) Â¢ [away:page_display:nick=$;t($nick):method=$_p2s($1):onoff=%pager] $iif($3-,[away:page_display_msg:msg=$;q($3-)])
   if (!$hget(pnp,pager)) return $_not(%error)
 
   hinc pnp newpages
@@ -703,11 +703,11 @@ alias _dtqc {
 on *:INPUT:?:hadd pnp. $+ $cid timedclose $remtok($hget(pnp. $+ $cid,timedclose),$target,1,32)
 on *:CLOSE:?:if ($window(Status Window)) hadd pnp. $+ $cid timedclose $remtok($hget(pnp. $+ $cid,timedclose),$target,1,32)
 #awaylog off
-on *:DISCONNECT:if ($hget(pnp. $+ $cid,away)) { var %lagged | if ($hget(pnp. $+ $cid,-self.lag) isnum) %lagged = ([phrase:self_lag:lower] $ifmatch $+ ) | _awaylog @ 12 $cid ««« [away:log_disconnect:server=$server:port=$port] %lagged }
+on *:DISCONNECT:if ($hget(pnp. $+ $cid,away)) { var %lagged | if ($hget(pnp. $+ $cid,-self.lag) isnum) %lagged = ([phrase:self_lag:lower] $ifmatch $+ ) | _awaylog @ 12 $cid Â«Â«Â« [away:log_disconnect:server=$server:port=$port] %lagged }
 on *:KICK:#:{
   if (!$hget(pnp. $+ $cid,away)) return
   if ((($hget(pnp.config,awaylog.chan) < 1) || ($hget(pnp.config,awaylog.chan) == $null)) && ($knick != $me)) return
-  if ($knick == $me) _awaylog @ 5 $cid ( $+ $chan $+ ) ««« [away:log_kick:nick=$nick:kicked=$;b($knick)] ( $+ $1- $+ )
+  if ($knick == $me) _awaylog @ 5 $cid ( $+ $chan $+ ) Â«Â«Â« [away:log_kick:nick=$nick:kicked=$;b($knick)] ( $+ $1- $+ )
   elseif ($nick == $me) _awaylog @ 6 $cid ( $+ $chan $+ ) *** [away:log_kick:nick=$;b($nick):kicked=$knick] ( $+ $1- $+ )
   elseif (($hget(pnp.config,awaylog.chan) > 2) || (($hget(pnp.config,awaylog.chan) > 1) && (($me isop $chan) || ($me ishop $chan)))) _awaylog @ 7 $cid ( $+ $chan $+ ) *** [away:log_kick:nick=$nick:kicked=$knick] ( $+ $1- $+ )
 }
@@ -742,7 +742,7 @@ alias -l _loghop {
   elseif (($hget(pnp.config,awaylog.chan) > 2) || (($hget(pnp.config,awaylog.chan) > 1) && (($me isop $chan) || ($me ishop $chan)))) _awaylog @ 7 $cid ( $+ $chan $+ ) *** $iif($1 == +,[away:log_hop:nick=$nick:opped=$hnick],[away:log_dehop:nick=$nick:opped=$hnick])
 }
 
-on me:*:JOIN:#:if ($hget(pnp. $+ $cid,away)) _awaylog @ 5 $cid ( $+ $chan $+ ) »»» [away:log_join]
+on me:*:JOIN:#:if ($hget(pnp. $+ $cid,away)) _awaylog @ 5 $cid ( $+ $chan $+ ) Â»Â»Â» [away:log_join]
 
 on *:CLOSE:=:if ($hget(pnp. $+ $cid,away)) _awaylog @ 11 0 === [away:log_closechat:nick=$nick]
 on *:FILERCVD:*:if ($hget(pnp. $+ $cid,away)) _awaylog @ 11 0 === [away:log_fileget:nick=$nick:filename=$filename]
@@ -802,7 +802,7 @@ alias awaylog {
     hadd pnp logging 1
     .enable #awaylog
     var %status = [word:on]
-    _awaylog - 9 0 »»» [away:log_setting_now:onoff=%status]
+    _awaylog - 9 0 Â»Â»Â» [away:log_setting_now:onoff=%status]
     dispa [away:log_setting_now:onoff=$;b(%status)] ([away:until_back])
     ; Update away on any away connections
     var %num = $scon(0)
@@ -823,7 +823,7 @@ alias awaylog {
     }
     hadd pnp logging 0
     var %status = [word:off]
-    _awaylog - 9 0 ««« [away:log_setting_now:onoff=%status]
+    _awaylog - 9 0 Â«Â«Â« [away:log_setting_now:onoff=%status]
     .disable #awaylog
     dispa [away:log_setting_now:onoff=$;b(%status)] ([away:until_back])
     ; Update away on any away connections
@@ -840,7 +840,7 @@ alias awaylog {
     hdel pnp awaylog.*
     hadd pnp awaylog.^ 0
     .remove $hget(pnp,awaylog)
-    _awaylog - 9 0 ««« [away:flush_log]
+    _awaylog - 9 0 Â«Â«Â« [away:flush_log]
     dispa [away:flush_log]
     return
   }
@@ -936,7 +936,7 @@ alias -l _subset {
   else var %cid = 0
   if (%type == ===) awaylog d $_newwin(@Awaylog)
   elseif (%type == ([word:notify:lower])) awaylog u $_newwin(@Awaylog)
-  elseif (%type isin »»»«««) awaylog m $_newwin(@Awaylog)
+  elseif (%type isin Â»Â»Â»Â«Â«Â«) awaylog m $_newwin(@Awaylog)
   elseif (@* iswm %type) awaylog ncom $_newwin(@Awaylog) %cid $right(%type,-1)
   elseif ($left(%type,1) == $chr(40)) awaylog ncom $_newwin(@Awaylog) %cid $left($right(%type,-1),-1)
   elseif (%type == *) awaylog pn ! %cid $gettok($line($1,$2),4,32)
@@ -971,7 +971,7 @@ alias _awayformat {
 alias _doaww {
   if (($hget(pnp. $+ $cid,-awayword. $+ $site) != $null) || ($hget(pnp. $+ $cid,-awayword.!) > 2)) return
   if (($hget(pnp.config,awaywords.limit)) && (!$istok($hget(pnp.config,awaywords.chans),$chan,44))) return
-  if ($hget(pnp.config,awaywords)) _doaww² $replace($strip($1-),$chr(44),.,-,.,$chr(90),.,$chr(91),.,?,.,!,.,<,.,>,.,*,.,@,.,+,.,',.,",.,/,.,:,.,;,.,.,$chr(32))
+  if ($hget(pnp.config,awaywords)) _doawwÂ² $replace($strip($1-),$chr(44),.,-,.,$chr(90),.,$chr(91),.,?,.,!,.,<,.,>,.,*,.,@,.,+,.,',.,",.,/,.,:,.,;,.,.,$chr(32))
   if ($hget(pnp.config,awaywords.hl)) {
     if ($highlight($1-)) {
       var %word = [ [ $gettok($highlight($1-),1,44) ] ]
@@ -982,7 +982,7 @@ alias _doaww {
     }
   }
 }
-alias _doaww² {
+alias _doawwÂ² {
   var %words = $hget(pnp.config,awaywords.words),%word,%num = $numtok(%words,44)
   while (%num) {
     %word = [ [ $gettok(%words,%num,44) ] ]

@@ -79,11 +79,11 @@ if (%ule-raw == $dlevel) { .ruser %ule-mask | dispr @Info $:t(%ule-mask) is not 
     elseif (%stuff) {
       %chan = $gettok(%stuff,1,32)
 if (($left(%chan,1) !isin & $+ $remove($chantypes,+)) && (%chan != *)) dispr @Info $:t(%chan) is not a channel $chr(40) $+ cannot be removed from a user $+ $chr(41)
-elseif ((%chan != *) && (,= $+ %chan $+ ¬ !isin %ule-raw)) disptc @Info %chan $:t(%ule-mask) is not in channel userlist
+elseif ((%chan != *) && (,= $+ %chan $+ Â¬ !isin %ule-raw)) disptc @Info %chan $:t(%ule-mask) is not in channel userlist
       else {
         remini $_cfg(userinfo.ini) %ule-mask %chan
         %ule-raw = $_leveledit(%chan,%ule-raw)
-        if ((¬ !isin %ule-raw) && (%chan == *) && ($wildtok(%ule-raw,=color*,1,44))) %ule-raw = $remtok(%ule-raw,$ifmatch,1,44)
+        if ((Â¬ !isin %ule-raw) && (%chan == *) && ($wildtok(%ule-raw,=color*,1,44))) %ule-raw = $remtok(%ule-raw,$ifmatch,1,44)
         if (%ule-raw == $dlevel) {
           remini $_cfg(userinfo.ini) %ule-mask
           .ruser %ule-mask
@@ -203,7 +203,7 @@ dispr @Info   - Modified nicklist color to %tok $+ $_colorword(%color)
   _cs-prep useredit | _dialog -am useredit useredit
 }
 alias _namedul {
-  if (¬ isin $1) { var %chan = $gettok($1,1,172),%lvl = $gettok($1,2,172) }
+  if (Â¬ isin $1) { var %chan = $gettok($1,1,172),%lvl = $gettok($1,2,172) }
   elseif (=* iswm $1) return
   else { var %chan = *,%lvl = $1 }
   if (=* iswm %chan) %chan = $right(%chan,-1)
@@ -262,9 +262,9 @@ if ($gettok($window(@Userlist).title,1-2,32) == (default only)) userlist *
     else var %color
     :lvlloop
     %bit = $gettok(%lvl,%lvlbit,44)
-    if (¬ isin %bit) { %chan = $gettok(%bit,1,172) | %bit = $gettok(%bit,2,172) }
+    if (Â¬ isin %bit) { %chan = $gettok(%bit,1,172) | %bit = $gettok(%bit,2,172) }
     elseif (=* iswm %bit) goto lvlnext
-    elseif ((%bit == 1) && ((%color == $null) || (¬ isin %lvl))) goto lvlnext
+    elseif ((%bit == 1) && ((%color == $null) || (Â¬ isin %lvl))) goto lvlnext
     else %chan = *
     if (=* iswm %chan) %chan = $right(%chan,-1)
     if (($1) && ($1 != %chan)) goto lvlnext
@@ -477,7 +477,7 @@ did -ac $dname 71 ( $+ Default $+ )
   var %chan,%lvl,%num = $numtok(%.ule-raw,44),%file = $_cfg(userinfo.ini)
   :lvlloop
   %lvl = $gettok(%.ule-raw,%num,44)
-  if (¬ isin %lvl) {
+  if (Â¬ isin %lvl) {
     %chan = $gettok(%lvl,1,172)
     if (=* iswm %chan) %chan = $right(%chan,-1)
     did -a $+ $iif((%chan == $active) || (%chan == %.selchan),c) $dname 71 %chan
@@ -641,7 +641,7 @@ _linedance _qnotice $nick Incorrect syntax-  $+ $5 $+ ME #chan [password]
     %chan = ?????
   }
   elseif (($1 iswm %sublvl) || ($2 iswm %sublvl) || ($3 iswm %sublvl)) {
-    var %scan = $chr(44) $+ = $+ $7 $+ ¬
+    var %scan = $chr(44) $+ = $+ $7 $+ Â¬
     if (%scan isin %level) %scan = $7
     else %scan = *
     var %thepw = $readini($_cfg(userinfo.ini),n,$maddress,%scan)
@@ -734,7 +734,7 @@ _linedance _qnotice $nick Invalid password- must be at least five characters.
       var %num = $numtok(%level,44),%changes = 0
       :loop
       var %sub = $gettok(%level,%num,44)
-      if (((%num == 1) || (=*¬* iswm %sub)) && ($right(%sub,1) isin +%@)) {
+      if (((%num == 1) || (=*Â¬* iswm %sub)) && ($right(%sub,1) isin +%@)) {
         if (%num == 1) var %subc = *
         else var %subc = $right($gettok(%sub,1,172),-1)
         var %oldpw = $readini($_cfg(userinfo.ini),n,$maddress,%subc)

@@ -63,26 +63,26 @@ alias _cs-prep {
   window -c @.csbmp
   if ($hget(pnp.dlgcolor. $+ $1) == $null) hmake pnp.dlgcolor. $+ $1 20
 }
-alias _cs-fin window -c @Ç | hfree pnp.dlgcolor. $+ $1
+alias _cs-fin window -c @Ã‡ | hfree pnp.dlgcolor. $+ $1
 alias _cs-go {
-  if ($window(@Ç).state == hidden) {
-    window -f @Ç $calc($mouse.dx - 5) $calc($mouse.dy - 5) $calc($1 * 4 + 8) $calc($2 * 4 + 8 + $iif($3,$calc($2 + 2),0))
+  if ($window(@Ã‡).state == hidden) {
+    window -f @Ã‡ $calc($mouse.dx - 5) $calc($mouse.dy - 5) $calc($1 * 4 + 8) $calc($2 * 4 + 8 + $iif($3,$calc($2 + 2),0))
   }
   else {
-    window -c @Ç
-    window -fphkdBz +fL @Ç $calc($mouse.dx - 5) $calc($mouse.dy - 5) $calc($1 * 4 + 8) $calc($2 * 4 + 8 + $iif($3,$calc($2 + 2),0)) @colpck
+    window -c @Ã‡
+    window -fphkdBz +fL @Ã‡ $calc($mouse.dx - 5) $calc($mouse.dy - 5) $calc($1 * 4 + 8) $calc($2 * 4 + 8 + $iif($3,$calc($2 + 2),0)) @colpck
   }
-  drawrect -nfr @Ç $rgb(face) 2 0 0 200 200
+  drawrect -nfr @Ã‡ $rgb(face) 2 0 0 200 200
   var %x,%y = 0,%col = 0
   :loopy | %x = 0 | :loopx
-  drawrect -nf @Ç %col 2 $calc(%x * ($1 + 2) + 1) $calc(%y * ($2 + 2) + 1) $1 $2
+  drawrect -nf @Ã‡ %col 2 $calc(%x * ($1 + 2) + 1) $calc(%y * ($2 + 2) + 1) $1 $2
   inc %col
   if (%x < 3) { inc %x | goto loopx }
   if (%y < 3) { inc %y | goto loopy }
-  if ($3) drawtext -nr @Ç $rgb(text) "ms sans serif" 12 $int($calc(2 * $1 + 4 - $width(No color,ms sans serif,12,0,0) / 2)) $int($calc(4.5 * $2 + 10 - $height([misc:no_color],ms sans serif,12) / 2)) [misc:no_color]
-  drawdot @Ç
-  window -a @Ç
-  titlebar @Ç $calc($1 + 2) $calc($2 + 2)
+  if ($3) drawtext -nr @Ã‡ $rgb(text) "ms sans serif" 12 $int($calc(2 * $1 + 4 - $width(No color,ms sans serif,12,0,0) / 2)) $int($calc(4.5 * $2 + 10 - $height([misc:no_color],ms sans serif,12) / 2)) [misc:no_color]
+  drawdot @Ã‡
+  window -a @Ã‡
+  titlebar @Ã‡ $calc($1 + 2) $calc($2 + 2)
   hadd pnp colordlg $dname $did
   hadd pnp colorwait 2
 }
@@ -504,36 +504,36 @@ on *:DIALOG:fileopt:sclick:102:did -a $dname 202 0 | dialog -k $dname
 ; _qp-go xsize cmd word1 2 3 etc
 alias _qp-go {
   .timer.qpickfin off
-  window -c @¶
+  window -c @Â¶
   var %x = $calc($mouse.dx - ($1 / 2))
   var %y = $calc($mouse.dy - 1)
   var %ys = $calc($numtok($3-,32) * 20)
-  window -fphkdonBz +fL @¶ %x %y $1 %ys @quikpck
-  if ($window(@¶).dy < %y) window -f @¶ %x $calc(%y - %ys - 3) $1 %ys
-  drawrect -nfr @¶ $rgb(face) 2 0 0 $1 200
+  window -fphkdonBz +fL @Â¶ %x %y $1 %ys @quikpck
+  if ($window(@Â¶).dy < %y) window -f @Â¶ %x $calc(%y - %ys - 3) $1 %ys
+  drawrect -nfr @Â¶ $rgb(face) 2 0 0 $1 200
   var %text,%y = 0 | :loopy
   %text = $_p2s($gettok($3-,$calc(%y + 1),32))
   if ($left(%text,1) isin 01) {
     hadd pnp qpick. $+ %y $ifmatch
-    drawrect -nr @¶ $rgb(hilight) 1 4 $calc(20 * %y + 4) 12 12
-    drawline -nr @¶ $rgb(shadow) 1 4 $calc(20 * %y + 15) 4 $calc(20 * %y + 4) 15 $calc(20 * %y + 4)
-    if ($left(%text,1) == 1) drawtext -nro @¶ $rgb(text) arial 18 5 $calc(20 * %y - 1) ×
+    drawrect -nr @Â¶ $rgb(hilight) 1 4 $calc(20 * %y + 4) 12 12
+    drawline -nr @Â¶ $rgb(shadow) 1 4 $calc(20 * %y + 15) 4 $calc(20 * %y + 4) 15 $calc(20 * %y + 4)
+    if ($left(%text,1) == 1) drawtext -nro @Â¶ $rgb(text) arial 18 5 $calc(20 * %y - 1) Ã—
     %text = $right(%text,-1)
   }
-  drawtext -nr @¶ $rgb(text) "ms sans serif" 12 24 $calc(%y * 20 + 3) %text
+  drawtext -nr @Â¶ $rgb(text) "ms sans serif" 12 24 $calc(%y * 20 + 3) %text
   inc %y | if (%y < $numtok($3-,32)) goto loopy
   hadd pnp qpick.cmd $2
   %.skipit = 1
   .timer -mio 1 0 unset % $+ .skipit
-  drawdot @¶
-  window -a @¶
+  drawdot @Â¶
+  window -a @Â¶
 }
-on *:ACTIVE:*:if ($lactive == @¶) _qp-fin @¶
-on *:APPACTIVE:if ($appactive == $false) _qp-fin @¶
+on *:ACTIVE:*:if ($lactive == @Â¶) _qp-fin @Â¶
+on *:APPACTIVE:if ($appactive == $false) _qp-fin @Â¶
 alias _qp-fin {
   var %do = $_p2s($hget(pnp,qpick.cmd)) $2
   hdel pnp qpick.cmd
-  window -c @¶
+  window -c @Â¶
   .timer.qpickfin -mio 1 0 hdel -w pnp qpick.*
   %do
 }
@@ -547,7 +547,7 @@ menu @quikpck {
     if ($hget(pnp,qpick. $+ $result) isnum) {
       hadd pnp qpick. $+ $result $calc(1 - $ifmatch)
       if ($ifmatch) drawrect -fr $leftwin $rgb(face) 2 5 $calc(20 * $result + 5) 10 10
-      else drawtext -ro $leftwin $rgb(text) arial 18 5 $calc(20 * $result - 1) ×
+      else drawtext -ro $leftwin $rgb(text) arial 18 5 $calc(20 * $result - 1) Ã—
     }
     else _qp-fin $leftwin $gettok($window($leftwin).title,1,32)
   }
@@ -584,12 +584,12 @@ alias _doubleclick {
   if ($2-3 == Message Window) tokenize 32 $1 MessageWindow $3-
   var %popups = $gettok([popups_dclick:status_favs:s2p] [popups_dclick:status_users:s2p] [popups_dclick:status_ports:s2p] [popups_dclick:status_reconnect:s2p] [popups_dclick:status_mode:s2p]![popups_dclick:whois:s2p] [popups_dclick:chat:s2p] [popups_dclick:ping:s2p] [popups_dclick:clear:s2p]![popups_dclick:ping:s2p] [popups_dclick:chan_central:s2p] [popups_dclick:chan_bans:s2p] [popups_dclick:chan_topic:s2p] [popups_dclick:clear:s2p]![popups_dclick:whois:s2p] [popups_dclick:query:s2p] [popups_dclick:chat:s2p] [popups_dclick:nick_kick:s2p] [popups_dclick:nick_ban:s2p]![popups_dclick:whois:s2p] [popups_dclick:query:s2p] [popups_dclick:chat:s2p] [popups_dclick:ping:s2p],$1,33)
   if ($_cfgi(dc. $+ $1) isnum) {
-    if (($mouse.key & 2) || ($mouse.key & 4)) _qp-go 104 _doubleclick² $+ $1 $+ $2 $+ $3 %popups 1[popups_dclick:select_default:s2p]
-    else _doubleclick² $1 $2 $3 $_cfgi(dc. $+ $1) 1
+    if (($mouse.key & 2) || ($mouse.key & 4)) _qp-go 104 _doubleclickÂ² $+ $1 $+ $2 $+ $3 %popups 1[popups_dclick:select_default:s2p]
+    else _doubleclickÂ² $1 $2 $3 $_cfgi(dc. $+ $1) 1
   }
-  else _qp-go 104 _doubleclick² $+ $1 $+ $2 $+ $3 %popups 0[popups_dclick:select_default:s2p]
+  else _qp-go 104 _doubleclickÂ² $+ $1 $+ $2 $+ $3 %popups 0[popups_dclick:select_default:s2p]
 }
-alias _doubleclick² {
+alias _doubleclickÂ² {
   if ($4 == $null) return
   if (($1 == 2) || ($1 == 5)) var %bit = 4
   else var %bit = 5
