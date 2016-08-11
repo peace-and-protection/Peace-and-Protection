@@ -24,12 +24,12 @@ FontDefault Fixedsys,12
 FontQuery Fixedsys,12
 FontScript Fixedsys,12
 ImageScript
-LineSep 01········02········12········14········15········
+LineSep 01Â·Â·Â·Â·Â·Â·Â·Â·02Â·Â·Â·Â·Â·Â·Â·Â·12Â·Â·Â·Â·Â·Â·Â·Â·14Â·Â·Â·Â·Â·Â·Â·Â·15Â·Â·Â·Â·Â·Â·Â·Â·
 LineSepWhois 1
 MTSVersion 1.1
 Name mIRC default
 ParenText (<text>)
-PnPLineSep 40 · 01 02 12 14 15
+PnPLineSep 40 Â· 01 02 12 14 15
 PnPNickColors 01 05 02 02 06 05 07 03,01 05 02 02 06 05 07 03,14 04 12 12 13 04 07 03,14 04 12 12 13 04 07 10
 PnPTheme 1
 Prefix 12*2*1*

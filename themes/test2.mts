@@ -1,10 +1,10 @@
 [mts]
 ; MTS-compatible theme file saved by Peace and Protection 4.21 by pai
-ActionChan ¢ <nick> <text>
+ActionChan Â¢ <nick> <text>
 ActionChanOp <lt>*<nick>:<target>*<gt> <text>
-ActionChanSelf ¢ <me> <text>
-ActionQuery ¢ <nick> <text>
-ActionQuerySelf ¢ <me> <text>
+ActionChanSelf Â¢ <me> <text>
+ActionQuery Â¢ <nick> <text>
+ActionQuerySelf Â¢ <me> <text>
 Author pai
 BaseColors 02,01,14,14
 BoldLeft 
@@ -29,30 +29,30 @@ FontDefault Arial,12
 FontQuery Arial,12
 FontScript Arial,12
 ImageScript
-LineSep 01········02········12········14········15········
+LineSep 01Â·Â·Â·Â·Â·Â·Â·Â·02Â·Â·Â·Â·Â·Â·Â·Â·12Â·Â·Â·Â·Â·Â·Â·Â·14Â·Â·Â·Â·Â·Â·Â·Â·15Â·Â·Â·Â·Â·Â·Â·Â·
 LineSepWhois 1
 MTSVersion 1.1
 Name PnP "test" theme w/normal events
-Notice ±<nick>± <text>
-NoticeChan !Script %:echo $iif(%::target == %::chan,$+(±,%::nick,::,%::target,±),$+(<-,%::nick,:,%::target,->)) %::text %:comments
-NoticeSelf -> ±<nick>± <text>
-NoticeSelfChan !Script %:echo -> $iif(%::target == %::chan,$+(±,%::target,±),$+(<-,%::target,->)) %::text %:comments
+Notice Â±<nick>Â± <text>
+NoticeChan !Script %:echo $iif(%::target == %::chan,$+(Â±,%::nick,::,%::target,Â±),$+(<-,%::nick,:,%::target,->)) %::text %:comments
+NoticeSelf -> Â±<nick>Â± <text>
+NoticeSelfChan !Script %:echo -> $iif(%::target == %::chan,$+(Â±,%::target,Â±),$+(<-,%::target,->)) %::text %:comments
 ParenText (<text>)
-PnPLineSep 40 · 01 02 12 14 15
+PnPLineSep 40 Â· 01 02 12 14 15
 PnPNickColors 01 05 02 02 06 05 07 03,01 05 02 02 06 05 07 03,14 04 12 12 13 04 07 03,14 04 12 12 13 04 07 10
 PnPTheme 1
-Prefix 12•2•1•
+Prefix 12â€¢2â€¢1â€¢
 RGBColors 255,255,255 0,0,0 0,0,127 0,147,0 255,0,0 127,0,0 156,0,156 252,127,0 255,255,0 0,252,0 0,147,147 0,255,255 0,0,252 255,0,255 127,127,127 210,210,210
 Scheme1 Alternate nicklist colors 1
 Scheme2 Alternate nicklist colors 2
 Scheme3 Alternate nicklist colors 3
-TextChan «<cnick><cmode><nick>» <text>
+TextChan Â«<cnick><cmode><nick>Â» <text>
 TextChanOp <lt>*<nick>:<target>*<gt> <text>
-TextChanSelf !Script %:echo $iif($_optn(0,23),$+(«,%::cnick,%::cmode,%::me,»),») %::text %:comments
-TextMsg !Script %:echo $iif($event == ACTION,‹¢ $+ %::nick $+ ¢›,‹* $+ %::nick $+ *›) %::text %:comments
-TextMsgSelf -> ‹*<nick>*› <text>
-TextQuery «<nick>» <text>
-TextQuerySelf !Script %:echo $iif($_optn(0,23),$+(«,%::me,»),») %::text %:comments
+TextChanSelf !Script %:echo $iif($_optn(0,23),$+(Â«,%::cnick,%::cmode,%::me,Â»),Â») %::text %:comments
+TextMsg !Script %:echo $iif($event == ACTION,â€¹Â¢ $+ %::nick $+ Â¢â€º,â€¹* $+ %::nick $+ *â€º) %::text %:comments
+TextMsgSelf -> â€¹*<nick>*â€º <text>
+TextQuery Â«<nick>Â» <text>
+TextQuerySelf !Script %:echo $iif($_optn(0,23),$+(Â«,%::me,Â»),Â») %::text %:comments
 TextSelfChanOp -> <*<target>*> <text>
 TimeStamp ON
 TimeStampFormat <c1>[HH:nn]

@@ -26,15 +26,15 @@ FontDefault Arial,12
 FontQuery Arial,12
 FontScript Arial,12
 ImageScript
-LineSep 01········02········12········14········15········
+LineSep 01Â·Â·Â·Â·Â·Â·Â·Â·02Â·Â·Â·Â·Â·Â·Â·Â·12Â·Â·Â·Â·Â·Â·Â·Â·14Â·Â·Â·Â·Â·Â·Â·Â·15Â·Â·Â·Â·Â·Â·Â·Â·
 LineSepWhois 1
 MTSVersion 1.1
 Name PnP default
 ParenText (<text>)
-PnPLineSep 40 · 01 02 12 14 15
+PnPLineSep 40 Â· 01 02 12 14 15
 PnPNickColors 01 05 02 02 06 05 07 03,01 05 02 02 06 05 07 03,14 04 12 12 13 04 07 03,14 04 12 12 13 04 07 10
 PnPTheme 1
-Prefix 12•2•1•
+Prefix 12â€¢2â€¢1â€¢
 RGBColors 255,255,255 0,0,0 0,0,127 0,147,0 255,0,0 127,0,0 156,0,156 252,127,0 255,255,0 0,252,0 0,147,147 0,255,255 0,0,252 255,0,255 127,127,127 210,210,210
 Scheme1 Alternate nicklist colors 1
 Scheme2 Alternate nicklist colors 2
