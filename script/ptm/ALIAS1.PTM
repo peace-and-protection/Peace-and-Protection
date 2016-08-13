@@ -575,15 +575,15 @@ _unlock.tb hdel pnp locked.title
 _title.note hadd -u16 pnp title.note $1-
 flash {
   if (($1 == $null) || (-* iswm $1)) {
-    flash $1-
+    flash $replace($1-,$chr(32),$chr(160))
     return
   }
   if ($_cfgi($iif($hget(pnp. $+ $cid,away),flash.away,flash.here))) {
     var %times = $int($calc($ifmatch / 2 + 0.5))
-    flash -r $+ %times $1-
+    flash -r $+ %times $replace($1-,$chr(32),$chr(160))
     if (!$appactive) .timer.unflash -oi 1 $calc(%times * 2 - 1) hdel pnp in.flash $chr(124) _upd.title
   }
-  else flash $1-
+  else flash $replace($1-,$chr(32),$chr(160))
   if (!$appactive) {
     titlebar $1-
     hadd pnp in.flash 1
