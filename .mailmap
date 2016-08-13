@@ -1,0 +1,3 @@
+# This file fixes «git shortlog», making username changes not visible,
+# when comming from the same email
+Sven <acvxqs@gmail.com>
