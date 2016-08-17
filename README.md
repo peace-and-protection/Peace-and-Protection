@@ -4,6 +4,7 @@ Peace and Protection (PnP) is a collection of scripts that enhances mIRC, a popu
 This script is coded by pai. She left the scene many years ago never to return. PnP is part of her legacy.
 
 ### Improvements
+* PnP 4.22 contained a vulnerability in the flash alias. This has been fixed.
 * PnP 4.22 opened custom windows with the -h flag. In newer mIRC versions that translates to using the -w0 flag.
 * Many smaller bugs have been found and fixed.
 
