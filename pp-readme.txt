@@ -3,7 +3,7 @@ PnP 4.22.7
 mIRC 7.46
 
 
-This script *requires* and is designed for mIRC v7.43 or later, not included.
+This script *requires* and is designed for mIRC v7.46 or later, not included.
 Using an earlier version of mIRC will not work. Please see:
 
 http://www.kristshell.net/pnp/ 
