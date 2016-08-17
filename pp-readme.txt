@@ -1,6 +1,6 @@
 
-PnP 4.22.6
-mIRC 7.43
+PnP 4.22.7
+mIRC 7.46
 
 
 This script *requires* and is designed for mIRC v7.43 or later, not included.
@@ -82,11 +82,13 @@ see Script\Trans\English.ini for details on translating PnP.
    SCRIPT, THEMES folders including the files kicks.txt, pp-faq.txt
    pp-readme.txt, quits.txt and whatsnew.txt) to your 
    %appdata%\mIRC folder.
-3) In your status window, type /load -rs script\first.mrc
+3) Turn off script confirmation warning. In Options>Other>Confirm...
+   Uncheck "Confirm when using a command that may run a script."
+4) In your status window, type /load -rs script\first.mrc
    (and press Enter)
-4) Any time mIRC asks if you'd like to run initialization
+5) Any time mIRC asks if you'd like to run initialization
    commands, click "Yes".
-5) mIRC will restart once or twice while installing PnP.
+6) mIRC will restart once or twice while installing PnP.
    Then you are ready to go!
    
 If mIRC crashes any time during this installation, you should
