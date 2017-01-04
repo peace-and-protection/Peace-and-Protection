@@ -8,6 +8,14 @@ This script is coded by pai. She left the scene many years ago never to return. 
 * PnP 4.22 opened custom windows with the -h flag. In newer mIRC versions that translates to using the -w0 flag.
 * Many smaller bugs have been found and fixed.
 
+### Languages
+Pai left instructions how to translate PnP. Have a look at the comments in this file: [\trans\english.ini](https://github.com/solbu/Peace-and-Protection/blob/master/script/trans/english.ini) Please [email us](mailto:pnp@login.kristshell.net) your translation file!
+
+Currently PnP has translation support for the following languages:
+* English
+* Turkish
+* Dutch
+
 ### Further development?
 Pai had to change priorities and most likely will not continue working on PnP. Because PnP is Pai's work and something she was very proud of, and the fact that she's probably not coming back to work on it, the script will not evolve beyond what it is. 
 
