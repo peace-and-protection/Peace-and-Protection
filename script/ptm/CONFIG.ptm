@@ -1371,6 +1371,13 @@ alias -l page.apply {
     `set %chan $did(454,%ln)
     dec %ln
   }
+  ; deleting channel(s)
+  var %chanlist = $didtok($dname,453,44),%num = $hfind(pnp.config,chopt.*,0,w)
+  while (%num > 0) {
+    var %chan2 = $right($hfind(pnp.config,chopt.*,%num,w),-6)
+    if (!$istok(%chanlist,%chan2,44)) { `set $hfind(pnp.config,chopt.*,%num,w) }
+    dec %num
+  }
   return
   
   ; DCC accept
