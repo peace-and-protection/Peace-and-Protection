@@ -2,7 +2,6 @@
 [![English](https://img.shields.io/badge/Language-English-green.svg)](https://github.com/solbu/Peace-and-Protection/blob/master/script/trans/english.ini)
 [![Turkish](https://img.shields.io/badge/Language-T%C3%BCrk%C3%A7e-green.svg)](https://github.com/solbu/Peace-and-Protection/blob/master/script/trans/turkish.ini)
 [![Dutch](https://img.shields.io/badge/Language-Nederlands-green.svg)](https://github.com/solbu/Peace-and-Protection/blob/master/script/trans/nederlands.ini)
-[![IRC](https://img.shields.io/badge/IRC-EFNet-red.svg)](irc://irc.efnet.org/peace&protection)
 
 ### What is PnP?
 Peace and Protection (PnP) is a collection of scripts that enhances mIRC, a popular windows IRC client. PnP allows the user to set options through the use of dialog boxes and popups. PnP also comes with various addons and a slew of custom commands. It has everything a beginner, advanced or expert mIRC user needs.
