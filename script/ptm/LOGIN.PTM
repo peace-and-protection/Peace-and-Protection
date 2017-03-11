@@ -242,7 +242,7 @@ dialog nukedet {
   text "", 85, 244 75 10 11
 
   check "&[nuke_dialog:auto_refresh]:", 50, 59 98 55 11
-  edit "", 58, 114 98 25 11
+  edit "", 51, 114 98 25 11
   text "[dialog:seconds]", 52, 141 100 37 10
 
   check "&[nuke_dialog:on_top]", 53, 183 98 35 11

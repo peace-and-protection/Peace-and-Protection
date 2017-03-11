@@ -241,7 +241,7 @@ text "Total IP packets:", 27, 119 75 46 10, right
   text "", 85, 244 75 10 11
  
 check "&Automatic refresh:", 50, 59 98 55 11
-  edit "", 58, 114 98 25 11
+  edit "", 51, 114 98 25 11
 text "seconds", 52, 141 100 37 10
  
 check "&On top", 53, 183 98 35 11
