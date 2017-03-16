@@ -21,3 +21,4 @@
 .gitattributes export-ignore
 .gitignore export-ignore
 .placeholder export-ignore
+preview/ export-ignore
