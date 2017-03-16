@@ -24,3 +24,7 @@ In this branch are themes that where not originally distributed by Pai in the pn
 ![Slate_Grey](https://github.com/solbu/Peace-and-Protection/blob/themes/preview/preview_slate_grey.bmp)
 
 ![Pai_Dark](https://github.com/solbu/Peace-and-Protection/blob/themes/preview/preview_pai_dark.bmp)
+
+## Blackice
+
+![Blackice](https://github.com/solbu/Peace-and-Protection/blob/themes/preview/preview_blackice.bmp)
