@@ -19,3 +19,8 @@ In this branch are themes that where not originally distributed by Pai in the pn
 ![Dusk](https://github.com/solbu/Peace-and-Protection/blob/themes/preview/preview_dusk.bmp)
 
 ## Grey
+![Grey](https://github.com/solbu/Peace-and-Protection/blob/themes/preview/preview_grey.bmp)
+
+![Slate_Grey](https://github.com/solbu/Peace-and-Protection/blob/themes/preview/preview_slate_grey.bmp)
+
+![Pai_Dark](https://github.com/solbu/Peace-and-Protection/blob/themes/preview/preview_pai_dark.bmp)
