@@ -28,3 +28,7 @@ In this branch are themes that where not originally distributed by Pai in the pn
 ## Blackice
 
 ![Blackice](https://github.com/solbu/Peace-and-Protection/blob/themes/preview/preview_blackice.bmp)
+
+## Blasted
+
+![Blasted](https://github.com/solbu/Peace-and-Protection/blob/themes/preview/preview_blasted.bmp)
