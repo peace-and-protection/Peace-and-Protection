@@ -1,4 +1,5 @@
 [![Wiki](https://img.shields.io/badge/Link-Wiki-blue.svg)](https://github.com/solbu/Peace-and-Protection/wiki)
+[![Themes](https://img.shields.io/badge/Link-Themes-blue.svg)](https://github.com/solbu/Peace-and-Protection/tree/themes)
 [![English](https://img.shields.io/badge/Language-English-green.svg)](https://github.com/solbu/Peace-and-Protection/blob/master/script/trans/english.ini)
 [![Turkish](https://img.shields.io/badge/Language-T%C3%BCrk%C3%A7e-green.svg)](https://github.com/solbu/Peace-and-Protection/blob/master/script/trans/turkish.ini)
 [![Dutch](https://img.shields.io/badge/Language-Nederlands-green.svg)](https://github.com/solbu/Peace-and-Protection/blob/master/script/trans/nederlands.ini)
@@ -28,5 +29,5 @@ Pai had to change priorities and most likely will not continue working on PnP. B
 We will attempt to fix the bugs that come along, and try to make it work, but there will be no new features. If we add something or make a new feature, it will be released as separate downloadable addons, but it will not be shipped with the main script archive.
 
 ### More information
-Check out the [wiki](https://github.com/solbu/Peace-and-Protection/wiki).
+Check out the [wiki](https://github.com/solbu/Peace-and-Protection/wiki) or the [themes repository](https://github.com/solbu/Peace-and-Protection/tree/themes).
 
