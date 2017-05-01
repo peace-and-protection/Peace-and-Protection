@@ -113,7 +113,7 @@ button "&Select...", 243, 119 70 40 12, tab 6
   edit "", 248, 1 1 1 1, autohs hide
  
   ; Addons
-text "PnP includes a number of optional addons. You may select which addons to load below. Some of the less-commonly used addons are not listed- you can access all addons fron the PnP menu.", 400, 5 10 190 30, tab 7
+text "PnP includes a number of optional addons. You may select which addons to load below. Some of the less-commonly used addons are not listed- you can access all addons from the PnP menu.", 400, 5 10 190 30, tab 7
 check "&ChanServ", 401, 5 45 105 8, tab 7
 check "&NickServ", 402, 5 55 105 8, tab 7
 check "&X Z P Bots", 403, 5 65 105 8, tab 7
