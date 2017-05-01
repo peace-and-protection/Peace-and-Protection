@@ -3,6 +3,22 @@ Complete details on everything added here. See pp-readme.txt for a summary of th
 
 As of Sunday October 21 2012, the support channel #peace&protection has moved to EFnet.
 
+*** 4.22.7 changes ***
+
+* BugFix $calc(script(0) - 2) -> $calc($script(0) - 2) in first.mrc/.ptm
+* BugFix window -h --> window -w0 in extras.ppa/.ptm and reindex.ini/.ptm
+* BugFix $read --> $readini in config.mrc/.ptm
+* Typo 'disps' userlist.mrc/.ptm
+* BugFix Theme Central - Opening window when already open
+* BugFix /addon c|h|u $istok error checking
+* BugFix File created: -d pnp.mts 303
+* Typo confusing name part of P&P header tag in lastseen.ppa/.ptm
+* BugFix Duplicate parameter in .reload command that gets passed to _broadcastp
+* Convert all files from ANSI/chcp 1252 --> UTF-8
+* BugFix alias1.ptm flash exploit fix
+* BugFix Config>Options>Channel options>Remove channel not removing channel
+* BugFix Invalid $did identifier in dialog login.ppa/.ptm
+
 *** 4.22.6 changes ***
 
 * Fixed 11 PTM files so that they have the important bugfixes as well. (After translation)
