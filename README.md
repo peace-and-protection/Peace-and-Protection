@@ -38,3 +38,7 @@ In this branch are themes that where not originally distributed by Pai in the pn
 ![Chelho](https://github.com/solbu/Peace-and-Protection/blob/themes/preview/preview_chelho.bmp)
 
 ![Chelho_spacer](https://github.com/solbu/Peace-and-Protection/blob/themes/preview/preview_chelho_spacer.bmp)
+
+## Ultra
+
+![Ultra](https://github.com/solbu/Peace-and-Protection/blob/themes/preview/preview_ultra.bmp)
