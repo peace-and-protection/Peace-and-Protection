@@ -1,3 +1,5 @@
+[![Visit our IRC channel](https://kiwiirc.com/buttons/irc.efnet.org/peace&protection.png)](https://kiwiirc.com/client/irc.efnet.org/#peace&protection)
+
 [![Wiki](https://img.shields.io/badge/Link-Wiki-blue.svg)](https://github.com/solbu/Peace-and-Protection/wiki)
 [![Themes](https://img.shields.io/badge/Link-Themes-blue.svg)](https://github.com/solbu/Peace-and-Protection/tree/themes)
 [![English](https://img.shields.io/badge/Language-English-green.svg)](https://github.com/solbu/Peace-and-Protection/blob/master/script/trans/english.ini)
