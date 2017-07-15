@@ -42,3 +42,7 @@ In this branch are themes that where not originally distributed by Pai in the pn
 ## Ultra
 
 ![Ultra](https://github.com/solbu/Peace-and-Protection/blob/themes/preview/preview_ultra.bmp)
+
+## nix2
+
+![nix2](https://github.com/solbu/Peace-and-Protection/blob/themes/preview/preview_nix2.bmp)
