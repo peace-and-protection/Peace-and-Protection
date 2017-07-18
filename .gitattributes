@@ -22,3 +22,4 @@
 .gitignore export-ignore
 .placeholder export-ignore
 preview/ export-ignore
+README.md export-ignore
