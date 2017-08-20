@@ -1,3 +1,8 @@
-# This file fixes «git shortlog», making username changes not visible,
-# when comming from the same email
-Sven <acvxqs@gmail.com>
+Geir André Halle <craze@github.com>  Geir André Halle (craze) <craze@github> 
+Geir André Halle <craze@github.com>  Geir André Halle (craze) <craze@users.noreply.github.com> 
+Johnny A. Solbu <github@solbu.net>  Johnny A. Solbu <github@solbu.net> 
+Sven <acvxqs@github.com>  ACVXQS <acvxqs@gmail.com> 
+Sven <acvxqs@github.com>  acvxqs <acvxqs@gmail.com> 
+Sven <acvxqs@github.com>  Sven <acvxqs@gmail.com> 
+Sven <acvxqs@github.com>  Sven <acvxqs@icloud.com> 
+Sven <acvxqs@github.com>  Sven <acvxqs@users.noreply.github.com> 
