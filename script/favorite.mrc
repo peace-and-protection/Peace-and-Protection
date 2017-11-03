@@ -145,7 +145,7 @@ if ($_o2tf($3)) dispa Favorites will be automatically joined when you connect to
 else dispa Favorites will not be joined when you connect to IRC. $chr(40) $+ all networks $+ $chr(41)
       }
       else {
-if ($_cfgx(favopt,$2) == $null) You don't have any favorites for $2 $+ .
+if ($_cfgx(favopt,$2) == $null) dispa You don't have any favorites for $2 $+ .
         else {
           _cfgxw favopt $2 $_o2tf($3) $gettok($_cfgx(favopt,$2),2-,32)
 if ($_o2tf($3)) dispa Favorites will be automatically joined when you connect to IRC. $chr(40) $+ on $2 $+ $chr(41)

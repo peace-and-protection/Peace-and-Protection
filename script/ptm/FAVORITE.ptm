@@ -146,7 +146,7 @@ alias fav {
         else dispa [fav:disable_all]
       }
       else {
-        if ($_cfgx(favopt,$2) == $null) [fav:empty_net:net=$2]
+        if ($_cfgx(favopt,$2) == $null) dispa [fav:empty_net:net=$2]
         else {
           _cfgxw favopt $2 $_o2tf($3) $gettok($_cfgx(favopt,$2),2-,32)
           if ($_o2tf($3)) dispa [fav:enable:net=$2]
