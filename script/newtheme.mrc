@@ -1,3 +1,4 @@
+; #= P&P -rs
 ; @======================================:
 ; |  Peace and Protection                |
 ; |  Theme editing and loading           |
