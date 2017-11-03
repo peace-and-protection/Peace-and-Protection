@@ -584,7 +584,7 @@ flash {
   }
   else flash $unsafe($1-)
   if (!$appactive) {
-    titlebar $($1-,1)
+    titlebar $1-
     hadd pnp in.flash 1
   }
 }
