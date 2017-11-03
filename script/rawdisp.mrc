@@ -1143,9 +1143,9 @@ raw &251:*:{
   halt
 }
 raw &255:*:{ set -u %::users $4 | set -u %::value $7 | raw.theme 255 $color(norm) $2- | disps-div | halt }
-raw &265:*:{ set -u %::users $5 | set -u %::value $7 | raw.theme 265 $color(norm) $2- | halt }
-raw &266:*:{ set -u %::users $5 | set -u %::value $7 | raw.theme 266 $color(norm) $2- | halt }
- 
+raw &265:*:{ set -u %::users $remove($gettok($1-,-3,32),$chr(44)) | set -u %::value $gettok($1-,-1,32) | raw.theme 265 $color(norm) $2- | halt }
+raw &266:*:{ set -u %::users $remove($gettok($1-,-3,32),$chr(44)) | set -u %::value $gettok($1-,-1,32) | raw.theme 266 $color(norm) $2- | halt }
+
 ; 271/272- silence list, end of list
 alias _pnptheme.silence271 {
 if (%::first) disptn -s %::nick Silence list
