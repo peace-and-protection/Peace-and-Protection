@@ -1,4 +1,3 @@
-; #= P&P -rs
 ; @======================================:
 ; |  Peace and Protection                |
 ; |  Theme editing and loading           |
@@ -2789,7 +2788,7 @@ alias theme.alias {
   aline @.themeals disp $reptok(%echo,--,$_cfgi(eroute) $+ qt $iif(a isin $_cfgi(eroute),$!iif($activecid != $!cid,$:anp)),1,32)
  
   ; Dispw- active or status based on raw configuration; uses Echo
-  aline @.themeals dispw else $reptok(%echo,--,$hget(pnp.config,rawroute) $+ qt $iif(a isin $_cfgi(rawroute),$!iif($activecid != $!cid,$:anp)),1,32)
+  aline @.themeals dispw $reptok(%echo,--,$hget(pnp.config,rawroute) $+ qt $iif(a isin $_cfgi(rawroute),$!iif($activecid != $!cid,$:anp)),1,32)
  
   ; Dispa- active; uses Echo
   aline @.themeals dispa $reptok(%echo,--,-ai2qt $!iif($activecid != $!cid,$:anp),1,32)
