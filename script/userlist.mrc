@@ -248,7 +248,7 @@ if ($gettok($window(@Userlist).title,1-2,32) == (default only)) userlist *
   }
   if (($1) && ($1 != *) && (!$_ischan($1))) userlist $_patch($1)
   if ($window(@Userlist)) clear @Userlist
-  else _window 2.6 -slzk -t10,35,40,50 @Userlist $_winpos(8,12,10,10) @Userlist
+  else _window 2.6 -slzk -t20,85,91,106 @Userlist $_winpos(8,12,10,10) @Userlist
   var %who,%lvl,%nick,%color,%lvlbit,%bit,%spec,%lvlnum,%num = $ulist(*,0),%file = $_cfg(userinfo.ini)
   if (%num == 0) goto done
   :loop

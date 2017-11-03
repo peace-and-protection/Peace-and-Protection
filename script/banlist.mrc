@@ -17,7 +17,7 @@ alias -l _openlist {
     }
   }
   else {
-    _window 2.6 -nhlvk -t3,30,39,50 %win -1 -1 -1 -1 @banlist
+    _window 2.6 -nhlvk -t3,68,78,88 %win -1 -1 -1 -1 @banlist
     _windowreg %win _closebanlist
   }
   return %win
@@ -251,7 +251,7 @@ on *:UNBAN:#:if ($window($_mservwin(@Ban-list,- $+ $chan))) _bankill $ifmatch $b
 alias blacklist blackedit
 alias blackedit {
   if ($window(@Blacklist)) clear @Blacklist
-  else _window 2.7 -slzk -t10,25,40 @Blacklist $_winpos(8,12,10,10) @Blacklist
+  else _window 2.7 -slzk -t20,85,125 @Blacklist $_winpos(8,12,10,10) @Blacklist
   var %file,%num,%line,%nick,%chan,%note
   %file = $_cfg(userinfo.ini)
   %num = $ulist(*,black,0)

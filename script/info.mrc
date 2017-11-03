@@ -15,7 +15,7 @@ if ($ial == $false) _error The IAL is not enabled!You need the IAL for that com
   _ssplit cc /clones $1-
 if ($chan(%.chan.cc).ial != $true) _error The IAL is not fully updated.Wait a few seconds and try again.
   if ($window(@Clones)) window -c @Clones
-  _window 2. -hlnv -t13,24 @Clones -1 -1 -1 -1 @Clones
+  _window 2. -hlnv -t20,35 @Clones -1 -1 -1 -1 @Clones
   var %num,%mask,%chan = %.chan.cc,%targ = %.targ.cc
   if ($_ismask(%targ)) {
     _recent userscan 5 0 %targ
@@ -434,7 +434,7 @@ raw &211:*:{
   var %win = $_mservwin(@Ports)
   if (($window(%win) == $null) || ($line(%win,5) ==  )) {
     if ($window(%win)) clear %win
-    else _window 2.6 -lkv -t16,22+l %win $_center(350,350) @Ports
+    else _window 2.6 -lkv -t20,35+l %win $_center(350,350) @Ports
     titlebar %win - $nick
   }
   elseif ($gettok($window(%win).title,2,32) != $nick) halt

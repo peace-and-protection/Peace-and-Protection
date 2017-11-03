@@ -126,7 +126,7 @@ alias authedit authlist $1-
 alias authlist {
   window -c @DCClist
   if ($window(@DCClist)) clear @DCClist
-  else _window 2.7 -lizk -t30 @DCClist $_winpos(8,12,10,10) @DCClist
+  else _window 2.7 -lizk -t65 @DCClist $_winpos(8,12,10,10) @DCClist
   var %num = $ulist(*,dcc,0)
   :loop
   if (%num) {
@@ -223,7 +223,7 @@ alias _numsendall {
 ;
 alias _Q.dcc {
   if ($window(@DCCQueue) == $null) {
-    _window 2.3 -lnzk $+ $iif($_cfgi(dccqueuehide),h) -t15 @DCCQueue -1 -1 -1 -1 @DCCQueue
+    _window 2.3 -lnzk $+ $iif($_cfgi(dccqueuehide),h) -t20 @DCCQueue -1 -1 -1 -1 @DCCQueue
     _windowreg @DCCQueue .timer.dcc.queue off
     aline @DCCQueue [word:nickname]	[word:network]	[word:file]
     aline @DCCQueue  
