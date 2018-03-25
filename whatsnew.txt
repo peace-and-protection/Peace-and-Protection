@@ -1,5 +1,5 @@
 What's New in PnP?
-Complete details on everything added here. See pp-readme.txt for a summary of the important stuff.
+Complete details on everything added here.
 
 As of Sunday October 21 2012, the support channel #peace&protection has moved to EFnet.
 
