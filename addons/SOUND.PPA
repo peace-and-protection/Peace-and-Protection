@@ -3,7 +3,7 @@
 ; Peace and Protection
 ; Sound (standard addon)
 ; ########################################
- 
+
 #.ppa.info off
 [addon]
 name=Sound
@@ -32,7 +32,7 @@ hashcid=lastsound leechcmds
 1=Options...:sopt
 [interfaces]
 #.ppa.info end
- 
+
 ; /loc [-switches] type [soundfile|stop [window[,cid]|- [action|-]]]
 ; switches specify list or play random, etc.
 ; soundfile may include an extension (else type is used to get extension(s))
@@ -47,7 +47,7 @@ hashcid=lastsound leechcmds
 ; finds and plays to window (unless error or playlisting)
 ; mostly used internally
 ; adds all matches to queue if open
- 
+
 ; Switches-
 ; -l = Always list
 ; -r = Always random
@@ -56,7 +56,7 @@ hashcid=lastsound leechcmds
 ; -c = Confirm random selections
 ; -s = Searching for a playlist (with l to edit list)
 ; (by default, lists if >1, plays if =1)
- 
+
 alias loc {
   ; Sort parameters
   if (-* iswm $1) { var %num,%opt = $1,%type = $2,%file = $3- }
@@ -70,7 +70,7 @@ alias loc {
     _validst -a
     %window = $hget(pnp.config,soundtarg)
   }
- 
+
   if (s isin %opt) %type = *
   else {
     if (%type == *) %type = $hget(pnp.config,soundtype)
@@ -78,9 +78,9 @@ alias loc {
       _validstp
       %type = $hget(pnp.config,soundtype)
     }
-if ($_scfg(%type,ext) == $null) _error Unrecognized sound file type- %type $+ See sound configuration for recognized file types.
+    if ($_scfg(%type,ext) == $null) _error Unrecognized sound file type- %type $+ See sound configuration for recognized file types.
   }
- 
+
   ; Stop?
   if (%file == stop) {
     if (/* iswm $_scfg(%type,player)) $_scfg(%type,player) stop
@@ -92,11 +92,11 @@ if ($_scfg(%type,ext) == $null) _error Unrecognized sound file type- %type $+ S
     .timer.squeue off
     return
   }
- 
+
   ; Playlists?
   if (s isin %opt) var %kind = list
   else var %kind = file
- 
+
   ; Find or select file
   if ($nopath(%file)) {
     if ((* !isin %file) && (. !isin %file) && (\ !isin %file)) %file = * $+ %file $+ *
@@ -104,14 +104,14 @@ if ($_scfg(%type,ext) == $null) _error Unrecognized sound file type- %type $+ S
     if (\ isin %file) %file = $_truename.fn(%file)
     if (%kind == list) {
       %num = $findfile($nofile(%file),$nopath(%file),0)
-if (%num == 0) { var %etype = playlist | _error No matching %etype files found.Mask- %file }
+      if (%num == 0) { var %etype = playlist | _error No matching %etype files found.Mask- %file }
       %file = $findfile($nofile(%file),$nopath(%file),$_pprand(%num))
     }
     else {
       %num = $_sfind(%type,1,%file)
       if (%num == 0) {
         window -c @.soundfind
-_error No matching $_desc(%type) files found.Mask- %file
+        _error No matching $_desc(%type) files found.Mask- %file
       }
     }
   }
@@ -124,12 +124,12 @@ _error No matching $_desc(%type) files found.Mask- %file
     if (. !isin %file) %file = %file $+ *. $+ $_glurp($iif(%kind == list,$_splext,$_scfg(%type,ext)))
     if (%kind == list) var %kshow = playlist | else var %kshow = $_desc(%type) file
     _ssplay Question
-%file = $$sfile(%file,Select a %kshow)
+    %file = $$sfile(%file,Select a %kshow)
     writeini $_cfg(sound.ini) $iif(%kind == list,opt,%type) $iif(%kind == list,lastpdir,lastdir) $nofile(%file)
     ; grab any description and store in window
     if (%kind == file) %num = $_sfind(%type,1,%file)
   }
- 
+
   ; Special actions- queue?
   if (($window(@queue)) && (c !isin %opt) && (r !isin %opt) && (a !isin %opt) && (l !isin %opt)) {
     if (%kind == list) {
@@ -145,7 +145,7 @@ _error No matching $_desc(%type) files found.Mask- %file
     squeue start
     return
   }
- 
+
   ; List in window?
   if ((l isin %opt) || (a isin %opt) || ((%num > 1) && (r !isin %opt) && (c !isin %opt) && (p !isin %opt))) {
     if (a isin %opt) {
@@ -169,13 +169,13 @@ _error No matching $_desc(%type) files found.Mask- %file
     window -a %window
     return
   }
- 
+
   if (%kind == list) {
     window -c @.soundfind
     _plplpl %file
     return
   }
- 
+
   ; Playlist?
   if (p isin %opt) {
     %file = $_temp($gettok($_splext,1,32))
@@ -188,14 +188,14 @@ _error No matching $_desc(%type) files found.Mask- %file
     _plplpl $mircdir $+ %file
     return
   }
- 
+
   ; Else, random pick
   %num = $line(@.soundfind,0)
   :retry
   %file = $line(@.soundfind,$_pprand(%num))
   if ($_pprand($calc(2 + $gettok($gettok(%file,1,9),1,3))) > 2) goto retry
   window -c @.soundfind
- 
+
   ; Confirm random pick?
   if ((c isin %opt) && (%num > 1)) {
     _dialog -am randsound randsound
@@ -208,29 +208,29 @@ _error No matching $_desc(%type) files found.Mask- %file
     did -o randsound 15 1 $cid
     halt
   }
- 
+
   ; sound / desc selected- now play
   if ($window(@queue)) { squeue $gettok(%file,2,9) | squeue start }
-else return $_sound($gettok(%file,2,9),%file,%window,%action,%type,$iif(%num > 1,randomly plays,plays))
+  else return $_sound($gettok(%file,2,9),%file,%window,%action,%type,$iif(%num > 1,randomly plays,plays))
 }
 alias -l _plban {
-aline $1 Double-click here to play one random $+ $chr(44) or on a file to play it
-aline -s $1 Double-click here to playlist all $+ $chr(44) or right-click for other options
+  aline $1 Double-click here to play one random $+ $chr(44) or on a file to play it
+  aline -s $1 Double-click here to playlist all $+ $chr(44) or right-click for other options
   aline $1  
 }
- 
+
 ; Random pick dialog
 dialog randsound {
-title "Random Sound"
+  title "Random Sound"
   icon script\pnp.ico
   option dbu
   size -1 -1 200 34
-text "Playing:", 1, 2 1 197 7
+  text "Playing:", 1, 2 1 197 7
   text "", 2, 4 10 197 7
-button "&Play", 3, 6 20 40 12, OK default
-button "Cancel", 4, 56 20 40 12, cancel
-button "&Pick again", 5, 106 20 40 12
-check "&Continuous", 20, 156 21 50 11
+  button "&Play", 3, 6 20 40 12, OK default
+  button "Cancel", 4, 56 20 40 12, cancel
+  button "&Pick again", 5, 106 20 40 12
+  check "&Continuous", 20, 156 21 50 11
   edit "", 10, 1 1 1 1, hide result
   edit "", 11, 1 1 1 1, hide
   edit "", 12, 1 1 1 1, hide
@@ -253,7 +253,7 @@ on *:DIALOG:randsound:sclick:3:{
   }
   if (($did(20).state) && (!$hget(pnp,sound.cont))) scont on | elseif ($did(20).state == 0) .scont off
   if ($window(@queue)) { squeue $gettok($did(10),2,9) | squeue start }
-else return $_sound($gettok($did(10),2,9),$did(10),$did(12),$did(13),$did(14),randomly plays)
+  else return $_sound($gettok($did(10),2,9),$did(10),$did(12),$did(13),$did(14),randomly plays)
 }
 on *:DIALOG:randsound:sclick:5:{
   if ($scid($did(15))) scid $did(15)
@@ -270,7 +270,7 @@ on *:DIALOG:randsound:sclick:5:{
   }
   loc $did(11)
 }
- 
+
 ; Drag/drop support
 on &*:SIGNAL:PNP.DRAGDROP:{
   if (($1 == n) && ($_sext($3-))) {
@@ -278,7 +278,7 @@ on &*:SIGNAL:PNP.DRAGDROP:{
     halt
   }
 }
- 
+
 ; /sound [window[,cid]] soundfile [action]
 ; soundfile must include an extension (defaults to wav otherwise)
 ; soundfile may include a directory
@@ -286,14 +286,14 @@ on &*:SIGNAL:PNP.DRAGDROP:{
 ; window defaults to CURRENT; can be -s (status) -c (all chan) -q (quiet) -a (active)
 ; action defaults to NONE; use - for a 'default' action
 ; plays to window (unless error)
- 
+
 alias -l _tsound {
   _validst -a
   sound $hget(pnp.config,soundtarg) $1-
 }
 alias sound {
-if (($1 == $null) || ($1 == on) || ($1 == off) || ($1 == on) || ($1 == off)) { sound $iif($1 == Off,off,$iif($1 == On,on,$1)) | saveini | hdel pnp opt.n3 | return }
- 
+  if (($1 == $null) || ($1 == on) || ($1 == off) || ($1 == on) || ($1 == off)) { sound $iif($1 == Off,off,$iif($1 == On,on,$1)) | saveini | hdel pnp opt.n3 | return }
+
   ; Sort parameters (switch to cid for isopen check)
   if ((, isin $1) && ($gettok($1,2,44) isnum) && ($scid($ifmatch))) scid $ifmatch
   if (($_isopen($gettok($1,1,44))) || (-? iswm $1)) { var %window = $1,%file = $2- }
@@ -301,26 +301,26 @@ if (($1 == $null) || ($1 == on) || ($1 == off) || ($1 == on) || ($1 == off)) { s
   scid -r
   if ("* iswm %file) { var %action = $gettok($gettok(%file,2-,34),1-,32) | %file = $gettok(%file,1,34) }
   else { var %action = $gettok(%file,2-,32) | %file = $gettok(%file,1,32) }
- 
-if (%file == $null) _error No sound file given.You must specify a sound file or wildcard mask.
+
+  if (%file == $null) _error No sound file given.You must specify a sound file or wildcard mask.
   if (. !isin %file) %file = %file $+ .wav
- 
+
   ; Determine filetype
   var %type = $_sext(%file)
-if (%type == $null) _error Unrecognized sound file extension- $gettok(%file,-1,46) $+ See sound configuration for details.
- 
+  if (%type == $null) _error Unrecognized sound file extension- $gettok(%file,-1,46) $+ See sound configuration for details.
+
   ; Find the file
   var %found = $_sfind(%type,0,%file)
-if (%found == $null) _error Sound not found- %file $+ This file may have moved $+ $chr(44) you may need to reindex sounds.
- 
+  if (%found == $null) _error Sound not found- %file $+ This file may have moved $+ $chr(44) you may need to reindex sounds.
+
   ; sound / desc selected- now play
-return $_sound($gettok(%found,2,9),%found,%window,%action,%type,plays)
+  return $_sound($gettok(%found,2,9),%found,%window,%action,%type,plays)
 }
- 
+
 ; determine filetype by extension
 ; $_sext(file)
 alias -l _sext return $_scfg(reverse,$gettok($1-,-1,46))
- 
+
 ; This does the actual playing of a sound (with display)
 ; $_sound(file,fileline,window,action,type,howplayed)
 ; 'window' can have a cid attached in format window,cid (one parameter)
@@ -336,40 +336,40 @@ alias -l _sound {
     if (%window == $null) %window = -s $+ , $+ $activecid
   }
   elseif ((* * iswm %window) || (@* iswm %window)) %window = -s, $+ $activecid
- 
+
   ; Play the sound itself
   _plsound $5 $1
- 
+
   ; Format the action
   var %desc = $gettok($2,3,9)
   var %addleech
- 
+
   if ($5 == mp3) {
     var %secs = $mp3.time($1)
     if ((%secs < 1) || (%secs == $null)) %secs = 0
     if ((%desc == $null) && ($_scfg($5,autodesc))) %desc = $mp3.desc($1)
   }
- 
+
   if ($4 == -) {
     %action = $_readprep($readini($_cfg(sound.ini),$5,$iif(%desc == $null,msg,msgdesc)))
     if (!Random:* iswm %action) %action = $read($gettok(%action,2-,58),n)
- 
+
     ; Add leech cmd?
     if (($mid($hget(pnp.config,sound.grab),6,1)) && ($mid($hget(pnp.config,sound.grab),1,1))) {
       if ((!$hget(pnp.config,sound.sendmatch)) || ($_searchtok($hget(pnp.config,sound.sendmatch),$1,44))) {
-if ($gettok($hget(pnp. $+ $cid,leechcmds),2,32)) %addleech = - $ifmatch to get this file
-elseif ($gettok($hget(pnp. $+ $cid,leechcmds),1,32)) %addleech = - $ifmatch $nopath($1) to get this file
+        if ($gettok($hget(pnp. $+ $cid,leechcmds),2,32)) %addleech = - $ifmatch to get this file
+        elseif ($gettok($hget(pnp. $+ $cid,leechcmds),1,32)) %addleech = - $ifmatch $nopath($1) to get this file
       }
     }
   }
- 
+
   if ($5 == mp3) {  
     %action = $msg.compile(%action,&desc&,%desc,&file&,$replace($nopath($1),%s20,_,_,$chr(32)),&secs&,%secs,&dur&,$_dur(%secs),&time&,$_stime(%secs),&size&,$_size($lof($1)),&play&,$6,&stereo&,$mp3.stereo($1),&bitrate&,$sound($1).bitrate,&khz&,$mp3.khz($1),&song&,$sound($1).title,&artist&,$sound($1).artist,&album&,$sound($1).album,&year&,$sound($1).year,&genre&,$sound($1).genre,&comment&,$sound($1).comment)
   }
   else {
     %action = $msg.compile(%action,&desc&,%desc,&file&,$replace($nopath($1),%s20,_,_,$chr(32)),&size&,$_size($lof($1)),&play&,$6)
   }
- 
+
   ; Say it
   set -u %.file $nopath($1)
   if (($gettok(%window,2,44) isnum) && ($scid($gettok(%window,2,44)))) scid $gettok(%window,2,44)
@@ -411,26 +411,26 @@ elseif ($gettok($hget(pnp. $+ $cid,leechcmds),1,32)) %addleech = - $ifmatch $nop
     else _show.sound.send %window $me %action
   }
   scid -r
- 
+
   _scontchk $5 $1
 }
- 
+
 ; Here we handle the action of playing a sound (no display)
 ; $1 should be the file type
 ; $2- should be the file
 alias -l _plsound {
   ; Get the player
   var %sound = $2-,%player = $_scfg($1,player)
- 
+
   ; Play
   if ($_scfg($1,shortfn)) %sound = $shortfn($2-)
   if ($left(%player,1) == /) %player " $+ %sound $+ "
   else {
-if ($exists(%sound) == $false) { if ($show) _error Sound not found- $2- $+ This file may have moved $+ $chr(44) you may need to reindex sounds. | return }
+    if ($exists(%sound) == $false) { if ($show) _error Sound not found- $2- $+ This file may have moved $+ $chr(44) you may need to reindex sounds. | return }
     if ($_scfg($1,listone)) {
       var %file = $_scfg($1,list)
       if (%file == $null) %file = lst
- 
+
       ; Filename
       %file = $_temp(%file)
       write -c %file %sound
@@ -441,7 +441,7 @@ if ($exists(%sound) == $false) { if ($show) _error Sound not found- $2- $+ This
     run $iif($_scfg($1,minimize),-n) %player $iif(%player,") $+ %sound $+ $iif(%player,")
     if ($_scfg($1,grabfocus)) hadd -u4 pnp grab.focus 1
   }
- 
+
   ; Store recents- both in a 9-item list and a 30-item playlist, and panel if open
   _recent sound 9 0 $2-
   var %file = $_cfg(recent.pls)
@@ -467,7 +467,7 @@ on *:APPACTIVE:{
   if ($appactive) hdel pnp grab.focus
   elseif ($hget(pnp,grab.focus)) showmirc -s
 }
- 
+
 ; $_sfind(type,x,filename)
 ; Finds sound file(s)
 ; wildcards finds indexed matches; wilds with directory finds nonindexed matches
@@ -486,7 +486,7 @@ alias -l _sfind {
         if ($exists(%file) == $false) { 
           if ($show) {
             window -c @.soundfind
-_error $_desc($1) files have not been indexed properly.Press $_Q.fkey(1,$calc($ctime + 120),reindex,$1) to index them.
+            _error $_desc($1) files have not been indexed properly.Press $_Q.fkey(1,$calc($ctime + 120),reindex,$1) to index them.
           }
           if (!$2) window -c @.soundfind
           return
@@ -508,7 +508,7 @@ _error $_desc($1) files have not been indexed properly.Press $_Q.fkey(1,$calc($
       if ($exists(%file) == $false) {
         if ($show) {
           window -c @.soundfind
-_error $_desc($1) files have not been indexed properly.Press $_Q.fkey(1,$calc($ctime + 120),reindex,$1) to index them.
+          _error $_desc($1) files have not been indexed properly.Press $_Q.fkey(1,$calc($ctime + 120),reindex,$1) to index them.
         }
         if (!$2) window -c @.soundfind
         return
@@ -539,19 +539,19 @@ _error $_desc($1) files have not been indexed properly.Press $_Q.fkey(1,$calc($
   window -c @.soundfind
   return %num
 }
- 
+
 ; $_scfg(type,bit)
 alias -l _scfg return $readini($_cfg(sound.ini),n,$1,$2)
- 
+
 ; $_splext
 alias -l _splext if ($_scfg(opt,playlist)) return $ifmatch | return m3u pls
- 
+
 ; $_desc(type)
 alias -l _desc return $readini($_cfg(sound.ini),n,$1,desc)
- 
+
 ; $_stime(secs)
 alias -l _stime if ($1) return $int($calc($1 / 60)) $+ : $+ $right($calc($1 % 60 + 100),2) | return ?:??
- 
+
 ; MP3/etc info identifiers (time must return seconds or 0/null; all others are free-form)
 alias -l mp3.time return $round($calc($sound($1-).length / 1000),0)
 alias -l mp3.stereo var %mode = $sound($1-).mode | if (Stereo isin %mode) return Stereo | return %mode
@@ -563,7 +563,7 @@ alias -l mp3.desc {
   if (%artist) %artist = %artist -
   return %artist $sound($1-).title
 }
- 
+
 alias -l _plwin if ($window(@Playlist*,$1) != $active) if ($ifmatch) return $ifmatch | return
 alias -l _pldo {
   var %num = 1
@@ -601,8 +601,8 @@ alias -l _plpl {
 }
 alias -l _plplpl {
   var %file = $read($1-,n,1),%type = $_sext(%file)
-if (%type == $null) _error Unrecognized sound file extension- $gettok(%file,-1,46) $+ See sound configuration for details.
-if (/* iswm $_scfg(%type,player)) _error Cannot playlist $_desc(%type) files.You aren't using an external player
+  if (%type == $null) _error Unrecognized sound file extension- $gettok(%file,-1,46) $+ See sound configuration for details.
+  if (/* iswm $_scfg(%type,player)) _error Cannot playlist $_desc(%type) files.You aren't using an external player
   .timer.squeue off
   if ($_scfg(%type,shortfn)) var %sound = $shortfn($1-)
   else var %sound = $1-
@@ -637,15 +637,15 @@ alias -l _plpopdo {
 menu @Playlist {
   dclick:_plpopdo $1
   $_isstype
-$iif($window(@Queue),Queue,Playlist)
-.$iif($sline($active,1).ln > 3,Selected files):_plpopdo 0
-.Entire list:_plpopdo 2
-.One at random:_plpopdo 1
+  $iif($window(@Queue),Queue,Playlist)
+  .$iif($sline($active,1).ln > 3,Selected files):_plpopdo 0
+  .Entire list:_plpopdo 2
+  .One at random:_plpopdo 1
   .-
-.$iif($window(@Queue),Stop and close queue,Activate queue):if ($window(@Queue)) squeue close | else squeue -n
-Options
-.$iif($hget(pnp,sound.cont),$style(1)) Continuous play:scont *
-.Playing to... %.isstarg:starg
+  .$iif($window(@Queue),Stop and close queue,Activate queue):if ($window(@Queue)) squeue close | else squeue -n
+  Options
+  .$iif($hget(pnp,sound.cont),$style(1)) Continuous play:scont *
+  .Playing to... %.isstarg:starg
   .-
   .%.isstype1:_isstype 1
   .%.isstype2:_isstype 2
@@ -654,38 +654,38 @@ Options
   .%.isstype5:_isstype 5
   .%.isstype6:stype
   -
-Edit
-.Add file...:loc -a $+ $remove($active,@Playlist) *
-.Add list...:loc -sa $+ $remove($active,@Playlist) *
-.Find files...:loc -a $+ $remove($active,@Playlist) * " $+ $_entry(0,$null,Find filenames containing or matching...?Enter words or a wildcard string) $+ "
+  Edit
+  .Add file...:loc -a $+ $remove($active,@Playlist) *
+  .Add list...:loc -sa $+ $remove($active,@Playlist) *
+  .Find files...:loc -a $+ $remove($active,@Playlist) * " $+ $_entry(0,$null,Find filenames containing or matching...?Enter words or a wildcard string) $+ "
   .-
-.$iif($sline($active,1).ln > 3,Remove):_pldo $active -r
+  .$iif($sline($active,1).ln > 3,Remove):_pldo $active -r
   .-
-.$iif($sline($active,1).ln > 3,Copy to)
+  .$iif($sline($active,1).ln > 3,Copy to)
   ..$_plwin(1):_pldo $active -c $window(@Playlist*,1)
   ..$_plwin(2):_pldo $active -c $window(@Playlist*,2)
   ..$_plwin(3):_pldo $active -c $window(@Playlist*,3)
   ..-
-..New list:var %old = $active,%win = $_newwin(@Playlist) | _window 2.4 -lz -t1,46 %win $_winpos(8,12,10,10) @Playlist | _plban %win | _pldo %old -c %win
-.$iif($sline($active,1).ln > 3,Move to)
+  ..New list:var %old = $active,%win = $_newwin(@Playlist) | _window 2.4 -lz -t1,46 %win $_winpos(8,12,10,10) @Playlist | _plban %win | _pldo %old -c %win
+  .$iif($sline($active,1).ln > 3,Move to)
   ..$_plwin(1):_pldo $active -m $window(@Playlist*,1)
   ..$_plwin(2):_pldo $active -m $window(@Playlist*,2)
   ..$_plwin(3):_pldo $active -m $window(@Playlist*,3)
   ..-
-..New list:var %old = $active,%win = $_newwin(@Playlist) | _window 2.4 -lz -t1,46 %win $_winpos(8,12,10,10) @Playlist | _plban %win | _pldo %old -m %win
+  ..New list:var %old = $active,%win = $_newwin(@Playlist) | _window 2.4 -lz -t1,46 %win $_winpos(8,12,10,10) @Playlist | _plban %win | _pldo %old -m %win
   .-
-.$iif($sline($active,1).ln > 3,Up):_doslideup $active 4
-.$iif($sline($active,1).ln > 3,Down):_doslidedn $active
-.$iif(($sline($active,0).ln > 1) && ($sline($active,1).ln > 3),Shuffle selected):_doshuffle $active 4
-.$iif($sline($active,0).ln < 2,Shuffle all):_doshufflea $active 4
+  .$iif($sline($active,1).ln > 3,Up):_doslideup $active 4
+  .$iif($sline($active,1).ln > 3,Down):_doslidedn $active
+  .$iif(($sline($active,0).ln > 1) && ($sline($active,1).ln > 3),Shuffle selected):_doshuffle $active 4
+  .$iif($sline($active,0).ln < 2,Shuffle all):_doshufflea $active 4
   -
-$iif(($numtok($window($active).title,32) > 2) && ($line($active,0) > 3),Save list):savebuf $calc($line($active,0) - 3) $active " $+ $gettok($window($active).title,3-,32) $+ "
-$iif($line($active,0) > 3,Save as...):{
+  $iif(($numtok($window($active).title,32) > 2) && ($line($active,0) > 3),Save list):savebuf $calc($line($active,0) - 3) $active " $+ $gettok($window($active).title,3-,32) $+ "
+  $iif($line($active,0) > 3,Save as...):{
     var %file = $_sext($line($active,4)),%dir = $_scfg(%file,lastpdir)
     if (%dir == $null) %dir = $_scfg(%file,dir1)
     %file = %dir $+ *. $+ $gettok($_splext,1,32)
     _ssplay Question
-%file = $sfile(%file,Save playlist to what file?,Save)
+    %file = $sfile(%file,Save playlist to what file?,Save)
     if (%file == $null) return
     if (. !isin %file) %file = %file $+ . $+ $gettok($_splext,1,32)
     var %action
@@ -699,15 +699,15 @@ $iif($line($active,0) > 3,Save as...):{
   }
 }
 dialog starg {
-title "Sound Target"
+  title "Sound Target"
   icon script\pnp.ico
   option dbu
   size -1 -1 70 90
-text "&Play sounds to:", 1, 1 1 65 10
+  text "&Play sounds to:", 1, 1 1 65 10
   combo 10, 0 12 70 75, drop
   list 30, 1 1 1 1, hide
   list 2, 0 25 70 55
-button "&Select", 3, 10 78 48 10, default OK
+  button "&Select", 3, 10 78 48 10, default OK
   edit "", 4, 1 1 1 1, hide result autohs
 }
 on *:DIALOG:starg:init:*:{
@@ -725,10 +725,10 @@ on *:DIALOG:starg:init:*:{
 }
 on *:DIALOG:starg:sclick:10:{ _stargshowwins }
 alias -l _stargshowwins {
-did -ra $dname 2 (all channels)
-did -a $dname 2 (active window)
-did -a $dname 2 (status window)
-did -a $dname 2 (quietly)
+  did -ra $dname 2 (all channels)
+  did -a $dname 2 (active window)
+  did -a $dname 2 (status window)
+  did -a $dname 2 (quietly)
   var %scid = $did(30,$did(10).sel)
   if ($scid(%scid)) scid %scid
   var %num = $chan(0) | :loop1 | if (%num) { if ($me ison $chan(%num)) _ddadd $dname 2 $chan(%num) | dec %num | goto loop1 }
@@ -756,9 +756,9 @@ alias starg {
     _ssplay Question
     `set soundtarg $$dialog(starg,starg,-4)
   }
-if (-q == $gettok($hget(pnp.config,soundtarg),1,44)) disps Now playing sounds quietly
-elseif (-? iswm $gettok($hget(pnp.config,soundtarg),1,44)) disps Now playing sounds to: $gettok(all channels*active window*status window,$findtok(-c -a -s,$gettok($hget(pnp.config,soundtarg),1,44),1,32),42)
-else dispr $gettok($hget(pnp.config,soundtarg),1,44) Now playing sounds to: $:t($gettok($hget(pnp.config,soundtarg),1,44))
+  if (-q == $gettok($hget(pnp.config,soundtarg),1,44)) disps Now playing sounds quietly
+  elseif (-? iswm $gettok($hget(pnp.config,soundtarg),1,44)) disps Now playing sounds to: $gettok(all channels*active window*status window,$findtok(-c -a -s,$gettok($hget(pnp.config,soundtarg),1,44),1,32),42)
+  else dispr $gettok($hget(pnp.config,soundtarg),1,44) Now playing sounds to: $:t($gettok($hget(pnp.config,soundtarg),1,44))
 }
 ; checks if soundtarg is still valid
 ; if $1 is null then we ask, otherwise we default to that
@@ -782,17 +782,17 @@ alias -l _validst {
 }
 ; save active in case we use -a as a target for a playlist/queue
 alias -l _validsta if (($active ischan) || ($query($active)) || (=* iswm $active)) hadd pnp pqa.soundtarg $active $+ , $+ $activecid | elseif (Status Window == $acitve) hadd pnp pqa.soundtarg -s, $+ $activecid
- 
+
 ; Continuous
 alias scont {
   if ($1 == *) hadd pnp sound.cont $_not($hget(pnp,sound.cont))
   elseif ($1) hadd pnp sound.cont $_o2tf($1)
   if ($hget(pnp,sound.cont)) {
-dispa Continuous sound playing is enabled.
+    dispa Continuous sound playing is enabled.
     if ($dialog(sndpanel)) did -c sndpanel 10
   }
   else {
-dispa Continuous sound playing disabled.
+    dispa Continuous sound playing disabled.
     if ($window(@Queue) == $null) .timer.squeue off
     if ($dialog(sndpanel)) did -u sndpanel 10
   }
@@ -811,7 +811,7 @@ alias -l _scontnext {
     else loc -r $1 * $hget(pnp.config,soundtarg)
   }
 }
- 
+
 on *:LOAD:{
   ; PnP check
   if (!$_ispnp) {
@@ -823,18 +823,18 @@ on *:LOAD:{
   ; Invalid load method check
   if (!$istok($_cfgx(addons,ids),$readini($script,n,addon,id),32)) {
     .timer -mio 1 0 .unload -rs " $+ $script $+ "
-dispa Unloading ' $+ $script $+ ' $chr(40) $+ addon is not properly loaded; use /addon to load it $+ $chr(41)
+    dispa Unloading ' $+ $script $+ ' $chr(40) $+ addon is not properly loaded; use /addon to load it $+ $chr(41)
     halt
   }
   .sound on
 }
- 
+
 alias f5 _validstp | loc -c * *
 alias sf5 {
   if ($mouse.key & 2) {
     _validstp
     _validsta
-var %find = $_entry(0,$null,Find song $+ $chr(40) $+ s $+ $chr(41) containing what words?)
+    var %find = $_entry(0,$null,Find song $+ $chr(40) $+ s $+ $chr(41) containing what words?)
     loc * "* $+ $replace(%find,$chr(32),*) $+ *"
   }
   else {
@@ -843,7 +843,7 @@ var %find = $_entry(0,$null,Find song $+ $chr(40) $+ s $+ $chr(41) containing wh
   }
 }
 alias cf5 stype
- 
+
 alias -l _dsf if ($2 == $null) loc $1 | else if ((. isin $2-) || (: isin $2-) || (\ isin $2-)) loc $1 " $+ $2- $+ " | else loc $1 "* $+ $replace($2-,$chr(32),*) $+ *"
 alias mp _dsf mp3 $1-
 alias mp2 _dsf mp3 $1-
@@ -854,23 +854,23 @@ alias mid _dsf mid $1-
 alias midi _dsf mid $1-
 alias ogg _dsf ogg $1-
 alias wma _dsf wma $1-
- 
+
 ; sound type config
 alias scfg _dialog -am stypes stypes
 dialog stypes {
-title "Sound Types"
+  title "Sound Types"
   icon script\pnp.ico
   option dbu
   size -1 -1 125 89
- 
-text "&Double-click on a sound type to edit settings, or add and remove types as needed.", 1, 5 5 110 15
- 
+
+  text "&Double-click on a sound type to edit settings, or add and remove types as needed.", 1, 5 5 110 15
+
   list 2, 5 22 75 67, sort
- 
-button "&Configure", 10, 85 23 35 12, default
-button "&Add", 11, 85 39 35 12
-button "&Remove", 12, 85 55 35 12
-button "Close", 13, 85 71 35 12, cancel
+
+  button "&Configure", 10, 85 23 35 12, default
+  button "&Add", 11, 85 39 35 12
+  button "&Remove", 12, 85 55 35 12
+  button "Close", 13, 85 71 35 12, cancel
 }
 on *:DIALOG:stypes:init:*:_freshenst $dname 2
 alias -l _freshenst {
@@ -902,7 +902,7 @@ on *:DIALOG:stypes:sclick:11:{
 on *:DIALOG:stypes:sclick:12:_stype r $_selstype(2) $dname
 alias -l _stype {
   if ($1 == r) {
-_okcancel 0 Delete sound type ' $+ $2 $+ '? This cannot be undone.
+    _okcancel 0 Delete sound type ' $+ $2 $+ '? This cannot be undone.
     var %ext = $_scfg($2,ext),%num = $numtok(%ext,32)
     :loop
     remini $_cfg(sound.ini) reverse $gettok(%ext,%num,32)
@@ -918,23 +918,23 @@ _okcancel 0 Delete sound type ' $+ $2 $+ '? This cannot be undone.
     dialog -am scfg scfg
   }
 }
- 
+
 dialog deftypes {
-title "Add Sound Type"
+  title "Add Sound Type"
   icon script\pnp.ico
   option dbu
   size -1 -1 158 49
- 
-text "Select a default file type or 'other' to create your own:", 201, 7 6 140 10
- 
-button "&MP3", 101, 6 20 32 12
-button "&Wave", 102, 44 20 32 12
-button "&Midi", 103, 82 20 32 12
-button "&WMA", 104, 6 35 32 12
-button "&Ogg", 105, 44 35 32 12
-button "&Other", 106, 82 35 32 12, OK
-button "Cancel", 107, 120 35 32 12, cancel
- 
+
+  text "Select a default file type or 'other' to create your own:", 201, 7 6 140 10
+
+  button "&MP3", 101, 6 20 32 12
+  button "&Wave", 102, 44 20 32 12
+  button "&Midi", 103, 82 20 32 12
+  button "&WMA", 104, 6 35 32 12
+  button "&Ogg", 105, 44 35 32 12
+  button "&Other", 106, 82 35 32 12, OK
+  button "Cancel", 107, 120 35 32 12, cancel
+
   edit "-", 1, 1 1 1 1, result hide
 }
 on *:DIALOG:deftypes:init:*:{
@@ -945,48 +945,48 @@ on *:DIALOG:deftypes:init:*:{
   if ($_scfg(ogg,ext)) did -b $dname 105
 }
 on *:DIALOG:deftypes:sclick:*:if ($did isnum 101-105) { did -o $dname 1 1 $gettok(mp3 wav mid wma ogg,$calc($did - 100),32) | dialog -k $dname }
- 
+
 dialog scfg {
-title "Sound Configuration"
+  title "Sound Configuration"
   icon script\pnp.ico
   option dbu
   size -1 -1 215 117
- 
-check "&Options", 203, 5 5 40 12, push
-check "&Directories", 204, 50 5 40 12, push
-check "&Player", 205, 95 5 40 12, push
- 
-box "Options:", 1, 5 22 205 72, hide
-text "&Sound type:", 2, 5 32 42 8, right hide
+
+  check "&Options", 203, 5 5 40 12, push
+  check "&Directories", 204, 50 5 40 12, push
+  check "&Player", 205, 95 5 40 12, push
+
+  box "Options:", 1, 5 22 205 72, hide
+  text "&Sound type:", 2, 5 32 42 8, right hide
   edit "", 3, 50 30 95 11, autohs hide result
-text "&Extensions:", 4, 5 44 42 8, right hide
+  text "&Extensions:", 4, 5 44 42 8, right hide
   edit "", 5, 50 42 95 11, autohs hide
-text "&Default action:", 8, 5 56 42 8, right hide
+  text "&Default action:", 8, 5 56 42 8, right hide
   edit "", 9, 50 54 155 11, autohs hide
-text "&With desc.:", 10, 5 68 42 8, right hide
+  text "&With desc.:", 10, 5 68 42 8, right hide
   edit "", 11, 50 66 155 11, autohs hide
-check "&Always ask for description", 12, 20 80 85 10, hide disable
-check "&Use ID3 tags for description", 13, 110 80 100 10, hide
- 
-box "Directories:", 14, 5 22 205 70, hide
+  check "&Always ask for description", 12, 20 80 85 10, hide disable
+  check "&Use ID3 tags for description", 13, 110 80 100 10, hide
+
+  box "Directories:", 14, 5 22 205 70, hide
   list 15, 10 32 155 45, sort hide
-button "&Add", 16, 169 33 35 12, hide
-button "&Remove", 17, 169 53 35 12, hide
-check "&Index files (requires preparation but speeds searching)", 18, 15 77 150 10, hide
-button "&Auto find...", 19, 169 73 35 12, hide disable
- 
-box "Player:", 20, 5 22 205 74, hide
-check "&Use mIRC's built-in sound playing", 21, 10 31 190 10, hide
+  button "&Add", 16, 169 33 35 12, hide
+  button "&Remove", 17, 169 53 35 12, hide
+  check "&Index files (requires preparation but speeds searching)", 18, 15 77 150 10, hide
+  button "&Auto find...", 19, 169 73 35 12, hide disable
+
+  box "Player:", 20, 5 22 205 74, hide
+  check "&Use mIRC's built-in sound playing", 21, 10 31 190 10, hide
   button "", 22, 10 44 195 12, hide
-check "&Minimize player", 23, 10 59 77 10, hide
-check "&Have mIRC grab focus after playing", 24, 90 59 112 10, hide
-check "&Use short (8.3) filenames", 25, 10 69 77 10, hide
-check "&Use playlist even for single files", 26, 90 69 112 10, hide
-check "&Play sounds when others play them", 29, 90 80 112 10, hide
- 
-button "OK", 201, 25 100 40 12, OK default
-button "Cancel", 202, 100 100 40 12, cancel
- 
+  check "&Minimize player", 23, 10 59 77 10, hide
+  check "&Have mIRC grab focus after playing", 24, 90 59 112 10, hide
+  check "&Use short (8.3) filenames", 25, 10 69 77 10, hide
+  check "&Use playlist even for single files", 26, 90 69 112 10, hide
+  check "&Play sounds when others play them", 29, 90 80 112 10, hide
+
+  button "OK", 201, 25 100 40 12, OK default
+  button "Cancel", 202, 100 100 40 12, cancel
+
   edit "", 100, 1 1 1 1, hide autohs
   edit %.s.type, 101, 1 1 1 1, hide autohs
   edit %.s.fresh, 102, 1 1 1 1, hide autohs
@@ -1009,8 +1009,8 @@ on *:DIALOG:scfg:init:*:{
       elseif (%type == ogg) did -a $dname 15 $sound(ogg)
       did -c $dname 29
     }
-    did -a $dname 9 &play& ¯ &file& ¯ %extra ¯
-    did -a $dname 11 &play& ¯ &desc& ¯ %extra ¯
+    did -a $dname 9 &play& √∏ &file& √∏ %extra √∏
+    did -a $dname 11 &play& √∏ &desc& √∏ %extra √∏
     if ($findtok(wav mid mp3 wma ogg,%type,1,32)) {
       did -a $dname 3 $gettok(Wave MIDI MPEG WMA Ogg,$ifmatch,32)
       did -a $dname 5 $gettok(wav.mid.mp2 mp3.wma.ogg,$ifmatch,46)
@@ -1030,7 +1030,7 @@ on *:DIALOG:scfg:init:*:{
   if (!$istok(wav mid wma ogg mp3,%type,32)) did -b $dname 21
   if (%type != mp3) did -b $dname 13
   elseif ($_scfg(%type,autodesc)) did -c $dname 13
-did -a $dname 22 (windows default)
+  did -a $dname 22 (windows default)
   if (%player == /splay) { did -c $dname 21 | did -b $dname 22,23,24,25,26 }
   elseif (%player) did -a $dname 22 %player
   if ($_scfg(%type,grabfocus)) did -c $dname 24
@@ -1052,19 +1052,19 @@ on *:DIALOG:scfg:sclick:16:_scfgad -ca c:\
 on *:DIALOG:scfg:sclick:17:if ($did(15).sel) { did -d $dname 15 $did(15).sel | did -c scfg 103 }
 alias -l _scfgad {
   _ssplay Question
-did $1 scfg 15 $iif($1 == -co,$did(scfg,15).sel) $$sdir($2-,Directory to add?)
+  did $1 scfg 15 $iif($1 == -co,$did(scfg,15).sel) $$sdir($2-,Directory to add?)
   did -c scfg 103
 }
 alias -l _scfgw if ($3 == $null) remini %.file $1 $2 | else writeini %.file $1 $2 $3-
 on *:DIALOG:scfg:sclick:201:{
   set -u %.file $_cfg(sound.ini)
-if ($did(3) == $null) _error You must enter a sound type.
+  if ($did(3) == $null) _error You must enter a sound type.
   var %old,%exts = $remove($replace($_c2s($did(5)),;,$chr(32)),.),%num = $numtok(%exts,32)
-if (%exts == $null) _error You must enter at least one extension.
-if ((* isin %exts) || (? isin %exts)) _error Cannot use wildcards in extensions.
+  if (%exts == $null) _error You must enter at least one extension.
+  if ((* isin %exts) || (? isin %exts)) _error Cannot use wildcards in extensions.
   :loope
   %old = $_scfg(reverse,$gettok(%exts,%num,32))
-if ((%old != $null) && (%old != $did(101))) _error Extension $gettok(%exts,%num,32) is already used.It is currently reserved for %old files.
+  if ((%old != $null) && (%old != $did(101))) _error Extension $gettok(%exts,%num,32) is already used.It is currently reserved for %old files.
   if (%num > 1) { dec %num | goto loope }
   if ($did(101) == -) did -o $dname 101 1 $gettok(%exts,1,32)
   else {
@@ -1083,7 +1083,7 @@ if ((%old != $null) && (%old != $did(101))) _error Extension $gettok(%exts,%num,
   _scfgw $did(101) msgdesc $_writeprep($did(11))
   _scfgw $did(101) autodesc $did(13).state
   if ($did(21).state) _scfgw $did(101) player /splay
-elseif ($did(22) == (windows default)) _scfgw $did(101) player
+  elseif ($did(22) == (windows default)) _scfgw $did(101) player
   else _scfgw $did(101) player $did(22)
   _scfgw $did(101) minimize $did(23).state
   _scfgw $did(101) grabfocus $did(24).state
@@ -1110,7 +1110,7 @@ elseif ($did(22) == (windows default)) _scfgw $did(101) player
   elseif (($did(18).state) && ($did(103).state)) _reqrei $did(101) 2
 }
 alias -l _reqrei {
-if ($_okcancel(3,$gettok(You have disabled indexing- delete index file?*You have enabled indexing- Index files now?*You have modified directories- Reindex now?*Creating filelists is done during indexing- Reindex now?,$calc($2 + 1),42))) {
+  if ($_okcancel(3,$gettok(You have disabled indexing- delete index file?*You have enabled indexing- Index files now?*You have modified directories- Reindex now?*Creating filelists is done during indexing- Reindex now?,$calc($2 + 1),42))) {
     if ($2) reindex $1
     else .remove $_cfg($1_indx.dat)
   }
@@ -1128,7 +1128,7 @@ alias -l _scfgsec {
   did -c scfg $1
   did -v scfg $gettok(%sets,$calc($1 - 202),32)
 }
- 
+
 ; /reindex type
 ; Reindexes sounds, retains ratings and descriptions
 ; indx_mp.dat (tabbed- filename, then rating as a color, then desc)
@@ -1137,8 +1137,8 @@ alias -l _scfgsec {
 alias reindex {
   ; List all current files
   var %ext = $_scfg($1,ext)
-if (%ext == $null) _error Unrecognized sound file type- $1 $+ See sound configuration for recognized file types.
-if (!$_scfg($1,index)) _error You do not have $_desc($1) files set to be indexed.See sound configuration if you want to enable indexing.
+  if (%ext == $null) _error Unrecognized sound file type- $1 $+ See sound configuration for recognized file types.
+  if (!$_scfg($1,index)) _error You do not have $_desc($1) files set to be indexed.See sound configuration if you want to enable indexing.
   _resetleech
   writeini " $+ $scriptdir $+ reindex.ini" script n1 % $+ .fext = %ext $chr(124) % $+ .trig.type = $hget(pnp.config,sound.trigtype) $chr(124) % $+ .type = $1 $chr(124) % $+ .userdir = $mircdir $+ $_cfg $chr(124) % $+ .sdesc = $_desc($1) $chr(124) % $+ .textlist = $mircdir $+ $mknickfn($me) $+ - $+ $1 $+ .txt $chr(124) % $+ .leechcmd = $gettok($hget(pnp. $+ $cid,leechcmds),1,32)
   writeini " $+ $scriptdir $+ reindex.ini" rfiles n0 $scriptdir $+ reindex.ini
@@ -1149,7 +1149,7 @@ if (!$_scfg($1,index)) _error You do not have $_desc($1) files set to be indexed
   run $mircexe -i" $+ $scriptdir $+ reindex.ini"
   hadd -u4 pnp grab.focus 1
 }
- 
+
 ; Queueing
 ; /squeue [file.ext|n|next|prev|start|stop|close|-n]
 alias squeue {
@@ -1158,26 +1158,26 @@ alias squeue {
     window -c @Queue
     if ($dialog(sndpanel)) {
       did -u sndpanel 9
-did -ra sndpanel 10 &Continuous play
+      did -ra sndpanel 10 &Continuous play
     }
     return
   }
   if ($window(@Queue) == $null) {
     if (($1- == next) || ($1- == prev) || ($1- == stop)) return
-if ($1- isnum) _error Queue is not running.Cannot select a line to play.
+    if ($1- isnum) _error Queue is not running.Cannot select a line to play.
     _validsta
     _window 2 $iif($1- == -n,-nlz,-lz) -t7,13 @Queue $_winpos(8,12,10,10) @Queue
     _windowreg @Queue squeue close
     if ($dialog(sndpanel)) {
       did -c sndpanel 9
-did -ra sndpanel 10 &Repeat queue
+      did -ra sndpanel 10 &Repeat queue
     }
   }
   if (($1- == $null) || ($1- == -n)) return
   if (($1- == next) || ($1- == prev)) {
-if ($fline(@Queue,(play)*,1,0)) {
+    if ($fline(@Queue,(play)*,1,0)) {
       if (($ifmatch == $line(@Queue,0)) && ($1 == next) && ($hget(pnp,sound.cont))) _recurse squeue 1
-else _recurse squeue $calc($fline(@Queue,(play)*,1,0) + $iif($1 == next,1,-1))
+      else _recurse squeue $calc($fline(@Queue,(play)*,1,0) + $iif($1 == next,1,-1))
     }
     elseif ($1 == next) _recurse squeue 1
     else .timer.squeue off
@@ -1186,13 +1186,13 @@ else _recurse squeue $calc($fline(@Queue,(play)*,1,0) + $iif($1 == next,1,-1))
   if (($1- == stop) || ($1- isnum)) {
     .timer.squeue off
     var %oldext
-if ($fline(@Queue,(play)*,1,0)) {
+    if ($fline(@Queue,(play)*,1,0)) {
       %oldext = $_sext($gettok($line(@Queue,$ifmatch),3,9))
-rline $color(not) @Queue $ifmatch $puttok($line(@Queue,$ifmatch),(done),1,9)
+      rline $color(not) @Queue $ifmatch $puttok($line(@Queue,$ifmatch),(done),1,9)
     }
     if (($1 isnum) && ($numtok($line(@Queue,$1),9) > 2)) {
       if ((%oldext) && (%oldext != $_sext($gettok($line(@Queue,$1),3,9)))) loc %oldext stop
-rline $color(c) @Queue $1 $puttok($line(@Queue,$1),(play),1,9)
+      rline $color(c) @Queue $1 $puttok($line(@Queue,$1),(play),1,9)
       _validst -a
       sound $hget(pnp.config,soundtarg) " $+ $gettok($line(@Queue,$1),3,9) $+ " -
       var %time = $gettok($line(@Queue,$1),2,9)
@@ -1203,31 +1203,31 @@ rline $color(c) @Queue $1 $puttok($line(@Queue,$1),(play),1,9)
     return
   }
   if ($1- == start) {
-if ($fline(@Queue,(play)*,1,0)) return
-if ($fline(@Queue,(done)*,0,0) == $line(@Queue,0)) _recurse squeue 1
+    if ($fline(@Queue,(play)*,1,0)) return
+    if ($fline(@Queue,(done)*,0,0) == $line(@Queue,0)) _recurse squeue 1
     else _recurse squeue $fline(@Queue, *,1,0)
     return
   }
-if ($exists($1-) == $false) _error File ' $+ $1- $+ ' does not exist!
+  if ($exists($1-) == $false) _error File ' $+ $1- $+ ' does not exist!
   var %type = $_sext($1-)
-if (%type == $null) _error Unrecognized sound file extension- $gettok($1-,-1,46) $+ See sound configuration for details.
+  if (%type == $null) _error Unrecognized sound file extension- $gettok($1-,-1,46) $+ See sound configuration for details.
   if (%type == mp3) { aline @Queue  	 $+ $_stime($mp3.time($1-)) $+ 	 $+ $1- }
   elseif (($istok(wav mid wma ogg,%type,32)) && ($_scfg(%type,player) == /splay)) aline @Queue  	 	 $+ $1-
-else _error Can't queue $1- $+ Only MP3s and files played in mIRC are queueable.
+  else _error Can't queue $1- $+ Only MP3s and files played in mIRC are queueable.
   window -b @Queue
 }
- 
+
 menu @Queue {
-dclick:if ($gettok($line($active,$1),1,9) == (play)) squeue stop | else squeue $1
+  dclick:if ($gettok($line($active,$1),1,9) == (play)) squeue stop | else squeue $1
   $_isstype
-Play...:loc *
-Random...:loc -c * *
-Find...:var %find = $_entry(0,$null,Find song $+ $chr(40) $+ s $+ $chr(41) containing what words?) | loc * "* $+ $replace(%find,$chr(32),*) $+ *"
+  Play...:loc *
+  Random...:loc -c * *
+  Find...:var %find = $_entry(0,$null,Find song $+ $chr(40) $+ s $+ $chr(41) containing what words?) | loc * "* $+ $replace(%find,$chr(32),*) $+ *"
   -
-Options
-.$iif($hget(pnp,sound.cont),$style(1)) Continuous play:scont *
-.Playing to... %.isstarg:starg
-Type
+  Options
+  .$iif($hget(pnp,sound.cont),$style(1)) Continuous play:scont *
+  .Playing to... %.isstarg:starg
+  Type
   .%.isstype1:_isstype 1
   .%.isstype2:_isstype 2
   .%.isstype3:_isstype 3
@@ -1235,22 +1235,22 @@ Type
   .%.isstype5:_isstype 5
   .%.isstype6:stype
   .-
-.Reindex current:_validstp | reindex $hget(pnp.config,soundtype)
+  .Reindex current:_validstp | reindex $hget(pnp.config,soundtype)
   -
-Previous:squeue prev
-Next:squeue next
-$iif($fline($active,(play)*,1,0),Stop,Resume):if ($fline($active,(play)*,1,0)) squeue stop | else squeue start
+  Previous:squeue prev
+  Next:squeue next
+  $iif($fline($active,(play)*,1,0),Stop,Resume):if ($fline($active,(play)*,1,0)) squeue stop | else squeue start
   -
-Clean:{ while ($fline($active,(done)*,1)) { dline $active $ifmatch } }
-Edit
-.$iif($sline($active,1).ln,Remove):_pldo $active -r
+  Clean:{ while ($fline($active,(done)*,1)) { dline $active $ifmatch } }
+  Edit
+  .$iif($sline($active,1).ln,Remove):_pldo $active -r
   .-
-.$iif($sline($active,1).ln,Up):_doslideup $active 1
-.$iif($sline($active,1).ln,Down):_doslidedn $active
-.$iif($sline($active,0).ln > 1,Shuffle selected):_doshuffle $active 1
-.$iif($sline($active,0).ln < 2,Shuffle all):_doshufflea $active 1
+  .$iif($sline($active,1).ln,Up):_doslideup $active 1
+  .$iif($sline($active,1).ln,Down):_doslidedn $active
+  .$iif($sline($active,0).ln > 1,Shuffle selected):_doshuffle $active 1
+  .$iif($sline($active,0).ln < 2,Shuffle all):_doshufflea $active 1
   .-
-.Create playlist:{
+  .Create playlist:{
     var %num = 1,%win = $_newwin(@Playlist),%old = $active
     _window 2.4 -lz -t1,46 %win $_winpos(8,12,10,10) @Playlist
     _plban %win
@@ -1262,14 +1262,14 @@ Edit
     _plupdt %win
   }
 }
- 
+
 dialog stype {
-title "Sound type"
+  title "Sound type"
   option dbu
   size -1 -1 70 77
-text "&Play sounds of type:", 1, 1 1 65 10
+  text "&Play sounds of type:", 1, 1 1 65 10
   list 2, 0 12 70 55, sort
-button "&Select", 3, 10 65 48 10, default OK
+  button "&Select", 3, 10 65 48 10, default OK
   edit "", 4, 1 1 1 1, hide result autohs
 }
 on *:DIALOG:stype:init:*:_freshenst $dname 2
@@ -1279,18 +1279,18 @@ alias stype {
   if ($1) {
     if ($_scfg(reverse,$1)) `set soundtype $ifmatch
     elseif ($_scfg($1,ext)) `set soundtype $1
-else _error Unrecognized sound file type- $1 $+ See sound configuration for recognized file types.
+    else _error Unrecognized sound file type- $1 $+ See sound configuration for recognized file types.
   }
   else {
     _ssplay Question
     `set soundtype $$dialog(stype,stype,-4)
   }
-dispa Now playing sounds of type $:t($_desc($hget(pnp.config,soundtype)))
+  dispa Now playing sounds of type $:t($_desc($hget(pnp.config,soundtype)))
   if ($dialog(sndpanel)) did -ar sndpanel 1 & $+ $_desc($hget(pnp.config,soundtype)) $+ :
 }
 ; checks if soundtype is still valid
 alias -l _validstp if ($_scfg($hget(pnp.config,soundtype),ext) == $null) stype | elseif ($dialog(sndpanel)) did -ar sndpanel 1 & $+ $_desc($hget(pnp.config,soundtype)) $+ :
- 
+
 alias playlist {
   _validsta
   var %win = $_newwin(@Playlist)
@@ -1298,17 +1298,17 @@ alias playlist {
   titlebar %win (0 files)
   _plban %win
 }
- 
- 
+
+
 menu channel,menubar {
   $_popssep
   $_isstype
-Sound
-.Play...:loc *
-.Random...:loc -c * *
-.Find...:_validsta | var %find = $_entry(0,$null,Find song $+ $chr(40) $+ s $+ $chr(41) containing what words?) | loc * "* $+ $replace(%find,$chr(32),*) $+ *"
+  Sound
+  .Play...:loc *
+  .Random...:loc -c * *
+  .Find...:_validsta | var %find = $_entry(0,$null,Find song $+ $chr(40) $+ s $+ $chr(41) containing what words?) | loc * "* $+ $replace(%find,$chr(32),*) $+ *"
   .-
-.Type
+  .Type
   ..%.isstype1:_isstype 1
   ..%.isstype2:_isstype 2
   ..%.isstype3:_isstype 3
@@ -1316,8 +1316,8 @@ Sound
   ..%.isstype5:_isstype 5
   ..%.isstype6:stype
   ..-
-..Reindex current:_validstp | reindex $hget(pnp.config,soundtype)
-.Recent
+  ..Reindex current:_validstp | reindex $hget(pnp.config,soundtype)
+  .Recent
   ..$_rec(sound,1):_tsound " $+ %=sound.1 $+ " -
   ..$_rec(sound,2):_tsound " $+ %=sound.2 $+ " -
   ..$_rec(sound,3):_tsound " $+ %=sound.3 $+ " -
@@ -1329,26 +1329,26 @@ Sound
   ..$_rec(sound,9):_tsound " $+ %=sound.9 $+ " -
   ..-
   ..%=sound.clr:_recclr sound | .remove $_cfg(recent.pls)
-..$iif((%=sound.clr) && ($exists($_cfg(recent.pls))),Recents playlist...):_validsta | loc -sl * $_cfg(recent.pls)
+  ..$iif((%=sound.clr) && ($exists($_cfg(recent.pls))),Recents playlist...):_validsta | loc -sl * $_cfg(recent.pls)
   .-
-.Playlist
-..Create:playlist
-..Open...:_validsta | loc -sl *
-..Play...:_validsta | loc -s *
-.Options
-..$iif($hget(pnp,sound.cont),$style(1)) Continuous play:scont *
-..$iif($window(@Queue),$style(1)) Queue sounds:if ($window(@Queue)) squeue close | else squeue
+  .Playlist
+  ..Create:playlist
+  ..Open...:_validsta | loc -sl *
+  ..Play...:_validsta | loc -s *
+  .Options
+  ..$iif($hget(pnp,sound.cont),$style(1)) Continuous play:scont *
+  ..$iif($window(@Queue),$style(1)) Queue sounds:if ($window(@Queue)) squeue close | else squeue
   ..-
-..Playing to... %.isstarg:starg
+  ..Playing to... %.isstarg:starg
   .-
-.$iif($menu == menubar,Configure)
-..Sound types...:scfg
-..Sound options...:sopt
+  .$iif($menu == menubar,Configure)
+  ..Sound types...:scfg
+  ..Sound options...:sopt
   ..-
   ;!!..F5:_error not done yet...
   ;!!..ShiftF5:_error not done yet...
   ;!!..CtrlF5:_error not done yet...
-$iif($mid($hget(pnp.config,sound.grab),1,2) == 12,Grab)
+  $iif($mid($hget(pnp.config,sound.grab),1,2) == 12,Grab)
   .$_poprec(sgrab,1):msg $gettok($_sufnrec(sgrab,1),$iif($mid($hget(pnp.config,sound.grab),4,1),2,1),32) $_f2s($_grabrec(sgrab,1))
   .$_poprec(sgrab,2):msg $gettok($_sufnrec(sgrab,2),$iif($mid($hget(pnp.config,sound.grab),4,1),2,1),32) $_f2s($_grabrec(sgrab,2))
   .$_poprec(sgrab,3):msg $gettok($_sufnrec(sgrab,3),$iif($mid($hget(pnp.config,sound.grab),4,1),2,1),32) $_f2s($_grabrec(sgrab,3))
@@ -1360,7 +1360,7 @@ $iif($mid($hget(pnp.config,sound.grab),1,2) == 12,Grab)
   .$_poprec(sgrab,9):msg $gettok($_sufnrec(sgrab,9),$iif($mid($hget(pnp.config,sound.grab),4,1),2,1),32) $_f2s($_grabrec(sgrab,9))
   .$_poprec(sgrab,10):msg $gettok($_sufnrec(sgrab,10),$iif($mid($hget(pnp.config,sound.grab),4,1),2,1),32) $_f2s($_grabrec(sgrab,10))
   .-
-.$iif($_grabrec(sgrab,0),Clear this list):hfree pnp.recseen. $+ $cid $+ .sgrab
+  .$iif($_grabrec(sgrab,0),Clear this list):hfree pnp.recseen. $+ $cid $+ .sgrab
 }
 alias -l _isstype {
   unset %.isstype?
@@ -1383,11 +1383,11 @@ alias -l _isstype {
 }
 alias -l _isstarg {
   _validst 0
-if (-* iswm $gettok($hget(pnp.config,soundtarg),1,44)) set -u1 %.isstarg ( $+ $gettok(status window*all channels*active window*quietly,$findtok(-s -c -a -q,$gettok($hget(pnp.config,soundtarg),1,44),32),42) $+ )
+  if (-* iswm $gettok($hget(pnp.config,soundtarg),1,44)) set -u1 %.isstarg ( $+ $gettok(status window*all channels*active window*quietly,$findtok(-s -c -a -q,$gettok($hget(pnp.config,soundtarg),1,44),32),42) $+ )
   elseif ($gettok($hget(pnp.config,soundtarg),1,44)) set -u1 %.isstarg ( $+ $replace($ifmatch,&,&&) $+ )
   else unset %.isstarg
 }
- 
+
 ; sound playing/grabbing
 ctcp &*:SOUND:_snd.ctcp $1-
 ctcp &*:SLOTS:halt
@@ -1453,7 +1453,7 @@ alias _show.sound.send {
     set -u %::nick $1
     theme.text TextMsgSelf
   }
- 
+
 }
 ; puts filename in %.file and returns remaining action
 alias -l _snd.extract {
@@ -1513,9 +1513,9 @@ alias -l _snd.play {
     if ($window(%win) == $null) {
       _window 2.5 -lnv -t13,30 %win -1 -1 -1 -1 @SoundGrab
       titlebar %win ( $+ $hget(pnp. $+ $cid,net) $+ )
-aline %win Double-click on a file to grab it. $chr(40) $+ right-click for options $+ $chr(41)
+      aline %win Double-click on a file to grab it. $chr(40) $+ right-click for options $+ $chr(41)
       aline %win  
-aline %win (channel)	Nickname	File
+      aline %win (channel)	Nickname	File
       aline %win  
     }
     if ($1 != $nick) var %pref = ( $+ $lower($1) $+ )
@@ -1535,10 +1535,10 @@ aline %win (channel)	Nickname	File
 }
 menu @SoundGrab {
   dclick:if ($1 > 4) _sndgrab $1 $line($active,$1)
-Grab:if ($sline($active,1).ln > 4) _sndgrab $ifmatch $sline($active,$1)
-Remove::loop | if ($sline($active,1).ln > 4) { dline $active $ifmatch | goto loop }
+  Grab:if ($sline($active,1).ln > 4) _sndgrab $ifmatch $sline($active,$1)
+  Remove::loop | if ($sline($active,1).ln > 4) { dline $active $ifmatch | goto loop }
   -
-Configure...:sopt
+  Configure...:sopt
 }
 alias -l _sndgrab {
   var %loc,%nick = $gettok($gettok($2-,2,9),1-,32)
@@ -1549,73 +1549,73 @@ alias -l _sndgrab {
   msg %loc %trig $right($gettok($2-,3-,9),-1)
   cline $color(not) $active $1
 }
- 
+
 ;
 ; General config
 ;
 alias sopt _dialog -am sopt sopt
 dialog sopt {
-title "Sound Options"
+  title "Sound Options"
   icon script\pnp.ico
   option dbu
   size -1 -1 215 140
- 
-check "&Grabbing", 203, 5 5 40 12, push
-check "&Leeching", 204, 50 5 40 12, push
-check "&@Commands", 205, 95 5 40 12, push
-check "&Options", 206, 140 5 40 12, push
- 
-box "Grabbing:", 1, 5 22 205 95, hide
-check "&Enable grabbing: (requesting sound files you don't own from others)", 2, 10 31 195 8, hide
-radio "&Grab automatically", 3, 20 43 185 8, hide
-radio "&Select files to grab from a window", 4, 20 53 185 8, hide
-radio "&Store files to grab in popups", 5, 20 63 185 8, hide
-check "&Only grab files matching:", 6, 10 78 72 8, hide
+
+  check "&Grabbing", 203, 5 5 40 12, push
+  check "&Leeching", 204, 50 5 40 12, push
+  check "&@Commands", 205, 95 5 40 12, push
+  check "&Options", 206, 140 5 40 12, push
+
+  box "Grabbing:", 1, 5 22 205 95, hide
+  check "&Enable grabbing: (requesting sound files you don't own from others)", 2, 10 31 195 8, hide
+  radio "&Grab automatically", 3, 20 43 185 8, hide
+  radio "&Select files to grab from a window", 4, 20 53 185 8, hide
+  radio "&Store files to grab in popups", 5, 20 63 185 8, hide
+  check "&Only grab files matching:", 6, 10 78 72 8, hide
   edit "", 7, 82 77 60 11, hide
-check "&Only grab from channels:", 8, 10 91 72 8, hide
+  check "&Only grab from channels:", 8, 10 91 72 8, hide
   edit "", 9, 82 89 60 11, hide
-check "&Assume trigger is !nick if not given", 10, 10 104 100 8, hide
-check "&Send grab request in private", 11, 115 104 90 8, hide
- 
-box "Leeching:", 12, 5 22 205 95, hide
-check "&Enable leeching: (others may request your sound files)", 13, 10 31 195 8, hide
-text "&Trigger to leech a specific file:", 14, 20 44 75 8, hide
+  check "&Assume trigger is !nick if not given", 10, 10 104 100 8, hide
+  check "&Send grab request in private", 11, 115 104 90 8, hide
+
+  box "Leeching:", 12, 5 22 205 95, hide
+  check "&Enable leeching: (others may request your sound files)", 13, 10 31 195 8, hide
+  text "&Trigger to leech a specific file:", 14, 20 44 75 8, hide
   edit "", 15, 95 42 47 11, hide
-text "&Trigger to leech last played file:", 16, 20 56 75 8, hide
+  text "&Trigger to leech last played file:", 16, 20 56 75 8, hide
   edit "", 17, 95 54 47 11, hide
-check "&Only send files matching:", 18, 10 78 72 8, hide
+  check "&Only send files matching:", 18, 10 78 72 8, hide
   edit "", 19, 82 77 60 11, hide
-check "&Only allow in channels:", 20, 10 90 72 8, hide
+  check "&Only allow in channels:", 20, 10 90 72 8, hide
   edit "", 21, 82 89 60 11, hide
-check "&Show leech command when playing files", 44, 10 102 195 8, hide
-button "&Queueing options...", 22, 147 47 55 12, hide
- 
-box "@Commands:", 23, 5 22 205 95, hide
-text "These commands are used by others to find out info on your files. Leave a command blank to disable it. See help for details on what the commands do. (these commands only work on one file type at a time)", 24, 10 31 190 20, hide
-text "&File type:", 25, 10 55 70 8, hide right
+  check "&Show leech command when playing files", 44, 10 102 195 8, hide
+  button "&Queueing options...", 22, 147 47 55 12, hide
+
+  box "@Commands:", 23, 5 22 205 95, hide
+  text "These commands are used by others to find out info on your files. Leave a command blank to disable it. See help for details on what the commands do. (these commands only work on one file type at a time)", 24, 10 31 190 20, hide
+  text "&File type:", 25, 10 55 70 8, hide right
   combo 26, 83 54 59 50, hide drop
-text "&Find / locator / search:", 27, 10 68 70 8, hide right
+  text "&Find / locator / search:", 27, 10 68 70 8, hide right
   edit "", 28, 82 66 60 11, hide
-text "&Max. matches:", 37, 145 68 35 8, hide
+  text "&Max. matches:", 37, 145 68 35 8, hide
   edit "", 38, 182 66 20 11, hide
-text "&Get list of all files:", 29, 10 79 70 8, hide right
+  text "&Get list of all files:", 29, 10 79 70 8, hide right
   edit "", 30, 82 77 60 11, hide
-text "&Cancel any queued files:", 31, 10 90 70 8, hide right
+  text "&Cancel any queued files:", 31, 10 90 70 8, hide right
   edit "", 32, 82 88 60 11, hide
-text "&Check DCC / queue stats:", 33, 10 101 70 8, hide right
+  text "&Check DCC / queue stats:", 33, 10 101 70 8, hide right
   edit "", 34, 82 99 60 11, hide
-button "&Default", 35, 147 83 55 12, hide
-button "&Clear", 36, 147 98 55 12, hide
- 
-box "Options:", 39, 5 22 205 95, hide
-text "&Playlist extension(s):", 40, 10 78 70 8, hide right
+  button "&Default", 35, 147 83 55 12, hide
+  button "&Clear", 36, 147 98 55 12, hide
+
+  box "Options:", 39, 5 22 205 95, hide
+  text "&Playlist extension(s):", 40, 10 78 70 8, hide right
   edit "", 41, 82 76 60 11, hide
-check "&Don't use SOUND CTCPs (use normal actions)", 42, 25 52 180 10, hide
-check "&Send replies to Leeching / @Commands quietly (don't show to you)", 43, 25 40 180 10, hide
- 
-button "OK", 201, 25 122 40 12, OK default
-button "Cancel", 202, 100 122 40 12, cancel
- 
+  check "&Don't use SOUND CTCPs (use normal actions)", 42, 25 52 180 10, hide
+  check "&Send replies to Leeching / @Commands quietly (don't show to you)", 43, 25 40 180 10, hide
+
+  button "OK", 201, 25 122 40 12, OK default
+  button "Cancel", 202, 100 122 40 12, cancel
+
   edit "", 100, 1 1 1 1, hide autohs
 }
 on *:DIALOG:sopt:init:*:{
@@ -1645,12 +1645,12 @@ on *:DIALOG:sopt:init:*:{
   if ($_scfg(opt,useme)) did -c $dname 42
   if (!$_scfg(opt,showreply)) did -c $dname 43
   _freshenst $dname 26 $hget(pnp.config,sound.trigtype)
-did -a $+ $iif($hget(pnp.config,sound.trigtype) == $null,c) $dname 26 (disabled)
+  did -a $+ $iif($hget(pnp.config,sound.trigtype) == $null,c) $dname 26 (disabled)
 }
 on *:DIALOG:sopt:sclick:201:{
   set -u %.file $_cfg(sound.ini)
   var %index,%trig,%num = 1,%exts = $remove($replace($_c2s($did(41)),;,$chr(32)),.),%newst = $_selstype(26,1)
-if ((* isin %exts) || (? isin %exts)) _error Cannot use wildcards in extensions.|(playlist)
+  if ((* isin %exts) || (? isin %exts)) _error Cannot use wildcards in extensions.|(playlist)
   if ((%newst) && ($did(30))) {
     if (($hget(pnp.config,sound.trigtype) != %newst) || ($gettok($hget(pnp.config,sound.trig),4,32) == 0)) %index = 1
     elseif ($exists($hget(pnp.config,sound.textfile)) != $true) %index = 1
@@ -1696,29 +1696,29 @@ alias -l _soptsec {
   did -c sopt $1
   did -v sopt $gettok(%sets,$calc($1 - 202),32)
 }
- 
+
 ;
 ; Sound Panel
 ;
 dialog sndpanel {
-title "Sound Panel"
+  title "Sound Panel"
   icon script\pnp.ico
   option dbu
   size -1 -1 165 11
   button "", 1, 1 1 33 9
-button "&Select", 2, 41 1 25 9
-button "&Find", 3, 68 1 25 9
-button "&Random", 4, 95 1 25 9
-button "&Play", 13, 40 1 25 9, hide
-button "7Edit", 14, 67 1 25 9, hide
-button "&Create", 15, 95 1 25 9, hide
-check "&Playlist", 5, 122 1 25 9, push
+  button "&Select", 2, 41 1 25 9
+  button "&Find", 3, 68 1 25 9
+  button "&Random", 4, 95 1 25 9
+  button "&Play", 13, 40 1 25 9, hide
+  button "7Edit", 14, 67 1 25 9, hide
+  button "&Create", 15, 95 1 25 9, hide
+  check "&Playlist", 5, 122 1 25 9, push
   check "->", 6, 152 2 10 7, push
   combo 7, 1 11 147 100, drop sort
-button "&Rep.", 8, 149 12 15 9
-check "&Queue files", 9, 1 23 44 9
-check "&Continuous play", 10, 46 23 54 9
-button "&Playing to...", 11, 100 23 47 9
+  button "&Rep.", 8, 149 12 15 9
+  check "&Queue files", 9, 1 23 44 9
+  check "&Continuous play", 10, 46 23 54 9
+  button "&Playing to...", 11, 100 23 47 9
   button "", 12, 1 1 1 1, hide cancel
 }
 alias f9 spanel
@@ -1732,7 +1732,7 @@ on *:DIALOG:sndpanel:init:*:{
     if ($3) did -c $dname 6
   }
   if ($exists($_cfg(recent.pls))) loadbuf -o $dname 7 $_cfg(recent.pls)
-if ($window(@Queue)) { did -c $dname 9 | did -ra $dname 10 &Repeat queue }
+  if ($window(@Queue)) { did -c $dname 9 | did -ra $dname 10 &Repeat queue }
   if ($hget(pnp,sound.cont)) did -c $dname 10
   _validstp
 }
@@ -1766,7 +1766,7 @@ on *:DIALOG:sndpanel:sclick:13:loc -s *
 on *:DIALOG:sndpanel:sclick:14:loc -sl *
 on *:DIALOG:sndpanel:sclick:15:playlist
 ;;; not done- not sure on logic -when playlist is open- of buttons 4/13/14/15, or other features?
- 
+
 ;
 ; Leeching
 ;
@@ -1786,69 +1786,69 @@ on *:TEXT:*:*:{
   if (($hget(pnp.flood. $+ $cid,leechflood) > 5) || ($hget(pnp.flood. $+ $cid,leechflood. $+ $site) > 2)) return
   var %reply,%usecmd = $iif($_scfg(opt,showreply),_tnotice,_qnotice)
   goto %cmd
- 
+
   :1
   ; !leech
   ; Send a matching file
   ; filename w/ext required
-if (. !isin $2-) { %reply = You must specify a filename with an extension | goto reply }
+  if (. !isin $2-) { %reply = You must specify a filename with an extension | goto reply }
   _snd.extract $2-
   tokenize 32 $1 %.file
   var %type = $_sext($2-)
-if (%type == $null) { %reply = That file extension is not recognized | goto reply }
+  if (%type == $null) { %reply = That file extension is not recognized | goto reply }
   var %find = $replace($2-,$chr(32),?),%found = $gettok($_sfind(%type,0,%find),2,9)
-if (%found == $null) { %reply = No files matching ' $+ $2- $+ ' were found | goto reply }
-if (($hget(pnp.config,sound.sendmatch)) && ($_searchtok($hget(pnp.config,sound.sendmatch),%found,44) == 0)) { %reply = Sorry $+ $chr(44) ' $+ $2- $+ ' is not available | goto reply }
+  if (%found == $null) { %reply = No files matching ' $+ $2- $+ ' were found | goto reply }
+  if (($hget(pnp.config,sound.sendmatch)) && ($_searchtok($hget(pnp.config,sound.sendmatch),%found,44) == 0)) { %reply = Sorry $+ $chr(44) ' $+ $2- $+ ' is not available | goto reply }
   :filesend
   _send.dcc $nick %found
   if ($result > 0) {
-%reply = File ' $+ $nopath(%found) $+ ' has been queued- You are number $result in the queue
-if ($gettok($hget(pnp. $+ $cid,leechcmds),6,32)) %reply = %reply $+ - Use $ifmatch to see queue status
-if ($gettok($hget(pnp. $+ $cid,leechcmds),5,32)) %reply = %reply $+ - Use $ifmatch to cancel all files queued to you
+    %reply = File ' $+ $nopath(%found) $+ ' has been queued- You are number $result in the queue
+    if ($gettok($hget(pnp. $+ $cid,leechcmds),6,32)) %reply = %reply $+ - Use $ifmatch to see queue status
+    if ($gettok($hget(pnp. $+ $cid,leechcmds),5,32)) %reply = %reply $+ - Use $ifmatch to cancel all files queued to you
   }
-elseif ($result == -4) %reply = Error sending ' $+ $nopath(%found) $+ '
+  elseif ($result == -4) %reply = Error sending ' $+ $nopath(%found) $+ '
   elseif ($result == -5) {
-%reply = ' $+ $nopath(%found) $+ ' is already queued to be sent to you
-if ($gettok($hget(pnp. $+ $cid,leechcmds),6,32)) %reply = %reply $+ - Use $ifmatch to see queue status
+    %reply = ' $+ $nopath(%found) $+ ' is already queued to be sent to you
+    if ($gettok($hget(pnp. $+ $cid,leechcmds),6,32)) %reply = %reply $+ - Use $ifmatch to see queue status
   }
   elseif ($result == -6) {
-%reply = ' $+ $nopath(%found) $+ ' is already being sent to you
-if ($gettok($hget(pnp. $+ $cid,leechcmds),6,32)) %reply = %reply $+ - Use $ifmatch to see queue status
+    %reply = ' $+ $nopath(%found) $+ ' is already being sent to you
+    if ($gettok($hget(pnp. $+ $cid,leechcmds),6,32)) %reply = %reply $+ - Use $ifmatch to see queue status
   }
   elseif ($result < 0) {
-%reply = Cannot send ' $+ $nopath(%found) $+ '- All DCC slots and queue slots are full $+ $chr(44) sorry
-if ($gettok($hget(pnp. $+ $cid,leechcmds),6,32)) %reply = %reply $+ - Use $ifmatch to see queue status
+    %reply = Cannot send ' $+ $nopath(%found) $+ '- All DCC slots and queue slots are full $+ $chr(44) sorry
+    if ($gettok($hget(pnp. $+ $cid,leechcmds),6,32)) %reply = %reply $+ - Use $ifmatch to see queue status
   }
   goto reply
- 
+
   :2
   ; !leech-last
   ; Send last played file
   if ($exists($hget(pnp. $+ $cid,lastsounds))) { %found = $hget(pnp. $+ $cid,lastsound) | goto filesend }
   return
- 
+
   :3
   ; @find
   ; User can search for matching files
   ; only one search at a time from a site
   if ($hget(pnp. $+ $cid,-search. $+ $site)) return
-if ($len($remove($2-,*,?)) < 3) { %reply = Please specify at least three letters to search for | goto reply }
+  if ($len($remove($2-,*,?)) < 3) { %reply = Please specify at least three letters to search for | goto reply }
   var %match = * $+ $replace($2-,$chr(32),*)) $+ *
   :fixstar | if (** isin %match) { %match = $replace(%match,**,*) | goto fixstar }
   var %found = $_sfind($hget(pnp.config,sound.trigtype),1,%match)
   if (%found == 0) {
     window -c @.soundfind
-if ($target == $nick) { %reply = No matches found for ' $+ %match $+ ' | goto reply }
+    if ($target == $nick) { %reply = No matches found for ' $+ %match $+ ' | goto reply }
     return
   }
   if (%found > $hget(pnp.config,sound.maxmatch)) {
     window -c @.soundfind
-%reply = Found %found matches for ' $+ %match $+ '- please try a more specific request
-if ($gettok($hget(pnp. $+ $cid,leechcmds),4,32)) %reply = %reply $+ - Use $ifmatch to request my file list
+    %reply = Found %found matches for ' $+ %match $+ '- please try a more specific request
+    if ($gettok($hget(pnp. $+ $cid,leechcmds),4,32)) %reply = %reply $+ - Use $ifmatch to request my file list
     goto reply
   }
-  %usecmd = _unkludge Å $+ %usecmd $+ Å $+ $nick
-.timer 1 2 %usecmd Found %found match $+ $chr(40) $+ es $+ $chr(41) for ' $+ %match $+ '-
+  %usecmd = _unkludge ¬Å $+ %usecmd $+ ¬Å $+ $nick
+  .timer 1 2 %usecmd Found %found match $+ $chr(40) $+ es $+ $chr(41) for ' $+ %match $+ '-
   var %delay = 3,%file = 1
   :fileloop
   .timer 1 %delay %usecmd $nopath($gettok($line(@.soundfind,%file),2,9))
@@ -1860,21 +1860,21 @@ if ($gettok($hget(pnp. $+ $cid,leechcmds),4,32)) %reply = %reply $+ - Use $ifmat
   hadd -u $+ $calc(%delay + 1) pnp. $+ $cid -search. $+ $site 1
   window -c @.soundfind
   return
- 
+
   :4
   ; @nick
   ; Sends user your filelist (chr(34) used to avoid virus warning from norton)
   if ($exists($hget(pnp.config,sound.textfile))) dcc send $nick $chr(34) $+ $hget(pnp.config,sound.textfile) $+ $chr(34)
   return
- 
+
   :5
   ; @nick-cancel
   ; Cancels any sends to user
   var %cancel = $_cancel.dcc($nick)
-if (%cancel) %reply = I have cancelled %cancel file $+ $chr(40) $+ s $+ $chr(41) queued for you
-else %reply = I do not have any files queued for you
+  if (%cancel) %reply = I have cancelled %cancel file $+ $chr(40) $+ s $+ $chr(41) queued for you
+  else %reply = I do not have any files queued for you
   goto reply
- 
+
   :6
   ; @nick-stats
   ; Tells user how many files they're receiving and have queued, and the position of their highest file
@@ -1889,16 +1889,16 @@ else %reply = I do not have any files queued for you
     dec %num | goto statc
   }
   var %countnick = $_count.dcc($nick),%count = $_count.dcc
-if ($calc(%sendnick + %send + %countnick + %count) == 0) _linedance %usecmd $nick I am not currently sending any files and have no files queued
-else _linedance %usecmd $nick I am sending %sendnick file $+ $chr(40) $+ s $+ $chr(41) to you $chr(40) $+ out of %send file $+ $chr(40) $+ s $+ $chr(41) total $+ $chr(41) and you have %countnick file $+ $chr(40) $+ s $+ $chr(41) queued $chr(40) $+ out of %count queued file $+ $chr(40) $+ s $+ $chr(41) total $+ $chr(41)
+  if ($calc(%sendnick + %send + %countnick + %count) == 0) _linedance %usecmd $nick I am not currently sending any files and have no files queued
+  else _linedance %usecmd $nick I am sending %sendnick file $+ $chr(40) $+ s $+ $chr(41) to you $chr(40) $+ out of %send file $+ $chr(40) $+ s $+ $chr(41) total $+ $chr(41) and you have %countnick file $+ $chr(40) $+ s $+ $chr(41) queued $chr(40) $+ out of %count queued file $+ $chr(40) $+ s $+ $chr(41) total $+ $chr(41)
   if (%count) {
     var %pos = $_pos.dcc($nick),%posth = %pos $+ oo
-var %reply = Your next queued file is ' $+ $gettok($line(@DCCQueue,%pos),2-,9) $+ ' $+ $chr(44) in the $asctime(%posth) position
-if ($gettok($hget(pnp. $+ $cid,leechcmds),5,32)) %reply = %reply $+ - Use $ifmatch to cancel all files queued to you
+    var %reply = Your next queued file is ' $+ $gettok($line(@DCCQueue,%pos),2-,9) $+ ' $+ $chr(44) in the $asctime(%posth) position
+    if ($gettok($hget(pnp. $+ $cid,leechcmds),5,32)) %reply = %reply $+ - Use $ifmatch to cancel all files queued to you
     _linedance %usecmd $nick %reply
   }
   return
- 
+
   : reply
   if (%reply) _linedance %usecmd $nick %reply
 }

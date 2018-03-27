@@ -3,7 +3,7 @@
 ; Peace and Protection
 ; Rerouting (standard addon)
 ; ########################################
- 
+
 #.ppa.info off
 [addon]
 name=Rerouting
@@ -29,25 +29,25 @@ dialogs=rropt rrset
 6=-
 7=$iif($hget(pnp,rerooff),$style(1)) Quick disable:if ($hget(pnp,rerooff)) rr on | else rr off
 #.ppa.info end
- 
+
 ; /rr [-l][-a] [source[,net|con] [target[,net|con]]
 ; /rrset [source[,net|con] [target[,net|con]]
 ; /rr [-c][-v]
 ; /rr [off|on]
- 
+
 ; source/targets-
 ; #channel
 ; @#channelops (target only)
 ; query
 ; =dcc
 ; !chan, !msg, !chat (source only) all of that type (one net, or all for !chat)
- 
+
 ; -a asks using 'fancy' dialog (same as /rrset)
 ; -c clears, -v views
 ; -l links two ways
- 
+
 ; /rropt [+|-][hjkmnpsty]...
- 
+
 ; h - highlight source
 ; j - show joins/parts/quits/kicks
 ; k - kill colors/etc
@@ -58,30 +58,30 @@ dialogs=rropt rrset
 ; t - show topic changes
 ; y - show your text
 ; No params for configure dialog
- 
+
 ; /rrkeep [c|d|e]
- 
+
 ; c - retain until window closes
 ; d - retain until disconnected
 ; e - retain until exit/close server
 ; No params to show setting
- 
+
 ; `rropt = options
 ; `rerokeep = rrkeep value
- 
+
 ; pnp hash-
 ;  rero.$cid.$1 = cid target [islink]
 ;  rerooff = true to disable all reroutes temp.
- 
+
 alias -l rr.box return $chr(91) $+ $1- $+ $chr(93)
 alias -l rr.pretty tokenize 32 $1- | return ' $+ $:t($rr.pretty2($1,$2)) $+ '
 alias -l rr.pretty2 {
   var %net = ( $+ $hget(pnp. $+ $1,net) $+ )
-if ($2 == !chan) return All channels %net
-if ($2 == !chat) return All DCC chats
-if ($2 == !msg) return All private msg %net
-if (@* iswm $2) return ops on $right($2,-1) %net
-if (=* iswm $2) return DCC chat with $right($2,-1)
+  if ($2 == !chan) return All channels %net
+  if ($2 == !chat) return All DCC chats
+  if ($2 == !msg) return All private msg %net
+  if (@* iswm $2) return ops on $right($2,-1) %net
+  if (=* iswm $2) return DCC chat with $right($2,-1)
   return $2 %net
 }
 ; $2 = 0 source 1 target
@@ -146,52 +146,52 @@ alias -l rr.group {
   else .enable #allrerouting
 }
 on *:SIGNAL:PNP.TRANSLATE:{ rr.group }
- 
+
 alias rrset rr -a $1-
 alias rr {
-if (($1 == off) || ($1 == off)) { var %onoff = $:t(Off) | dispa Rerouting is %onoff | hadd pnp rerooff 1 | rr.group | return }
-elseif (($1 == on) || ($1 == on)) { var %onoff = $:t(On) | dispa Rerouting is %onoff | hdel pnp rerooff | rr.group | return }
- 
-if ($1 == $null) { dispa Rerouting is $:t($_tf2o($hget(pnp,rerooff))) | return }
- 
+  if (($1 == off) || ($1 == off)) { var %onoff = $:t(Off) | dispa Rerouting is %onoff | hadd pnp rerooff 1 | rr.group | return }
+  elseif (($1 == on) || ($1 == on)) { var %onoff = $:t(On) | dispa Rerouting is %onoff | hdel pnp rerooff | rr.group | return }
+
+  if ($1 == $null) { dispa Rerouting is $:t($_tf2o($hget(pnp,rerooff))) | return }
+
   if (-* iswm $1) { var %opt = $1,%src = $2,%targ = $3 }
   else { var %opt,%src = $1,%targ = $2 }
- 
+
   if (c isin %opt) {
     rr.clear
-dispa All rerouting disabled.
+    dispa All rerouting disabled.
     return
   }
- 
+
   if (v isin %opt) {
-if ($hmatch(pnp,rero.*,0) == 0) dispa No rerouting has been defined.
+    if ($hmatch(pnp,rero.*,0) == 0) dispa No rerouting has been defined.
     else {
       _info /rrset
-disp @Info Currently being rerouted-
+      disp @Info Currently being rerouted-
       var %cur = $hmatch(pnp,rero.*,0)
       while (%cur) {
         var %item = $hmatch(pnp,rero.*,%cur)
         var %data = $hget(pnp,%item)
         if (% [ $+ [ %item ] ] == 1) { }
         elseif ($gettok(%data,3,32)) {
-disp @Info   - $rr.pretty($gettok(%item,2,46),$mid(%item,$calc(1 + $pos(%item,.,2)))) <- linked to -> $rr.pretty($gettok(%data,1-2,32))
+          disp @Info   - $rr.pretty($gettok(%item,2,46),$mid(%item,$calc(1 + $pos(%item,.,2)))) <- linked to -> $rr.pretty($gettok(%data,1-2,32))
           ; (so we don't show it again)
           var %rero. [ $+ [ $replace($gettok(%data,1-2,32),$chr(32),.) ] ]
           %rero. [ $+ [ $replace($gettok(%data,1-2,32),$chr(32),.) ] ] = 1
-          
+
         }
         else {
-disp @Info   - $rr.pretty($gettok(%item,2,46),$mid(%item,$calc(1 + $pos(%item,.,2)))) -> rerouted to -> $rr.pretty($gettok(%data,1-2,32))
+          disp @Info   - $rr.pretty($gettok(%item,2,46),$mid(%item,$calc(1 + $pos(%item,.,2)))) -> rerouted to -> $rr.pretty($gettok(%data,1-2,32))
         }
         dec %cur
       }
     }
     return
   }
- 
+
   if (e isin %opt) var %error = _error
   else var %error = dispa
-  
+
   ; Separate src/target into con and window, convert networks/cons to cids
   var %srccon = $cid
   var %targcon = $cid
@@ -200,7 +200,7 @@ disp @Info   - $rr.pretty($gettok(%item,2,46),$mid(%item,$calc(1 + $pos(%item,
     %src = $gettok(%src,1,44)
     if ((%src == !chat) || (=* iswm %src)) %srccon = 0
     elseif (%srccon isnum) {
-if ($scon(%srccon) == $null) { %error Connection number %srccon not found | return }
+      if ($scon(%srccon) == $null) { %error Connection number %srccon not found | return }
       %srccon = $scon(%srccon)
     }
     else {
@@ -210,7 +210,7 @@ if ($scon(%srccon) == $null) { %error Connection number %srccon not found | retu
         inc %scon
       }
       if (%found) %srccon = %found
-else { %error You are not currently connected to %srccon | return }
+      else { %error You are not currently connected to %srccon | return }
     }
   }
   if (, isin %targ) {
@@ -218,7 +218,7 @@ else { %error You are not currently connected to %srccon | return }
     %targ = $gettok(%targ,1,44)
     if (=* iswm %targ) %targcon = 0
     elseif (%targcon isnum) {
-if ($scon(%targcon) == $null) { %error Connection number %targcon not found | return }
+      if ($scon(%targcon) == $null) { %error Connection number %targcon not found | return }
       %targcon = $scon(%targcon)
     }
     else {
@@ -228,10 +228,10 @@ if ($scon(%targcon) == $null) { %error Connection number %targcon not found | re
         inc %scon
       }
       if (%found) %targcon = %found
-else { %error You are not currently connected to %targcon | return }
+      else { %error You are not currently connected to %targcon | return }
     }
   }
- 
+
   if (a isin %opt) {
     set -u %.src %src
     set -u %.srccon %srccon
@@ -240,115 +240,115 @@ else { %error You are not currently connected to %targcon | return }
     _dialog -am rrset rrset
     return
   }
- 
+
   if (%targ == $null) {
     if ($hget(pnp,$+(rero.,%srccon,.,%src))) {
-dispa Rerouting for $rr.pretty(%srccon,%src) disabled.
+      dispa Rerouting for $rr.pretty(%srccon,%src) disabled.
       var %old = $hget(pnp,$+(rero.,%srccon,.,%src))
       if ($gettok(%old,3,32)) {
-dispa Link back from $rr.pretty($gettok(%old,1-2,32)) disabled.
+        dispa Link back from $rr.pretty($gettok(%old,1-2,32)) disabled.
         rr.set $gettok(%old,1-2,32)
       }
     }
-elseif ($rr.legal(%src,0)) dispa Rerouting is not enabled for $rr.pretty(%srccon,%src)
-else dispa Illegal rerouting source ' $+ $:t(%src) $+ '
+    elseif ($rr.legal(%src,0)) dispa Rerouting is not enabled for $rr.pretty(%srccon,%src)
+    else dispa Illegal rerouting source ' $+ $:t(%src) $+ '
     rr.set %srccon %src
   }
   else {
-if ((%src == %targ) && (%srccon == %targcon)) %error You cannot reroute a window to itself
-elseif (!$rr.legal(%src,0)) %error Illegal rerouting source ' $+ %src $+ '
-elseif (!$rr.legal(%targ,1)) %error Illegal rerouting target ' $+ %targ $+ '
-elseif ((!$rr.legal(%src,1)) && (l isin %opt)) %error You cannot link back to $rr.pretty2(%srccon,%src)
-elseif ((!$rr.legal(%targ,0)) && (l isin %opt)) %error You cannot link back from $rr.pretty2(%targcon,%targ)
+    if ((%src == %targ) && (%srccon == %targcon)) %error You cannot reroute a window to itself
+    elseif (!$rr.legal(%src,0)) %error Illegal rerouting source ' $+ %src $+ '
+    elseif (!$rr.legal(%targ,1)) %error Illegal rerouting target ' $+ %targ $+ '
+    elseif ((!$rr.legal(%src,1)) && (l isin %opt)) %error You cannot link back to $rr.pretty2(%srccon,%src)
+    elseif ((!$rr.legal(%targ,0)) && (l isin %opt)) %error You cannot link back from $rr.pretty2(%targcon,%targ)
     else {
       if ($hget(pnp,$+(rero.,%srccon,.,%src))) {
-dispa Now rerouting $rr.pretty(%srccon,%src) to $rr.pretty(%targcon,%targ)
+        dispa Now rerouting $rr.pretty(%srccon,%src) to $rr.pretty(%targcon,%targ)
         var %old = $hget(pnp,$+(rero.,%srccon,.,%src))
         if ($gettok(%old,3,32)) {
-dispa Old link back from $rr.pretty($gettok(%old,1-2,32)) disabled
+          dispa Old link back from $rr.pretty($gettok(%old,1-2,32)) disabled
           rr.set $gettok(%old,1-2,32)
         }
       }
-else dispa Now rerouting $rr.pretty(%srccon,%src) to $rr.pretty(%targcon,%targ)
+      else dispa Now rerouting $rr.pretty(%srccon,%src) to $rr.pretty(%targcon,%targ)
       rr.set %srccon %src %targcon %targ $iif(l isin %opt,1)
       if (l isin %opt) {
-dispa $rr.pretty(%targcon,%targ) will also link back to $rr.pretty(%srccon,%src)
+        dispa $rr.pretty(%targcon,%targ) will also link back to $rr.pretty(%srccon,%src)
         rr.set %targcon %targ %srccon %src 1
       }
     }
   }
 }
- 
+
 menu channel,query {
   $iif($chr(32) !isin $active,$_popssep)
-$iif($chr(32) !isin $active,Reroute)
-.Set reroute...:rrset
-.Rerouting
+  $iif($chr(32) !isin $active,Reroute)
+  .Set reroute...:rrset
+  .Rerouting
   ..$iif(($hget(pnp,$+(rero.,$activecid,.,$active))) || ($hget(pnp,$+(rero.0.,$active))),$style(1)) $replace($active,&,&&) $+ ...:if (($hget(pnp,$+(rero.,$activecid,.,$active))) || ($hget(pnp,$+(rero.0.,$active)))) rr $active | else rrset $active
-..$iif($me isop $active,$iif($hget(pnp,$+(rero.,$activecid,.@,$active)),$style(1)) opnotices...):if ($hget(pnp,$+(rero.,$activecid,.@,$active))) rr @ $+ $active | else rrset @ $+ $active
-..$iif($active ischan,$iif($hget(pnp,$+(rero.,$activecid,.!chan)),$style(1)) all channels $chr(40) $+ this server $+ $chr(41)...):if ($hget(pnp,$+(rero.,$activecid,.!chan))) rr !chan | else rrset !chan
-..$iif(=* iswm $active,$iif($hget(pnp,rero.0.!chat),$style(1)) all DCC chats $chr(40) $+ all servers $+ $chr(41)...):if ($hget(pnp,rero.0.!chat)) rr !chat | else rrset !chat
-..$iif($query($active) == $active,$iif($hget(pnp,$+(rero.,$activecid,.!msg)),$style(1)) all queries $chr(40) $+ this server $+ $chr(41)...):if ($hget(pnp,$+(rero.,$activecid,.!msg))) rr !msg | else rrset !msg
+  ..$iif($me isop $active,$iif($hget(pnp,$+(rero.,$activecid,.@,$active)),$style(1)) opnotices...):if ($hget(pnp,$+(rero.,$activecid,.@,$active))) rr @ $+ $active | else rrset @ $+ $active
+  ..$iif($active ischan,$iif($hget(pnp,$+(rero.,$activecid,.!chan)),$style(1)) all channels $chr(40) $+ this server $+ $chr(41)...):if ($hget(pnp,$+(rero.,$activecid,.!chan))) rr !chan | else rrset !chan
+  ..$iif(=* iswm $active,$iif($hget(pnp,rero.0.!chat),$style(1)) all DCC chats $chr(40) $+ all servers $+ $chr(41)...):if ($hget(pnp,rero.0.!chat)) rr !chat | else rrset !chat
+  ..$iif($query($active) == $active,$iif($hget(pnp,$+(rero.,$activecid,.!msg)),$style(1)) all queries $chr(40) $+ this server $+ $chr(41)...):if ($hget(pnp,$+(rero.,$activecid,.!msg))) rr !msg | else rrset !msg
   ..-
-..View all:rr -v
-..Clear all:rr -c
+  ..View all:rr -v
+  ..Clear all:rr -c
   ..-
-..$iif($hget(pnp,rerooff),$style(1)) Quick disable:if ($hget(pnp,rerooff)) rr on | else rr off
+  ..$iif($hget(pnp,rerooff),$style(1)) Quick disable:if ($hget(pnp,rerooff)) rr on | else rr off
   .-
-.Show
-..$iif(y isin $hget(pnp.config,rropt),$style(1)) your text:rropt ^y
+  .Show
+  ..$iif(y isin $hget(pnp.config,rropt),$style(1)) your text:rropt ^y
   ..-
-..$iif(j isin $hget(pnp.config,rropt),$style(1)) joins/parts/quits/kicks:rropt ^j
-..$iif(m isin $hget(pnp.config,rropt),$style(1)) mode changes:rropt ^m
-..$iif(n isin $hget(pnp.config,rropt),$style(1)) nick changes:rropt ^n
-..$iif(t isin $hget(pnp.config,rropt),$style(1)) topic changes:rropt ^t
-.Options
-..$iif(s isin $hget(pnp.config,rropt),$style(1)) Show source channel:rropt ^s
-..$iif(p isin $hget(pnp.config,rropt),$style(1)) Prefix with dcc/msg:rropt ^p
-..$iif(h isin $hget(pnp.config,rropt),$style(1)) Highlight source:rropt ^h
+  ..$iif(j isin $hget(pnp.config,rropt),$style(1)) joins/parts/quits/kicks:rropt ^j
+  ..$iif(m isin $hget(pnp.config,rropt),$style(1)) mode changes:rropt ^m
+  ..$iif(n isin $hget(pnp.config,rropt),$style(1)) nick changes:rropt ^n
+  ..$iif(t isin $hget(pnp.config,rropt),$style(1)) topic changes:rropt ^t
+  .Options
+  ..$iif(s isin $hget(pnp.config,rropt),$style(1)) Show source channel:rropt ^s
+  ..$iif(p isin $hget(pnp.config,rropt),$style(1)) Prefix with dcc/msg:rropt ^p
+  ..$iif(h isin $hget(pnp.config,rropt),$style(1)) Highlight source:rropt ^h
   ..-
-..$iif(k isin $hget(pnp.config,rropt),$style(1)) Strip colors/etc:rropt ^k
-.Retain
-..$iif(c == $hget(pnp.config,rerokeep),$style(1)) until window closes:rrkeep c
-..$iif(d == $hget(pnp.config,rerokeep),$style(1)) until disconnected:rrkeep d
-..$iif(e == $hget(pnp.config,rerokeep),$style(1)) until exit / server closes:rrkeep e
-.Quick configure...:rropt
+  ..$iif(k isin $hget(pnp.config,rropt),$style(1)) Strip colors/etc:rropt ^k
+  .Retain
+  ..$iif(c == $hget(pnp.config,rerokeep),$style(1)) until window closes:rrkeep c
+  ..$iif(d == $hget(pnp.config,rerokeep),$style(1)) until disconnected:rrkeep d
+  ..$iif(e == $hget(pnp.config,rerokeep),$style(1)) until exit / server closes:rrkeep e
+  .Quick configure...:rropt
 }
- 
+
 #allrerouting off
- 
+
 ;
 ; Private rerouting
 ;
- 
+
 on *:TEXT:*:?:if ($rr.get($cid,$nick)) rr.do $iif(p isin $hget(pnp.config,rropt),[msg]) < $+ $iif(h isin $hget(pnp.config,rropt),$:b($nick),$nick) $+ > $iif(k isin $hget(pnp.config,rropt),$strip($1-),$1-)
 on *:ACTION:*:?:if ($rr.get($cid,$nick)) rr.do $iif(p isin $hget(pnp.config,rropt),[msg]) * $iif(h isin $hget(pnp.config,rropt),$:b($nick),$nick) $iif(k isin $hget(pnp.config,rropt),$strip($1-),$1-)
 on *:INPUT:?:{
   if ((y isin $hget(pnp.config,rropt)) && ($rr.get($cid,$target)) && (%.input.type != cmd)) {
-rr.do $iif(p isin $hget(pnp.config,rropt),[msg]) -> * $+ $iif(h isin $hget(pnp.config,rropt),$:b($target),$target) $+ * $iif(k isin $hget(pnp.config,rropt),$strip($gettok(%.input.text,2-,32)),$gettok(%.input.text,2-,32))
+    rr.do $iif(p isin $hget(pnp.config,rropt),[msg]) -> * $+ $iif(h isin $hget(pnp.config,rropt),$:b($target),$target) $+ * $iif(k isin $hget(pnp.config,rropt),$strip($gettok(%.input.text,2-,32)),$gettok(%.input.text,2-,32))
   }
 }
- 
+
 ;
 ; DCC rerouting
 ;
- 
+
 on *:CHAT:*:{
   if ($rr.get(0,=$nick)) {
-if ($1 == ACTION) rr.do $iif(p isin $hget(pnp.config,rropt),[DCC]) * $iif(h isin $hget(pnp.config,rropt),$:b($nick),$nick) $iif(k isin $hget(pnp.config,rropt),$strip($1-),$1-)
-elseif (* !iswm $1) rr.do $iif(p isin $hget(pnp.config,rropt),[DCC]) < $+ $iif(h isin $hget(pnp.config,rropt),$:b($nick),$nick) $+ > $iif(k isin $hget(pnp.config,rropt),$strip($1-),$1-)
+    if ($1 == ACTION) rr.do $iif(p isin $hget(pnp.config,rropt),[DCC]) * $iif(h isin $hget(pnp.config,rropt),$:b($nick),$nick) $iif(k isin $hget(pnp.config,rropt),$strip($1-),$1-)
+    elseif (* !iswm $1) rr.do $iif(p isin $hget(pnp.config,rropt),[DCC]) < $+ $iif(h isin $hget(pnp.config,rropt),$:b($nick),$nick) $+ > $iif(k isin $hget(pnp.config,rropt),$strip($1-),$1-)
   }
 }
 on *:INPUT:=:{
   if ((y isin $hget(pnp.config,rropt)) && ($rr.get(0,$target)) && (%.input.type != cmd)) {
-rr.do $iif(p isin $hget(pnp.config,rropt),[DCC]) -> = $+ $iif(h isin $hget(pnp.config,rropt),$:b($target),$target) $+ = $iif(k isin $hget(pnp.config,rropt),$strip($gettok(%.input.text,2-,32)),$gettok(%.input.text,2-,32))
+    rr.do $iif(p isin $hget(pnp.config,rropt),[DCC]) -> = $+ $iif(h isin $hget(pnp.config,rropt),$:b($target),$target) $+ = $iif(k isin $hget(pnp.config,rropt),$strip($gettok(%.input.text,2-,32)),$gettok(%.input.text,2-,32))
   }
 }
- 
+
 ;
 ; Channel rerouting
 ;
- 
+
 on *:TEXT:*:#:if ($rr.get($cid,$chan)) rr.do $iif(s isin $hget(pnp.config,rropt),$rr.box($chan)) < $+ $iif(h isin $hget(pnp.config,rropt),$:b($nick),$nick) $+ > $iif(k isin $hget(pnp.config,rropt),$strip($1-),$1-)
 on *:ACTION:*:#:if ($rr.get($cid,$chan)) rr.do $iif(s isin $hget(pnp.config,rropt),$rr.box($chan)) * $iif(h isin $hget(pnp.config,rropt),$:b($nick),$nick) $iif(k isin $hget(pnp.config,rropt),$strip($1-),$1-)
 on *:INPUT:#:{
@@ -361,10 +361,10 @@ on *:INPUT:#:{
     }
   }
 }
- 
+
 ; Modes
 on *:RAWMODE:#:if (m isin $hget(pnp.config,rropt)) if ($rr.get($cid,$chan)) rr.do $iif(s isin $hget(pnp.config,rropt),$rr.box($chan)) $iif(h isin $hget(pnp.config,rropt),$:b($nick),$nick) sets mode: $1-
- 
+
 ; Final stuff like join/part/etc.
 on *:JOIN:#:if (j isin $hget(pnp.config,rropt)) if ($rr.get($cid,$chan)) rr.do $iif(s isin $hget(pnp.config,rropt),$rr.box($chan)) Joins: $iif(h isin $hget(pnp.config,rropt),$:b($nick),$nick) ( $+ $address)
 on *:PART:#:if (j isin $hget(pnp.config,rropt)) if ($rr.get($cid,$chan)) rr.do $iif(s isin $hget(pnp.config,rropt),$rr.box($chan)) Parts:$iif(h isin $hget(pnp.config,rropt),$:b($nick),$nick) ( $+ $iif($1,$1-,$address) $+ )
@@ -374,42 +374,42 @@ on *:QUIT:{
     var %chan,%num = $comchan($nick,0)
     :loop
     %chan = $comchan($nick,%num)
-if ($rr.get($cid,%chan)) rr.do $iif(s isin $hget(pnp.config,rropt),$rr.box(%chan)) Quits: $iif(h isin $hget(pnp.config,rropt),$:b($nick),$nick) ( $+ $1- $+ )
+    if ($rr.get($cid,%chan)) rr.do $iif(s isin $hget(pnp.config,rropt),$rr.box(%chan)) Quits: $iif(h isin $hget(pnp.config,rropt),$:b($nick),$nick) ( $+ $1- $+ )
     if (%num > 1) { dec %num | goto loop }
   }
 }
- 
+
 on *:NICK:{
   if (n isin $hget(pnp.config,rropt)) {
     var %chan,%num = $comchan($newnick,0)
     :loop
     %chan = $comchan($newnick,%num)
-if ($rr.get($cid,%chan)) rr.do $iif(s isin $hget(pnp.config,rropt),$rr.box(%chan)) $iif(h isin $hget(pnp.config,rropt),$:b($nick),$nick) is now known as $newnick
+    if ($rr.get($cid,%chan)) rr.do $iif(s isin $hget(pnp.config,rropt),$rr.box(%chan)) $iif(h isin $hget(pnp.config,rropt),$:b($nick),$nick) is now known as $newnick
     if (%num > 1) { dec %num | goto loop }
   }
 }
- 
+
 on *:TOPIC:#:if (t isin $hget(pnp.config,rropt)) if ($rr.get($cid,$chan)) rr.do $iif(s isin $hget(pnp.config,rropt),$rr.box($chan)) $iif(h isin $hget(pnp.config,rropt),$:b($nick),$nick) changes topic to ' $+ $1- $+ '
- 
+
 #allrerouting end
- 
+
 ;
 ; Clearing/reloading reroutes
 ;
- 
+
 alias rrkeep {
   if ($right($1,1) isin cde)) `lset rerokeep $ifmatch
   elseif (($hget(pnp.config,rerokeep) != c) && ($hget(pnp.config,rerokeep) != d)) `lset rerokeep e
-dispa Reroutes will be disabled when: $gettok(Window is closed*You disconnect*You exit mIRC or close the associated Status Window,$pos(cde,$hget(pnp.config,rerokeep),1),42)
+  dispa Reroutes will be disabled when: $gettok(Window is closed*You disconnect*You exit mIRC or close the associated Status Window,$pos(cde,$hget(pnp.config,rerokeep),1),42)
 }
- 
+
 on *:CLOSE:?:if ($hget(pnp.config,rerokeep) == c) rr.set $cid $target
 on *:CLOSE:=:if ($hget(pnp.config,rerokeep) == c) rr.set 0 = $+ $target
 on me:*:PART:#:if ($hget(pnp.config,rerokeep) == c) rr.set $cid $chan
- 
+
 on *:DISCONNECT:if ($hget(pnp.config,rerokeep) isin cd) rr.clear $cid
 on *:SIGNAL:PNP.STATUSCLOSE:rr.clear $1
- 
+
 on *:LOAD:{
   ; PnP check
   if (!$_ispnp) {
@@ -421,30 +421,30 @@ on *:LOAD:{
   ; Invalid load method check
   if (!$istok($_cfgx(addons,ids),$readini($script,n,addon,id),32)) {
     .timer -mio 1 0 .unload -rs " $+ $script $+ "
-dispa Unloading ' $+ $script $+ ' $chr(40) $+ addon is not properly loaded; use /addon to load it $+ $chr(41)
+    dispa Unloading ' $+ $script $+ ' $chr(40) $+ addon is not properly loaded; use /addon to load it $+ $chr(41)
     halt
   }
   if ($hget(pnp.config,rerokeep) == $null) `lset rerokeep e
   if ($hget(pnp.config,rropt) == $null) `lset rropt psy
 }
- 
+
 ;
 ; Options
 ;
- 
+
 alias rropt {
   if ($1 == $null) { _dialog -am rropt rropt | return }
- 
+
   var %old,%chr,%opt = $hget(pnp.config,rropt),%bit = +,%pos = 1,%categ
-%categ = Source highlighting*Show joins $+ $chr(44) parts $+ $chr(44) quits $+ $chr(44) and kicks*Colors and attribute stripping*Show mode changes*Show nick changes*$chr(91) $+ dcc $+ $chr(93) or $chr(91) $+ msg $+ $chr(93) prefix*Show source $chr(91) $+ $chr(35) $+ channel $+ $chr(93)*Show topic changes*Show your text
+  %categ = Source highlighting*Show joins $+ $chr(44) parts $+ $chr(44) quits $+ $chr(44) and kicks*Colors and attribute stripping*Show mode changes*Show nick changes*$chr(91) $+ dcc $+ $chr(93) or $chr(91) $+ msg $+ $chr(93) prefix*Show source $chr(91) $+ $chr(35) $+ channel $+ $chr(93)*Show topic changes*Show your text
   :loop
   %chr = $mid($1-,%pos,1)
   if (%chr isin -+^) %bit = %chr
-elseif (%chr !isin hjkmnpsty) dispa Unknown rerouting option ' $+ $:t(%chr) $+ '
+  elseif (%chr !isin hjkmnpsty) dispa Unknown rerouting option ' $+ $:t(%chr) $+ '
   else {
     %old = %bit
     if (%bit == ^) %bit = $iif(%chr isin %opt,-,+)
-dispa $gettok(%categ,$pos(hjkmnpsty,%chr,1),42) $+ : $iif(%bit == -,Off,On)
+    dispa $gettok(%categ,$pos(hjkmnpsty,%chr,1),42) $+ : $iif(%bit == -,Off,On)
     if (%bit == -) %opt = $remove(%opt,%chr)
     else %opt = $remove(%opt,%chr) $+ %chr
     %bit = %old
@@ -452,37 +452,37 @@ dispa $gettok(%categ,$pos(hjkmnpsty,%chr,1),42) $+ : $iif(%bit == -,Off,On)
   if (%pos < $len($1-)) { inc %pos | goto loop }
   `lset rropt %opt
 }
- 
+
 dialog rropt {
-title "Rerouting options"
+  title "Rerouting options"
   icon script\pnp.ico
   option dbu
   size -1 -1 175 144
- 
-text "These options apply to all rerouting.", 101, 5 5 165 8
- 
-box "Show:", 102, 5 17 165 53
- 
-check "&Joins / parts / quits / kicks", 1, 10 27 80 8
-check "&Topic changes", 2, 10 37 80 8
-check "&Nick changes", 3, 10 47 80 8
-check "&Mode changes", 4, 10 57 80 8
- 
-check "&Your text", 5, 90 27 80 8
-check "&Source channel", 6, 90 37 80 8
-check "&Prefix of [dcc] or [msg]", 7, 90 47 80 8
-check "&Highlight source", 8, 90 57 80 8
- 
-check "&Strip all colors from rerouted text", 9, 10 75 160 8
- 
-box "Clear reroutes when:", 103, 5 88 165 34
- 
-radio "&Closing window", 51, 10 98 80 8
-radio "&Disconnecting", 52, 90 98 80 8
-radio "&Exit mIRC or close server", 53, 10 108 160 8
- 
-button "OK", 201, 10 127 30 12, OK default
-button "Cancel", 203, 130 127 30 12, cancel
+
+  text "These options apply to all rerouting.", 101, 5 5 165 8
+
+  box "Show:", 102, 5 17 165 53
+
+  check "&Joins / parts / quits / kicks", 1, 10 27 80 8
+  check "&Topic changes", 2, 10 37 80 8
+  check "&Nick changes", 3, 10 47 80 8
+  check "&Mode changes", 4, 10 57 80 8
+
+  check "&Your text", 5, 90 27 80 8
+  check "&Source channel", 6, 90 37 80 8
+  check "&Prefix of [dcc] or [msg]", 7, 90 47 80 8
+  check "&Highlight source", 8, 90 57 80 8
+
+  check "&Strip all colors from rerouted text", 9, 10 75 160 8
+
+  box "Clear reroutes when:", 103, 5 88 165 34
+
+  radio "&Closing window", 51, 10 98 80 8
+  radio "&Disconnecting", 52, 90 98 80 8
+  radio "&Exit mIRC or close server", 53, 10 108 160 8
+
+  button "OK", 201, 10 127 30 12, OK default
+  button "Cancel", 203, 130 127 30 12, cancel
 }
 on *:DIALOG:rropt:init:*:{
   var %num = 1
@@ -500,27 +500,27 @@ on *:DIALOG:rropt:sclick:201:{
   `lset rropt %opt
   `lset rerokeep $iif($did(51).state,c,$iif($did(52).state,d,e))
 }
- 
+
 dialog rrset {
-title "Rerouting"
+  title "Rerouting"
   icon script\pnp.ico
   option dbu
   size -1 -1 125 105
- 
-text "&Reroute from:", 1, 3 6 40 8, right
+
+  text "&Reroute from:", 1, 3 6 40 8, right
   combo 2, 45 4 75 75, drop edit
   list 30, 1 1 1 1, hide
   ;text "", 3, 5 19 40 8
   combo 4, 45 17 75 75, drop sort
-text "&Route to:", 5, 3 32 40 8, right
+  text "&Route to:", 5, 3 32 40 8, right
   combo 6, 45 30 75 75, drop edit sort
   ;text "", 7, 5 19 40 8
   combo 8, 45 43 75 75, drop sort
- 
-check "&Link back (reroute both ways)", 10, 5 61 115 8
- 
-button "&Reroute", 201, 10 87 30 12, OK default
-button "Cancel", 203, 82 87 30 12, cancel
+
+  check "&Link back (reroute both ways)", 10, 5 61 115 8
+
+  button "&Reroute", 201, 10 87 30 12, OK default
+  button "Cancel", 203, 82 87 30 12, cancel
 }
 on *:DIALOG:rrset:init:*:{
   if ((!%.src) && (($active ischan) || (=* iswm $active) || ($query($active) == $active))) %.src = $active
@@ -542,9 +542,9 @@ on *:DIALOG:rrset:init:*:{
   if ((%.src) && (!* !iswm %.src)) {
     if ($_scandid($dname,2,%.src)) did -c $dname 2 $ifmatch
   }
-did -a $+ $iif(%.src == !chan,c) $dname 2 All channels
-did -a $+ $iif(%.src == !msg,c) $dname 2 All private msg
-did -a $+ $iif(%.src == !chat,c) $dname 2 All DCC chats
+  did -a $+ $iif(%.src == !chan,c) $dname 2 All channels
+  did -a $+ $iif(%.src == !msg,c) $dname 2 All private msg
+  did -a $+ $iif(%.src == !chat,c) $dname 2 All DCC chats
   rr.upd.netdis
   unset %.targ %.src %.targcon %.srccon
 }
@@ -559,8 +559,8 @@ alias -l rr.upd.netdis {
 on *:DIALOG:rrset:sclick:2,6:{ rr.upd.netdis }
 on *:DIALOG:rrset:edit:2,6:{ rr.upd.netdis }
 on *:DIALOG:rrset:sclick:201:{
-if ($did(2) == $null) _error You must select a source to reroute from.
-if ($did(6) == $null) _error You must select a target to reroute to.
+  if ($did(2) == $null) _error You must select a source to reroute from.
+  if ($did(6) == $null) _error You must select a target to reroute to.
   var %src
   if ($did(2).sel == $calc($did(2).lines - 2)) %src = !chan
   elseif ($did(2).sel == $calc($did(2).lines - 1)) %src = !msg

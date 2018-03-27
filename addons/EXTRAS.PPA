@@ -3,7 +3,7 @@
 ; Peace and Protection
 ; PnP Extras (standard addon)
 ; ########################################
- 
+
 #.ppa.info off
 [addon]
 name=Extras
@@ -27,7 +27,7 @@ hashcid=-last.msg -last.ntc -ezping.* -kstat.recent.*
 [notes]
 1=This addon contains a number of small 'extra' features. It includes a graphical lagbar to show your current lag visually, kick stats to track and count kicks and bans on users, an anti-idle, a country code lookup, and a number of other small items. It also includes EZ-Ping, which allows you to automatically ping users on request and send them their ping times. See 'Extras' under the PnP menu for more features.
 #.ppa.info end
- 
+
 on *:LOAD:{
   ; PnP check
   if (!$_ispnp) {
@@ -39,85 +39,85 @@ on *:LOAD:{
   ; Invalid load method check
   if (!$istok($_cfgx(addons,ids),$readini($script,n,addon,id),32)) {
     .timer -mio 1 0 .unload -rs " $+ $script $+ "
-dispa Unloading ' $+ $script $+ ' $chr(40) $+ addon is not properly loaded; use /addon to load it $+ $chr(41)
+    dispa Unloading ' $+ $script $+ ' $chr(40) $+ addon is not properly loaded; use /addon to load it $+ $chr(41)
     halt
   }
 }
- 
+
 menu menubar {
   $_popssep
-Extras
-.$iif($_cfgx(extras,lagbar),$style(1)) Lagbar:lagbar $_tf2o($_not($_cfgx(extras,lagbar)))
-.$iif($hget(pnp.config,kickstat),$style(1)) KickStats
-..$iif(!$hget(pnp.config,kickstat),$style(1)) Off:kickstat off
-..$iif($hget(pnp.config,kickstat) == 1,$style(1)) On:kickstat on
-..$iif($hget(pnp.config,kickstat) == 2,$style(1)) Record but don't show:kickstat quiet
+  Extras
+  .$iif($_cfgx(extras,lagbar),$style(1)) Lagbar:lagbar $_tf2o($_not($_cfgx(extras,lagbar)))
+  .$iif($hget(pnp.config,kickstat),$style(1)) KickStats
+  ..$iif(!$hget(pnp.config,kickstat),$style(1)) Off:kickstat off
+  ..$iif($hget(pnp.config,kickstat) == 1,$style(1)) On:kickstat on
+  ..$iif($hget(pnp.config,kickstat) == 2,$style(1)) Record but don't show:kickstat quiet
   ..-
-..Configure...:kickstat
+  ..Configure...:kickstat
   ..-
-..Look up a user...:kickstat $_entry(-1,$null,Nickname or address to look up KickStats on?)
-..Clear database...:kickstat clear
+  ..Look up a user...:kickstat $_entry(-1,$null,Nickname or address to look up KickStats on?)
+  ..Clear database...:kickstat clear
   .-
-.$iif($_cfgi(antiidle),$style(1)) Anti-idle:if ($_cfgi(antiidle)) aidle off | else aidle on
-.$iif($hget(pnp.config,ezping.on),$style(1)) EZ-Ping:ezping
+  .$iif($_cfgi(antiidle),$style(1)) Anti-idle:if ($_cfgi(antiidle)) aidle off | else aidle on
+  .$iif($hget(pnp.config,ezping.on),$style(1)) EZ-Ping:ezping
   .-
-.Show colors:showcolor
-.Say colors:saycolor
-.Color window:colorwin
+  .Show colors:showcolor
+  .Say colors:saycolor
+  .Color window:colorwin
   .-
-.Events
-..Reshow last notice	/rln:/rln
-..Say last notice	/sln:/sln
+  .Events
+  ..Reshow last notice	/rln:/rln
+  ..Say last notice	/sln:/sln
   ..-
-..Reshow last message	/rlm:/rlm
-..Say last message	/slm:/slm
-.Country codes
-..$iif($hget(pnp.config,docountry),$style(1)) Show in whois:country $_tf2o($_not($hget(pnp.config,docountry)))
+  ..Reshow last message	/rlm:/rlm
+  ..Say last message	/slm:/slm
+  .Country codes
+  ..$iif($hget(pnp.config,docountry),$style(1)) Show in whois:country $_tf2o($_not($hget(pnp.config,docountry)))
   ..-
-..Lookup country...:country $_entry(-1,$null,Country code to look up?)
-..Lookup state...:usa $_entry(-1,$null,State code to look up?)
+  ..Lookup country...:country $_entry(-1,$null,Country code to look up?)
+  ..Lookup state...:usa $_entry(-1,$null,State code to look up?)
 }
- 
+
 ;
 ; EZ-Ping
 ;
 alias ezping {
-if (($1 == on) || ($1 == on)) `set ezping.on 1
-elseif (($1 == off) || ($1 == off)) `set ezping.on 0
+  if (($1 == on) || ($1 == on)) `set ezping.on 1
+  elseif (($1 == off) || ($1 == off)) `set ezping.on 0
   else {
     _dialog -am ezping ezping
     return
   }
-dispa EZ-Ping is $:t($_tf2o($hget(pnp.config,ezping.on)))
+  dispa EZ-Ping is $:t($_tf2o($hget(pnp.config,ezping.on)))
 }
 dialog ezping {
-title "EZ-Ping options"
+  title "EZ-Ping options"
   icon script\pnp.ico
   option dbu
   size -1 -1 160 222
- 
-check "&Enable EZ-Ping:", 1, 5 5 75 10
+
+  check "&Enable EZ-Ping:", 1, 5 5 75 10
   box "", 2, 5 15 150 124
-check "&Ping users automatically for these phrases:", 3, 10 22 140 10
+  check "&Ping users automatically for these phrases:", 3, 10 22 140 10
   combo 4, 19 35 95 55
-button "&Add", 5, 120 35 27 11, disable
-button "&Remove", 6, 120 48 27 11, disable
-button "&Clear", 7, 120 62 27 11
-button "&Default", 8, 120 75 27 11
-check "&Hide automatic pings (sent)", 9, 10 92 140 10
-check "&Hide automatic ping replies (recieved)", 10, 10 103 140 10
-check "&Hide notice replies (sent)", 11, 10 114 140 10
-check "&Report ping replies from manual pings as well", 12, 10 125 140 10
- 
-box "&Notice reply:", 13, 5 144 150 50
+  button "&Add", 5, 120 35 27 11, disable
+  button "&Remove", 6, 120 48 27 11, disable
+  button "&Clear", 7, 120 62 27 11
+  button "&Default", 8, 120 75 27 11
+  check "&Hide automatic pings (sent)", 9, 10 92 140 10
+  check "&Hide automatic ping replies (recieved)", 10, 10 103 140 10
+  check "&Hide notice replies (sent)", 11, 10 114 140 10
+  check "&Report ping replies from manual pings as well", 12, 10 125 140 10
+
+  box "&Notice reply:", 13, 5 144 150 50
   edit "", 14, 10 154 140 17, multi vsbar
-button "&Default 1", 15, 10 176 40 12
-button "&Default 2", 16, 60 176 40 12
-button "&Default 3", 17, 110 176 40 12
- 
-button "OK", 100, 10 204 40 12, ok default
-button "Cancel", 101, 60 204 40 12, cancel
-button "&Help", 102, 110 204 40 12, disable
+  button "&Default 1", 15, 10 176 40 12
+  button "&Default 2", 16, 60 176 40 12
+  button "&Default 3", 17, 110 176 40 12
+
+  button "OK", 100, 10 204 40 12, ok default
+  button "Cancel", 101, 60 204 40 12, cancel
+  button "&Help", 102, 110 204 40 12, disable
 }
 on *:DIALOG:ezping:init:*:{
   if ($hget(pnp.config,ezping.on)) did -c $dname 1
@@ -127,7 +127,7 @@ on *:DIALOG:ezping:init:*:{
   if ($mid($hget(pnp.config,ezping.opt),4,1)) did -c $dname 11
   if ($right($hget(pnp.config,ezping.opt),1)) did -c $dname 12
   if ($hget(pnp.config,ezping.reply)) did -a $dname 14 $ifmatch
-else did -a $dname 14 Your ping reply was &dur& from server &server&
+  else did -a $dname 14 Your ping reply was &dur& from server &server&
   if ($hget(pnp.config,ezping.phrase)) _loadepp $ifmatch
   else _loadepp !ping,ping pl,ping me
   _ezdu
@@ -151,7 +151,7 @@ on *:DIALOG:ezping:sclick:*:{
   elseif ($did == 6) did -d $dname 4 $did(4,1).sel
   elseif ($did == 7) did -r $dname 4
   elseif ($did == 8) _loadepp !ping,ping pl,ping me
-elseif ($did isnum 15-17) did -ra $dname 14 $gettok(Your ping reply was &dur& from server &server&Your ping time: &meter& $chr(40) $+ &time& secs $+ $chr(41) Your ping: &metercol& $chr(40) $+ &time& secs $+ $chr(41),$calc($did - 14),127)
+  elseif ($did isnum 15-17) did -ra $dname 14 $gettok(Your ping reply was &dur& from server &server&Your ping time: &meter& $chr(40) $+ &time& secs $+ $chr(41) Your ping: &metercol& $chr(40) $+ &time& secs $+ $chr(41),$calc($did - 14),127)
   _ezdu
 }
 on *:DIALOG:ezping:edit:4:_ezdu
@@ -169,14 +169,14 @@ alias -l _ezdu {
     }
   }
 }
- 
+
 ;
 ; Anti-idle
 ;
 alias aidle {
-if (($1 == on) || ($1 == on)) _cfgw antiidle 1
-if (($1 == off) || ($1 == off)) { _cfgw antiidle | .timer.antiidle off }
-dispa Anti-idle is $:t($_tf2o($_cfgi(antiidle)))
+  if (($1 == on) || ($1 == on)) _cfgw antiidle 1
+  if (($1 == off) || ($1 == off)) { _cfgw antiidle | .timer.antiidle off }
+  dispa Anti-idle is $:t($_tf2o($_cfgi(antiidle)))
   _doidle
 }
 alias -l _doidle {
@@ -188,11 +188,11 @@ alias -l _doidle {
 }
 on me:^&*:OPEN:?:antiidle:halt
 on me:^&*:TEXT:antiidle:*:halt
- 
+
 ;
 ; LagBar
 ;
- 
+
 on *:DISCONNECT:{ .timer -mio 1 0 _lagbar }
 on *:CONNECT:{ _lagbar }
 on *:ACTIVE:*:{ if (($_cfgx(extras,lagtype) == 2) && ($window(@Lagbar))) _lagupdate }
@@ -200,7 +200,7 @@ on *:START:{ _startup.add _extras.start Initializing extras addon }
 alias _extras.start { _doidle | _lagbar | kstat.setup }
 alias lagbar {
   if ($1) _cfgxw extras lagbar $_o2tf($1)
-dispa Lagbar is $:t($_tf2o($_cfgx(extras,lagbar)))
+  dispa Lagbar is $:t($_tf2o($_cfgx(extras,lagbar)))
   if ($1) _lagbar
 }
 alias -l _lagdefpos {
@@ -289,37 +289,37 @@ menu @LagBar {
   sclick:{ if ($_cfgx(extras,laglock)) { _lagback | return } | .timer.lagbar -mio 0 50 _lagmouse $calc($mouse.dx - $window(@LagBar).dx) $calc($mouse.dy - $window(@LagBar).dy) }
   uclick:{ .timer.lagbar off | _lagback }
   dclick:{ _lagdocklock | _lagback }
-Color
-.$iif(!$_cfgx(extras,lagcolor),$style(1)) 3D Bar:_lagcolor
-.$iif($_cfgx(extras,lagcolor) == shadow,$style(1)) Dark:_lagcolor shadow
-.$iif($_cfgx(extras,lagcolor) == hilight,$style(1)) Light:_lagcolor hilight
+  Color
+  .$iif(!$_cfgx(extras,lagcolor),$style(1)) 3D Bar:_lagcolor
+  .$iif($_cfgx(extras,lagcolor) == shadow,$style(1)) Dark:_lagcolor shadow
+  .$iif($_cfgx(extras,lagcolor) == hilight,$style(1)) Light:_lagcolor hilight
   .-
-.$iif($_cfgx(extras,lagcolor) == 01,$style(1)) Black	1:_lagcolor 01
-.$iif($_cfgx(extras,lagcolor) == 02,$style(1)) Blue	2:_lagcolor 02
-.$iif($_cfgx(extras,lagcolor) == 03,$style(1)) Green	3:_lagcolor 03
-.$iif($_cfgx(extras,lagcolor) == 04,$style(1)) Red	4:_lagcolor 04
-.$iif($_cfgx(extras,lagcolor) == 05,$style(1)) Brown	5:_lagcolor 05
-.$iif($_cfgx(extras,lagcolor) == 06,$style(1)) Purple	6:_lagcolor 06
-.$iif($_cfgx(extras,lagcolor) == 07,$style(1)) Orange	7:_lagcolor 07
-.$iif($_cfgx(extras,lagcolor) == 08,$style(1)) Yellow	8:_lagcolor 08
-.$iif($_cfgx(extras,lagcolor) == 09,$style(1)) Lt Green	9:_lagcolor 09
-.$iif($_cfgx(extras,lagcolor) == 10,$style(1)) Cyan	10:_lagcolor 10
-.$iif($_cfgx(extras,lagcolor) == 11,$style(1)) Lt Cyan	11:_lagcolor 11
-.$iif($_cfgx(extras,lagcolor) == 12,$style(1)) Lt Blue	12:_lagcolor 12
-.$iif($_cfgx(extras,lagcolor) == 13,$style(1)) Pink	13:_lagcolor 13
-.$iif($_cfgx(extras,lagcolor) == 14,$style(1)) Grey	14:_lagcolor 14
-.$iif($_cfgx(extras,lagcolor) == 15,$style(1)) Lt Grey	15:_lagcolor 15
-.$iif($_cfgx(extras,lagcolor) == 16,$style(1)) White	16:_lagcolor 16
-Show
-.$iif(!$_cfgx(extras,lagtype),$style(1)) Highest lag:_lagtype 0
-.$iif($_cfgx(extras,lagtype) == 1,$style(1)) Average lag:_lagtype 1
-.$iif($_cfgx(extras,lagtype) == 2,$style(1)) Active server:_lagtype 2
+  .$iif($_cfgx(extras,lagcolor) == 01,$style(1)) Black	1:_lagcolor 01
+  .$iif($_cfgx(extras,lagcolor) == 02,$style(1)) Blue	2:_lagcolor 02
+  .$iif($_cfgx(extras,lagcolor) == 03,$style(1)) Green	3:_lagcolor 03
+  .$iif($_cfgx(extras,lagcolor) == 04,$style(1)) Red	4:_lagcolor 04
+  .$iif($_cfgx(extras,lagcolor) == 05,$style(1)) Brown	5:_lagcolor 05
+  .$iif($_cfgx(extras,lagcolor) == 06,$style(1)) Purple	6:_lagcolor 06
+  .$iif($_cfgx(extras,lagcolor) == 07,$style(1)) Orange	7:_lagcolor 07
+  .$iif($_cfgx(extras,lagcolor) == 08,$style(1)) Yellow	8:_lagcolor 08
+  .$iif($_cfgx(extras,lagcolor) == 09,$style(1)) Lt Green	9:_lagcolor 09
+  .$iif($_cfgx(extras,lagcolor) == 10,$style(1)) Cyan	10:_lagcolor 10
+  .$iif($_cfgx(extras,lagcolor) == 11,$style(1)) Lt Cyan	11:_lagcolor 11
+  .$iif($_cfgx(extras,lagcolor) == 12,$style(1)) Lt Blue	12:_lagcolor 12
+  .$iif($_cfgx(extras,lagcolor) == 13,$style(1)) Pink	13:_lagcolor 13
+  .$iif($_cfgx(extras,lagcolor) == 14,$style(1)) Grey	14:_lagcolor 14
+  .$iif($_cfgx(extras,lagcolor) == 15,$style(1)) Lt Grey	15:_lagcolor 15
+  .$iif($_cfgx(extras,lagcolor) == 16,$style(1)) White	16:_lagcolor 16
+  Show
+  .$iif(!$_cfgx(extras,lagtype),$style(1)) Highest lag:_lagtype 0
+  .$iif($_cfgx(extras,lagtype) == 1,$style(1)) Average lag:_lagtype 1
+  .$iif($_cfgx(extras,lagtype) == 2,$style(1)) Active server:_lagtype 2
   -
-$iif($_cfgx(extras,lagdock),$style(1)) Docked:_lagdock | _lagback
-$iif($_cfgx(extras,laglock),$style(1)) Locked:_laglock | _lagback
-$iif($window(@LagBar).dx $window(@LagBar).dy == $_lagdefpos,$style(1)) Default position:window @LagBar $_lagdefpos | _lagback
+  $iif($_cfgx(extras,lagdock),$style(1)) Docked:_lagdock | _lagback
+  $iif($_cfgx(extras,laglock),$style(1)) Locked:_laglock | _lagback
+  $iif($window(@LagBar).dx $window(@LagBar).dy == $_lagdefpos,$style(1)) Default position:window @LagBar $_lagdefpos | _lagback
   -
-Disable:lagbar off | _lagback
+  Disable:lagbar off | _lagback
 }
 on *:CLOSE:@LagBar:{ _lagspos | .timer.lagupdate off }
 alias -l _lagposcheck {
@@ -382,13 +382,13 @@ alias -l _lagfill {
   }
   drawdot @LagBar
 }
- 
+
 ;
 ; ColorBars
 ;
 alias showcolor dispa 1,0 0 0,1 1 0,2 2 0,3 3 0,4 4 0,5 5 0,6 6 0,7 7 1,8 8 1,9 9 0,10 10 1,11 11 0,12 12 0,13 13 0,14 14 1,15 15 
 alias saycolor say 1,0 0 0,1 1 0,2 2 0,3 3 0,4 4 0,5 5 0,6 6 0,7 7 1,8 8 1,9 9 0,10 10 1,11 11 0,12 12 0,13 13 0,14 14 1,15 15 
- 
+
 ;
 ; RepeatLast, EZping send
 ;
@@ -412,7 +412,7 @@ alias rlm if ($hget(pnp. $+ $cid,-last.msg)) dispa $hget(pnp. $+ $cid,-last.msg)
 alias slm if ($hget(pnp. $+ $cid,-last.msg)) editbox -a /say $hget(pnp. $+ $cid,-last.msg)
 alias rln if ($hget(pnp. $+ $cid,-last.ntc)) dispa $hget(pnp. $+ $cid,-last.ntc)
 alias sln if ($hget(pnp. $+ $cid,-last.ntc)) editbox -a /say $hget(pnp. $+ $cid,-last.ntc)
- 
+
 ;
 ; Rest of EZping
 ;
@@ -451,7 +451,7 @@ alias -l _ezrepl {
   }
   return $msg.compile(%msg,&time&,$round($calc($1 / 1000),1),&dur&,$_dur($round($calc($1 / 1000),0)),&server&,$server,&meter&,%meter,&metercol&,%metercol)
 }
- 
+
 ;
 ; CountryCode
 ;
@@ -510,7 +510,7 @@ alias -l _state {
   :WV | return West Virginia, USA
   :WI | return Wisconsin, USA
   :WY | return Wyoming, USA
-:%state | return (unknown), USA
+  :%state | return (unknown), USA
 }
 alias -l _country {
   var %country = $1 | goto $1
@@ -776,24 +776,24 @@ alias -l _country {
   :COOP | return Cooperative Business
   :AERO | return Air-transport Business
   :PRO | return Professional (individuals)
-:%country | return (unknown)
+  :%country | return (unknown)
 }
 alias -l _code {
   if (*.us iswm $1) return $_state($gettok($1,-2,46))
   return $_country($gettok($1,-1,46))
 }
 alias country {
-if (($1 == on) || ($1 == off) || ($1 == on) || ($1 == off)) {
+  if (($1 == on) || ($1 == off) || ($1 == on) || ($1 == off)) {
     `set docountry $_o2tf($1)
-dispa Country codes are $:t($_tf2o($hget(pnp.config,docountry)))
+    dispa Country codes are $:t($_tf2o($hget(pnp.config,docountry)))
   }
-elseif ($1) dispa Location of $:t($1) - $_code($1)
-else dispa Country codes are $:t($_tf2o($hget(pnp.config,docountry)))
+  elseif ($1) dispa Location of $:t($1) - $_code($1)
+  else dispa Country codes are $:t($_tf2o($hget(pnp.config,docountry)))
 }
 alias usa country $iif(*.us iswm $1,$1,$1.us)
 raw 312:*:if (($hget(pnp.config,docountry)) && ($numtok($hget(pnp.twhois. $+ $cid,address),46) > 1)) _docountry $gettok($hget(pnp.twhois. $+ $cid,address),-1,46)
 alias -l _docountry if (($1 isnum) || ($1 == $null)) return | if (($istok(com edu net org biz info name pro,$1,32) == $false) && (* !isin $1)) whois.misc at $_code($1)
- 
+
 ;
 ; Color window
 ;
@@ -822,10 +822,10 @@ alias -l _cwm {
   else {
     var %fg = $int($calc(($mouse.x - 50) / 30))
     var %bg = $int($calc($mouse.y / 18))
-titlebar @ColorWin - %fg on %bg ( $+ $_colorword(%fg) on $_colorword(%bg) $+ )
+    titlebar @ColorWin - %fg on %bg ( $+ $_colorword(%fg) on $_colorword(%bg) $+ )
   }
 }
- 
+
 ;
 ; Kickstats
 ;
@@ -907,47 +907,47 @@ on !*:JOIN:#:{
     tokenize 32 $hget(pnp.kickstat,$kstat.address($fulladdress))
     if ($1) {
       if (($1 >= $hget(pnp.config,kickstat.kick)) || ($2 >= $hget(pnp.config,kickstat.ban))) {
-dispr $chan $:t($nick) has $:s($1) kicks / $:s($2) bankicks $chr(40) $+ $_q.fkey(0,$calc($ctime + 90),kickstat,$fulladdress) for info / $_q.fkey(1,$calc($ctime + 90),clearstat,$fulladdress) to clear $+ $chr(41)
+        dispr $chan $:t($nick) has $:s($1) kicks / $:s($2) bankicks $chr(40) $+ $_q.fkey(0,$calc($ctime + 90),kickstat,$fulladdress) for info / $_q.fkey(1,$calc($ctime + 90),clearstat,$fulladdress) to clear $+ $chr(41)
       }
     }
   }
 }
 ; /kickstat [nick|on|off|quiet|clear]
 alias kickstat {
-if (($1 == on) || ($1 == on)) {
+  if (($1 == on) || ($1 == on)) {
     `set kickstat 1
     if ($hget(pnp.config,kickstat.kick) !isnum) `set kickstat.kick 2
     if ($hget(pnp.config,kickstat.ban) !isnum) `set kickstat.ban 1
-var %set = On
-dispa KickStats are $:t(%set)
+    var %set = On
+    dispa KickStats are $:t(%set)
     kstat.setup
   }
-elseif (($1 == off) || ($1 == off)) {
+  elseif (($1 == off) || ($1 == off)) {
     `set kickstat 0
-var %set = Off
-dispa KickStats are $:t(%set)
+    var %set = Off
+    dispa KickStats are $:t(%set)
     kstat.setup
   }
   elseif ($1 == quiet) {
     `set kickstat 2
-var %set = On
-dispa KickStats $:t(%set) $+ $chr(44) but quiet.
+    var %set = On
+    dispa KickStats $:t(%set) $+ $chr(44) but quiet.
     kstat.setup
   }
   elseif ($1 == clear) {
-_okcancel 1 Clear KickStats database?
+    _okcancel 1 Clear KickStats database?
     .remove $_cfg(kickstat.dat)
     if ($hget(pnp.kickstat)) hdel -w pnp.kickstat *
-dispa KickStats database cleared.
+    dispa KickStats database cleared.
   }
   elseif ($1) {
     var %addr = $_nc($1)
     if (@ !isin $1) {
       if ($address(%addr,5)) %addr = $ifmatch
       else {
-dispa Looking up address of $:t(%addr) $+ ...
+        dispa Looking up address of $:t(%addr) $+ ...
         _notconnected
-_Q.userhost kickstat&n!&a dispa $+ User $+ $:t(%addr) $+ notfound %addr
+        _Q.userhost kickstat&n!&a dispa $+ User $+ $:t(%addr) $+ notfound %addr
         return
       }
     }
@@ -960,11 +960,11 @@ _Q.userhost kickstat&n!&a dispa $+ User $+ $:t(%addr) $+ notfound %addr
         if ($readn) tokenize 32 $read(%file,n,$calc($readn + 1))
       }
     }
-if ($1 == $null) dispa No KickStats found for $:s(%addr)
+    if ($1 == $null) dispa No KickStats found for $:s(%addr)
     else {
-disptn -a $gettok($3,1,33) Kicks: $:s($1) / Bankicks: $:s($2) / Total: $calc($1 + $2)
-disptn -a $gettok($3,1,33) Last kick: by $:s($4) in $:s($5) $chr(40) $+ $7- $+ $chr(41)
-disptn -a $gettok($3,1,33) Previous address was: $3
+      disptn -a $gettok($3,1,33) Kicks: $:s($1) / Bankicks: $:s($2) / Total: $calc($1 + $2)
+      disptn -a $gettok($3,1,33) Last kick: by $:s($4) in $:s($5) $chr(40) $+ $7- $+ $chr(41)
+      disptn -a $gettok($3,1,33) Previous address was: $3
     }
   }
   else _dialog -am kickstat kickstat
@@ -977,13 +977,13 @@ alias clearstat {
     if (@ !isin $1) {
       if ($address(%addr,5)) %addr = $ifmatch
       else {
-dispa Looking up address of $:t(%addr) $+ ...
+        dispa Looking up address of $:t(%addr) $+ ...
         _notconnected
-_Q.userhost clearstat&n!&a dispa $+ User $+ $:t(%addr) $+ notfound %addr
+        _Q.userhost clearstat&n!&a dispa $+ User $+ $:t(%addr) $+ notfound %addr
         return
       }
     }
- 
+
     if ($hget(pnp.kickstat)) {
       hdel pnp.kickstat $kstat.address($fulladdress)
       .timer.kickstat.flush -io 1 20 kstat.save
@@ -998,27 +998,27 @@ _Q.userhost clearstat&n!&a dispa $+ User $+ $:t(%addr) $+ notfound %addr
         }
       }
     }
-dispa KickStats cleared for $:s(%addr)
+    dispa KickStats cleared for $:s(%addr)
   }
 }
 dialog kickstat {
-title "KickStat options"
+  title "KickStat options"
   icon script\pnp.ico
   option dbu
   size -1 -1 140 91
- 
-radio "&Disable KickStats", 1, 5 5 130 11, group
-radio "&Enable KickStats", 2, 5 16 130 11
-radio "&Record Stats but don't show", 3, 5 27 130 11
- 
-box "Show stats on join if at least:", 4, 5 45 75 41, disable
-text "&kicks or", 6, 42 57 35 11, disable
+
+  radio "&Disable KickStats", 1, 5 5 130 11, group
+  radio "&Enable KickStats", 2, 5 16 130 11
+  radio "&Record Stats but don't show", 3, 5 27 130 11
+
+  box "Show stats on join if at least:", 4, 5 45 75 41, disable
+  text "&kicks or", 6, 42 57 35 11, disable
   edit "", 5, 10 55 30 11, disable
-text "&bans", 8, 42 72 35 11, disable
+  text "&bans", 8, 42 72 35 11, disable
   edit "", 7, 10 70 30 11, disable
- 
-button "OK", 100, 90 55 42 12, ok
-button "Cancel", 101, 90 73 42 12, cancel
+
+  button "OK", 100, 90 55 42 12, ok
+  button "Cancel", 101, 90 73 42 12, cancel
 }
 on *:DIALOG:kickstat:init:*:{
   if ($hget(pnp.config,kickstat) == 2) did -cf $dname 3

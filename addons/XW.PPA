@@ -3,10 +3,10 @@
 ; Peace and Protection
 ; X/Z/P (standard addon)
 ; ########################################
- 
+
 ;!!floatlim, etc. and set lang- see http://cservice.undernet.org/docs/xcmds.txt
 ;!!add /xw on /xw off cmds/dlg
- 
+
 #.ppa.info off
 [xwuser]
 25 (voice/devoice)
@@ -52,26 +52,26 @@ dialogs=xwacc xwban xwuser xwuser2 xwcfg
 [interfaces]
 bot=_xw.splice
 #.ppa.info end
- 
+
 ;;; todo-
 ;;; reop/revenge?
- 
+
 alias -l _xwcmd if ($_isbot(w)) return /xw | if ($_isbot(z)) return /z | if ($_isserv(xw)) return /x
 alias _xwall if ($_isserv(xw)) return $replace($hget(pnp. $+ $cid,-servnick),$chr(32),./.,.,$chr(32))
- 
+
 ; /xw [bot|?|!] command [#chan|?] [params]
 alias z xw $1-
 alias x xw $1-
 alias xw {
-if (($_isserv(xw) == $false) && (($1 != auto) || ($istok(view clear,$2,32) == $false))) _error You cannot use /x on this network. $+ /x only works on networks with X / Z / P.
+  if (($_isserv(xw) == $false) && (($1 != auto) || ($istok(view clear,$2,32) == $false))) _error You cannot use /x on this network. $+ /x only works on networks with X / Z / P.
   if (($_isbot($1) == $false) && ($1 !isin !?)) tokenize 32 ? $1-
   var %chan,%param,%xw,%pw,%send,%who,%new,%old
-if ($2 == $null) { var %cmd = $_xwcmd +command -#channel -parameters * ! $+ $_xwall command to perform | _qhelp $_s2f(%cmd) }
+  if ($2 == $null) { var %cmd = $_xwcmd +command -#channel -parameters * ! $+ $_xwall command to perform | _qhelp $_s2f(%cmd) }
   elseif ($_ischan($3)) { %chan = $3 | %param = $4- }
   elseif (($istok(SEARCH MAP MOTD HELP SHOWIGNORE VERIFY INFO,$2,32)) || ($2-3 == SET INVISIBLE) || ((($2 == NEWPASS) || ($2 == LOGIN) || ($2 == AUTO)) && (u isin $hget(pnp. $+ $cid,-servopt))) || (($2 == AUTO) && ($istok(ADD DEL,$3,32) == $false))) %param = $3-
   elseif ($active ischan) { %chan = $active | %param = $3- }
-elseif ($3 == ?) { %chan = $_patch($_entry(-1,$null,Channel for $2 command?)) | %param = $4- }
-else _error You must use $_xwcmd in a channel $+ $chr(40) $+ or specify a target channel $+ $chr(41)
+  elseif ($3 == ?) { %chan = $_patch($_entry(-1,$null,Channel for $2 command?)) | %param = $4- }
+  else _error You must use $_xwcmd in a channel $+ $chr(40) $+ or specify a target channel $+ $chr(41)
   if ($1 isin !?) {
     if ($chr(32) !isin $hget(pnp. $+ $cid,-servnick)) %xw = $hget(pnp. $+ $cid,-servnick)
     elseif (($2 == SEARCH) || (($2 == AUTO) && ($gettok(%param,1,32) != ADD))) %xw = $replace($hget(pnp. $+ $cid,-servnick),$chr(32),$chr(44))
@@ -80,13 +80,13 @@ else _error You must use $_xwcmd in a channel $+ $chr(40) $+ or specify a targe
       %pw = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),%chan)
       if (%pw != $null) %xw = $gettok(%pw,1,32)
       elseif ($istok(MAP HELP VERIFY,$2,32)) %xw = $gettok($hget(pnp. $+ $cid,-servnick),1,32)
-elseif ($1 == !) { %.fullmsg = Select which bot to use: | %.found = $replace($hget(pnp. $+ $cid,-servnick),$chr(32),$chr(44)) | _ssplay Question | %xw = $$dialog(nickcomp,nickcomp,-4) }
-else _error Cannot determine bot to use.Please specify which bot $chr(40) $+ $_xwall $+ $chr(41) to use.
+      elseif ($1 == !) { %.fullmsg = Select which bot to use: | %.found = $replace($hget(pnp. $+ $cid,-servnick),$chr(32),$chr(44)) | _ssplay Question | %xw = $$dialog(nickcomp,nickcomp,-4) }
+      else _error Cannot determine bot to use.Please specify which bot $chr(40) $+ $_xwall $+ $chr(41) to use.
     }
   }
   else %xw = $1
   if (($2 == SET) && (%param == INVISIBLE)) {
-var %yn = $_yesno(1,Hide your online info from other users' INFO commands?)
+    var %yn = $_yesno(1,Hide your online info from other users' INFO commands?)
     msgxw %xw SET INVISIBLE $iif(%yn,ON,OFF)
     return
   }
@@ -94,81 +94,81 @@ var %yn = $_yesno(1,Hide your online info from other users' INFO commands?)
     %send = msgxw %xw SET %chan $upper(%param) | goto %param
     :USERFLAGS
     if (u isin $hget(pnp. $+ $cid,-servopt)) {
-%.fullmsg = Select default mode for new users:
-%.found = None,Auto-op,Auto-voice
+      %.fullmsg = Select default mode for new users:
+      %.found = None,Auto-op,Auto-voice
       _ssplay Question
-%send $calc($findtok(None*Auto-op*Auto-voice,$$dialog(nickcomp,nickcomp,-4),1,42) - 1)
+      %send $calc($findtok(None*Auto-op*Auto-voice,$$dialog(nickcomp,nickcomp,-4),1,42) - 1)
     }
-else %send $_yesno(1,Should new %xw users be added with auto-op on?)
+    else %send $_yesno(1,Should new %xw users be added with auto-op on?)
     return
     ;;; %yn var is a workaround for mirc bug with halt/$$ not working
-:MASSDEOPPRO | %send $_entry(-2,3,Mass Deop Protection level? $+ $chr(40) $+ number of deops in 15 seconds before a user is kicked. $+ $chr(41)) | return
-:NICKFLOODPRO | %send $_entry(-2,5,Nick Flood Protection level? $+ $chr(40) $+ number of nick changes in 15 seconds causing a kick. $+ $chr(41)) | return
-:FLOODPRO | %send $_entry(-2,7,Flood Protection level? $+ $chr(40) $+ number of modes/topics in 15 seconds causing a kick. $+ $chr(41)) | return
-:NOOP | var %yn = $_yesno(0,Disallow ops? $+ $chr(40) $+ require all actions to use %xw $+ ? $+ $chr(41)) | %send $iif(%yn,ON,OFF) | return
-:ALWAYSOP | var %yn = $_yesno(1,Should %xw always op itself if needed?) | %send $iif(%yn,ON,OFF) | return
-:OPONLY | var %yn = $_yesno(0,Disable all basic %xw commands except OP?) | %send $iif(%yn,ON,OFF) | return
-:STRICTOP | var %yn = $_yesno(1,Disallow unknown users from being opped?) | %send $iif(%yn,ON,OFF) | return
-:DESCRIPTION | %send $_entry(1,$null,%xw description for %chan $+ ? $+ $chr(40) $+ 80 characters max. $+ $chr(44) blank to clear $+ $chr(41)) | return
-:URL | %send $_entry(1,$null,URL $+ $chr(40) $+ s $+ $chr(41) for %chan $+ ? $+ $chr(40) $+ 75 characters max. $+ $chr(44) blank to clear $+ $chr(41)) | return
-:AUTOTOPIC | var %yn = $_yesno(1,Have %xw keep the description/URL as the channel topic?) | %send $iif(%yn,ON,OFF) | return
-:KEYWORDS | %send $_entry(1,$null,%xw keywords for %chan $+ ? $+ $chr(40) $+ 80 characters max. $+ $chr(44) blank to clear $+ $chr(41)) | return
-:AUTOJOIN | var %yn = $_yesno(1,Have %xw auto-join %chan $+ ?) | %send $iif(%yn,ON,OFF) | return
+    :MASSDEOPPRO | %send $_entry(-2,3,Mass Deop Protection level? $+ $chr(40) $+ number of deops in 15 seconds before a user is kicked. $+ $chr(41)) | return
+    :NICKFLOODPRO | %send $_entry(-2,5,Nick Flood Protection level? $+ $chr(40) $+ number of nick changes in 15 seconds causing a kick. $+ $chr(41)) | return
+    :FLOODPRO | %send $_entry(-2,7,Flood Protection level? $+ $chr(40) $+ number of modes/topics in 15 seconds causing a kick. $+ $chr(41)) | return
+    :NOOP | var %yn = $_yesno(0,Disallow ops? $+ $chr(40) $+ require all actions to use %xw $+ ? $+ $chr(41)) | %send $iif(%yn,ON,OFF) | return
+    :ALWAYSOP | var %yn = $_yesno(1,Should %xw always op itself if needed?) | %send $iif(%yn,ON,OFF) | return
+    :OPONLY | var %yn = $_yesno(0,Disable all basic %xw commands except OP?) | %send $iif(%yn,ON,OFF) | return
+    :STRICTOP | var %yn = $_yesno(1,Disallow unknown users from being opped?) | %send $iif(%yn,ON,OFF) | return
+    :DESCRIPTION | %send $_entry(1,$null,%xw description for %chan $+ ? $+ $chr(40) $+ 80 characters max. $+ $chr(44) blank to clear $+ $chr(41)) | return
+    :URL | %send $_entry(1,$null,URL $+ $chr(40) $+ s $+ $chr(41) for %chan $+ ? $+ $chr(40) $+ 75 characters max. $+ $chr(44) blank to clear $+ $chr(41)) | return
+    :AUTOTOPIC | var %yn = $_yesno(1,Have %xw keep the description/URL as the channel topic?) | %send $iif(%yn,ON,OFF) | return
+    :KEYWORDS | %send $_entry(1,$null,%xw keywords for %chan $+ ? $+ $chr(40) $+ 80 characters max. $+ $chr(44) blank to clear $+ $chr(41)) | return
+    :AUTOJOIN | var %yn = $_yesno(1,Have %xw auto-join %chan $+ ?) | %send $iif(%yn,ON,OFF) | return
     :MODE | %send | return
     :%param
   }
   elseif (($2 == MODINFO) && ($numtok(%param,32) isnum 1-2)) {
     if ($istok(MATCH ACCESS AUTOOP AUTOMODE PASSWORD,$gettok(%param,1,32),32)) {
       if ($gettok(%param,2,32)) %who = $_ncc($ifmatch,%chan)
-else %who = $_entry(-1,$null,User to modify? $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),Enter a username $+ $chr(44) or nickname prefixed with,Enter a nickname or address.))
+      else %who = $_entry(-1,$null,User to modify? $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),Enter a username $+ $chr(44) or nickname prefixed with,Enter a nickname or address.))
       %send = msgxw %xw MODINFO %chan $upper($gettok(%param,1,32)) %who
       goto $gettok(%param,1,32)
- 
+
       :MATCH
-var %addr = (unknown)
+      var %addr = (unknown)
       if ($address(%who,5)) %addr = $address(%who,5)
-%new = $_entry(-1,$iif($address(%who,5),$_banmask(%addr,%chan)),New %xw mask to match for %who $+ ?User's address is %addr)
+      %new = $_entry(-1,$iif($address(%who,5),$_banmask(%addr,%chan)),New %xw mask to match for %who $+ ?User's address is %addr)
       %send $_fixmask(%new)
       return
- 
+
       :ACCESS
-%send $_entry(-2,$null,New %xw access level for $remove(%who,=) $+ ? $+ $chr(40) $+ Level must be from 1 to 499. $+ $chr(41))
+      %send $_entry(-2,$null,New %xw access level for $remove(%who,=) $+ ? $+ $chr(40) $+ Level must be from 1 to 499. $+ $chr(41))
       return
- 
+
       :PASSWORD
       _ssplay Question
-%new = $$input(New %xw password for %who $+ ?,2)
-if ($$input(Please retype password to confirm:,2) !=== %new) _error Passwords do not match.You must enter the password exactly the same each time.
+      %new = $$input(New %xw password for %who $+ ?,2)
+      if ($$input(Please retype password to confirm:,2) !=== %new) _error Passwords do not match.You must enter the password exactly the same each time.
       %send %new
       return
- 
+
       :AUTOMODE
-%.fullmsg = Select mode for $remove(%who,=) $+ :
-%.found = None,Auto-op,Auto-voice
+      %.fullmsg = Select mode for $remove(%who,=) $+ :
+      %.found = None,Auto-op,Auto-voice
       _ssplay Question
-%send $gettok(NONE OP VOICE,$findtok(None*Auto-op*Auto-voice,$$dialog(nickcomp,nickcomp,-4),1,42),32)
+      %send $gettok(NONE OP VOICE,$findtok(None*Auto-op*Auto-voice,$$dialog(nickcomp,nickcomp,-4),1,42),32)
       return
- 
+
       :AUTOOP
-var %yn = $_yesno(1,Enable %xw auto-op for %who $+ ?)
+      var %yn = $_yesno(1,Enable %xw auto-op for %who $+ ?)
       %send $iif(%yn,ON,OFF)
     }
   }
   elseif ($2 == AUTO) {
     if ($gettok(%param,1,32) == VIEW) {
       var %nets = $readini($_cfg(pw.ini),n,xw,nets)
-if (%nets == $null) dispa No $_xwall auto-logins have been defined.
+      if (%nets == $null) dispa No $_xwall auto-logins have been defined.
       else {
         _info $_xwcmd auto
-dispr @Info $_xwall logins $+ -
+        dispr @Info $_xwall logins $+ -
         :vloop1
         var %net = $gettok(%nets,1,32)
         var %param = $readini($_cfg(pw.ini),n,xw- $+ %net,all)
         :vloop2
         var %item = $gettok(%param,1,32)
         %pw = $readini($_cfg(pw.ini),n,xw- $+ %net,%item)
-if ($_ischan(%item)) dispr @Info   - Login to $:t($gettok(%pw,1,32)) on $:s(%item) $chr(40) $+ on %net $+ $chr(41)
-else dispr @Info   - Login to $:t($gettok(%pw,1,32)) as $:s(%item) $chr(40) $+ on %net $+ $chr(41)
+        if ($_ischan(%item)) dispr @Info   - Login to $:t($gettok(%pw,1,32)) on $:s(%item) $chr(40) $+ on %net $+ $chr(41)
+        else dispr @Info   - Login to $:t($gettok(%pw,1,32)) as $:s(%item) $chr(40) $+ on %net $+ $chr(41)
         %param = $gettok(%param,2-,32)
         if (%param) goto vloop2
         %nets = $gettok(%nets,2-,32)
@@ -181,20 +181,20 @@ else dispr @Info   - Login to $:t($gettok(%pw,1,32)) as $:s(%item) $chr(40) $+
       %old = $remtok(%old,$hget(pnp. $+ $cid,net),1,32)
       if (%old == $null) remini $_cfg(pw.ini) xw nets
       else writeini $_cfg(pw.ini) xw nets %old
-dispa All $_xwall auto-logins have been deleted. $chr(40) $+ on $hget(pnp. $+ $cid,net) $+ $chr(41)
+      dispa All $_xwall auto-logins have been deleted. $chr(40) $+ on $hget(pnp. $+ $cid,net) $+ $chr(41)
     }
     elseif (u isin $hget(pnp. $+ $cid,-servopt)) {
       if ($gettok(%param,1,32) == ADD) {
         if ($gettok(%param,2,32)) %who = $ifmatch
-else %who = $_entry(-1,$me,Username for auto-login? $+ $chr(40) $+ Enter the username you used to register. $+ $chr(41))
+        else %who = $_entry(-1,$me,Username for auto-login? $+ $chr(40) $+ Enter the username you used to register. $+ $chr(41))
         if ($gettok(%param,3,32)) %pw = $ifmatch
         else {
           _ssplay Question
-%pw = $$input(Password for auto-login to %xw as %who $+ ?,2)
-if ($$input(Please retype password to confirm:,2) !=== %pw) _error Passwords do not match.You must enter the password exactly the same each time.
+          %pw = $$input(Password for auto-login to %xw as %who $+ ?,2)
+          if ($$input(Please retype password to confirm:,2) !=== %pw) _error Passwords do not match.You must enter the password exactly the same each time.
         }
         writeini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) %who %xw $_pw.enc(%pw)
-dispa Auto-login to $:t(%xw) as $:s(%who) added. $chr(40) $+ on $hget(pnp. $+ $cid,net) $+ $chr(41)
+        dispa Auto-login to $:t(%xw) as $:s(%who) added. $chr(40) $+ on $hget(pnp. $+ $cid,net) $+ $chr(41)
         %old = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),all)
         writeini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) all $addtok(%old,%who,32)
         %old = $readini($_cfg(pw.ini),n,xw,nets)
@@ -202,7 +202,7 @@ dispa Auto-login to $:t(%xw) as $:s(%who) added. $chr(40) $+ on $hget(pnp. $+ $c
       }
       elseif ($gettok(%param,1,32) == DEL)  {
         if ($gettok(%param,2,32)) %who = $ifmatch
-else %who = $_entry(-1,$me,Username of auto-login to delete? $+ $chr(40) $+ Enter the username you used to register. $+ $chr(41))
+        else %who = $_entry(-1,$me,Username of auto-login to delete? $+ $chr(40) $+ Enter the username you used to register. $+ $chr(41))
         %pw = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),%who)
         if (%pw) {
           %old = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),all)
@@ -216,9 +216,9 @@ else %who = $_entry(-1,$me,Username of auto-login to delete? $+ $chr(40) $+ Ent
           }
           else writeini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) all %new
           remini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) %who
-dispa Auto-login for $:s(%who) deleted. $chr(40) $+ on $hget(pnp. $+ $cid,net) $+ $chr(41)
+          dispa Auto-login for $:s(%who) deleted. $chr(40) $+ on $hget(pnp. $+ $cid,net) $+ $chr(41)
         }
-else dispa No auto-login has been defined for $:s(%who) $+ . $chr(40) $+ on $hget(pnp. $+ $cid,net) $+ $chr(41)
+        else dispa No auto-login has been defined for $:s(%who) $+ . $chr(40) $+ on $hget(pnp. $+ $cid,net) $+ $chr(41)
       }
       else {
         ; default to logging in as first listed nick
@@ -229,31 +229,31 @@ else dispa No auto-login has been defined for $:s(%who) $+ . $chr(40) $+ on $hge
           var %pos = 1
           while ($_ischan($gettok(%who,%pos,32))) { inc %pos }
           %who = $gettok(%who,%pos,32)
-if (!%who) _error No $_xwall logins have been defined!You can add auto-logins through popups.
+          if (!%who) _error No $_xwall logins have been defined!You can add auto-logins through popups.
         }
         %pw = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),%who)
-if (%pw) { %xw = $gettok(%pw,1,32) | %pw = $_pw.enc($gettok(%pw,2,32)) | .msgxw %xw LOGIN %who %pw | dispa Logging into $:t(%xw) as $:s(%who) $+ ... }
-else _error No $_xwall login defined for %who $+ .You can add an auto-login through popups.
+        if (%pw) { %xw = $gettok(%pw,1,32) | %pw = $_pw.enc($gettok(%pw,2,32)) | .msgxw %xw LOGIN %who %pw | dispa Logging into $:t(%xw) as $:s(%who) $+ ... }
+        else _error No $_xwall login defined for %who $+ .You can add an auto-login through popups.
       }
     }
     else {
       if ($gettok(%param,1,32) == ADD) {
-if (%chan == $null) _error You must use $_xwcmd auto add in a channel $+ $chr(40) $+ or specify a target channel $+ $chr(41)
+        if (%chan == $null) _error You must use $_xwcmd auto add in a channel $+ $chr(40) $+ or specify a target channel $+ $chr(41)
         if ($gettok(%param,2,32)) %pw = $ifmatch
         else {
           _ssplay Question
-%pw = $$input(Password for auto-login to %chan $+ ?,2)
-if ($$input(Please retype password to confirm:,2) !=== %pw) _error Passwords do not match.You must enter the password exactly the same each time.
+          %pw = $$input(Password for auto-login to %chan $+ ?,2)
+          if ($$input(Please retype password to confirm:,2) !=== %pw) _error Passwords do not match.You must enter the password exactly the same each time.
         }
         writeini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) %chan %xw $_pw.enc(%pw)
-dispa Auto-login to $:t(%xw) for $:s(%chan) added. $chr(40) $+ on $hget(pnp. $+ $cid,net) $+ $chr(41)
+        dispa Auto-login to $:t(%xw) for $:s(%chan) added. $chr(40) $+ on $hget(pnp. $+ $cid,net) $+ $chr(41)
         %old = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),all)
         writeini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) all $addtok(%old,%chan,32)
         %old = $readini($_cfg(pw.ini),n,xw,nets)
         writeini $_cfg(pw.ini) xw nets $addtok(%old,$hget(pnp. $+ $cid,net),32)
       }
       elseif ($gettok(%param,1,32) == DEL)  {
-if (%chan == $null) _error You must use $_xwcmd auto del in a channel $+ $chr(40) $+ or specify a target channel $+ $chr(41)
+        if (%chan == $null) _error You must use $_xwcmd auto del in a channel $+ $chr(40) $+ or specify a target channel $+ $chr(41)
         %pw = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),%chan)
         if (%pw) {
           %old = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),all)
@@ -267,19 +267,19 @@ if (%chan == $null) _error You must use $_xwcmd auto del in a channel $+ $chr(4
           }
           else writeini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) all %new
           remini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) %chan
-dispa Auto-login for $:s(%chan) deleted. $chr(40) $+ on $hget(pnp. $+ $cid,net) $+ $chr(41)
+          dispa Auto-login for $:s(%chan) deleted. $chr(40) $+ on $hget(pnp. $+ $cid,net) $+ $chr(41)
         }
-else dispa No auto-login has been defined for $:s(%chan) $+ . $chr(40) $+ on $hget(pnp. $+ $cid,net) $+ $chr(41)
+        else dispa No auto-login has been defined for $:s(%chan) $+ . $chr(40) $+ on $hget(pnp. $+ $cid,net) $+ $chr(41)
       }
       else {
         if (%chan) {
           %pw = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),%chan)
-if (%pw) { %xw = $gettok(%pw,1,32) | %pw = $_pw.enc($gettok(%pw,2,32)) | .msgxw %xw LOGIN %chan %pw | disprc %chan Logging into $:t(%xw) }
-else _error No $_xwall login defined for %chan $+ .You can add an auto-login through popups.
+          if (%pw) { %xw = $gettok(%pw,1,32) | %pw = $_pw.enc($gettok(%pw,2,32)) | .msgxw %xw LOGIN %chan %pw | disprc %chan Logging into $:t(%xw) }
+          else _error No $_xwall login defined for %chan $+ .You can add an auto-login through popups.
         }
         else {
           %chan = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),all)
-if (%chan == $null) _error No $_xwall logins have been defined!You can add auto-logins through popups.
+          if (%chan == $null) _error No $_xwall logins have been defined!You can add auto-logins through popups.
           var %delay = 0
           :aloop
           %old = $gettok(%chan,1,32)
@@ -289,39 +289,39 @@ if (%chan == $null) _error No $_xwall logins have been defined!You can add auto
             %pw = $_pw.enc($gettok(%pw,2,32))
             .timer 1 %delay .msgxw %xw LOGIN %old %pw
             inc %delay $iif(%delay < 2,1,4)
-disprc %old Logging into $:t(%xw)
+            disprc %old Logging into $:t(%xw)
           }
           %chan = $gettok(%chan,2-,32)
           if (%chan) goto aloop
-if (%delay == 0) _error No $_xwall logins have been defined!You can add auto-logins through popups.
+          if (%delay == 0) _error No $_xwall logins have been defined!You can add auto-logins through popups.
         }
       }
     }
   }
   elseif (($numtok(%param,32) <= 1) && ($istok(KICK ADDUSER REMUSER BAN ACCESS UNSUSPEND SUSPEND OP DEOP VOICE DEVOICE,$2,32))) {
     goto $2
- 
+
     :KICK
     if (%param) %who = $_ncc(%param,%chan)
-else %who = $_entry(-1,$null,Who do you want to kick?You may also specify a mask to filterkick. $chr(40) $+ level 200 access $+ $chr(41))
-%param = $_rentry(kick,1,$_s2p($_msg(kick)),Kick reason? $chr(40) $+ optional $+ $chr(41))
+    else %who = $_entry(-1,$null,Who do you want to kick?You may also specify a mask to filterkick. $chr(40) $+ level 200 access $+ $chr(41))
+    %param = $_rentry(kick,1,$_s2p($_msg(kick)),Kick reason? $chr(40) $+ optional $+ $chr(41))
     _recent2 kick 9 %param
     msgxw %xw KICK %chan %who %param
     return
- 
+
     :ADDUSER
     if (u isin $hget(pnp. $+ $cid,-servopt)) _xwuser2 %xw %chan $_ncc(%param,%chan)
     elseif (%param) _xwuser %xw %chan $_ncc(%param,%chan)
-else _xwuser %xw %chan $_entry(-1,$null,Nickname to add to %xw $+ ?You will enter an address mask later.)
+    else _xwuser %xw %chan $_entry(-1,$null,Nickname to add to %xw $+ ?You will enter an address mask later.)
     return
- 
+
     :SUSPEND
     if (%param) %who = $_ncc(%param,%chan)
-else %who = $_entry(-1,$null,User to suspend? $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),Enter a username $+ $chr(44) or nickname prefixed with,Enter a nickname or address.))
-%param = $_entry(0,24hours,Suspend for how long?Enter X days $+ $chr(44) X hours $+ $chr(44) or X min.)
+    else %who = $_entry(-1,$null,User to suspend? $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),Enter a username $+ $chr(44) or nickname prefixed with,Enter a nickname or address.))
+    %param = $_entry(0,24hours,Suspend for how long?Enter X days $+ $chr(44) X hours $+ $chr(44) or X min.)
     msgxw %xw SUSPEND %chan %who $gettok(%param,1,32) $iif($left($gettok(%param,2,32),1) isin $iif(u isin $hget(pnp. $+ $cid,-servopt),hmd,hmds),$left($gettok(%param,2,32),1),h)
     return
- 
+
     :BAN
     if (%param) %param = $_ncc(%param,%chan)
     set %.xw %xw
@@ -330,23 +330,23 @@ else %who = $_entry(-1,$null,User to suspend? $+ $iif(u isin $hget(pnp. $+ $cid
     _ssplay Dialog
     msgxw $$dialog(xwban,xwban,-4)
     return
- 
+
     :REMUSER
     if (%param) %who = $_ncc(%param,%chan)
-else %who = $_entry(-1,$null,User to remove from %xw $+ ? $+  $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),Enter a username $+ $chr(44) or nickname prefixed with,Enter a nickname or address.))
+    else %who = $_entry(-1,$null,User to remove from %xw $+ ? $+  $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),Enter a username $+ $chr(44) or nickname prefixed with,Enter a nickname or address.))
     msgxw %xw REMUSER %chan %who
     return
- 
+
     :UNSUSPEND
     if (%param) %who = $_ncc(%param,%chan)
-else %who = $_entry(-1,$null,User to unsuspend? $+  $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),Enter a username $+ $chr(44) or nickname prefixed with,Enter a nickname or address.))
+    else %who = $_entry(-1,$null,User to unsuspend? $+  $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),Enter a username $+ $chr(44) or nickname prefixed with,Enter a nickname or address.))
     msgxw %xw UNSUSPEND %chan %who
     return
- 
+
     :ACCESS
     if (%param) %who = $_ncc(%param,%chan)
     else {
-%who = $_entry(1,$null,Who do you want access info on?Press Enter for advanced options. $iif(u isin $hget(pnp. $+ $cid,-servopt),Prefix nicknames with))
+      %who = $_entry(1,$null,Who do you want access info on?Press Enter for advanced options. $iif(u isin $hget(pnp. $+ $cid,-servopt),Prefix nicknames with))
       if (%who == $null) {
         set %.xw %xw
         set %.xw.chan %chan
@@ -357,18 +357,18 @@ else %who = $_entry(-1,$null,User to unsuspend? $+  $+ $iif(u isin $hget(pnp. $
     }
     msgxw %xw ACCESS %chan %who -modif
     return
- 
+
     :OP | :DEOP | :VOICE | :DEVOICE
     if (%param) %who = $_nccs(32,%chan,$_c2s(%param))
-else %who = $_c2s($_entry(0,$null,$iif($2 == OP,User $+ $chr(40) $+ s $+ $chr(41) to op? $+ $chr(40) $+ You may specify multiple users $+ $chr(41),$iif($2 == DEOP,User $+ $chr(40) $+ s $+ $chr(41) to deop? $+ $chr(40) $+ You may specify multiple users $+ $chr(41),$iif($2 == VOICE,User $+ $chr(40) $+ s $+ $chr(41) to voice? $+ $chr(40) $+ You may specify multiple users $+ $chr(41),User $+ $chr(40) $+ s $+ $chr(41) to devoice? $+ $chr(40) $+ You may specify multiple users $+ $chr(41))))))
+    else %who = $_c2s($_entry(0,$null,$iif($2 == OP,User $+ $chr(40) $+ s $+ $chr(41) to op? $+ $chr(40) $+ You may specify multiple users $+ $chr(41),$iif($2 == DEOP,User $+ $chr(40) $+ s $+ $chr(41) to deop? $+ $chr(40) $+ You may specify multiple users $+ $chr(41),$iif($2 == VOICE,User $+ $chr(40) $+ s $+ $chr(41) to voice? $+ $chr(40) $+ You may specify multiple users $+ $chr(41),User $+ $chr(40) $+ s $+ $chr(41) to devoice? $+ $chr(40) $+ You may specify multiple users $+ $chr(41))))))
     msgxw %xw $upper($2) %chan %who
   }
   elseif ($istok(SEARCH MAP MOTD HELP SHOWIGNORE VERIFY,$2,32)) msgxw %xw $upper($2) %param
   elseif (%param) msgxw %xw $upper($2) %chan %param
   elseif (($2 == NEWPASS) && (u isin $hget(pnp. $+ $cid,-servopt))) {
     _ssplay Question
-%pw = $$input(New %xw password?,2)
-if (%pw !=== $$input(Please retype password to confirm:,2)) _error Passwords do not match.You must enter the password exactly the same each time.
+    %pw = $$input(New %xw password?,2)
+    if (%pw !=== $$input(Please retype password to confirm:,2)) _error Passwords do not match.You must enter the password exactly the same each time.
     msgxw %xw NEWPASS %pw
   }
   elseif (($istok(ADDCHAN REMCHAN,$2,32)) && (u isin $hget(pnp. $+ $cid,-servopt))) {
@@ -376,25 +376,25 @@ if (%pw !=== $$input(Please retype password to confirm:,2)) _error Passwords do 
   }
   elseif ($istok(INVITE UNBAN TOPIC LBANLIST BANS LOGIN INFO VERIFY SEARCH SET CONFIG MODINFO NEWPASS,$2,32)) {
     %send = msgxw %xw $upper($2) %chan | goto $2
- 
-:INVITE | %send $iif(u !isin $hget(pnp. $+ $cid,-servopt),$_entry(-1,$iif(%chan !ischan,$me),User to invite to channel?)) | return
-:UNBAN | %send $_entry(-1,$null,User to unban?Enter a nickname or address mask.) | return
-:TOPIC | %send $_rentry(topic,%chan,$_s2p($chan(%chan).topic),New channel topic?) | return
-:LBANLIST | %send $_entry(-1,*,Show %xw banlist entries matching what mask?Use * to list all entries) | return
-:VERIFY | msgxw %xw VERIFY $_entry(-1,$null,Nickname of user to verify?) | return
-:SEARCH | msgxw %xw SEARCH $_entry(0,$null,Enter a word or topic to search for:This will search %xw $+ 's database for matching channels.) | return
-:INFO | msgxw %xw INFO $_entry(-1,$null,Username to get info on? $+ $chr(40) $+ or enter a nickname prefixed with = $+ $chr(41)) | return
- 
+
+    :INVITE | %send $iif(u !isin $hget(pnp. $+ $cid,-servopt),$_entry(-1,$iif(%chan !ischan,$me),User to invite to channel?)) | return
+    :UNBAN | %send $_entry(-1,$null,User to unban?Enter a nickname or address mask.) | return
+    :TOPIC | %send $_rentry(topic,%chan,$_s2p($chan(%chan).topic),New channel topic?) | return
+    :LBANLIST | %send $_entry(-1,*,Show %xw banlist entries matching what mask?Use * to list all entries) | return
+    :VERIFY | msgxw %xw VERIFY $_entry(-1,$null,Nickname of user to verify?) | return
+    :SEARCH | msgxw %xw SEARCH $_entry(0,$null,Enter a word or topic to search for:This will search %xw $+ 's database for matching channels.) | return
+    :INFO | msgxw %xw INFO $_entry(-1,$null,Username to get info on? $+ $chr(40) $+ or enter a nickname prefixed with = $+ $chr(41)) | return
+
     :LOGIN
     var %who
-if (u isin $hget(pnp. $+ $cid,-servopt)) %who = $_entry(-1,$me,Enter your %xw username: $+ $chr(40) $+ Enter the username you used to register. $+ $chr(41))
+    if (u isin $hget(pnp. $+ $cid,-servopt)) %who = $_entry(-1,$me,Enter your %xw username: $+ $chr(40) $+ Enter the username you used to register. $+ $chr(41))
     _ssplay Question
-%send %who $$input(Enter your %xw password:,2)
+    %send %who $$input(Enter your %xw password:,2)
     return
- 
+
     :SET
     editbox -ap $_xwcmd %xw $2 %chan
-dispa Specify one of the following settings:
+    dispa Specify one of the following settings:
     if (u isin $hget(pnp. $+ $cid,-servopt)) {
       dispa - $:l(MASSDEOPPRO FLOODPRO MODE)
       dispa - $:l(NOOP STRICTOP USERFLAGS AUTOJOIN)
@@ -405,12 +405,12 @@ dispa Specify one of the following settings:
       dispa - $:l(NOOP ALWAYSOP OPONLY STRICTOP)
       dispa - $:l(DESCRIPTION URL AUTOTOPIC)
     }
-dispa Or $+ $chr(44) use $_xwcmd CONFIG to view/edit interactively.
+    dispa Or $+ $chr(44) use $_xwcmd CONFIG to view/edit interactively.
     return
- 
+
     :CONFIG
-if ($dialog(xwcfg)) { disprc %chan Cannot configure channel $+ $chr(44) configure dialog is already open. | return }
-disprc %chan Retrieving $:t(%xw) info for channel...
+    if ($dialog(xwcfg)) { disprc %chan Cannot configure channel $+ $chr(44) configure dialog is already open. | return }
+    disprc %chan Retrieving $:t(%xw) info for channel...
     if ($hget(pnp.xwconfig)) hdel -w pnp.xwconfig *
     else hmake pnp.xwconfig 20
     hadd pnp.xwconfig chan %chan
@@ -419,18 +419,18 @@ disprc %chan Retrieving $:t(%xw) info for channel...
     .msgxw %xw STATUS %chan
     .msgxw %xw CHANINFO %chan
     return
- 
+
     :MODINFO
     editbox -ap $_xwcmd %xw $2 %chan
-dispa Specify one of the following settings:
+    dispa Specify one of the following settings:
     if (u isin $hget(pnp. $+ $cid,-servopt)) dispa - $:l(ACCESS AUTOMODE)
     else dispa - $:l(MATCH ACCESS AUTOOP PASSWORD)
     return
- 
+
     :NEWPASS
     _ssplay Question
-%pw = $$input(New %xw password?,2)
-if (%pw !=== $$input(Please retype password to confirm:,2)) _error Passwords do not match.You must enter the password exactly the same each time.
+    %pw = $$input(New %xw password?,2)
+    if (%pw !=== $$input(Please retype password to confirm:,2)) _error Passwords do not match.You must enter the password exactly the same each time.
     msgxw %xw NEWPASS %chan %pw
   }
   else msgxw %xw $upper($2) %chan
@@ -439,7 +439,7 @@ if (%pw !=== $$input(Please retype password to confirm:,2)) _error Passwords do 
 alias msgxw {
   _linedance . $+ $_botacc($1) $2-
   if ((($2 == ADDUSER) && (u !isin $hget(pnp. $+ $cid,-servopt))) || (($2 == MODINFO) && ($4 == PASSWORD)) || ($2 == LOGIN) || ($2 == NEWPASS)) {
-dispr $iif($3 ischan,$3,-ai2) Using $:t($upper($1)) for command: $:h($gettok($1-,2- $+ $numtok($2-,32),32),?????)
+    dispr $iif($3 ischan,$3,-ai2) Using $:t($upper($1)) for command: $:h($gettok($1-,2- $+ $numtok($2-,32),32),?????)
     if ($2 == NEWPASS) {
       var %from = $3
       if (u isin $hget(pnp. $+ $cid,-servopt)) %from = $hget(pnp. $+ $cid,-xwacc.username)
@@ -453,76 +453,76 @@ dispr $iif($3 ischan,$3,-ai2) Using $:t($upper($1)) for command: $:h($gettok($1-
     }
   }
   else {
-dispr $iif($3 ischan,$3,-ai2) Using $:t($upper($1)) for command: $:h($2-)
+    dispr $iif($3 ischan,$3,-ai2) Using $:t($upper($1)) for command: $:h($2-)
     if ($2 == deauth) hdel pnp. $+ $cid -xwacc. $+ $3
   }
 }
- 
+
 on *:NOTICE:AUTHENTICATION SUCCESSFUL ON &:?:if ($_isbot($nick)) { if ($readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),a $+ $left($4,-1)) isnum 1-500) hadd pnp. $+ $cid -xwacc. $+ $left($4,-1) $ifmatch | else hadd pnp. $+ $cid -xwacc. $+ $left($4,-1) 500 }
 on *:NOTICE:AUTHENTICATION SUCCESSFUL as &:?:if ($_isbot($nick)) { hadd pnp. $+ $cid -xwacc.username $4 | _loadxwa }
 on *:NOTICE:Sorry, You are already authenticated as &:?:if ($_isbot($nick)) { hadd pnp. $+ $cid -xwacc.username $7 | _loadxwa }
 on *:NOTICE:Password successfully changed.:?:if (($_isbot($nick)) && ($hget(pnp. $+ $cid,-xwacc.savenewpw))) { writeini $_cfg(pw.ini) $hget(pnp. $+ $cid,-xwacc.savenewpw) | hdel pnp. $+ $cid -xwacc.savenewpw }
 on *:NOTICE:Password changed!:?:if (($_isbot($nick)) && ($hget(pnp. $+ $cid,-xwacc.savenewpw))) { writeini $_cfg(pw.ini) $hget(pnp. $+ $cid,-xwacc.savenewpw) | hdel pnp. $+ $cid -xwacc.savenewpw }
- 
+
 dialog xwacc {
-title "Access search"
+  title "Access search"
   icon script\pnp.ico
   option dbu
   size -1 -1 170 135
   box "", 1, 2 4 165 110
-text "&Mask to search for:", 2, 5 17 56 8, right
+  text "&Mask to search for:", 2, 5 17 56 8, right
   edit "*", 3, 62 15 100 11, autohs
-text "&Minimum access level:", 4, 5 29 56 8, right
+  text "&Minimum access level:", 4, 5 29 56 8, right
   edit "", 5, 62 27 100 11
-text "&Maximum access level:", 6, 5 41 56 8, right
+  text "&Maximum access level:", 6, 5 41 56 8, right
   edit "", 7, 62 39 100 11
-check "&Only show users with auto-op", 8, 10 55 150 8
-check "&Only show users with auto-voice", 9, 10 64 150 8
-check "&Only show users with no auto-mode", 10, 10 73 150 8
-check "&Show when user was last modified...", 11, 10 88 150 8
-text "...&and only if modified by this user:", 12, 5 99 99 8, right
+  check "&Only show users with auto-op", 8, 10 55 150 8
+  check "&Only show users with auto-voice", 9, 10 64 150 8
+  check "&Only show users with no auto-mode", 10, 10 73 150 8
+  check "&Show when user was last modified...", 11, 10 88 150 8
+  text "...&and only if modified by this user:", 12, 5 99 99 8, right
   edit "", 13, 105 97 57 11, autohs
-button "OK", 101, 15 120 60 12, OK default
-button "Cancel", 102, 92 120 60 12, cancel
+  button "OK", 101, 15 120 60 12, OK default
+  button "Cancel", 102, 92 120 60 12, cancel
   edit "", 200, 1 1 1 1, hide result autohs
 }
 on *:DIALOG:xwacc:init:*:{
   did -c $dname 11
-did -a $dname 1 Searching for %.xw access on %.xw.chan $+ :
+  did -a $dname 1 Searching for %.xw access on %.xw.chan $+ :
   did -a $dname 200 %.xw ACCESS %.xw.chan
   unset %.xw %.xw.chan
   if (u isin $hget(pnp. $+ $cid,-servopt)) {
     did -h $dname 12,13
-did -ra $dname 11 &Show when user was last modified
+    did -ra $dname 11 &Show when user was last modified
   }
   else {
     did -h $dname 10
-did -ra $dname 9 &Only show users without auto-op
+    did -ra $dname 9 &Only show users without auto-op
   }
 }
 on *:DIALOG:xwacc:sclick:8,9,10:did -u $dname $_s2c($remtok(8 9 10,$did,1,32))
 on *:DIALOG:xwacc:sclick:101:if (($did(13)) && (* !isin $did(13))) did -a $dname 13 !* | did -o $dname 200 1 $did(200) $iif($did(3),$gettok($did(3),1,32),*) $iif($did(5) isnum,-min $did(5)) $iif($did(7) isnum,-max $did(7)) $iif($did(8).state,$iif(u isin $hget(pnp. $+ $cid,-servopt),-op,-autoop)) $iif($did(9).state,$iif(u isin $hget(pnp. $+ $cid,-servopt),-voice,-noautoop)) $iif($did(10).state,-voice) $iif(($did(11).state) || ($did(13)),-modif) $gettok($did(13),1,32)
- 
+
 dialog xwban {
-title "Ban"
+  title "Ban"
   icon script\pnp.ico
   option dbu
   size -1 -1 170 115
   box "", 1, 2 4 165 91
-text "&Nick or mask to ban:", 2, 5 17 59 8, right
+  text "&Nick or mask to ban:", 2, 5 17 59 8, right
   combo 3, 65 15 99 60, edit drop
-text "&Reason for ban:", 4, 5 28 59 8, right
+  text "&Reason for ban:", 4, 5 28 59 8, right
   combo 5, 65 26 99 60, edit drop
-text "&Number of hours for ban:", 6, 5 39 59 8, right
+  text "&Number of hours for ban:", 6, 5 39 59 8, right
   edit "336", 7, 65 37 20 11, autohs
-text "(max. is 336, for 2 weeks)", 8, 87 39 70 8
-radio "&Level 20 ban (cannot be op)", 9, 25 53 120 8
-radio "&Level 75 ban (normal ban)", 10, 25 62 120 8
-radio "&Level 100 ban", 11, 25 71 120 8
-radio "&Custom:", 12, 25 80 50 8
+  text "(max. is 336, for 2 weeks)", 8, 87 39 70 8
+  radio "&Level 20 ban (cannot be op)", 9, 25 53 120 8
+  radio "&Level 75 ban (normal ban)", 10, 25 62 120 8
+  radio "&Level 100 ban", 11, 25 71 120 8
+  radio "&Custom:", 12, 25 80 50 8
   edit "200", 13, 76 79 20 11, disable autohs
-button "OK", 101, 15 100 60 12, OK default
-button "Cancel", 102, 92 100 60 12, cancel
+  button "OK", 101, 15 100 60 12, OK default
+  button "Cancel", 102, 92 100 60 12, cancel
   edit "", 200, 1 1 1 1, hide autohs result
 }
 on *:DIALOG:xwban:init:*:{
@@ -542,12 +542,12 @@ on *:DIALOG:xwban:init:*:{
     if (*!*@* iswm %.xw.param) _ddaddm $dname 3 %.xw.param 022 030 100 002 111
     elseif ($address(%.xw.param,5)) _ddaddm $dname 3 $ifmatch 022 030 100 002 111
   }
-did -a $dname 1 Setting %.xw ban on %.xw.chan $+ :
+  did -a $dname 1 Setting %.xw ban on %.xw.chan $+ :
   did -a $dname 200 %.xw BAN %.xw.chan
   unset %.xw %.xw.chan %.xw.param
 }
 on *:DIALOG:xwban:sclick:101:{
-if ($did(3) == $null) _error You must specify a user or mask to ban.
+  if ($did(3) == $null) _error You must specify a user or mask to ban.
   if ($did(5)) _recent2 xwban 9 $replace($did(5),$gettok($did(200),3,32),&chan&)
   if ($did(7) isnum) _dlgw xwban1 $ifmatch
   var %lvl = $iif($did(9).state,20,$iif($did(10).state,75,$iif($did(11).state,100,$iif($did(13) isnum,$did(13),75))))
@@ -555,31 +555,31 @@ if ($did(3) == $null) _error You must specify a user or mask to ban.
   did -o $dname 200 1 $did(200) $gettok($did(3),1,32) $iif($did(7) isnum,$did(7),24) %lvl $did(5)
 }
 on *:DIALOG:xwban:sclick:*:if ($did isnum 9-11) did -b $dname 13 | elseif ($did == 12) did -e $dname 13
- 
+
 dialog xwuser {
-title "Add user"
+  title "Add user"
   icon script\pnp.ico
   option dbu
   size -1 -1 170 157
   box "", 1, 2 4 165 50
-text "&Nickname:", 2, 5 17 39 8, right
+  text "&Nickname:", 2, 5 17 39 8, right
   edit "", 3, 45 15 120 11, autohs
-text "&Usermask:", 4, 5 29 39 8, right
+  text "&Usermask:", 4, 5 29 39 8, right
   combo 5, 45 27 119 75, drop edit
-text "&Level:", 6, 5 41 39 8, right
+  text "&Level:", 6, 5 41 39 8, right
   combo 7, 45 39 60 75, drop edit
-box "Password:", 21, 2 57 165 52
-text "You must enter a password for the new user. (enter it twice to confirm the password.)", 20, 10 67 150 15
-text "&Password:", 8, 5 85 39 8, right
+  box "Password:", 21, 2 57 165 52
+  text "You must enter a password for the new user. (enter it twice to confirm the password.)", 20, 10 67 150 15
+  text "&Password:", 8, 5 85 39 8, right
   edit "", 9, 45 83 61 11, pass autohs
-text "&Confirm:", 10, 5 96 39 8, right
+  text "&Confirm:", 10, 5 96 39 8, right
   edit "", 11, 45 95 61 11, pass autohs
-box "Auto-mode:", 12, 2 113 165 22
-radio "&Default", 13, 15 123 45 8
-radio "&Auto-op", 14, 62 123 45 8
-radio "&None", 15, 109 123 45 8
-button "OK", 101, 15 141 60 12, OK default
-button "Cancel", 102, 92 141 60 12, cancel
+  box "Auto-mode:", 12, 2 113 165 22
+  radio "&Default", 13, 15 123 45 8
+  radio "&Auto-op", 14, 62 123 45 8
+  radio "&None", 15, 109 123 45 8
+  button "OK", 101, 15 141 60 12, OK default
+  button "Cancel", 102, 92 141 60 12, cancel
   edit %.xw, 200, 1 1 1 1, hide autohs
   edit %.xw.chan, 201, 1 1 1 1, hide autohs
   edit $cid, 202, 1 1 1 1, hide autohs
@@ -590,13 +590,13 @@ on *:DIALOG:xwuser:init:*:{
   did -c $dname 13
   loadbuf -otxwuser $dname 7 " $+ $scriptdirxw.ppa"
   did -c $dname 7 3
-did -a $dname 1 Adding user to on $+ :
+  did -a $dname 1 Adding user to on $+ :
   unset %.xw %.xw.addr %.xw.chan %.xw.who
 }
 on *:DIALOG:xwuser:sclick:101:{
-if ($did(3) == $null) _error You must specify a nickname.Users cannot be added without a nickname.
-if ($did(9) == $null) _error You must specify a password.Users must be added with a password.
-if ($did(9) !=== $did(11)) _error Passwords do not match.You must enter the password exactly the same each time.
+  if ($did(3) == $null) _error You must specify a nickname.Users cannot be added without a nickname.
+  if ($did(9) == $null) _error You must specify a password.Users must be added with a password.
+  if ($did(9) !=== $did(11)) _error Passwords do not match.You must enter the password exactly the same each time.
   if ($scid($did(202)) == $null) return
   scid $did(202)
   msgxw $did(200) ADDUSER $did(201) $did(3) $iif($did(5),$_fixmask($did(5))) $iif($gettok($did(7),1,32) isnum,$gettok($did(7),1,32),100) $did(9)
@@ -615,30 +615,30 @@ alias _xwuser {
     return $dialog(xwuser,xwuser,-4)
   }
   else {
-dispa Looking up address of $:t($3) $+ ...
+    dispa Looking up address of $:t($3) $+ ...
     _notconnected
     _Q.userhost _xwuser $+ $1 $+  $+ $2 $+  $+ $3 $+  $+ &n!&a _xwuser $+ $1 $+  $+ $2 $+  $+ $3 $+ . $3
   }
 }
- 
+
 dialog xwuser2 {
-title "Add user"
+  title "Add user"
   icon script\pnp.ico
   option dbu
   size -1 -1 170 109
   box "", 1, 2 4 165 58
-text "&Username:", 2, 5 17 39 8, right
+  text "&Username:", 2, 5 17 39 8, right
   edit "", 3, 45 15 120 11, autohs
-text "You may specify a user's nickname if you prefix it with a = sign.", 4, 46 28 118 16
-text "&Level:", 6, 5 48 39 8, right
+  text "You may specify a user's nickname if you prefix it with a = sign.", 4, 46 28 118 16
+  text "&Level:", 6, 5 48 39 8, right
   combo 7, 45 46 60 75, drop edit
-box "Auto-mode:", 12, 2 65 165 22
-radio "&Default", 13, 15 74 35 8
-radio "&Auto-op", 14, 51 74 35 8
-radio "&Auto-voice", 15, 87 74 35 8
-radio "&None", 16, 123 74 35 8
-button "OK", 101, 15 92 60 12, OK default
-button "Cancel", 102, 92 92 60 12, cancel
+  box "Auto-mode:", 12, 2 65 165 22
+  radio "&Default", 13, 15 74 35 8
+  radio "&Auto-op", 14, 51 74 35 8
+  radio "&Auto-voice", 15, 87 74 35 8
+  radio "&None", 16, 123 74 35 8
+  button "OK", 101, 15 92 60 12, OK default
+  button "Cancel", 102, 92 92 60 12, cancel
   edit %.xw, 200, 1 1 1 1, hide autohs
   edit %.xw.chan, 201, 1 1 1 1, hide autohs
   edit $cid, 202, 1 1 1 1, hide autohs
@@ -648,11 +648,11 @@ on *:DIALOG:xwuser2:init:*:{
   did -c $dname 13
   loadbuf -otxwuser $dname 7 " $+ $scriptdirxw.ppa"
   did -c $dname 7 4
-did -a $dname 1 Adding user to on $+ :
+  did -a $dname 1 Adding user to on $+ :
   unset %.xw %.xw.addr %.xw.chan %.xw.who
 }
 on *:DIALOG:xwuser2:sclick:101:{
-if ($did(3) == $null) _error You must specify a username.Users cannot be added without a username.
+  if ($did(3) == $null) _error You must specify a username.Users cannot be added without a username.
   if ($scid($did(202)) == $null) return
   scid $did(202)
   msgxw $did(200) ADDUSER $did(201) $did(3) $iif($gettok($did(7),1,32) isnum,$gettok($did(7),1,32),100)
@@ -666,7 +666,7 @@ alias -l _xwuser2 {
   _ssplay Dialog
   return $dialog(xwuser2,xwuser2,-4)
 }
- 
+
 on me:*:JOIN:#:if (($hget(pnp. $+ $cid,-xwacc.skip)) || ($hget(pnp. $+ $cid,-xwacc.skip. $+ $chan))) return | if (($_isserv(xw)) && (u !isin $hget(pnp. $+ $cid,-servopt))) { hadd -u120 pnp. $+ $cid -xwacc.skip. $+ $chan 1 | .xw AUTO $chan LOGIN }
 on *:JOIN:#:{
   if (($_isserv(xw)) && ($_isbot($nick))) {
@@ -685,7 +685,7 @@ on *:QUIT:{
     hdel pnp. $+ $cid -xwacc.skipsplit
   }
 }
- 
+
 on *:SIGNAL:PNP.SIGNON:{ _xw.connect }
 on *:LOAD:{
   ; PnP check
@@ -698,12 +698,12 @@ on *:LOAD:{
   ; Invalid load method check
   if (!$istok($_cfgx(addons,ids),$readini($script,n,addon,id),32)) {
     .timer -mio 1 0 .unload -rs " $+ $script $+ "
-dispa Unloading ' $+ $script $+ ' $chr(40) $+ addon is not properly loaded; use /addon to load it $+ $chr(41)
+    dispa Unloading ' $+ $script $+ ' $chr(40) $+ addon is not properly loaded; use /addon to load it $+ $chr(41)
     halt
   }
   scon -at1 _xw.connect
 }
- 
+
 alias _xw.connect if ($_isserv(xw)) { hadd -u120 pnp. $+ $cid -xwacc.skip 1 | .xw AUTO LOGIN }
 alias _xw.splice {
   if ($1 == ?) {
@@ -729,7 +729,7 @@ alias _xw.splice {
   :unban | xw UNBAN $2 $4 | return
   :ban | xw BAN $2 $4 336 75 $5-
 }
- 
+
 alias -l xwpop {
   unset %.xw*
   if ($_isserv(xw)) {
@@ -742,8 +742,8 @@ alias -l xwpop {
     }
     else {
       set -u1 %.xw2 $_xwall
-set -u1 %.xw1b Have $gettok($hget(pnp. $+ $cid,-servnick),1,32) join $+ 	[450]
-if ($gettok($hget(pnp. $+ $cid,-servnick),2,32)) set -u1 %.xw2b Have $ifmatch join $+ 	[450]
+      set -u1 %.xw1b Have $gettok($hget(pnp. $+ $cid,-servnick),1,32) join $+ 	[450]
+      if ($gettok($hget(pnp. $+ $cid,-servnick),2,32)) set -u1 %.xw2b Have $ifmatch join $+ 	[450]
     }
     if (u isin $hget(pnp. $+ $cid,-servopt)) {
       set -u1 %.xwlogin 2
@@ -762,7 +762,7 @@ alias -l _xwloginpop {
     :loop
     var %un = $gettok(%who,%pos,32)
     if (%un) {
-if (!$_ischan(%un)) { set -u1 %.xwlogin. [ $+ [ %popup ] ] Login as %un | inc %popup }
+      if (!$_ischan(%un)) { set -u1 %.xwlogin. [ $+ [ %popup ] ] Login as %un | inc %popup }
       inc %pos
       goto loop
     }
@@ -782,84 +782,84 @@ alias -l xwloginas {
   }
   return
 }
- 
+
 menu status {
   $_xwloginpop
   $_xwall
-.$iif(u isin $hget(pnp. $+ $cid,-servopt),Login)
+  .$iif(u isin $hget(pnp. $+ $cid,-servopt),Login)
   ..%.xwlogin.1:xw AUTO $xwloginas(1)
   ..%.xwlogin.2:xw AUTO $xwloginas(2)
   ..%.xwlogin.3:xw AUTO $xwloginas(3)
   ..%.xwlogin.4:xw AUTO $xwloginas(4)
   ..%.xwlogin.5:xw AUTO $xwloginas(5)
   ..-
-..Add auto-login...:xw AUTO ADD
-..Delete auto-login...:xw AUTO DEL
-..Manual login...:xw LOGIN
-..Change password...:xw NEWPASS
+  ..Add auto-login...:xw AUTO ADD
+  ..Delete auto-login...:xw AUTO DEL
+  ..Manual login...:xw LOGIN
+  ..Change password...:xw NEWPASS
   ..-
-..Set invisible on:xw set INVISIBLE ON
-..Set invisible off:xw set INVISIBLE OFF
-.$iif(u !isin $hget(pnp. $+ $cid,-servopt),Login)
-..Perform auto-logins $chr(40) $+ all $+ $chr(41):xw AUTO
-..Manual login...:xw ! LOGIN ?
-..Deauthenticate...:xw ! DEAUTH ?
+  ..Set invisible on:xw set INVISIBLE ON
+  ..Set invisible off:xw set INVISIBLE OFF
+  .$iif(u !isin $hget(pnp. $+ $cid,-servopt),Login)
+  ..Perform auto-logins $chr(40) $+ all $+ $chr(41):xw AUTO
+  ..Manual login...:xw ! LOGIN ?
+  ..Deauthenticate...:xw ! DEAUTH ?
   .-
-.Recovery
-..Unban yourself...	[75]:xw ! UNBAN ? $me
-..Invite yourself...	[100]:xw ! INVITE ? $iif(u !isin $hget(pnp. $+ $cid,-servopt),$me)
-..Clear mode...	[400]:xw ! CLEARMODE ?
-.Commands
-..Topic...	[50]:xw ! TOPIC ?
-..Kick...	[50]:xw ! KICK ?
+  .Recovery
+  ..Unban yourself...	[75]:xw ! UNBAN ? $me
+  ..Invite yourself...	[100]:xw ! INVITE ? $iif(u !isin $hget(pnp. $+ $cid,-servopt),$me)
+  ..Clear mode...	[400]:xw ! CLEARMODE ?
+  .Commands
+  ..Topic...	[50]:xw ! TOPIC ?
+  ..Kick...	[50]:xw ! KICK ?
   ..-
-..Ban...	[75]:xw ! BAN ?
-..Unban...	[75]:xw ! UNBAN ?
+  ..Ban...	[75]:xw ! BAN ?
+  ..Unban...	[75]:xw ! UNBAN ?
   ..-
-..Op...	[100]:xw ! OP ?
-..Deop...	[100]:xw ! DEOP ?
+  ..Op...	[100]:xw ! OP ?
+  ..Deop...	[100]:xw ! DEOP ?
   ..-
-..Suspend...	[100]:xw ! SUSPEND ?
+  ..Suspend...	[100]:xw ! SUSPEND ?
   .-
-.Info
-..$iif(u isin $hget(pnp. $+ $cid,-servopt),Your user info	[0]):xw INFO $iif($hget(pnp. $+ $cid,-xwacc.username),$hget(pnp. $+ $cid,-xwacc.username),= $+ $me)
-..Your access...	[0]:xw ! ACCESS ? $iif(u isin $hget(pnp. $+ $cid,-servopt),$iif($hget(pnp. $+ $cid,-xwacc.username),$hget(pnp. $+ $cid,-xwacc.username),= $+ $me),$me)
+  .Info
+  ..$iif(u isin $hget(pnp. $+ $cid,-servopt),Your user info	[0]):xw INFO $iif($hget(pnp. $+ $cid,-xwacc.username),$hget(pnp. $+ $cid,-xwacc.username),= $+ $me)
+  ..Your access...	[0]:xw ! ACCESS ? $iif(u isin $hget(pnp. $+ $cid,-servopt),$iif($hget(pnp. $+ $cid,-xwacc.username),$hget(pnp. $+ $cid,-xwacc.username),= $+ $me),$me)
   ..-
-..Channel info...	[0]:xw ! CHANINFO ?
-..Channel status...	[1]:xw ! STATUS ?
-..$_xwall banlist...	[0]:xw ! LBANLIST ?
-.$_xwall info
-..Search channels...:xw SEARCH $_entry(0,$null,String to search for?)
+  ..Channel info...	[0]:xw ! CHANINFO ?
+  ..Channel status...	[1]:xw ! STATUS ?
+  ..$_xwall banlist...	[0]:xw ! LBANLIST ?
+  .$_xwall info
+  ..Search channels...:xw SEARCH $_entry(0,$null,String to search for?)
   ..-
-..$iif(u !isin $hget(pnp. $+ $cid,-servopt),Server map):xw MAP
-..MOTD:xw ! MOTD
-..Ignorelist:xw ! SHOWIGNORE
+  ..$iif(u !isin $hget(pnp. $+ $cid,-servopt),Server map):xw MAP
+  ..MOTD:xw ! MOTD
+  ..Ignorelist:xw ! SHOWIGNORE
   ..-
-..$iif(u isin $hget(pnp. $+ $cid,-servopt),User info...):xw INFO $_entry(-1,$null,Username to get info on? $+ $chr(40) $+ or enter a nickname prefixed with = $+ $chr(41))
-..Verify user...:xw VERIFY $_entry(-1,$null,Nickname of user to verify?)
+  ..$iif(u isin $hget(pnp. $+ $cid,-servopt),User info...):xw INFO $_entry(-1,$null,Username to get info on? $+ $chr(40) $+ or enter a nickname prefixed with = $+ $chr(41))
+  ..Verify user...:xw VERIFY $_entry(-1,$null,Nickname of user to verify?)
   ..-
-..$iif(u !isin $hget(pnp. $+ $cid,-servopt),Help...):xw HELP $_entry(0,$null,Command to get $_xwall help on?)
+  ..$iif(u !isin $hget(pnp. $+ $cid,-servopt),Help...):xw HELP $_entry(0,$null,Command to get $_xwall help on?)
   .-
-.$iif($hget(pnp. $+ $cid,net) == undernet,Webpages)
-..CService home:http http://cservice.undernet.org/
+  .$iif($hget(pnp. $+ $cid,net) == undernet,Webpages)
+  ..CService home:http http://cservice.undernet.org/
   ..-
-..Username registration:http http://cservice.undernet.org/live/newuser.php
-..CService login:http http://cservice.undernet.org/live/
+  ..Username registration:http http://cservice.undernet.org/live/newuser.php
+  ..CService login:http http://cservice.undernet.org/live/
   ..-
-..X commands list:http http://cservice.undernet.org/docs/xcmds.txt
-.$iif($hget(pnp. $+ $cid,net) == oz_org,Webpages)
-..oz.org home:http http://www.oz.org/
-..Register a channel:http http://aucs.oz.org/
+  ..X commands list:http http://cservice.undernet.org/docs/xcmds.txt
+  .$iif($hget(pnp. $+ $cid,net) == oz_org,Webpages)
+  ..oz.org home:http http://www.oz.org/
+  ..Register a channel:http http://aucs.oz.org/
 }
- 
+
 menu @Banlist {
   $_banpopxw
-.Copy to bot banlist...:_transxw $active 0
-.Move to bot banlist...:_transxw $active 1
+  .Copy to bot banlist...:_transxw $active 0
+  .Move to bot banlist...:_transxw $active 1
 }
 alias -l _banpopxw if (($sline($active,1).ln > 5) && ($_isserv(xw)) && ($_chanbot($mid($active,11,$len($active))))) return $ifmatch
 alias -l _transxw {
-set %.xw.param (banlist transfer)
+  set %.xw.param (banlist transfer)
   set %.xw.chan $mid($1,11,$len($1))
   set %.xw $_chanbot(%.xw.chan)
   _ssplay Dialog
@@ -873,43 +873,43 @@ set %.xw.param (banlist transfer)
     goto loop
   }
 }
- 
+
 menu nicklist {
   $xwpop
   %.xw
-.$iif(%.xwaccess > 99,Op	[100]):xw OP $_c2s($$snicks)
-.$iif(%.xwaccess > 99,Deop	[100]):xw DEOP $_c2s($$snicks)
-.$iif((u isin $hget(pnp. $+ $cid,-servopt)) && (%.xwaccess > 24),Voice	[25]):xw VOICE $_c2s($$snicks)
-.$iif((u isin $hget(pnp. $+ $cid,-servopt)) && (%.xwaccess > 24),Devoice	[25]):xw DEVOICE $_c2s($$snicks)
+  .$iif(%.xwaccess > 99,Op	[100]):xw OP $_c2s($$snicks)
+  .$iif(%.xwaccess > 99,Deop	[100]):xw DEOP $_c2s($$snicks)
+  .$iif((u isin $hget(pnp. $+ $cid,-servopt)) && (%.xwaccess > 24),Voice	[25]):xw VOICE $_c2s($$snicks)
+  .$iif((u isin $hget(pnp. $+ $cid,-servopt)) && (%.xwaccess > 24),Devoice	[25]):xw DEVOICE $_c2s($$snicks)
   .-
-.$iif(%.xwaccess > 49,Kick...	[50]):xw KICK $$1
-.$iif(%.xwaccess > 74,Ban...	[75]):xw BAN $$1
+  .$iif(%.xwaccess > 49,Kick...	[50]):xw KICK $$1
+  .$iif(%.xwaccess > 74,Ban...	[75]):xw BAN $$1
   .-
-.$iif(%.xwaccess < 400,Access	[0]):xw ACCESS $iif(u isin $hget(pnp. $+ $cid,-servopt),= $+ $$1,$$1) -modif
-.$iif((%.xwaccess < 400) && (u isin $hget(pnp. $+ $cid,-servopt)),User info	[0]):xw INFO = $+ $$1
-.$iif(%.xwaccess < 400,Verify user	[0]):xw VERIFY $$1
-.$iif(%.xwaccess > 399,Users)
-..Access	[0]:xw ACCESS $iif(u isin $hget(pnp. $+ $cid,-servopt),= $+ $$1,$$1) -modif
-..$iif(u isin $hget(pnp. $+ $cid,-servopt),User info	[0]):xw INFO = $+ $$1
-..Verify user	[0]:xw VERIFY $$1
+  .$iif(%.xwaccess < 400,Access	[0]):xw ACCESS $iif(u isin $hget(pnp. $+ $cid,-servopt),= $+ $$1,$$1) -modif
+  .$iif((%.xwaccess < 400) && (u isin $hget(pnp. $+ $cid,-servopt)),User info	[0]):xw INFO = $+ $$1
+  .$iif(%.xwaccess < 400,Verify user	[0]):xw VERIFY $$1
+  .$iif(%.xwaccess > 399,Users)
+  ..Access	[0]:xw ACCESS $iif(u isin $hget(pnp. $+ $cid,-servopt),= $+ $$1,$$1) -modif
+  ..$iif(u isin $hget(pnp. $+ $cid,-servopt),User info	[0]):xw INFO = $+ $$1
+  ..Verify user	[0]:xw VERIFY $$1
   ..-
-..Add user...	[400]:xw ADDUSER $iif(u isin $hget(pnp. $+ $cid,-servopt),= $+ $$1,$$1)
-..Remove user	[400]:xw REMUSER $iif(u isin $hget(pnp. $+ $cid,-servopt),= $+ $$1,$$1)
+  ..Add user...	[400]:xw ADDUSER $iif(u isin $hget(pnp. $+ $cid,-servopt),= $+ $$1,$$1)
+  ..Remove user	[400]:xw REMUSER $iif(u isin $hget(pnp. $+ $cid,-servopt),= $+ $$1,$$1)
   ..-
-..$iif(u isin $hget(pnp. $+ $cid,-servopt),Auto-mode...	[400]):xw MODINFO AUTOMODE = $+ $$1
-..$iif(u !isin $hget(pnp. $+ $cid,-servopt),Auto-op...	[400]):xw MODINFO AUTOOP $$1
-..$iif(u !isin $hget(pnp. $+ $cid,-servopt),Match mask...	[400]):xw MODINFO MATCH $$1
-..Modify access...	[400]:xw MODINFO ACCESS $iif(u isin $hget(pnp. $+ $cid,-servopt),= $+ $$1,$$1)
-..$iif(u !isin $hget(pnp. $+ $cid,-servopt),Password...	[400]):xw MODINFO PASSWORD $$1
+  ..$iif(u isin $hget(pnp. $+ $cid,-servopt),Auto-mode...	[400]):xw MODINFO AUTOMODE = $+ $$1
+  ..$iif(u !isin $hget(pnp. $+ $cid,-servopt),Auto-op...	[400]):xw MODINFO AUTOOP $$1
+  ..$iif(u !isin $hget(pnp. $+ $cid,-servopt),Match mask...	[400]):xw MODINFO MATCH $$1
+  ..Modify access...	[400]:xw MODINFO ACCESS $iif(u isin $hget(pnp. $+ $cid,-servopt),= $+ $$1,$$1)
+  ..$iif(u !isin $hget(pnp. $+ $cid,-servopt),Password...	[400]):xw MODINFO PASSWORD $$1
   .-
-.$iif(%.xwaccess > 99,Suspend...	[100]):xw SUSPEND $iif(u isin $hget(pnp. $+ $cid,-servopt),= $+ $$1,$$1)
-.$iif(%.xwaccess > 99,Unsuspend	[100]):xw UNSUSPEND $iif(u isin $hget(pnp. $+ $cid,-servopt),= $+ $$1,$$1)
+  .$iif(%.xwaccess > 99,Suspend...	[100]):xw SUSPEND $iif(u isin $hget(pnp. $+ $cid,-servopt),= $+ $$1,$$1)
+  .$iif(%.xwaccess > 99,Unsuspend	[100]):xw UNSUSPEND $iif(u isin $hget(pnp. $+ $cid,-servopt),= $+ $$1,$$1)
 }
- 
+
 menu channel {
   $xwpop
   %.xw2
-.Channel info	[0]:xw ! CHANINFO
+  .Channel info	[0]:xw ! CHANINFO
   .-
   .%.xwlogin.1:xw AUTO $xwloginas(1)
   .%.xwlogin.2:xw AUTO $xwloginas(2)
@@ -917,152 +917,152 @@ menu channel {
   .%.xwlogin.4:xw AUTO $xwloginas(4)
   .%.xwlogin.5:xw AUTO $xwloginas(5)
   .-
-.$iif(u isin $hget(pnp. $+ $cid,-servopt),Add auto-login...):xw AUTO ADD
-.$iif(u isin $hget(pnp. $+ $cid,-servopt),Delete auto-login...):xw AUTO DEL
-.$iif(u isin $hget(pnp. $+ $cid,-servopt),Manual login...):xw LOGIN
-.$iif(u !isin $hget(pnp. $+ $cid,-servopt),Login to %.xw2 $+ ...	[0]):if ($readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),#)) xw AUTO # | else xw ! LOGIN
-.$iif(u !isin $hget(pnp. $+ $cid,-servopt),Deauthenticate	[0]):xw ! DEAUTH
-.Change password...	[0]:xw ! NEWPASS
+  .$iif(u isin $hget(pnp. $+ $cid,-servopt),Add auto-login...):xw AUTO ADD
+  .$iif(u isin $hget(pnp. $+ $cid,-servopt),Delete auto-login...):xw AUTO DEL
+  .$iif(u isin $hget(pnp. $+ $cid,-servopt),Manual login...):xw LOGIN
+  .$iif(u !isin $hget(pnp. $+ $cid,-servopt),Login to %.xw2 $+ ...	[0]):if ($readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),#)) xw AUTO # | else xw ! LOGIN
+  .$iif(u !isin $hget(pnp. $+ $cid,-servopt),Deauthenticate	[0]):xw ! DEAUTH
+  .Change password...	[0]:xw ! NEWPASS
   .-
   .%.xw1b:xw $gettok($hget(pnp. $+ $cid,-servnick),1,32) JOIN
   .%.xw2b:xw $gettok($hget(pnp. $+ $cid,-servnick),2,32) JOIN
   .-
-.$iif(u isin $hget(pnp. $+ $cid,-servopt),My access)
-..$iif(!%.xwaccessstored,$style(1)) I have no access in #:xwa # 0
+  .$iif(u isin $hget(pnp. $+ $cid,-servopt),My access)
+  ..$iif(!%.xwaccessstored,$style(1)) I have no access in #:xwa # 0
   ..-
-..$iif(%.xwaccessstored isnum 25-49,$style(1)) Access 25 or higher in #:xwa # 25
-..$iif(%.xwaccessstored isnum 50-74,$style(1)) Access 50 or higher in #:xwa # 50
-..$iif(%.xwaccessstored isnum 75-99,$style(1)) Access 75 or higher in #:xwa # 75
-..$iif(%.xwaccessstored isnum 100-199,$style(1)) Access 100 or higher in #:xwa # 100
-..$iif(%.xwaccessstored isnum 200-399,$style(1)) Access 200 or higher in #:xwa # 200
-..$iif(%.xwaccessstored isnum 400-449,$style(1)) Access 400 or higher in #:xwa # 400
-..$iif(%.xwaccessstored isnum 450-499,$style(1)) Access 450 or higher in #:xwa # 450
-..$iif(%.xwaccessstored == 500,$style(1)) Access 500 $chr(40) $+ founder $+ $chr(41) in #:xwa # 500
+  ..$iif(%.xwaccessstored isnum 25-49,$style(1)) Access 25 or higher in #:xwa # 25
+  ..$iif(%.xwaccessstored isnum 50-74,$style(1)) Access 50 or higher in #:xwa # 50
+  ..$iif(%.xwaccessstored isnum 75-99,$style(1)) Access 75 or higher in #:xwa # 75
+  ..$iif(%.xwaccessstored isnum 100-199,$style(1)) Access 100 or higher in #:xwa # 100
+  ..$iif(%.xwaccessstored isnum 200-399,$style(1)) Access 200 or higher in #:xwa # 200
+  ..$iif(%.xwaccessstored isnum 400-449,$style(1)) Access 400 or higher in #:xwa # 400
+  ..$iif(%.xwaccessstored isnum 450-499,$style(1)) Access 450 or higher in #:xwa # 450
+  ..$iif(%.xwaccessstored == 500,$style(1)) Access 500 $chr(40) $+ founder $+ $chr(41) in #:xwa # 500
   ..-
-..What is my access?:xw ACCESS $iif($hget(pnp. $+ $cid,-xwacc.username),$hget(pnp. $+ $cid,-xwacc.username),= $+ $me)
-..Remove my access...:_okcancel 1 REMOVE any access you have in # $+ ? | xw REMUSER $iif($hget(pnp. $+ $cid,-xwacc.username),$hget(pnp. $+ $cid,-xwacc.username),= $+ $me)
+  ..What is my access?:xw ACCESS $iif($hget(pnp. $+ $cid,-xwacc.username),$hget(pnp. $+ $cid,-xwacc.username),= $+ $me)
+  ..Remove my access...:_okcancel 1 REMOVE any access you have in # $+ ? | xw REMUSER $iif($hget(pnp. $+ $cid,-xwacc.username),$hget(pnp. $+ $cid,-xwacc.username),= $+ $me)
   ;;; this line represents a bug in mirc!
   $iif(%.xw,%.xw)
-.$iif(%.xwlogin == 2,Login)
+  .$iif(%.xwlogin == 2,Login)
   ..%.xwlogin.1:xw AUTO $xwloginas(1)
   ..%.xwlogin.2:xw AUTO $xwloginas(2)
   ..%.xwlogin.3:xw AUTO $xwloginas(3)
   ..%.xwlogin.4:xw AUTO $xwloginas(4)
   ..%.xwlogin.5:xw AUTO $xwloginas(5)
   ..-
-..Add auto-login...:xw AUTO ADD
-..Delete auto-login...:xw AUTO DEL
-..Manual login...:xw LOGIN
-..Change password...:xw NEWPASS
-.$iif(%.xwlogin == 1,Login)
-..Manual login...:xw LOGIN
-..Deauthenticate:xw DEAUTH
-..Change password...:xw NEWPASS
+  ..Add auto-login...:xw AUTO ADD
+  ..Delete auto-login...:xw AUTO DEL
+  ..Manual login...:xw LOGIN
+  ..Change password...:xw NEWPASS
+  .$iif(%.xwlogin == 1,Login)
+  ..Manual login...:xw LOGIN
+  ..Deauthenticate:xw DEAUTH
+  ..Change password...:xw NEWPASS
   ..-
-..Perform auto-login:xw AUTO #
-..Remove $replace($active,&,&&) auto-login $+ ...:_okcancel 1 Delete auto-login? | xw AUTO DEL
+  ..Perform auto-login:xw AUTO #
+  ..Remove $replace($active,&,&&) auto-login $+ ...:_okcancel 1 Delete auto-login? | xw AUTO DEL
   ..-
-..View all auto-logins:xw AUTO VIEW
-..Clear all auto-logins...:_okcancel 1 Delete ALL $_xwall auto-logins? | xw AUTO CLEAR
-.$iif(%.xwlogin == 0,Login)
-..Login to %.xw $+ ...:xw LOGIN
-..Deauthenticate:xw DEAUTH
-..Change password...:xw NEWPASS
+  ..View all auto-logins:xw AUTO VIEW
+  ..Clear all auto-logins...:_okcancel 1 Delete ALL $_xwall auto-logins? | xw AUTO CLEAR
+  .$iif(%.xwlogin == 0,Login)
+  ..Login to %.xw $+ ...:xw LOGIN
+  ..Deauthenticate:xw DEAUTH
+  ..Change password...:xw NEWPASS
   ..-
-..Add $replace($active,&,&&) auto-login $+ ...:xw AUTO ADD
+  ..Add $replace($active,&,&&) auto-login $+ ...:xw AUTO ADD
   ..-
-..View all auto-logins...:xw AUTO VIEW
-..Clear all auto-logins...:_okcancel 1 Delete ALL $_xwall auto-logins? | xw AUTO CLEAR
-.Info
-..Channel info	[0]:xw CHANINFO
-..$iif(%.xwaccess > 0,Channel status	[1]):xw STATUS
+  ..View all auto-logins...:xw AUTO VIEW
+  ..Clear all auto-logins...:_okcancel 1 Delete ALL $_xwall auto-logins? | xw AUTO CLEAR
+  .Info
+  ..Channel info	[0]:xw CHANINFO
+  ..$iif(%.xwaccess > 0,Channel status	[1]):xw STATUS
   ..-
-..Your access	[0]:xw ACCESS $iif(u isin $hget(pnp. $+ $cid,-servopt),$iif($hget(pnp. $+ $cid,-xwacc.username),$hget(pnp. $+ $cid,-xwacc.username),= $+ $me),$me)
-..Your commands	[0]:xw SHOWCOMMANDS
+  ..Your access	[0]:xw ACCESS $iif(u isin $hget(pnp. $+ $cid,-servopt),$iif($hget(pnp. $+ $cid,-xwacc.username),$hget(pnp. $+ $cid,-xwacc.username),= $+ $me),$me)
+  ..Your commands	[0]:xw SHOWCOMMANDS
   .-
-.$iif(%.xwaccess > 49,Topic...  [50]):xw TOPIC
-.$iif((%.xwaccess > 99) && (u !isin $hget(pnp. $+ $cid,-servopt)),Invite... [100]):xw INVITE
+  .$iif(%.xwaccess > 49,Topic...Â  [50]):xw TOPIC
+  .$iif((%.xwaccess > 99) && (u !isin $hget(pnp. $+ $cid,-servopt)),Invite... [100]):xw INVITE
   .-
-.Bans
-..$iif(%.xwaccess > 74,Ban...	[75]):xw BAN
-..$iif(%.xwaccess > 74,Unban...	[75]):xw UNBAN
+  .Bans
+  ..$iif(%.xwaccess > 74,Ban...	[75]):xw BAN
+  ..$iif(%.xwaccess > 74,Unban...	[75]):xw UNBAN
   ..-
-..%.xw banlist...	[0]:xw LBANLIST
-..Channel bans	[0]:xw BANLIST
+  ..%.xw banlist...	[0]:xw LBANLIST
+  ..Channel bans	[0]:xw BANLIST
   ..-
-..$iif(%.xwaccess > 199,Filterkick...	[200]):xw KICK
-.Users
-..Access...	[0]:xw ACCESS
-..$iif(u isin $hget(pnp. $+ $cid,-servopt),User info...	[0]):xw INFO
+  ..$iif(%.xwaccess > 199,Filterkick...	[200]):xw KICK
+  .Users
+  ..Access...	[0]:xw ACCESS
+  ..$iif(u isin $hget(pnp. $+ $cid,-servopt),User info...	[0]):xw INFO
   ..-
-..$iif(%.xwaccess > 99,Suspend...	[100]):xw SUSPEND
-..$iif(%.xwaccess > 99,Unsuspend...	[100]):xw UNSUSPEND
+  ..$iif(%.xwaccess > 99,Suspend...	[100]):xw SUSPEND
+  ..$iif(%.xwaccess > 99,Unsuspend...	[100]):xw UNSUSPEND
   ..-
-..$iif(%.xwaccess > 399,Add user...	[400]):xw ADDUSER
-..$iif(%.xwaccess > 399,Remove user...	[400]):xw REMUSER
+  ..$iif(%.xwaccess > 399,Add user...	[400]):xw ADDUSER
+  ..$iif(%.xwaccess > 399,Remove user...	[400]):xw REMUSER
   ..-
-..$iif(%.xwaccess > 399,Modify)
-...$iif(u isin $hget(pnp. $+ $cid,-servopt),Auto-mode...	[400]):xw MODINFO AUTOMODE
-...$iif(u !isin $hget(pnp. $+ $cid,-servopt),Auto-op...	[400]):xw MODINFO AUTOOP
-...$iif(u !isin $hget(pnp. $+ $cid,-servopt),Match mask...	[400]):xw MODINFO MATCH
-...Modify access...	[400]:xw MODINFO ACCESS
-...$iif(u !isin $hget(pnp. $+ $cid,-servopt),Password...	[400]):xw MODINFO PASSWORD
+  ..$iif(%.xwaccess > 399,Modify)
+  ...$iif(u isin $hget(pnp. $+ $cid,-servopt),Auto-mode...	[400]):xw MODINFO AUTOMODE
+  ...$iif(u !isin $hget(pnp. $+ $cid,-servopt),Auto-op...	[400]):xw MODINFO AUTOOP
+  ...$iif(u !isin $hget(pnp. $+ $cid,-servopt),Match mask...	[400]):xw MODINFO MATCH
+  ...Modify access...	[400]:xw MODINFO ACCESS
+  ...$iif(u !isin $hget(pnp. $+ $cid,-servopt),Password...	[400]):xw MODINFO PASSWORD
   .-
-.$iif(%.xwaccess > $iif(u isin $hget(pnp. $+ $cid,-servopt),499,449),Join / part)
-..Have %.xw part $+ 	 $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),[500],[450]):xw PART
+  .$iif(%.xwaccess > $iif(u isin $hget(pnp. $+ $cid,-servopt),499,449),Join / part)
+  ..Have %.xw part $+ 	 $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),[500],[450]):xw PART
   ..-
-..Add to %.xw $+ 's auto-join $+ 	 $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),[500],[450]):xw ADDCHAN
-..Remove from %.xw $+ 's auto-join $+ 	 $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),[500],[450]):xw REMCHAN
+  ..Add to %.xw $+ 's auto-join $+ 	 $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),[500],[450]):xw ADDCHAN
+  ..Remove from %.xw $+ 's auto-join $+ 	 $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),[500],[450]):xw REMCHAN
   ..-
-..Help:{
-dispa Asking $_xwall to join and part has the obvious effect $+ $chr(44) assuming the channel is in their database.
-dispa The channel must also be added to the bot's auto-join $+ $chr(44) causing them to always join the channel if and when they restart.
-if (u !isin $hget(pnp. $+ $cid,-servopt)) dispa Any channel modes set $chr(40) $+ such as +tn $+ $chr(41) when adding to the auto-join list will be the 'default' channel modes $+ $chr(44) set if $_xwall joins and no one else is in the channel.
+  ..Help:{
+    dispa Asking $_xwall to join and part has the obvious effect $+ $chr(44) assuming the channel is in their database.
+    dispa The channel must also be added to the bot's auto-join $+ $chr(44) causing them to always join the channel if and when they restart.
+    if (u !isin $hget(pnp. $+ $cid,-servopt)) dispa Any channel modes set $chr(40) $+ such as +tn $+ $chr(41) when adding to the auto-join list will be the 'default' channel modes $+ $chr(44) set if $_xwall joins and no one else is in the channel.
   }
-.$iif(%.xwaccess > 449,Set)
-..Description...	[450]:xw SET DESCRIPTION
-..URL...	[450]:xw SET URL
-..$iif(u isin $hget(pnp. $+ $cid,-servopt),Keywords...	[450]):xw SET KEYWORDS
-..Auto topic...	[450]:xw SET AUTOTOPIC
+  .$iif(%.xwaccess > 449,Set)
+  ..Description...	[450]:xw SET DESCRIPTION
+  ..URL...	[450]:xw SET URL
+  ..$iif(u isin $hget(pnp. $+ $cid,-servopt),Keywords...	[450]):xw SET KEYWORDS
+  ..Auto topic...	[450]:xw SET AUTOTOPIC
   ..-
-..$iif((%.xwaccess > 499) || (u !isin $hget(pnp. $+ $cid,-servopt)),Mass deop prot...	 $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),[500],[450])):xw SET MASSDEOPPRO
-..$iif(u !isin $hget(pnp. $+ $cid,-servopt),Nick flood prot...	[450]):xw SET NICKFLOODPRO
-..$iif(%.xwaccess > 499,Flood protection...	[500]):xw SET FLOODPRO
+  ..$iif((%.xwaccess > 499) || (u !isin $hget(pnp. $+ $cid,-servopt)),Mass deop prot...	 $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),[500],[450])):xw SET MASSDEOPPRO
+  ..$iif(u !isin $hget(pnp. $+ $cid,-servopt),Nick flood prot...	[450]):xw SET NICKFLOODPRO
+  ..$iif(%.xwaccess > 499,Flood protection...	[500]):xw SET FLOODPRO
   ..-
-..$iif(u !isin $hget(pnp. $+ $cid,-servopt),Always op...	[450]):xw SET ALWAYSOP
-..$iif(%.xwaccess > 499,No op...	[500]):xw SET NOOP
-..$iif(%.xwaccess > 499,Strict op...	[500]):xw SET STRICTOP
-..$iif(u !isin $hget(pnp. $+ $cid,-servopt),Op only...	[500]):xw SET OPONLY
+  ..$iif(u !isin $hget(pnp. $+ $cid,-servopt),Always op...	[450]):xw SET ALWAYSOP
+  ..$iif(%.xwaccess > 499,No op...	[500]):xw SET NOOP
+  ..$iif(%.xwaccess > 499,Strict op...	[500]):xw SET STRICTOP
+  ..$iif(u !isin $hget(pnp. $+ $cid,-servopt),Op only...	[500]):xw SET OPONLY
   ..-
-..$iif(u isin $hget(pnp. $+ $cid,-servopt),Auto-mode,Auto-op) $+ ...	[450]:xw SET USERFLAGS
+  ..$iif(u isin $hget(pnp. $+ $cid,-servopt),Auto-mode,Auto-op) $+ ...	[450]:xw SET USERFLAGS
   ..-
-..$iif(u isin $hget(pnp. $+ $cid,-servopt),Save channel mode	[450]):xw SET MODE
-.$iif(%.xwaccess > 449,Config... [450]):xw CONFIG
+  ..$iif(u isin $hget(pnp. $+ $cid,-servopt),Save channel mode	[450]):xw SET MODE
+  .$iif(%.xwaccess > 449,Config... [450]):xw CONFIG
   .-
-.$iif(u isin $hget(pnp. $+ $cid,-servopt),My access)
-..$iif(!%.xwaccessstored,$style(1)) I have no access in #:xwa # 0
+  .$iif(u isin $hget(pnp. $+ $cid,-servopt),My access)
+  ..$iif(!%.xwaccessstored,$style(1)) I have no access in #:xwa # 0
   ..-
-..$iif(%.xwaccessstored isnum 25-49,$style(1)) Access 25 or higher in #:xwa # 25
-..$iif(%.xwaccessstored isnum 50-74,$style(1)) Access 50 or higher in #:xwa # 50
-..$iif(%.xwaccessstored isnum 75-99,$style(1)) Access 75 or higher in #:xwa # 75
-..$iif(%.xwaccessstored isnum 100-199,$style(1)) Access 100 or higher in #:xwa # 100
-..$iif(%.xwaccessstored isnum 200-399,$style(1)) Access 200 or higher in #:xwa # 200
-..$iif(%.xwaccessstored isnum 400-449,$style(1)) Access 400 or higher in #:xwa # 400
-..$iif(%.xwaccessstored isnum 450-499,$style(1)) Access 450 or higher in #:xwa # 450
-..$iif(%.xwaccessstored == 500,$style(1)) Access 500 $chr(40) $+ founder $+ $chr(41) in #:xwa # 500
+  ..$iif(%.xwaccessstored isnum 25-49,$style(1)) Access 25 or higher in #:xwa # 25
+  ..$iif(%.xwaccessstored isnum 50-74,$style(1)) Access 50 or higher in #:xwa # 50
+  ..$iif(%.xwaccessstored isnum 75-99,$style(1)) Access 75 or higher in #:xwa # 75
+  ..$iif(%.xwaccessstored isnum 100-199,$style(1)) Access 100 or higher in #:xwa # 100
+  ..$iif(%.xwaccessstored isnum 200-399,$style(1)) Access 200 or higher in #:xwa # 200
+  ..$iif(%.xwaccessstored isnum 400-449,$style(1)) Access 400 or higher in #:xwa # 400
+  ..$iif(%.xwaccessstored isnum 450-499,$style(1)) Access 450 or higher in #:xwa # 450
+  ..$iif(%.xwaccessstored == 500,$style(1)) Access 500 $chr(40) $+ founder $+ $chr(41) in #:xwa # 500
   ..-
-..What is my access?:xw ACCESS $iif($hget(pnp. $+ $cid,-xwacc.username),$hget(pnp. $+ $cid,-xwacc.username),= $+ $me)
-..Remove my access...:_okcancel 1 REMOVE any access you have in # $+ ? | xw REMUSER $iif($hget(pnp. $+ $cid,-xwacc.username),$hget(pnp. $+ $cid,-xwacc.username),= $+ $me)
+  ..What is my access?:xw ACCESS $iif($hget(pnp. $+ $cid,-xwacc.username),$hget(pnp. $+ $cid,-xwacc.username),= $+ $me)
+  ..Remove my access...:_okcancel 1 REMOVE any access you have in # $+ ? | xw REMUSER $iif($hget(pnp. $+ $cid,-xwacc.username),$hget(pnp. $+ $cid,-xwacc.username),= $+ $me)
 }
- 
+
 ; /xwa [#chan] [0-500]
 ; view or set xw access
 alias xwa {
-if ($server == $null) _error You must be connected to use that command
-if ($_isserv(xw) == $false) _error You cannot use /xwa on this network. $+ /xwa only works on networks with X / Z / P.
+  if ($server == $null) _error You must be connected to use that command
+  if ($_isserv(xw) == $false) _error You cannot use /xwa on this network. $+ /xwa only works on networks with X / Z / P.
   if ($_ischan($1)) { var %chan = $1,%how = $2 }
   elseif ($active ischan) { var %chan = $active,%how = $1 }
-else _error You must use /xwa in a channel $+ $chr(40) $+ or specify a target channel $+ $chr(41)
+  else _error You must use /xwa in a channel $+ $chr(40) $+ or specify a target channel $+ $chr(41)
   if (%how == $null) {
     %how = $readini($_cfg(pw.ini),n,xw- $+ $hget(pnp. $+ $cid,net),a $+ %chan)
     if (%how !isnum 0-500) %how = 0
@@ -1073,7 +1073,7 @@ else _error You must use /xwa in a channel $+ $chr(40) $+ or specify a target c
     else remini $_cfg(pw.ini) xw- $+ $hget(pnp. $+ $cid,net) a $+ %chan
     if (($hget(pnp. $+ $cid,-xwacc. $+ %chan) != $null) || ($hget(pnp. $+ $cid,-xwacc.username))) hadd pnp. $+ $cid -xwacc. $+ %chan %how
   }
-dispa You have set yourself as access level $:s(%how) on $:s(%chan)
+  dispa You have set yourself as access level $:s(%how) on $:s(%chan)
 }
 ; loads all xwc.chan vars from ini
 alias -l _loadxwa {
@@ -1091,7 +1091,7 @@ alias -l _loadxwa {
     }
   }
 }
- 
+
 on ^*:NOTICE:Channel* has & user* & operator*:?:{
   if (($nick == $hget(pnp.xwconfig,bot)) && ($2 == $hget(pnp.xwconfig,chan)) && ($cid == $hget(pnp.xwconfig,cid))) {
     hdel -w pnp.xwconfig *
@@ -1139,7 +1139,7 @@ on ^*:NOTICE:Auth*:?:_isxwcfg | aline @.xwinfo Authorized users: $2- | halt
 on ^*:NOTICE:& is registered by*:?:_isxwcfg | halt
 on ^*:NOTICE:& & last seen*:?:{
   _isxwcfg
-iline @.xwinfo 1 Founder: $1-
+  iline @.xwinfo 1 Founder: $1-
   ; (so we only try to open dialog once even if multiple last seen lines appear)
   if ($hget(pnp.xwconfig,init) != 1) { _juryrig $$!dialog(xwcfg,xwcfg,-4) | hadd pnp.xwconfig init 1 }
   halt
@@ -1153,9 +1153,9 @@ on ^*:NOTICE:Desc*:?:_isxwc | hadd pnp.xwconfig desc $2- | did -ra xwcfg 16 $2- 
 on ^*:NOTICE:Keywords*:?:_isxwc | hadd pnp.xwconfig keywords $2- | did -ra xwcfg 32 $2- | halt
 on ^*:NOTICE:URL*:?:_isxwc | hadd pnp.xwconfig url $2- | did -ra xwcfg 18 $2- | halt
 on ^*:NOTICE:& & last seen*:?:_isxwc | did -i xwcfg 4 1 Founder: $1- | halt
- 
+
 dialog xwcfg {
-title "Channel configuration"
+  title "Channel configuration"
   icon script\pnp.ico
   option dbu
   size -1 -1 180 168
@@ -1163,29 +1163,29 @@ title "Channel configuration"
   edit $cid, 103, 1 1 1 1, hide
   text "", 1, 5 5 50 8
   edit "", 2, 55 3 100 11, autohs read
-box "Info:", 3, 2 15 175 45
+  box "Info:", 3, 2 15 175 45
   edit "", 4, 7 24 165 30, vsbar read multi
-box "Options:", 14, 2 62 175 86
-text "&Desc.:", 15, 7 72 25 8, right
+  box "Options:", 14, 2 62 175 86
+  text "&Desc.:", 15, 7 72 25 8, right
   edit "", 16, 33 70 140 11, autohs
-text "&URL:", 17, 7 83 25 8, right
+  text "&URL:", 17, 7 83 25 8, right
   edit "", 18, 33 81 140 11, autohs
-text "&Keywords:", 31, 7 94 25 8, right
+  text "&Keywords:", 31, 7 94 25 8, right
   edit "", 32, 33 92 140 11, autohs
-text "&Mass deop pro:", 19, 7 105 36 8, right
+  text "&Mass deop pro:", 19, 7 105 36 8, right
   edit "", 20, 45 103 12 11
-text "&Nick flood pro:", 21, 65 105 36 8, right
+  text "&Nick flood pro:", 21, 65 105 36 8, right
   edit "", 22, 103 103 12 11
-text "&Flood pro:", 23, 123 105 36 8, right
+  text "&Flood pro:", 23, 123 105 36 8, right
   edit "", 24, 161 103 12 11
   check "", 25, 7 116 67 8
-check "&Only allow OP cmd", 26, 7 136 67 8
-check "&Only known ops", 27, 7 126 67 8
-check "&Newly added users have auto-op", 28, 75 116 100 8
+  check "&Only allow OP cmd", 26, 7 136 67 8
+  check "&Only known ops", 27, 7 126 67 8
+  check "&Newly added users have auto-op", 28, 75 116 100 8
   check "", 29, 75 126 100 8
-check "&Auto update topic with desc. / URL", 30, 75 136 100 8
-button "OK", 101, 15 152 60 12, OK default
-button "Cancel", 102, 92 152 60 12, cancel
+  check "&Auto update topic with desc. / URL", 30, 75 136 100 8
+  button "OK", 101, 15 152 60 12, OK default
+  button "Cancel", 102, 92 152 60 12, cancel
 }
 on *:DIALOG:xwcfg:init:*:{
   did -a $dname 100 $hget(pnp.xwconfig,bot)
@@ -1196,17 +1196,17 @@ on *:DIALOG:xwcfg:init:*:{
   did -a $dname 20 $hget(pnp.xwconfig,deop)
   did -a $dname 22 $hget(pnp.xwconfig,nickfld)
   did -a $dname 24 $hget(pnp.xwconfig,flood)
- 
-did -a $dname 25 & $+ $hget(pnp.xwconfig,bot) always opped
-did -a $dname 1 $hget(pnp.xwconfig,bot) configuration for:
-did -a $dname 29 & $+ $hget(pnp.xwconfig,bot) is the only op allowed
- 
+
+  did -a $dname 25 & $+ $hget(pnp.xwconfig,bot) always opped
+  did -a $dname 1 $hget(pnp.xwconfig,bot) configuration for:
+  did -a $dname 29 & $+ $hget(pnp.xwconfig,bot) is the only op allowed
+
   :loop | if ($line(@.xwinfo,1)) { did -a $dname 4 $ifmatch $+ $crlf | dline @.xwinfo 1 | goto loop }
   window -c @.xwinfo
- 
+
   if (u isin $hget(pnp. $+ $cid,-servopt)) {
     did -h $dname 21,22,25,28
-did -ra $dname 26 & $+ $hget(pnp.xwconfig,bot) auto-joins after split
+    did -ra $dname 26 & $+ $hget(pnp.xwconfig,bot) auto-joins after split
     if ($hget(pnp.xwconfig,autojoin)) did -c $dname 26
   }
   else {
@@ -1219,7 +1219,7 @@ did -ra $dname 26 & $+ $hget(pnp.xwconfig,bot) auto-joins after split
   if ($hget(pnp.xwconfig,strictop)) did -c $dname 27
   if ($hget(pnp.xwconfig,noop)) did -c $dname 29
   if ($hget(pnp.xwconfig,autotopic)) did -c $dname 30
- 
+
   .disable #xwconfig
   hdel pnp.xwconfig chan
   hdel pnp.xwconfig init

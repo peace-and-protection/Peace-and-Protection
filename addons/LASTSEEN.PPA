@@ -3,7 +3,7 @@
 ; Peace and Protection
 ; Last seen (standard addon)
 ; ########################################
- 
+
 #.ppa.info off
 [addon]
 name=LastSeen
@@ -26,7 +26,7 @@ timers=.cacheseen.*
 [menu]
 1=Clear database...:clrseen
 #.ppa.info end
- 
+
 ; Updates last seen data for a channel or all channels
 ; Assumes CID is active
 ; /_updseen network */channel
@@ -56,7 +56,7 @@ alias -l _updseen {
   }
   if ($timer(.cacheseen. $+ $1) == $null) .timer.cacheseen. $+ $1 -io 1 15 _saveseen $1
 }
- 
+
 ; Adds last seen data
 ; /_addlseen network nick fulladdress channel
 alias -l _addlseen {
@@ -77,7 +77,7 @@ alias -l _saveseen {
   }
   if (!%found) .timer -mio 1 0 hfree pnp.lastseen. $+ $1
 }
- 
+
 ; Saves all seen data to disk
 alias -l _saveseenall {
   var %hash = $hget(0)
@@ -91,7 +91,7 @@ alias -l _saveseenall {
   }
 }
 on *:EXIT:{ _saveseenall }
- 
+
 ; Record data on user quit, kick, part, nick
 on !*:PART:#:if ($_isseenchan($chan)) _addlseen $hget(pnp. $+ $cid,net) $nick $fulladdress $chan
 on !*:KICK:#:if ($_isseenchan($chan)) if ($address($knick,5)) _addlseen $hget(pnp. $+ $cid,net) $knick $ifmatch $chan
@@ -104,12 +104,12 @@ alias -l _dobulkls {
     inc %num
   }
 }
- 
+
 ; Record data on our disconnect, kick, or part
 on *:DISCONNECT:if ($hget(pnp. $+ $cid,net) != Offline) _updseen $hget(pnp. $+ $cid,net) *
 on me:*:PART:#:if ($_isseenchan($chan)) _updseen $hget(pnp. $+ $cid,net) $chan
 on *:KICK:#:if (($knick == $me) && ($_isseenchan($chan))) _updseen $hget(pnp. $+ $cid,net) $chan
- 
+
 ; Load data when needed for a network
 ; skip 1 to not make hash if data doesn't exist
 ; /_prepseen network [skip]
@@ -138,7 +138,7 @@ alias -l _prepseen {
   }
 }
 on *:CONNECT:_prepseen $hget(pnp. $+ $cid,net)
- 
+
 ; Find appropriate data given a nick|ident and return it
 ; Assumes CID of network is current; else pass param 5 as true to skip searching current chans/etc.
 ; $_findseen(net,nick|ident,opt,opt[,skipsearch])
@@ -182,35 +182,35 @@ alias -l _findseen {
 ; pass options 5 / 6 / 9 as $3-5 (modify to influence output)
 alias -l _readseen {
   var %found = $_findseen($1,$2,$3,$5,$6)
-if (%found == $null) return Last seen: No match
-var %nick = $gettok(%found,2,32) $iif(($3 == 0) && ($gettok(%found,1,32) == i),(userid))
-if ($numtok(%found,32) < 4) return $iif($4,%nick is currently on $gettok(%found,3,32),%nick is currently on IRC)
-return $iif($4,%nick was last seen $_dur($calc($ctime - $gettok(%found,3,32))) ago on $gettok(%found,4,32),%nick was last seen $_dur($calc($ctime - $gettok(%found,3,32))) ago)
+  if (%found == $null) return Last seen: No match
+  var %nick = $gettok(%found,2,32) $iif(($3 == 0) && ($gettok(%found,1,32) == i),(userid))
+  if ($numtok(%found,32) < 4) return $iif($4,%nick is currently on $gettok(%found,3,32),%nick is currently on IRC)
+  return $iif($4,%nick was last seen $_dur($calc($ctime - $gettok(%found,3,32))) ago on $gettok(%found,4,32),%nick was last seen $_dur($calc($ctime - $gettok(%found,3,32))) ago)
 }
- 
+
 dialog lastseen {
-title "LastSeen configuration"
+  title "LastSeen configuration"
   icon script\pnp.ico
   option dbu
   size -1 -1 145 140
-   
-check "&Only enable last-seen data / replies on channels:", 1, 5 5 138 8
+
+  check "&Only enable last-seen data / replies on channels:", 1, 5 5 138 8
   edit "", 10, 15 15 125 11, autohs
-   
-check "&Respond to SEEN CTCPs", 2, 5 31 138 8
-check "&Respond to !seen requests", 3, 5 41 138 8
-check "&Always respond in private", 11, 5 51 138 8
-check "&Only respond to users on notify / userlist", 4, 5 61 138 8
-check "&Allow lookups by userid", 9, 5 71 138 8
-check "&Include user's last address in response", 5, 5 81 138 8
-check "&Include user's last channel in response", 6, 5 91 138 8
-   
-check "&Clean out entries older than", 7, 5 106 75 8
+
+  check "&Respond to SEEN CTCPs", 2, 5 31 138 8
+  check "&Respond to !seen requests", 3, 5 41 138 8
+  check "&Always respond in private", 11, 5 51 138 8
+  check "&Only respond to users on notify / userlist", 4, 5 61 138 8
+  check "&Allow lookups by userid", 9, 5 71 138 8
+  check "&Include user's last address in response", 5, 5 81 138 8
+  check "&Include user's last channel in response", 6, 5 91 138 8
+
+  check "&Clean out entries older than", 7, 5 106 75 8
   edit "", 8, 81 105 20 11
-text "days on startup", 20, 102 107 43 8
-   
-button "OK", 201, 15 122 40 12, OK default
-button "Cancel", 203, 90 122 40 12, cancel
+  text "days on startup", 20, 102 107 43 8
+
+  button "OK", 201, 15 122 40 12, OK default
+  button "Cancel", 203, 90 122 40 12, cancel
 }
 on *:DIALOG:lastseen:init:*:{
   var %num = 1
@@ -238,7 +238,7 @@ on *:DIALOG:lastseen:sclick:201:{
   `set lastseen.opt %opt $or($did(9).state,$calc(2 * $did(11).state)) $iif($did(10),$_s2c($did(10)))
 }
 alias lastseen _dialog -am lastseen lastseen
- 
+
 on *:LOAD:{
   ; PnP check
   if (!$_ispnp) {
@@ -250,15 +250,15 @@ on *:LOAD:{
   ; Invalid load method check
   if (!$istok($_cfgx(addons,ids),$readini($script,n,addon,id),32)) {
     .timer -mio 1 0 .unload -rs " $+ $script $+ "
-dispa Unloading ' $+ $script $+ ' $chr(40) $+ addon is not properly loaded; use /addon to load it $+ $chr(41)
+    dispa Unloading ' $+ $script $+ ' $chr(40) $+ addon is not properly loaded; use /addon to load it $+ $chr(41)
     halt
   }
- 
+
   if ($numtok($hget(pnp.config,lastseen.opt),32) < 9) `set lastseen.opt 0 1 0 0 1 1 0 20 1
   scid -at1 _prepseen $!hget(pnp. $!+ $!cid,net)
-if ($_dlgi(lswarn) == $null) { _dlgw lswarn 1 | _doerror Warning- Don't use lastseen in large channels.It will slow you down noticably. $chr(40) $+ ex: $chr(35) $+ funfactory $+ $chr(41) }
+  if ($_dlgi(lswarn) == $null) { _dlgw lswarn 1 | _doerror Warning- Don't use lastseen in large channels.It will slow you down noticably. $chr(40) $+ ex: $chr(35) $+ funfactory $+ $chr(41) }
 }
- 
+
 ; Any seen data?
 alias -l _isanyseen {
   var %hash = $hget(0)
@@ -269,10 +269,10 @@ alias -l _isanyseen {
   }
   return %found
 }
- 
+
 alias _lastseenunload {
   if ($_isanyseen) {
-if ($_yesno(1,Delete last-seen database?)) {
+    if ($_yesno(1,Delete last-seen database?)) {
       .clrseen
       return
     }
@@ -280,14 +280,14 @@ if ($_yesno(1,Delete last-seen database?)) {
   ; Flush seen data
   _saveseenall
 }
- 
+
 ; Returns if we're collecting data on a channel
 alias -l _isseenchan {
   if ($gettok($hget(pnp.config,lastseen.opt),1,32) == 0) return 1
   if ($istok($gettok($hget(pnp.config,lastseen.opt),10,32),$1,44)) return 1
   return 0
 }
- 
+
 ; Responses
 ; Uses current network
 ; $_seenresp(ctcp/msg)
@@ -315,13 +315,13 @@ on *:TEXT:!seen &:*:{
     if ($result) _linedance msg $iif(($target ischan) && ($and($gettok($hget(pnp.config,lastseen.opt),9,32),2) == 0),$chan,$nick) $_stripout($result)
   }
 }
- 
+
 ; Self-requested info
 alias seen {
-if ($1 == $null) _qhelp $_s2f(/seen +nicknameoruserid -network !User to look up last-seen data for $chr(40) $+ and optional network $+ $chr(41))
+  if ($1 == $null) _qhelp $_s2f(/seen +nicknameoruserid -network !User to look up last-seen data for $chr(40) $+ and optional network $+ $chr(41))
   var %net = $hget(pnp. $+ $cid,net)
   if ($2) %net = $2
-if ((%net == $null) || (%net == offline)) _error Use /seen $1 while connected.Or $+ $chr(44) use " $+ /seen $1 network".
+  if ((%net == $null) || (%net == offline)) _error Use /seen $1 while connected.Or $+ $chr(44) use " $+ /seen $1 network".
   ; if an existing connection is this network, swap to it, otherwise no search feature
   var %search = 1
   if ($hget(pnp. $+ $cid,net) == %net) %search = 0
@@ -341,17 +341,17 @@ if ((%net == $null) || (%net == offline)) _error Use /seen $1 while connected.O
 }
 alias sseen sayseen $1-
 alias sayseen {
-if ($1 == $null) _qhelp $_s2f(/sayseen +nicknameoruserid !User to say last-seen data on)
+  if ($1 == $null) _qhelp $_s2f(/sayseen +nicknameoruserid !User to say last-seen data on)
   _notconnected /sayseen
   say $_stripout($_readseen($hget(pnp. $+ $cid,net),$1,$gettok($hget(pnp.config,lastseen.opt),5,32),$gettok($hget(pnp.config,lastseen.opt),6,32),$gettok($hget(pnp.config,lastseen.opt),9,32)))
 }
- 
+
 ; Clean out lastseen database by age or channel, or all
 ; Affects all networks if not specified
 ; /clrseen [#chan|days] [network] (either order)
 alias clrseen {
-if (!$_isanyseen) { dispa Last-seen database is empty. | return }
- 
+  if (!$_isanyseen) { dispa Last-seen database is empty. | return }
+
   var %chan,%days,%net,%allnet = 0,%allnetpos = 0,%cleaned = 0
   if ($1 isnum) { %days = $1 | %net = $2 }
   elseif ($_ischan($1)) { %chan = $1 | %net = $2 }
@@ -360,17 +360,17 @@ if (!$_isanyseen) { dispa Last-seen database is empty. | return }
   else {
     %net = $1
     if ($show) {
-var %msg = Delete last-seen database?
-if (%net) %msg = Delete last-seen database? $chr(40) $+ for %net $+ $chr(41)
+      var %msg = Delete last-seen database?
+      if (%net) %msg = Delete last-seen database? $chr(40) $+ for %net $+ $chr(41)
       if (($show) && (!$_okcancel(1,%msg))) return
     }
   }
- 
+
   ; Verify network data exists and is loaded
   if (%net) {
     _prepseen %net 1
     if (!$hget(pnp.lastseen. $+ %net)) {
-dispa Last-seen database is empty. ( $+ %net $+ )
+      dispa Last-seen database is empty. ( $+ %net $+ )
       return
     }
   }
@@ -380,9 +380,9 @@ dispa Last-seen database is empty. ( $+ %net $+ )
     %allnet = 1
     %allnetpos = $hget(0)
   }
-  
-if ($show) _progress.1 Cleaning last-seen database...
- 
+
+  if ($show) _progress.1 Cleaning last-seen database...
+
   ; If doing all nets, pick another net
   :nextnet
   while (%allnetpos) {
@@ -392,9 +392,9 @@ if ($show) _progress.1 Cleaning last-seen database...
     }
     dec %allnetpos
   }
-  
+
   if ((%allnet) && (!%allnetpos)) goto done
-  
+
   if (%chan) {
     while ($hmatch(pnp.lastseen. $+ %net,& & %chan).data) {
       hdel pnp.lastseen. $+ %net $ifmatch
@@ -421,7 +421,7 @@ if ($show) _progress.1 Cleaning last-seen database...
     inc %cleaned $hget(pnp.lastseen. $+ %net,0).item
     hdel -w pnp.lastseen. $+ %net *
   }
- 
+
   ; Flush changes to disk
   _saveseen %net
   if (%allnet) {
@@ -429,28 +429,28 @@ if ($show) _progress.1 Cleaning last-seen database...
     goto nextnet
   }
   :done
- 
-if ($show) _progress.2 100 Done!
- 
-if (%chan) dispa Removed $:t(%cleaned) last-seen entries matching channel $:s(%chan) $iif(!%allnet,( $+ %net $+ ))
-elseif (%days != $null) dispa Removed $:t(%cleaned) last-seen entries older than $:s(%days) days $iif(!%allnet,( $+ %net $+ ))
-else dispa Cleared last-seen database. $chr(40) $+ $:t(%cleaned) entries $+ $chr(41) $iif(!%allnet,( $+ %net $+ ))
+
+  if ($show) _progress.2 100 Done!
+
+  if (%chan) dispa Removed $:t(%cleaned) last-seen entries matching channel $:s(%chan) $iif(!%allnet,( $+ %net $+ ))
+  elseif (%days != $null) dispa Removed $:t(%cleaned) last-seen entries older than $:s(%days) days $iif(!%allnet,( $+ %net $+ ))
+  else dispa Cleared last-seen database. $chr(40) $+ $:t(%cleaned) entries $+ $chr(41) $iif(!%allnet,( $+ %net $+ ))
 }
 alias _doclrseen if ($gettok($hget(pnp.config,lastseen.opt),7,32)) .clrseen $gettok($hget(pnp.config,lastseen.opt),8,32)
 on *:START:_startup.add _doclrseen Cleaning last-seen database...
- 
+
 ; popups
 menu menubar {
   $_popssep
-Last seen
-.Echo seen...	/seen:seen $_entry(-1,$null,Look up last seen info on whom? $+ $chr(40) $+ enter a nickname or userid $+ $chr(41))
-.Say seen...	/sseen:sseen $_entry(-1,$null,Look up last seen info on whom? $+ $chr(40) $+ enter a nickname or userid $+ $chr(41))
+  Last seen
+  .Echo seen...	/seen:seen $_entry(-1,$null,Look up last seen info on whom? $+ $chr(40) $+ enter a nickname or userid $+ $chr(41))
+  .Say seen...	/sseen:sseen $_entry(-1,$null,Look up last seen info on whom? $+ $chr(40) $+ enter a nickname or userid $+ $chr(41))
   .-
-.Clean data
-..All data for a channel...:clrseen $_entry(-1,$null,Clear all data matching what channel? $+ $chr(40) $+ wildcards are ok $+ $chr(41))
-..Data older than...:clrseen $_entry(-2,$null,Clear all data older than how many days?)
+  .Clean data
+  ..All data for a channel...:clrseen $_entry(-1,$null,Clear all data matching what channel? $+ $chr(40) $+ wildcards are ok $+ $chr(41))
+  ..Data older than...:clrseen $_entry(-2,$null,Clear all data older than how many days?)
   ..-
-..Clear database...:clrseen
+  ..Clear database...:clrseen
   .-
-.Configure...	/lastseen:lastseen
+  .Configure...	/lastseen:lastseen
 }

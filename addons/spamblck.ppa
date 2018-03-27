@@ -3,7 +3,7 @@
 ; |  Peace and Protection                |
 ; |  Spam Blocker (standard addon)       |
 ; `======================================'
- 
+
 #.ppa.info off
 [addon]
 name=Spam Blocker
@@ -22,7 +22,7 @@ unload=unload.spamhash
 [notes]
 1=This addon is used to block unwanted spam and other unwanted queries, messages, and file sends. It can block based when you or a user joins or parts, block any users that you don't recognize, block based on op status, or even block based on specific words and phrases you define.
 #.ppa.info end
- 
+
 ; Load check
 on *:LOAD:{
   ; PnP check
@@ -35,7 +35,7 @@ on *:LOAD:{
   ; Invalid load method check
   if (!$istok($_cfgx(addons,ids),$readini($script,n,addon,id),32)) {
     .timer -mio 1 0 .unload -rs " $+ $script $+ "
-dispa Unloading ' $+ $script $+ ' $chr(40) $+ addon is not properly loaded; use /addon to load it $+ $chr(41)
+    dispa Unloading ' $+ $script $+ ' $chr(40) $+ addon is not properly loaded; use /addon to load it $+ $chr(41)
     halt
   }
   ; (def options)
@@ -44,101 +44,101 @@ dispa Unloading ' $+ $script $+ ' $chr(40) $+ addon is not properly loaded; use 
   if ($hget(pnp.config,spamblock.chanopt) == $null) `set spamblock.chanopt 0
   load.spamhash
 }
- 
+
 ; Configuration dialog
 dialog spamblock {
-title "Spam Blocker"
+  title "Spam Blocker"
   icon script\pnp.ico
   option dbu
   size -1 -1 215 170
- 
-tab "Options", 1, 5 2 205 148
-tab "Spam", 2
-tab "Joins / Parts", 3
-tab "Other", 4
- 
-text "These options will apply to all blocking features. Note that anyone you have a query or chat open with will automatically override blocking in all circumstances.", 40, 10 42 195 24, tab 1
-check "Userlist will override blocking", 41, 15 60 195 8, tab 1
-check "Notify list will override blocking", 42, 15 70 195 8, tab 1
-check "Display message when block is triggered", 43, 15 80 195 8, tab 1
-check "These channels only:", 44, 15 90 190 8, tab 1
+
+  tab "Options", 1, 5 2 205 148
+  tab "Spam", 2
+  tab "Joins / Parts", 3
+  tab "Other", 4
+
+  text "These options will apply to all blocking features. Note that anyone you have a query or chat open with will automatically override blocking in all circumstances.", 40, 10 42 195 24, tab 1
+  check "Userlist will override blocking", 41, 15 60 195 8, tab 1
+  check "Notify list will override blocking", 42, 15 70 195 8, tab 1
+  check "Display message when block is triggered", 43, 15 80 195 8, tab 1
+  check "These channels only:", 44, 15 90 190 8, tab 1
   edit "", 45, 24 100 181 11, tab 1
- 
-text "These options will apply to new queries, notices, and invites.", 50, 10 32 195 8, tab 2
-check "Block anything that appears to be an ad or invite from a non-op", 53, 15 47 190 8, tab 2
-check "... including channel text", 54, 15 57 190 8, tab 2
-check "Block anything containing any of these words / phrases:", 51, 15 67 190 8, tab 2
+
+  text "These options will apply to new queries, notices, and invites.", 50, 10 32 195 8, tab 2
+  check "Block anything that appears to be an ad or invite from a non-op", 53, 15 47 190 8, tab 2
+  check "... including channel text", 54, 15 57 190 8, tab 2
+  check "Block anything containing any of these words / phrases:", 51, 15 67 190 8, tab 2
   edit "", 52, 24 77 181 11, tab 2
-text "Note: These will only match full words unless wildcards are used. For example, asl would not match asleep, but *asl* would. Separate multiple words and phrases with commas.", 55, 10 95 190 24, tab 2
- 
-text "Most spam is sent when either you or the spammer joins or parts. These options allow you to block this spam easily.", 60, 10 22 195 19, tab 3
-text "Apply join/part blocking to:", 61, 10 43 195 8, tab 3
-check "New queries", 62, 15 53 55 8, tab 3
-check "Notices", 63, 70 53 45 8, tab 3
-check "Invites", 64, 115 53 45 8, tab 3
-check "Files", 65, 160 53 35 8, tab 3
-check "When you join, block non-ops for", 66, 15 69 100 8, tab 3
+  text "Note: These will only match full words unless wildcards are used. For example, asl would not match asleep, but *asl* would. Separate multiple words and phrases with commas.", 55, 10 95 190 24, tab 2
+
+  text "Most spam is sent when either you or the spammer joins or parts. These options allow you to block this spam easily.", 60, 10 22 195 19, tab 3
+  text "Apply join/part blocking to:", 61, 10 43 195 8, tab 3
+  check "New queries", 62, 15 53 55 8, tab 3
+  check "Notices", 63, 70 53 45 8, tab 3
+  check "Invites", 64, 115 53 45 8, tab 3
+  check "Files", 65, 160 53 35 8, tab 3
+  check "When you join, block non-ops for", 66, 15 69 100 8, tab 3
   edit "", 67, 115 68 20 11, tab 3
-text "seconds", 68, 138 70 30 8, tab 3
-check "... block users outside of channel, also", 69, 25 80 180 8, tab 3
-check "When you part, block non-ops for", 70, 15 91 100 8, tab 3
+  text "seconds", 68, 138 70 30 8, tab 3
+  check "... block users outside of channel, also", 69, 25 80 180 8, tab 3
+  check "When you part, block non-ops for", 70, 15 91 100 8, tab 3
   edit "", 71, 115 90 20 11, tab 3
-text "seconds", 72, 138 92 30 8, tab 3
-check "When a user joins, block them for", 73, 15 102 100 8, tab 3
+  text "seconds", 72, 138 92 30 8, tab 3
+  check "When a user joins, block them for", 73, 15 102 100 8, tab 3
   edit "", 74, 115 101 20 11, tab 3
-text "seconds", 75, 138 103 30 8, tab 3
-check "... unless you are opped", 76, 25 113 180 8, tab 3
-check "... except in these channels:", 77, 25 122 180 8, tab 3
+  text "seconds", 75, 138 103 30 8, tab 3
+  check "... unless you are opped", 76, 25 113 180 8, tab 3
+  check "... except in these channels:", 77, 25 122 180 8, tab 3
   edit "", 78, 34 131 171 11, tab 3
-  
-text "Block from any user you don't know and can't see:", 10, 10 22 195 8, tab 4
-check "New queries", 11, 15 32 55 8, tab 4
-check "Notices", 12, 70 32 45 8, tab 4
-check "Invites", 13, 115 32 45 8, tab 4
-check "Files", 14, 160 32 35 8, tab 4
-check "Send message to blocked user:", 15, 15 41 190 8, tab 4
+
+  text "Block from any user you don't know and can't see:", 10, 10 22 195 8, tab 4
+  check "New queries", 11, 15 32 55 8, tab 4
+  check "Notices", 12, 70 32 45 8, tab 4
+  check "Invites", 13, 115 32 45 8, tab 4
+  check "Files", 14, 160 32 35 8, tab 4
+  check "Send message to blocked user:", 15, 15 41 190 8, tab 4
   edit "", 16, 24 50 181 11, tab 4
-  
-text "While in a channel, block:", 17, 10 67 195 8, tab 4
-check "New queries", 18, 15 75 55 8, tab 4
-check "Notices", 19, 70 75 45 8, tab 4
-check "Invites", 20, 115 75 45 8, tab 4
-check "Files", 21, 160 75 35 8, tab 4
-text "From:", 22, 10 84 195 8, tab 4
-check "Normal users", 23, 15 92 55 8, tab 4
-check "Voiced", 24, 70 92 45 8, tab 4
-check "Halfops", 25, 115 92 45 8, tab 4
-check "Ops", 26, 160 92 35 8, tab 4
-check "These channels only:", 27, 15 101 190 8, tab 4
+
+  text "While in a channel, block:", 17, 10 67 195 8, tab 4
+  check "New queries", 18, 15 75 55 8, tab 4
+  check "Notices", 19, 70 75 45 8, tab 4
+  check "Invites", 20, 115 75 45 8, tab 4
+  check "Files", 21, 160 75 35 8, tab 4
+  text "From:", 22, 10 84 195 8, tab 4
+  check "Normal users", 23, 15 92 55 8, tab 4
+  check "Voiced", 24, 70 92 45 8, tab 4
+  check "Halfops", 25, 115 92 45 8, tab 4
+  check "Ops", 26, 160 92 35 8, tab 4
+  check "These channels only:", 27, 15 101 190 8, tab 4
   edit "", 28, 24 110 181 11, tab 4
-check "Send message to blocked user:", 29, 15 122 190 8, tab 4
+  check "Send message to blocked user:", 29, 15 122 190 8, tab 4
   edit "", 30, 24 131 181 11, tab 4
- 
-button "OK", 201, 125 155 40 12, OK default
-button "Cancel", 202, 170 155 40 12, cancel
+
+  button "OK", 201, 125 155 40 12, OK default
+  button "Cancel", 202, 170 155 40 12, cancel
 }
 alias spam _dialog -am spamblock spamblock
- 
+
 on *:DIALOG:spamblock:init:*:{
   var %opt = $hget(pnp.config,spamblock.opt)
   var %optjp = $hget(pnp.config,spamblock.jpopt)
   var %optchan = $hget(pnp.config,spamblock.chanopt)
- 
+
   if (%opt == $null) %opt = 279
   if (%optjp == $null) %optjp = 351
   if (%optchan == $null) %optchan = 0
-  
+
   if (%opt & 1) did -c $dname 41
   if (%opt & 2) did -c $dname 42
   if (%opt & 4) did -c $dname 43
   if (%opt & 2048) did -c $dname 44
   if ($hget(pnp.config,spamblock.warnchan) != $null) did -a $dname 45 $ifmatch
- 
+
   if (%opt & 8) did -c $dname 51
   if ($hget(pnp.config,spamblock.words) != $null) did -a $dname 52 $ifmatch
   if (%opt & 16) did -c $dname 53
   if (%opt & 32) did -c $dname 54
-  
+
   if (%optjp & 1) did -c $dname 62
   if (%optjp & 2) did -c $dname 63
   if (%optjp & 4) did -c $dname 64
@@ -156,14 +156,14 @@ on *:DIALOG:spamblock:init:*:{
   if (%optjp & 256) did -c $dname 76
   if (%optjp & 512) did -c $dname 77
   if ($hget(pnp.config,spamblock.joinchan) != $null) did -a $dname 78 $ifmatch
- 
+
   if (%opt & 64) did -c $dname 11
   if (%opt & 128) did -c $dname 12
   if (%opt & 256) did -c $dname 13
   if (%opt & 512) did -c $dname 14
   if (%opt & 1024) did -c $dname 15
   if ($hget(pnp.config,spamblock.unknownmsg) != $null) did -a $dname 16 $ifmatch
- 
+
   if (%optchan & 1) did -c $dname 18
   if (%optchan & 2) did -c $dname 19
   if (%optchan & 4) did -c $dname 20
@@ -193,7 +193,7 @@ on *:DIALOG:spamblock:sclick:201:{
   inc %opt $calc($did(15).state * 1024)
   inc %opt $calc($did(44).state * 2048)
   `set spamblock.opt %opt
- 
+
   var %optjp = $did(62).state
   inc %optjp $calc($did(63).state * 2)
   inc %optjp $calc($did(64).state * 4)
@@ -205,7 +205,7 @@ on *:DIALOG:spamblock:sclick:201:{
   inc %optjp $calc($did(76).state * 256)
   inc %optjp $calc($did(77).state * 512)
   `set spamblock.jpopt %optjp
- 
+
   var %optchan = $did(18).state
   inc %optchan $calc($did(19).state * 2)
   inc %optchan $calc($did(20).state * 4)
@@ -217,21 +217,21 @@ on *:DIALOG:spamblock:sclick:201:{
   inc %optchan $calc($did(27).state * 256)
   inc %optchan $calc($did(29).state * 512)
   `set spamblock.chanopt %optchan
- 
+
   `set spamblock.warnchan $_s2c($did(45))
   `set spamblock.words $did(52)
   `set spamblock.joinchan $_s2c($did(78))
   `set spamblock.unknownmsg $did(16)
   `set spamblock.chanchan $_s2c($did(28))
   `set spamblock.chanmsg $did(30)
- 
+
   if (($did(67) isnum) && ($did(67) > 0)) `set spamblock.join $ifmatch
   else `set spamblock.join 10
   if (($did(71) isnum) && ($did(71) > 0)) `set spamblock.part $ifmatch
   else `set spamblock.join 10
   if (($did(74) isnum) && ($did(74) > 0)) `set spamblock.userjoin $ifmatch
   else `set spamblock.join 10
-  
+
   ; Predetermine which spamwords are 0 normal, 1 symbol-based, 2 attribute-based, or 3 both
   var %sw,%pos = 1
   var %total = $numtok($did(52),44)
@@ -244,7 +244,7 @@ on *:DIALOG:spamblock:sclick:201:{
     inc %pos
   }
   `set spamblock.wordtypes %sw
-  
+
   ; Predetermine channel op flags
   var %flags = -+%@
   if (%optchan & 16) %flags = $remove(%flags,-)
@@ -284,7 +284,7 @@ alias -l sbd.endis {
     }
   }
 }
- 
+
 ; Global block override- $sb.override(nick,addr)
 ; userlist or notify, if option set
 ; query or chat open
@@ -295,7 +295,7 @@ alias -l sb.override {
   if ($_isbot($1)) return 1
   return 0
 }
- 
+
 ; Checks all chans we share with user $1
 ; for them having any mode found in $2
 alias -l sb.opcheck {
@@ -310,7 +310,7 @@ alias -l sb.opcheck {
   }
   return 0
 }
- 
+
 ; Handles a block- displays msg to you if appropriate, then halts
 ; Places user on recent offender lists for all channels you share
 ; Shows punish fkey if appropriate
@@ -332,15 +332,15 @@ alias -l sb.do {
       _recseen 10 offend $+ $comchan($nick,%num) $fulladdress spam x x
       dec %num
     }
-if (%found) %found = ; F8 to punish
-if ($1 == i) _Q.fkey 1 $calc($ctime + 120) dispa Blocked: $nick invited you to $2-
-else _Q.fkey 1 $calc($ctime + 120) dispa Blocked: $iif($1 == c,$chr(40) $+ $chan $+ $chr(41)) $iif($1 isin cq,< $+ $nick $+ >) $iif($1 == n,- $+ $nick $+ $iif($chan,: $+ $chan) $+ -) $iif($1 == f,$nick :) $2-
-var %type = $gettok(Query*Notice*Invite*File*Channel text,$pos(qnifc,$1),42)
-$iif($1 == c,disprc $chan,dispa) $:w(Blocked) $+ : %type from $:t($nick) ( $+ $address $+ ) - $result to view $+ %found
+    if (%found) %found = ; F8 to punish
+    if ($1 == i) _Q.fkey 1 $calc($ctime + 120) dispa Blocked: $nick invited you to $2-
+    else _Q.fkey 1 $calc($ctime + 120) dispa Blocked: $iif($1 == c,$chr(40) $+ $chan $+ $chr(41)) $iif($1 isin cq,< $+ $nick $+ >) $iif($1 == n,- $+ $nick $+ $iif($chan,: $+ $chan) $+ -) $iif($1 == f,$nick :) $2-
+    var %type = $gettok(Query*Notice*Invite*File*Channel text,$pos(qnifc,$1),42)
+    $iif($1 == c,disprc $chan,dispa) $:w(Blocked) $+ : %type from $:t($nick) ( $+ $address $+ ) - $result to view $+ %found
   }
   halt
 }
- 
+
 ; Spam hashes
 on *:START:{ _startup.add load.spamhash Misc. settings }
 on *:SIGNAL:PNP.STATUSOPEN:{ hmake pnp.spam. $+ $1 40 }
@@ -355,7 +355,7 @@ alias load.spamhash {
 alias unload.spamhash {
   hfree -w pnp.spam.*
 }
- 
+
 ; Spam trigger events
 on !^&*:OPEN:?:*:{ spam.check q $1- }
 on !^&*:TEXT:*:?:{ if (!$query($nick)) spam.check q $1- }
@@ -363,7 +363,7 @@ on !^&*:ACTION:*:?:{ if (!$query($nick)) spam.check q $1- }
 on !^&*:NOTICE:*:*:{ spam.check n $1- }
 on !^&*:INVITE:#:{ spam.check i $chan }
 ctcp !&*:DCC SEND:*:{ spam.check f $1- }
- 
+
 ; Spam checking
 alias -l spam.check {
   if ($sb.override($nick,$address)) return
@@ -426,7 +426,7 @@ alias -l spam.check {
     spam.adcheck $1-
   }
 }
- 
+
 ; Blocking of channel text
 on ^&*:TEXT:*:#:{ if ($hget(pnp.config,spamblock.opt) & 32) spam.adcheck c $1- }
 on ^&*:ACTION:*:#:{ if ($hget(pnp.config,spamblock.opt) & 32) spam.adcheck c $1- }
@@ -447,7 +447,7 @@ alias spam.adcheck {
     }
   }
 }
- 
+
 ; Timed blocking when you join or part or they join
 raw 366:*:{
   if (($hget(pnp. $+ $cid,-joining. $+ $2)) && ($hget(pnp.config,spamblock.jpopt) & 16)) {
@@ -482,7 +482,7 @@ on !*:JOIN:#:{
     hadd -u $+ $iif($hget(pnp.config,spamblock.userjoin) isnum,$ifmatch,10) pnp.spam. $+ $cid $nick 1
   }
 }
- 
+
 ; Cancel a block if a user becomes opped/helped or changes nick
 on *:OP:#:{ hdel pnp.spam. $+ $cid $opnick }
 on *:SERVEROP:#:{ hdel pnp.spam. $+ $cid $opnick }
