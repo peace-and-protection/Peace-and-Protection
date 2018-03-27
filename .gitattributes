@@ -1,21 +1,23 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
-# Custom for Visual Studio
-*.cs     diff=csharp
+# Peace and Protection text files with crlf endings
+*.txt text eol=crlf
+*.mrc text eol=crlf
+*.dat text eol=crlf
+*.ini text eol=crlf
+*.mtp text eol=crlf
+*.mts text eol=crlf
+*.lis text eol=crlf
+*.ptm text eol=crlf
+*.bat text eol=crlf
+*.ppa text eol=crlf
 
-# Standard to msysgit
-*.doc	 diff=astextplain
-*.DOC	 diff=astextplain
-*.docx diff=astextplain
-*.DOCX diff=astextplain
-*.dot  diff=astextplain
-*.DOT  diff=astextplain
-*.pdf  diff=astextplain
-*.PDF	 diff=astextplain
-*.rtf	 diff=astextplain
-*.RTF	 diff=astextplain
-
+# Peace and Protection binary files
+*.jpg binary
+*.bmp binary
+*.ico binary
+*.png binary
 
 # Ignore files when generating zip archives
 .gitattributes export-ignore
