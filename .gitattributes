@@ -3,21 +3,35 @@
 
 # Peace and Protection text files with crlf endings
 *.txt text eol=crlf
+*.TXT text eol=crlf
 *.mrc text eol=crlf
+*.MRC text eol=crlf
 *.dat text eol=crlf
+*.DAT text eol=crlf
 *.ini text eol=crlf
+*.INI text eol=crlf
 *.mtp text eol=crlf
+*.MTP text eol=crlf
 *.mts text eol=crlf
+*.MTS text eol=crlf
 *.lis text eol=crlf
+*.LIS text eol=crlf
 *.ptm text eol=crlf
+*.PTM text eol=crlf
 *.bat text eol=crlf
+*.BAT text eol=crlf
 *.ppa text eol=crlf
+*.PPA text eol=crlf
 
 # Peace and Protection binary files
 *.jpg binary
+*.JPG binary
 *.bmp binary
+*.BMP binary
 *.ico binary
+*.ICO binary
 *.png binary
+*.PNG binary
 
 # Ignore files when generating zip archives
 .gitattributes export-ignore
