@@ -4,20 +4,20 @@
 ; Dialog support code (for extra stuff not built-in
 ; to mIRC's dialogs)
 ; ########################################
- 
+
 ;
 ; Drive search selection (returns space-delimited c:\ d:\ etc)
 ; Use $_drivesearch(1) to include removable media
 ;
 alias _drivesearch set %.dsparm $1 | _ssplay Question | return $dialog(drivesearch,drivesearch,-4)
 dialog drivesearch {
-title "Drive Search"
+  title "Drive Search"
   icon script\pnp.ico
   option dbu
   size -1 -1 108 91
-text "&Select one or more drives to search:", 1, 2 2 100 8
+  text "&Select one or more drives to search:", 1, 2 2 100 8
   list 2, 4 12 50 75, extsel sort
-button "&Select", 3, 58 40 45 12, default ok
+  button "&Select", 3, 58 40 45 12, default ok
   edit "", 4, 1 1 1 1, hide autohs result
 }
 on *:DIALOG:drivesearch:init:*:{
@@ -40,17 +40,17 @@ on *:DIALOG:drivesearch:sclick:3:{
   }
   did -o $dname 4 1 %ret
 }
- 
+
 ;
 ; Color selector
 ;
- 
+
 ; call /_cs-prep $dname when dialog opens
 ; call /_cs-fin $dname when dialog closes
 ; call /_cs-go xsize ysize allownone when a color is clicked on
 ; colors are stored in hash pnp.dlgcolor.$dname item is dialog id
 ; (color of 16 = none)
- 
+
 alias _cs-prep {
   var %col = 0
   window -pfhn +d @.csbmp -1 -1 16 16
@@ -78,7 +78,7 @@ alias _cs-go {
   inc %col
   if (%x < 3) { inc %x | goto loopx }
   if (%y < 3) { inc %y | goto loopy }
-if ($3) drawtext -nr @Ç $rgb(text) "ms sans serif" 12 $int($calc(2 * $1 + 4 - $width(No color,ms sans serif,12,0,0) / 2)) $int($calc(4.5 * $2 + 10 - $height(No color,ms sans serif,12) / 2)) No color
+  if ($3) drawtext -nr @Ç $rgb(text) "ms sans serif" 12 $int($calc(2 * $1 + 4 - $width(No color,ms sans serif,12,0,0) / 2)) $int($calc(4.5 * $2 + 10 - $height(No color,ms sans serif,12) / 2)) No color
   drawdot @Ç
   window -a @Ç
   titlebar @Ç $calc($1 + 2) $calc($2 + 2)
@@ -123,11 +123,11 @@ alias -l _mcp {
     drawdot $1
   }
 }
- 
+
 ; Converts font n [bold] between mirc and windows sizes
 ; mirc -> windows- * 3/4
 ; windows -> mirc- * 4/3
- 
+
 alias _font_m2w {
   var %font = $1-
   var %tok = $iif($gettok(%font,-1,32) == bold,-2,-1)
@@ -138,13 +138,13 @@ alias _font_w2m {
   var %tok = $iif($gettok(%font,-1,32) == bold,-2,-1)
   return $puttok(%font,$round($calc($gettok(%font,%tok,32) * 4 / 3),0),%tok,32)
 }
- 
+
 ;
 ; Font picker- $_pickfont(old)
 ; returns font size [bold]
 ; old is optional (same format) but if specified will be returned even if cancel is pressed
 ;
- 
+
 alias _pickfont {
   window -pfh +d @.pickfont 50 50 1 1 cancel 13
   if ($1) {
@@ -162,7 +162,7 @@ alias _pickfont {
   var %font = $window(@.pickfont).font $window(@.pickfont).fontsize $iif($window(@.pickfont).fontbold,bold)
   window -c @.pickfont | return %font
 }
- 
+
 ;
 ; Generic entry
 ;
@@ -176,40 +176,40 @@ alias _pickfont {
 ; and it's value is set -u into %.entry.checkbox
 ;
 dialog entry {
-title "PnP Entry"
+  title "PnP Entry"
   icon script\pnp.ico
   option dbu
   size -1 -1 175 60
- 
+
   text "", 202, 7 8 142 14
   text "", 203, 7 5 142 10, hide
   text "", 204, 7 12 142 10, hide
- 
+
   edit %.entry.ans, 1, 5 22 165 11, result autohs
   check %.entry.checkbox, 2, 5 35 165 11, hide
- 
+
   icon 11, 151 3 16 16, script\pnp.ico
- 
-button "OK", 101, 40 43 40 12, OK default
-button "Cancel", 102, 95 43 40 12, cancel
+
+  button "OK", 101, 40 43 40 12, OK default
+  button "Cancel", 102, 95 43 40 12, cancel
 }
 dialog entrycheck {
-title "PnP Entry"
+  title "PnP Entry"
   icon script\pnp.ico
   option dbu
   size -1 -1 175 68
- 
+
   text "", 202, 7 8 142 14
   text "", 203, 7 5 142 10, hide
   text "", 204, 7 12 142 10, hide
- 
+
   edit %.entry.ans, 1, 5 22 165 11, result autohs
   check "", 2, 5 35 165 11
- 
+
   icon 11, 151 3 16 16, script\pnp.ico
- 
-button "OK", 101, 40 51 40 12, OK default
-button "Cancel", 102, 95 51 40 12, cancel
+
+  button "OK", 101, 40 51 40 12, OK default
+  button "Cancel", 102, 95 51 40 12, cancel
 }
 on *:DIALOG:entry:init:*:{
   if (%.entry.q2) {
@@ -242,12 +242,12 @@ alias _entry {
   }
   if ((%type <= 0) && (%.entry.ans == $null)) $$$
   if (%type < 0) %.entry.ans = $gettok(%.entry.ans,1,32)
-if ((%type == -2) && (%.entry.ans !isnum)) { %.entry.q2 = (please enter a number) | goto retry }
+  if ((%type == -2) && (%.entry.ans !isnum)) { %.entry.q2 = (please enter a number) | goto retry }
   if (%.entry.o) return %.entry.ans
   if (%type == 2) return
   $$$
 }
- 
+
 ;
 ; Entry based off of a 'recents' list
 ;
@@ -259,24 +259,24 @@ if ((%type == -2) && (%.entry.ans !isnum)) { %.entry.q2 = (please enter a number
 ; code = 0 for normal .lis, #chan for &chan& replacement .lis
 ;
 dialog rentry {
-title "PnP Entry"
+  title "PnP Entry"
   icon script\pnp.ico
   option dbu
   size -1 -1 175 60
- 
+
   text "", 202, 7 8 142 14
   text "", 203, 7 5 142 10, hide
   text "", 204, 7 12 142 10, hide
- 
+
   combo 1, 5 22 165 80, drop result edit
- 
+
   icon 11, 151 3 16 16, script\pnp.ico
- 
+
   edit %.entry.t, 100, 1 1 1 1, autohs hide
- 
-button "OK", 101, 15 43 40 12, OK default
-button "Cancel", 102, 70 43 40 12, cancel
-button "&Clear list", 103, 135 44 35 10, disable
+
+  button "OK", 101, 15 43 40 12, OK default
+  button "Cancel", 102, 70 43 40 12, cancel
+  button "&Clear list", 103, 135 44 35 10, disable
 }
 ; fills drop down with recents (bdid = clear button to enable if recents; chan = false if n/a)
 ; /_fillrec dname did bdid file chan [current]
@@ -336,11 +336,11 @@ alias _rentry {
   set %.entry.q2 $gettok($4-,2,127)
   return $$dialog(rentry,rentry,-4)
 }
- 
+
 ;
 ; Generic buttons
 ;
- 
+
 ; $_yesno(x,prompt)
 ; x = 0 for no default 1 for yes default
 ; returns 1/0
@@ -349,22 +349,22 @@ alias _yesno {
   return $$dialog(yesno,yesno,-4)
 }
 dialog yesno {
-title "PnP Entry"
+  title "PnP Entry"
   icon script\pnp.ico
   option dbu
   size -1 -1 200 34
- 
+
   edit "", 202, 1 1 1 1, hide result autohs
   text "", 201, 7 4 150 14
- 
+
   icon 11, 162 1 16 16, script\check1.ico
   icon 12, 178 1 16 16, script\check2.ico
   icon 13, 162 17 16 16, script\check3.ico
   icon 14, 178 17 16 16, script\check4.ico
- 
-button "&Yes", 101, 6 20 40 12, OK
-button "&No", 102, 56 20 40 12
-button "Cancel", 103, 106 20 40 12, cancel
+
+  button "&Yes", 101, 6 20 40 12, OK
+  button "&No", 102, 56 20 40 12
+  button "Cancel", 103, 106 20 40 12, cancel
 }
 on *:DIALOG:yesno:init:*:{
   did -a $dname 201 $replace($gettok(%.yesno,2-,32),&,&&)
@@ -375,7 +375,7 @@ on *:DIALOG:yesno:init:*:{
 }
 on *:DIALOG:yesno:sclick:101:if ($did(202) == $null) did -a $dname 202 1
 on *:DIALOG:yesno:sclick:102:did -a $dname 202 0 | dialog -k $dname
- 
+
 ; $_okcancel(x,prompt) or _okcancel x prompt
 ; x = 0 for cancel default 1 for ok default
 ; returns 1 or halts
@@ -391,21 +391,21 @@ alias _okcancel {
   return %result
 }
 dialog okcancel {
-title "PnP Confirm"
+  title "PnP Confirm"
   icon script\pnp.ico
   option dbu
   size -1 -1 200 34
- 
+
   edit "1", 202, 1 1 1 1, hide result autohs
   text "", 201, 7 4 150 14
- 
+
   icon 11, 162 1 16 16, script\check1.ico
   icon 12, 178 1 16 16, script\check2.ico
   icon 13, 162 17 16 16, script\check3.ico
   icon 14, 178 17 16 16, script\check4.ico
- 
-button "OK", 101, 6 20 40 12, OK
-button "Cancel", 102, 56 20 40 12, cancel
+
+  button "OK", 101, 6 20 40 12, OK
+  button "Cancel", 102, 56 20 40 12, cancel
 }
 on *:DIALOG:okcancel:init:*:{
   did -a $dname 201 $replace($gettok(%.okcancel,2-,32),&,&&)
@@ -413,7 +413,7 @@ on *:DIALOG:okcancel:init:*:{
   else did -ft $dname 102
   _ssplay Confirm
 }
- 
+
 ; $_okcancelcheck(x,prompt,value,checkbox)
 ; x = 0 for cancel default 1 for ok default
 ; returns 1 or 0. state of check in %.okcheck
@@ -427,22 +427,22 @@ alias _okcancelcheck {
   return %result
 }
 dialog okcancelcheck {
-title "PnP Confirm"
+  title "PnP Confirm"
   icon script\pnp.ico
   option dbu
   size -1 -1 200 44
- 
+
   edit "1", 202, 1 1 1 1, hide result autohs
   text "", 201, 7 4 150 14
   check "", 203, 7 19 150 8
- 
+
   icon 11, 162 1 16 16, script\check1.ico
   icon 12, 178 1 16 16, script\check2.ico
   icon 13, 162 17 16 16, script\check3.ico
   icon 14, 178 17 16 16, script\check4.ico
- 
-button "OK", 101, 6 30 40 12, OK
-button "Cancel", 102, 56 30 40 12, cancel
+
+  button "OK", 101, 6 30 40 12, OK
+  button "Cancel", 102, 56 30 40 12, cancel
 }
 on *:DIALOG:okcancelcheck:init:*:{
   did -a $dname 201 $replace($gettok(%.okcancel,2-,32),&,&&)
@@ -454,7 +454,7 @@ on *:DIALOG:okcancelcheck:init:*:{
   _ssplay Confirm
 }
 on *:DIALOG:okcancelcheck:sclick:203:set %.okcheck $did(203).state
- 
+
 ; $_fileopt(x,file) or _fileopt x file
 ; x = 0 for normal 1 to allow append 2 to make append the default
 ; returns 1/0 (overwrite/append) halts on cancel
@@ -464,27 +464,27 @@ alias _fileopt {
   return $$dialog(fileopt,fileopt,-4)
 }
 dialog fileopt {
-title "File Exists"
+  title "File Exists"
   icon script\pnp.ico
   option dbu
   size -1 -1 200 34
- 
+
   edit "", 203, 1 1 1 1, hide autohs
   edit "", 202, 1 1 1 1, hide result autohs
   text "", 201, 7 4 150 14
- 
+
   icon 11, 162 1 16 16, script\file1.ico
   icon 12, 178 1 16 16, script\file2.ico
   icon 13, 162 17 16 16, script\file3.ico
   icon 14, 178 17 16 16, script\file4.ico
- 
-button "&Overwrite", 101, 6 20 40 12, OK
-button "&Append", 102, 56 20 40 12, disable
-button "Cancel", 103, 106 20 40 12, cancel
+
+  button "&Overwrite", 101, 6 20 40 12, OK
+  button "&Append", 102, 56 20 40 12, disable
+  button "Cancel", 103, 106 20 40 12, cancel
 }
 on *:DIALOG:fileopt:init:*:{
   did -a $dname 203 $gettok(%.fileopt,2-,32)
-did -a $dname 201 File ' $+ $replace($gettok(%.fileopt,2-,32),&,&&) $+ ' already exists $+ :
+  did -a $dname 201 File ' $+ $replace($gettok(%.fileopt,2-,32),&,&&) $+ ' already exists $+ :
   if ($gettok(%.fileopt,1,32)) {
     did -e $dname 102
     if ($ifmatch == 2) did -ft $dname 102
@@ -496,7 +496,7 @@ did -a $dname 201 File ' $+ $replace($gettok(%.fileopt,2-,32),&,&&) $+ ' already
 }
 on *:DIALOG:fileopt:sclick:101:if ($did(202) == $null) { did -a $dname 202 1 | .remove -b " $+ $did(203) $+ " }
 on *:DIALOG:fileopt:sclick:102:did -a $dname 202 0 | dialog -k $dname
- 
+
 ;
 ; Quick-pick popup
 ;
@@ -581,21 +581,21 @@ alias -l _qcp {
 }
 alias _doubleclick {
   if ($2-3 == Message Window) tokenize 32 $1 MessageWindow $3-
-var %popups = $gettok(JoinFavs ListUsers PortScan Reconnect Usermode!Whois DCCChat Ping Clear!Ping ChanCentral Banlist EditTopic Clear!Whois Query DCCChat QuickKick QuickBan!Whois Query DCCChat Ping,$1,33)
+  var %popups = $gettok(JoinFavs ListUsers PortScan Reconnect Usermode!Whois DCCChat Ping Clear!Ping ChanCentral Banlist EditTopic Clear!Whois Query DCCChat QuickKick QuickBan!Whois Query DCCChat Ping,$1,33)
   if ($_cfgi(dc. $+ $1) isnum) {
-if (($mouse.key & 2) || ($mouse.key & 4)) _qp-go 104 _doubleclick² $+ $1 $+ $2 $+ $3 %popups 1Selectdefault
+    if (($mouse.key & 2) || ($mouse.key & 4)) _qp-go 104 _doubleclick² $+ $1 $+ $2 $+ $3 %popups 1Selectdefault
     else _doubleclick² $1 $2 $3 $_cfgi(dc. $+ $1) 1
   }
-else _qp-go 104 _doubleclick² $+ $1 $+ $2 $+ $3 %popups 0Selectdefault
+  else _qp-go 104 _doubleclick² $+ $1 $+ $2 $+ $3 %popups 0Selectdefault
 }
 alias _doubleclick² {
   if ($4 == $null) return
   if (($1 == 2) || ($1 == 5)) var %bit = 4
   else var %bit = 5
   if ($hget(pnp,qpick. $+ %bit) == 1) {
-var %popups = $gettok(JoinFavs ListUsers PortScan Reconnect Usermode!Whois DCCChat Ping Clear!Ping ChanCentral Banlist EditTopic Clear!Whois Query DCCChat QuickKick QuickBan!Whois Query DCCChat Ping,$1,33)
-var %area = $gettok(statusquerychannelnicklistnotify,$1,127)
-_okcancel 1 Set the default %area double-click action to ' $+ $_p2s($gettok(%popups,$calc($4 + 1),32)) $+ '?
+    var %popups = $gettok(JoinFavs ListUsers PortScan Reconnect Usermode!Whois DCCChat Ping Clear!Ping ChanCentral Banlist EditTopic Clear!Whois Query DCCChat QuickKick QuickBan!Whois Query DCCChat Ping,$1,33)
+    var %area = $gettok(statusquerychannelnicklistnotify,$1,127)
+    _okcancel 1 Set the default %area double-click action to ' $+ $_p2s($gettok(%popups,$calc($4 + 1),32)) $+ '?
     _cfgw dc. $+ $1 $4
     if ($_dlgi(undefault) != 1) {
       _ssplay Confirm
@@ -622,23 +622,23 @@ _okcancel 1 Set the default %area double-click action to ' $+ $_p2s($gettok(%pop
   :14 | umode | return
 }
 dialog howundefault {
-title "Setting Double-click Default"
+  title "Setting Double-click Default"
   icon script\pnp.ico
   option dbu
   size -1 -1 125 62
-text "To change the default action in the future, hold down the 'Ctrl' key while double-clicking.", 3, 5 5 115 50
-check "&Don't show this message again", 2, 20 30 100 10
-button "OK", 1, 42 45 40 12, ok default
+  text "To change the default action in the future, hold down the 'Ctrl' key while double-clicking.", 3, 5 5 115 50
+  check "&Don't show this message again", 2, 20 30 100 10
+  button "OK", 1, 42 45 40 12, ok default
   edit "", 4, 1 1 1 1, hide autohs result
 }
 on *:DIALOG:howundefault:sclick:1:did -o $dname 4 1 $did(2).state
- 
+
 ; Convienience commands
- 
+
 ; _bulkdid op dname first last [params]
 ; like a /did op dname first-last [params] ie on multiples
 alias _bulkdid var %num = $3 | :loop | did $1-2 %num $5- | if (%num < $4) { inc %num | goto loop }
- 
+
 ; Add to dropdown without duplication
 ; _ddadd dname did item
 alias _ddadd {
@@ -657,7 +657,7 @@ alias _ddaddm {
   :loop
   if ($ [ $+ [ %num ] ] ) { _ddadd $1-2 $_ppmask($3,$_stmask($ifmatch)) | inc %num | goto loop }
 }
- 
+
 ; finds a line in a dialog listbox where the first (space) token matches
 ; returns line number or 0; $_finddid(dname,did,text)
 alias _finddid {
@@ -667,7 +667,7 @@ alias _finddid {
   if (%num > 1) { dec %num | goto loop }
   return 0
 }
- 
+
 ; finds a line in a dialog listbox matching exactly
 ; returns line number or 0; $_scandid(dname,did,text)
 alias _scandid {
@@ -677,6 +677,6 @@ alias _scandid {
   if (%num > 1) { dec %num | goto loop }
   return 0
 }
- 
+
 ; if dialog is already open, makes it active, else opens it
 alias _dialog if ($dialog($2)) dialog -v $2 | else { _ssplay Dialog | dialog $1- }

@@ -1190,9 +1190,9 @@ raw 301:*:{
     }
     halt
   }
-  
+
   if ($halted) return
-  
+
   if (($2 == $me) || ($raw.throttle(301 $+ $2,60))) halt
   set -u %::nick $2
   set -u %::away $3-
@@ -1314,7 +1314,7 @@ raw 401:*:{
   }
 
   if ($halted) return
-  
+
   if ($raw.throttle(401 $+ $2)) halt
   set -u %::nick $2
   raw.tonick 401 $2 $3-
@@ -1653,7 +1653,7 @@ alias -l _in.whois {
 raw *:*:{
   if ($numeric !isnum) return
   if ($halted) return
-  
+
   ; In a whois?
   _in.whois $1-
 

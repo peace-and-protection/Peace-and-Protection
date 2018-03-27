@@ -3,11 +3,11 @@
 ; |  Peace and Protection                |
 ; |  Themes display and anything "last"  |
 ; `======================================'
- 
+
 ;
 ; Text display support functions
 ;
- 
+
 ; Your input- say, me, msg, describe, notice
 ; Normally we don't need to alias these except for nick completion purposes
 ; /theme.msg type target color text
@@ -41,7 +41,7 @@ alias theme.msg {
   }
   return 0
 }
- 
+
 ; /theme.msgcopy target color text
 ; Shows a copy of a msg to active if the query isn't active (this does nothing if target isn't a query)
 ; Only if settings are set for copy query to active
@@ -56,7 +56,7 @@ alias -l theme.msgcopy {
     theme.text TextMsgSelf
   }
 }
- 
+
 ; /notice.beep
 ; Does a notice event beep (sound, or beep, or nothing)
 ; Skips if in a sound already
@@ -67,7 +67,7 @@ alias notice.beep {
   if (%beep == 1) beep
   elseif (%beep) .splay " $+ $readini($mircini,n,waves,$1) $+ "
 }
- 
+
 ; /notice.window target
 ; Opens notices window if not open; fills editbox regardless
 ; Returns window name
@@ -89,7 +89,7 @@ alias -l notice.window {
   else editbox -p %win /notice $1
   return %win
 }
- 
+
 ; /show.opnotice target display
 ; Used to echo an op/etc notice
 alias show.opnotice {
@@ -106,7 +106,7 @@ alias show.opnotice {
     echo $color(notice) -bfmti2 $event.win($1) $2-
   }
 }
- 
+
 ; $event.win(#chan)
 ; Opens events window for a channel if not open; returns window name
 alias -l event.win {
@@ -118,15 +118,15 @@ alias -l event.win {
   }
   return %win
 }
- 
- 
+
+
 ; Enable group to allow theming of text, joins, and other basic mIRC output
 #pp-texts on
- 
+
 ;
 ; Basic text display
 ;
- 
+
 ; /event.chan event text
 ; set echo yourself. This sets stripped text, chan, nick, address, target
 ; set linesep yourself if event can use it
@@ -138,7 +138,7 @@ alias -l event.chan {
   set -u %::target $target
   theme.text $1 c
 }
- 
+
 ; Channel text, action, notice
 on &^*:TEXT:*:#:{
   ; Global message or channel not open
@@ -182,22 +182,22 @@ on &^*:NOTICE:*:#:{
   event.chan NoticeChan $1-
   halt
 }
- 
+
 ; Private text, action, notice, chat
 on &^*:TEXT:*:?:{
   ; Global message
   if ($left($target,1) == $) return
- 
+
   set -u %::text $strip($1-,mo)
   set -u %::nick $nick
   set -u %::address $address
   set -u %::target $target
- 
+
   ; Show to query if open
   if ($query($nick)) {
     set -u %:echo echo -lmbfti2 $nick
     theme.text TextQuery
- 
+
     ; Show also to active if copy-query is on, active is a chan/query, and not the current query
     if (($hget(pnp.config,copy.query) != 1) || ($active == $nick)) halt
     if (($active !ischan) && ($query($active) != $active)) halt
@@ -208,12 +208,12 @@ on &^*:TEXT:*:?:{
     if (($line(Message Window,0) == $null) && ($_optn(1,18) == 0)) dqwindow show
     set -u %:echo echo -lmbfdti2
     theme.text TextMsg
- 
+
     ; Show also to active if copy-query is on and active is a chan/query
     if ($hget(pnp.config,copy.query) != 1) halt
     if (($active !ischan) && ($query($active) != $active)) halt
   }
- 
+
   ; Show to active- either by default, or as a fall-through from above
   set -u %:echo echo -lmbfati2 $iif($activecid != $cid,$:anp)
   theme.text TextMsg
@@ -224,12 +224,12 @@ on &^*:ACTION:*:?:{
   set -u %::nick $nick
   set -u %::address $address
   set -u %::target $target
- 
+
   ; Show to query if open
   if ($query($nick)) {
     set -u %:echo echo $color(act) -lmbfti2 $nick
     theme.text ActionQuery
- 
+
     ; Show also to active if copy-query is on, active is a chan/query, and not the current query
     if (($hget(pnp.config,copy.query) != 1) || ($active == $nick)) halt
     if (($active !ischan) && ($query($active) != $active)) halt
@@ -240,12 +240,12 @@ on &^*:ACTION:*:?:{
     if (($line(Message Window,0) == $null) && ($_optn(1,18) == 0)) dqwindow show
     set -u %:echo echo $color(act) -lmbfdti2
     theme.text ActionQuery
- 
+
     ; Show also to active if copy-query is on and active is a chan/query
     if ($hget(pnp.config,copy.query) != 1) halt
     if (($active !ischan) && ($query($active) != $active)) halt
   }
- 
+
   ; Show to active- either by default, or as a fall-through from above
   set -u %:echo echo $color(act) -lmbfati2 $iif($activecid != $cid,$:anp)
   theme.text TextMsg
@@ -256,7 +256,7 @@ on &^*:NOTICE:*:?:{
   set -u %::nick $nick
   set -u %::address $address
   set -u %::target $target
- 
+
   ; Determine method of display
   ; "Opnotice"
   if (%.opnotice) {
@@ -303,9 +303,9 @@ on &^*:NOTICE:*:?:{
 on &^*:CHAT:*:{
   ; Ignore sounds
   if ($1 == SOUND) return
- 
+
   set -u %::nick $nick
- 
+
   ; Actions treated differently
   if ($1 == ACTION) {
     ; Make sure ends in chr(1) before removing it
@@ -321,7 +321,7 @@ on &^*:CHAT:*:{
   }
   halt
 }
- 
+
 alias say {
   ; Errors
   if ($1 == $null) {
@@ -329,7 +329,7 @@ alias say {
     halt
   }
   if (($active !ischan) && (=* !iswm $active) && ($query($active) == $null)) {
-dispa /say $+ : Can't use /say in this window
+    dispa /say $+ : Can't use /say in this window
     halt
   }
   ; Display
@@ -349,7 +349,7 @@ alias me {
     halt
   }
   if (($active !ischan) && (=* !iswm $active) && ($query($active) == $null)) {
-dispa /me $+ : Can't use /me in this window
+    dispa /me $+ : Can't use /me in this window
     halt
   }
   ; Display
@@ -430,7 +430,7 @@ alias notice {
   ; Actually say text (if no display)
   else .notice $1 $2-
 }
- 
+
 ; /event.target #chan type
 ; Event targeting for a channel/type of event
 ; Returns hide, chan, $true, 0/$null, both
@@ -448,7 +448,7 @@ alias -l event.target {
   %val = $gettok($iif($2 == quit,chan.0.both.hide,$iif($2 == nick,chan.hide,chan.0.hide)),$mirc.event($1,$findtok(join.part.quit.mode.topic.ctcp.nick.kick,$2,1,46)),46)
   return %val
 }
- 
+
 ; $mirc.event(#chan,token)
 ; Retrieves mirc event settings in a #channel
 ; Uses defaults if channel-specific not present
@@ -484,18 +484,18 @@ alias -l mirc.event {
   ; Return requested token
   return $gettok($hget(pnp,ev. $+ $1),$2,44)
 }
- 
+
 ; Mode, Join, Part, Quit, Kick, Nick, Topic
 on &^*:RAWMODE:#:{
   event.target $chan mode
   if ($result == hide) halt
- 
+
   set -u %::chan $chan
   set -u %::modes $1-
   set -u %::text $1-
   set -u %::nick $nick
   set -u %::address $address
- 
+
   if ($result == chan) {
     set -u %:echo echo $color(mode) -ti2 $chan
     theme.text Mode c
@@ -508,7 +508,7 @@ on &^*:RAWMODE:#:{
     set -u %:echo echo $color(mode) -esti2
     theme.text ModeStatus c
   }
- 
+
   halt
 }
 on me:&^*:JOIN:#:{
@@ -528,11 +528,11 @@ on &^!*:JOIN:#:{
   event.target $chan join
   if ($result == hide) halt
   var %targ = $result
- 
+
   set -u %::chan $chan
   set -u %::nick $nick
   set -u %::address $address
- 
+
   ; Clone count, for %:comments
   ; Only if enabled and level < 25
   if (($_getchopt($chan,7)) && ($_level($chan,$level($fulladdress)) < 25)) {
@@ -557,12 +557,12 @@ on &^!*:JOIN:#:{
       _recseen 10 user $nick
       _recseen 10 clones $nick $+ , $+ $_s2c(%who)
       _recseen 10 offend $+ $chan $fulladdress clones %count %mask
-set -u %:comments - $:b(Clones) $+ : %count from $nick ( $+ $_s2cs(%who) $+ ) CtrlF1 whois; ShiftF8 ping $+ $iif(($me isop $chan) || ($me ishop $chan),; F8 to punish)
+      set -u %:comments - $:b(Clones) $+ : %count from $nick ( $+ $_s2cs(%who) $+ ) CtrlF1 whois; ShiftF8 ping $+ $iif(($me isop $chan) || ($me ishop $chan),; F8 to punish)
       ; Sound effect
       _ssplay Clones
     }
   }
- 
+
   ; Display    
   if (%targ == chan) {
     set -u %:echo echo $color(join) -ti2 $chan
@@ -581,12 +581,12 @@ set -u %:comments - $:b(Clones) $+ : %count from $nick ( $+ $_s2cs(%who) $+ ) Ct
 on &^!*:PART:#:{
   event.target $chan part
   if ($result == hide) halt
- 
+
   set -u %::chan $chan
   set -u %::nick $nick
   set -u %::address $address
   set -u %::text $strip($1-,mo)
- 
+
   ; Display
   if ($result == chan) {
     set -u %:echo echo $color(part) -ti2 $chan
@@ -606,13 +606,13 @@ on &^!*:QUIT:{
   set -u %::nick $nick
   set -u %::address $address
   set -u %::text $strip($1-,mo)
- 
+
   ; Loop through all channels
   var %num = $comchan($nick,0),%status = 0
   while (%num >= 1) {
     var %chan = $comchan($nick,%num)
     set -u %::chan %chan
- 
+
     event.target %chan quit
     if ($result != hide) {
       ; Display for this channel
@@ -629,10 +629,10 @@ on &^!*:QUIT:{
         %status = 1
       }
     }
- 
+
     dec %num
   }
- 
+
   ; To status?
   if (%status) {
     unset %::chan
@@ -650,16 +650,16 @@ on &^*:KICK:#:{
     set -u %::knick $knick
     set -u %::kaddress $gettok($address($knick,5),2-,33)
     set -u %::text $strip($1-,mo)
- 
+
     ; Display- status
     set -u %:echo echo $color(kick) -esti2
     theme.text KickSelf cp
- 
+
     ; To chan (if open)
     if ($chan ischan) {
       set -u %:echo echo $color(kick) -ti2 $chan
       theme.text KickSelf cp
- 
+
       ; Rejoin (if not kicking self)
       if ($nick != $me) {
         set -u %:echo echo $color(info) -ti2 $chan
@@ -667,19 +667,19 @@ on &^*:KICK:#:{
       }
     }
   }
- 
+
   ; Someone else kicked
   else {
     event.target $chan kick
     if ($result == hide) halt
- 
+
     set -u %::chan $chan
     set -u %::nick $nick
     set -u %::address $address
     set -u %::knick $knick
     set -u %::kaddress $gettok($address($knick,5),2-,33)
     set -u %::text $strip($1-,mo)
- 
+
     ; Display
     if ($result == chan) {
       set -u %:echo echo $color(kick) -ti2 $chan
@@ -694,20 +694,20 @@ on &^*:KICK:#:{
       theme.text KickStatus cp
     }
   }
- 
+
   halt
 }
 on &^*:NICK:{
   set -u %::nick $nick
   set -u %::newnick $newnick
   set -u %::address $address
- 
+
   ; Loop through all channels
   var %num = $comchan($newnick,0),%status = 0
   while (%num >= 1) {
     var %chan = $comchan($newnick,%num)
     set -u %::chan %chan
- 
+
     event.target %chan nick
     if ($result != hide) {
       ; Display for this channel
@@ -720,28 +720,28 @@ on &^*:NICK:{
         theme.text Nick n
       }
     }
- 
+
     dec %num
   }
- 
+
   ; Self nick in status?
   if ($nick == $me) {
     unset %::chan
     set -u %:echo echo $color(nick) -esti2
     theme.text NickSelf
   }
- 
+
   halt
 }
 on &^*:TOPIC:#:{
   event.target $chan topic
   if ($result == hide) halt
- 
+
   set -u %::chan $chan
   set -u %::text $strip($1-,mo) $+ 
   set -u %::nick $nick
   set -u %::address $address
- 
+
   if ($result == chan) {
     set -u %:echo echo $color(topic) -ti2 $chan
     theme.text Topic c
@@ -754,12 +754,12 @@ on &^*:TOPIC:#:{
     set -u %:echo echo $color(topic) -esti2
     theme.text TopicStatus c
   }
- 
+
   halt
 }
- 
+
 #pp-texts end
- 
+
 ; Allow copy of private text/action to current window even if text display off
 on &^*:TEXT:*:?:{ copy.toquery $color(norm) $1- }
 on &^*:ACTION:*:?:{ copy.toquery $color(act) $1- }
@@ -775,7 +775,7 @@ alias -l copy.toquery {
     echo $1 -lmbfati2 $iif($activecid != $cid,$:anp) * $+ %nick $+ * $strip($2-,mo)
   }
 }
- 
+
 ; Handle opnotices entirely ourselves if text display off; play notice sound even if not an opnotice
 on &^*:NOTICE:*:#:{
   if (@* iswm $target) {
@@ -788,7 +788,7 @@ on &^*:NOTICE:*:#:{
     _ssplay Notice
   }
 }
- 
+
 ; Handle private notices entirely ourselves if not shown to "normal" location if text display off
 on &^*:NOTICE:*:?:{
   ; Determine method of display
@@ -818,7 +818,7 @@ on &^*:NOTICE:*:?:{
   }
   halt
 }
- 
+
 ; Versions of cmds to allow quickhelp and nickcompletion (if text display off)
 alias msg {
   if ($2 == $null) {
@@ -841,12 +841,12 @@ alias notice {
   }
   notice $iif($show,$_ncs(44,$1),$1) $2-
 }
- 
+
 ; Show linesep on join if theming off
 on me:&^*:JOIN:#:{
   .timer 1 0 dispr-div $chan
 }
- 
+
 ; Display clones on join if theming off
 on &^!*:JOIN:#:{
   ; Only if enabled and level < 25
@@ -872,35 +872,35 @@ on &^!*:JOIN:#:{
       _recseen 10 user $nick
       _recseen 10 clones $nick $+ , $+ $_s2c(%who)
       _recseen 10 offend $+ $chan $fulladdress clones %count %mask
-_juryrig2 disprc $chan $:b(Clones) $+ : %count from $nick ( $+ $_s2cs(%who) $+ ) CtrlF1 whois; ShiftF8 ping $+ $iif(($me isop $chan) || ($me ishop $chan),; F8 to punish)
+      _juryrig2 disprc $chan $:b(Clones) $+ : %count from $nick ( $+ $_s2cs(%who) $+ ) CtrlF1 whois; ShiftF8 ping $+ $iif(($me isop $chan) || ($me ishop $chan),; F8 to punish)
       ; Sound effect
       _ssplay Clones
     }
   }
 }
- 
+
 ;
 ; Nicklist coloring
 ;
- 
+
 ; Retain nick colors for each user in hash pnp.nickcol.$cid.#chan
 ; Retain nick color flags for each user in hash pnp.nickflag.$cid.#chan (p for pinging, L for lagged, * for ircop)
 ; Nicklist shows all colors; nicks in channel don't show ping/lag colors
 ; Nicklist and channel nicks can be individually turned on/off for colors
- 
+
 ; $_nickcol(nickname,channel)
 ; Returns two-digit color code
 alias _nickcol {
   if ($hget($+(pnp.nickcol.,$cid,.,$2),$1)) return $ifmatch
   return $color(listbox text)
 }
- 
+
 ; $_nickcol.flag(nickname,channel)
 ; Returns flags, if any
 alias _nickcol.flag {
   return $hget($+(pnp.nickflag.,$cid,.,$2),$1)
 }
- 
+
 ; /_nickcol.set nickname fulladdress channel
 ; Updates nickname color in hash for a user on a channel
 ; Assumes hashes exist
@@ -936,14 +936,14 @@ alias _nickcol.2 {
   if ($1 isnum) return $1
   return $color(listbox text)
 }
- 
+
 ; /_nickcol.flagset nickname channel newflags
 ; Sets flags for a user (replacing existing)
 ; Assumes hashes exist
 alias _nickcol.flagset {
   hadd $+(pnp.nickflag.,$cid,.,$2) $1 $3
 }
- 
+
 ; /_nickcol.rem nickname channel
 ; Removes a user from nicklist color database
 ; Assumes hashes exist
@@ -951,7 +951,7 @@ alias _nickcol.rem {
   hdel $+(pnp.nickcol.,$cid,.,$2) $1
   hdel $+(pnp.nickflag.,$cid,.,$2) $1
 }
- 
+
 ; /_nickcol.kill [channel]
 ; Deletes nicklist hashes for a chan or everywhere (this cid only)
 alias _nickcol.kill {
@@ -964,9 +964,9 @@ alias _nickcol.kill {
     hfree -w pnp.nickflag. $+ $cid $+ .*
   }
 }  
- 
+
 #pp-nicklist on
- 
+
 ; /_nickcol.update nickname channel [callset]
 ; /_nickcol.updatechan channel [callset]
 ; /_nickcol.updatenick nickname [callset]
@@ -974,7 +974,7 @@ alias _nickcol.kill {
 ; Updates color in nicklist for one nickname or mask (all chans), one channel, or one nick on a channel
 ; callset = true to call _nickcol.set also for each nick, with ial address or blank address if needed
 ; (this is used when filling the nicklist for the first time or updating things)
- 
+
 alias _nickcol.update {
   if ($3) _nickcol.set $1 $iif($address($1,5),$ifmatch,$1 $+ !*@*) $2
   cline $_nickcol($1,$2) $2 $1
@@ -1000,9 +1000,9 @@ alias _nickcol.updatemask {
     dec %num
   }
 }  
- 
+
 #pp-nicklist end
- 
+
 ; These are used if nicklist coloring is off- none except update chan do anything, which clears colors
 alias _nickcol.update { return }
 alias _nickcol.updatechan {
@@ -1014,7 +1014,7 @@ alias _nickcol.updatechan {
 }  
 alias _nickcol.updatenick { return }
 alias _nickcol.updatemask { return }
- 
+
 ; On every /who line- update info
 raw 352:*:{
   if ($me ison $2) {
@@ -1023,7 +1023,7 @@ raw 352:*:{
     _nickcol.update $6 $2
   }
 }
- 
+
 ; Whenever someone joins, changes op status, or changes nick- update info
 on !*:JOIN:#:{
   _nickcol.set $nick $fulladdress $chan
@@ -1055,7 +1055,7 @@ on *:NICK:{
     dec %num
   }
 }
- 
+
 ; Whenever someone parts, quits, or is kicked- remove info
 ; Whenever I part or am kicked- remove all info for channel (nickcol and chanflood)
 on *:PART:#:{
@@ -1083,11 +1083,11 @@ on *:QUIT:{
     dec %num
   }
 }
- 
+
 ;
 ; On join interface - whois, ircopcheck, and anything an addon might add
 ;
- 
+
 alias -l perform.onjoin {
   ; More than 3 in a row causes a halt in join checks
   hinc -z pnp. $+ $cid -massjoin
@@ -1123,11 +1123,11 @@ alias _onjoin.whois {
     inc %num
   }
 }
- 
+
 ;
 ; Misc theming
 ;
- 
+
 on &^*:USERMODE:{
   if ($1- != $null) {
     set -u %:echo echo $color(mode) -sti2
@@ -1146,20 +1146,20 @@ on &^*:ERROR:*:{
   if (($remove($gettok(%::text,1-2,32),:) == Closing Link) && ($hget(pnp. $+ $cid,quithalt != $null))) {
     if ($ifmatch isin %::text) halt
   }
- 
+
   set -u %:echo echo $color(ctcp) -esti2
   set -u %:linesep disps-div
   set -u %::fromserver $nick
   theme.text ServerError
   halt
 }
- 
+
 ;!! Here on not rewritten nicely
- 
+
 ;
 ; Invites
 ;
- 
+
 on &^*:INVITE:#:{
   hinc -u30 pnp.flood. $+ $cid recd.inv
   if (!$_known($nick,$fulladdress)) hinc -u30 pnp.flood. $+ $cid recd.inv. $+ $site
@@ -1167,7 +1167,7 @@ on &^*:INVITE:#:{
   if ($len($chan) > 30) hinc -u30 pnp.flood. $+ $cid recd.inv. $+ $site
   if (($hget(pnp.flood. $+ $cid,recd.inv. $+ $site) > 3) || ($hget(pnp.flood. $+ $cid,recd.inv) > 5)) {
     .ignore -iu120 **!**@**
-_alert Flood Invite flood from $:b($nick) $chr(40) $+ $address $+ $chr(41) Further invites won't be shown
+    _alert Flood Invite flood from $:b($nick) $chr(40) $+ $address $+ $chr(41) Further invites won't be shown
   }
   if (($hget(pnp.flood. $+ $cid,recd.inv. $+ $site) > 2) || ($hget(pnp.flood. $+ $cid,recd.inv) > 3)) halt
   _recseen 10 user $nick
@@ -1179,7 +1179,7 @@ _alert Flood Invite flood from $:b($nick) $chr(40) $+ $address $+ $chr(41) Furth
       hadd pnp. $+ $cid -invn. $+ $chan $hget(pnp. $+ $cid,-invn. $+ $chan) $nick
     }
     else {
-_show.invite $nick $chan - Auto-joining
+      _show.invite $nick $chan - Auto-joining
       _ssplay Invite
       _recseen 10 user $nick
     }
@@ -1190,14 +1190,14 @@ _show.invite $nick $chan - Auto-joining
     hadd pnp. $+ $cid -invn. $+ $chan $hget(pnp. $+ $cid,-invn. $+ $chan) $nick
   }
   else {
-_show.invite $nick $chan - Press ShiftF11 to join
+    _show.invite $nick $chan - Press ShiftF11 to join
     _ssplay Invite
     _recseen 10 chan $chan
     _recseen 10 user $nick
   }
   halt
 }
- 
+
 ; Themed invite
 ; /_show.invite NICK CHAN comments
 alias _show.invite {
@@ -1207,48 +1207,48 @@ alias _show.invite {
   set -u %:echo echo $color(invite) -mti2 $+ $iif($_optn(3,26),a $iif($activecid != $cid,$:anp),s)
   theme.text Invite
 }
- 
+
 ;
 ; Menu endings
 ;
- 
+
 menu query {
   -
-$iif((($mid($hget(pnp.config,popups.2),9,1) != 0) || ($mouse.key & 2)) && ($active != Notify List),Window)
-.Hide:hide $active
-.Close:if (= isin $active) close -cf $1 | elseif ($active == Message Window) dqwindow hide | else closemsg $1
+  $iif((($mid($hget(pnp.config,popups.2),9,1) != 0) || ($mouse.key & 2)) && ($active != Notify List),Window)
+  .Hide:hide $active
+  .Close:if (= isin $active) close -cf $1 | elseif ($active == Message Window) dqwindow hide | else closemsg $1
   .-
-.Logging
-..On:log on
-..Off:log off
+  .Logging
+  ..On:log on
+  ..Off:log off
   ..-
-..View:viewlog
-..Delete:dellog
-.Clear:clear
-$iif(($mid($hget(pnp.config,popups.2),10,1) != 0) || ($mouse.key & 2) || ($active == Notify List),Close):if ($active == Notify List) notify -h | else closemsg $1
-;!!$iif(($mid($hget(pnp.config,popups.2),11,1) != 0) || ($mouse.key & 2),Help):{ }
+  ..View:viewlog
+  ..Delete:dellog
+  .Clear:clear
+  $iif(($mid($hget(pnp.config,popups.2),10,1) != 0) || ($mouse.key & 2) || ($active == Notify List),Close):if ($active == Notify List) notify -h | else closemsg $1
+  ;!!$iif(($mid($hget(pnp.config,popups.2),11,1) != 0) || ($mouse.key & 2),Help):{ }
 }
- 
+
 menu channel {
   -
-$iif(($mid($hget(pnp.config,popups.3),10,1) != 0) || ($mouse.key & 2),Window)
-.Hide:hide $active
-.Close:if ($active ischan) { part # | dispa Parting # $+ ... } | elseif (= isin $active) close -cf $1 | elseif ($active == Message Window) dqwindow hide | else closemsg $1
+  $iif(($mid($hget(pnp.config,popups.3),10,1) != 0) || ($mouse.key & 2),Window)
+  .Hide:hide $active
+  .Close:if ($active ischan) { part # | dispa Parting # $+ ... } | elseif (= isin $active) close -cf $1 | elseif ($active == Message Window) dqwindow hide | else closemsg $1
   .-
-.Logging
-..On:log on
-..Off:log off
+  .Logging
+  ..On:log on
+  ..Off:log off
   ..-
-..View:viewlog
-..Delete:dellog
-.Clear:clear
-$iif(($mid($hget(pnp.config,popups.3),9,1) != 0) || ($mouse.key & 2),Part):part # | dispa Parting # $+ ...
-;!!$iif(($mid($hget(pnp.config,popups.3),11,1) != 0) || ($mouse.key & 2),Help):{ }
+  ..View:viewlog
+  ..Delete:dellog
+  .Clear:clear
+  $iif(($mid($hget(pnp.config,popups.3),9,1) != 0) || ($mouse.key & 2),Part):part # | dispa Parting # $+ ...
+  ;!!$iif(($mid($hget(pnp.config,popups.3),11,1) != 0) || ($mouse.key & 2),Help):{ }
 }
- 
+
 menu status {
   -
-$iif((($mid($hget(pnp.config,popups.5),2,1) != 0) && $server) || ($mouse.key & 2),Channels)
+  $iif((($mid($hget(pnp.config,popups.5),2,1) != 0) && $server) || ($mouse.key & 2),Channels)
   .$_rec(chan,1):join %=chan.1
   .$_rec(chan,2):join %=chan.2
   .$_rec(chan,3):join %=chan.3
@@ -1268,26 +1268,26 @@ $iif((($mid($hget(pnp.config,popups.5),2,1) != 0) && $server) || ($mouse.key & 2
   .$_rec(chan,15):join %=chan.15
   .-
   .%=chan.clr:_recclr chan
-.$iif(%=chan.1 || ($mouse.key & 2),$iif($_cfgi(fill.chan),Lock this list,Unlock list $chr(40) $+ currently locked $+ $chr(41))):{
-if ($_cfgi(fill.chan)) { disps Channels menu is now locked and will not 'fill' automatically. | _cfgw fill.chan 0 }
-else { disps Channels menu is unlocked and will fill with channels that you join. | _cfgw fill.chan 1 }
+  .$iif(%=chan.1 || ($mouse.key & 2),$iif($_cfgi(fill.chan),Lock this list,Unlock list $chr(40) $+ currently locked $+ $chr(41))):{
+    if ($_cfgi(fill.chan)) { disps Channels menu is now locked and will not 'fill' automatically. | _cfgw fill.chan 0 }
+    else { disps Channels menu is unlocked and will fill with channels that you join. | _cfgw fill.chan 1 }
   }
-.Join other...:join $_s2c($_entry(0,$null,Channel $+ $chr(40) $+ s $+ $chr(41) to join? $+ $chr(40) $+ You may specify multiple channels. $+ $chr(41)))
+  .Join other...:join $_s2c($_entry(0,$null,Channel $+ $chr(40) $+ s $+ $chr(41) to join? $+ $chr(40) $+ You may specify multiple channels. $+ $chr(41)))
   .-
-.Edit...:fav
-$iif((($mid($hget(pnp.config,popups.5),1,1) != 0) && $server) || ($mouse.key & 2),List channels)
-.With 5 or more users:list >5
-.With 10 or more users:list >10
-.With 20 or more users:list >20
-.With X or more users...:{
-var %num = $_entry(-2,$iif($_dlgi(list) isnum,$_dlgi(list),10),List channels with at least how many users?)
+  .Edit...:fav
+  $iif((($mid($hget(pnp.config,popups.5),1,1) != 0) && $server) || ($mouse.key & 2),List channels)
+  .With 5 or more users:list >5
+  .With 10 or more users:list >10
+  .With 20 or more users:list >20
+  .With X or more users...:{
+    var %num = $_entry(-2,$iif($_dlgi(list) isnum,$_dlgi(list),10),List channels with at least how many users?)
     list > $+ %num
     _dlgw list %num
   }
   .-
-.All $chr(40) $+ smaller networks $+ $chr(41):list
+  .All $chr(40) $+ smaller networks $+ $chr(41):list
   -
-$iif(($mid($hget(pnp.config,popups.5),4,1) != 0) || ($mouse.key & 2),Nickname)
+  $iif(($mid($hget(pnp.config,popups.5),4,1) != 0) || ($mouse.key & 2),Nickname)
   .$_rec(nick,1):nick %=nick.1
   .$_rec(nick,2):nick %=nick.2
   .$_rec(nick,3):nick %=nick.3
@@ -1299,35 +1299,35 @@ $iif(($mid($hget(pnp.config,popups.5),4,1) != 0) || ($mouse.key & 2),Nickname)
   .$_rec(nick,9):nick %=nick.9
   .-
   .%=nick.clr:_recclr nick | _recent nick 9 0 $me
-.Other...:nick $_entry(-1,$me,New nickname?)
+  .Other...:nick $_entry(-1,$me,New nickname?)
   .-
-.$iif($hget(pnp. $+ $cid,oldrnick) == $null,Random nick):rn
-.$iif($hget(pnp. $+ $cid,oldrnick),Undo random nick):urn
-$iif(($mid($hget(pnp.config,popups.5),5,1) != 0) || ($mouse.key & 2),Usermode...):umode
-$iif((($mid($hget(pnp.config,popups.5),7,1) != 0) && $server) || ($mouse.key & 2),Server)
-.Port scan:ports
-.Server links:links
-.$iif((z isin $hget(pnp. $+ $cid,-feat)) || ($mouse.key & 2),Map of servers):map
-.List servers
-..1 hop away:nearserv 1
+  .$iif($hget(pnp. $+ $cid,oldrnick) == $null,Random nick):rn
+  .$iif($hget(pnp. $+ $cid,oldrnick),Undo random nick):urn
+  $iif(($mid($hget(pnp.config,popups.5),5,1) != 0) || ($mouse.key & 2),Usermode...):umode
+  $iif((($mid($hget(pnp.config,popups.5),7,1) != 0) && $server) || ($mouse.key & 2),Server)
+  .Port scan:ports
+  .Server links:links
+  .$iif((z isin $hget(pnp. $+ $cid,-feat)) || ($mouse.key & 2),Map of servers):map
+  .List servers
+  ..1 hop away:nearserv 1
   ..-
-..Up to 2 hops away:nearserv 1 2
-..Up to 3 hops away:nearserv 1 3
+  ..Up to 2 hops away:nearserv 1 2
+  ..Up to 3 hops away:nearserv 1 3
   ..-
-..Custom...:nearserv ?
+  ..Custom...:nearserv ?
   .-
-.List IRCops:who 0 o
-.User counts:lusers
+  .List IRCops:who 0 o
+  .User counts:lusers
   .-
-.MOTD:motd
-.Time:.raw time
-.Version:.raw version
-$iif((($mid($hget(pnp.config,popups.5),8,1) != 0) && $server) || ($mouse.key & 2),Stats)
-.Global bans	g:stats g
-.Local bans	k:stats k
-.Commands	m:stats m
-.Operators	o:stats o
-.Uptime	u:stats u
+  .MOTD:motd
+  .Time:.raw time
+  .Version:.raw version
+  $iif((($mid($hget(pnp.config,popups.5),8,1) != 0) && $server) || ($mouse.key & 2),Stats)
+  .Global bans	g:stats g
+  .Local bans	k:stats k
+  .Commands	m:stats m
+  .Operators	o:stats o
+  .Uptime	u:stats u
   .-
   .$_rec(stats,1):stats %=stats.1
   .$_rec(stats,2):stats %=stats.2
@@ -1336,54 +1336,54 @@ $iif((($mid($hget(pnp.config,popups.5),8,1) != 0) && $server) || ($mouse.key & 2
   .$_rec(stats,5):stats %=stats.5
   .-
   .%=stats.clr:_recclr stats
-.Other...:stats
-    -
-$iif(($mid($hget(pnp.config,popups.5),10,1) != 0) || ($mouse.key & 2),Window)
-.Hide:hide $active
+  .Other...:stats
+  -
+  $iif(($mid($hget(pnp.config,popups.5),10,1) != 0) || ($mouse.key & 2),Window)
+  .Hide:hide $active
   .-
-.Logging
-..On:log on
-..Off:log off
+  .Logging
+  ..On:log on
+  ..Off:log off
   ..-
-..View:viewlog
-..Delete:dellog
-.Clear:clear
-$iif((($mid($hget(pnp.config,popups.5),6,1) != 0) && $server) || ($mouse.key & 2),Quit...):quit $_rentry(quit,0,$_s2p($msg.compile($_msg(quit),&online&,$_dur($online))),Disconnecting- Quit message?This will be shown on any channels you are on.)
-;!!$iif(($mid($hget(pnp.config,popups.5),11,1) != 0) || ($mouse.key & 2),Help):{ }
+  ..View:viewlog
+  ..Delete:dellog
+  .Clear:clear
+  $iif((($mid($hget(pnp.config,popups.5),6,1) != 0) && $server) || ($mouse.key & 2),Quit...):quit $_rentry(quit,0,$_s2p($msg.compile($_msg(quit),&online&,$_dur($online))),Disconnecting- Quit message?This will be shown on any channels you are on.)
+  ;!!$iif(($mid($hget(pnp.config,popups.5),11,1) != 0) || ($mouse.key & 2),Help):{ }
 }
- 
+
 menu nicklist {
   -
-;!!$iif(($mid($hget(pnp.config,popups.4),12,1) != 0) || ($mouse.key & 2),Help):{ }
+  ;!!$iif(($mid($hget(pnp.config,popups.4),12,1) != 0) || ($mouse.key & 2),Help):{ }
 }
- 
+
 menu menubar {
   -
-$iif($hget(pnp,hidden) || ($mouse.key & 2),Unhide all):unhide
-;!!$iif(($mouse.key & 2) || ($mid($hget(pnp.config,popups.1),10,1) != 0),Help):{ }
+  $iif($hget(pnp,hidden) || ($mouse.key & 2),Unhide all):unhide
+  ;!!$iif(($mouse.key & 2) || ($mid($hget(pnp.config,popups.1),10,1) != 0),Help):{ }
 }
- 
+
 ;
 ; Generic WINDOW (sub)menus (not for picture windows/etc.)
 ;
- 
+
 ; Window that only needs to close
 menu @Close {
-Close:_wclose
+  Close:_wclose
 }
- 
+
 ; Window that closes on click
 menu @Close2 {
   sclick:_wclose
   rclick:_wclose
 }
 alias -l _wclose window -c $active
- 
+
 ; All other windows
 menu @* {
   -
-$iif(($hget(pnp.window. $+ $active,select) >= 1) && (($mid($hget(pnp.config,popups.6),1,1) != 0) || ($mouse.key & 2)),Select all):_selectall $active $hget(pnp.window. $+ $active,select)
-$iif(($hget(pnp.window. $+ $active,copy)) && ((($mid($hget(pnp.config,popups.6),2,1) != 0) && ($sline($active,0))) || ($mouse.key & 2)),Copy):{
+  $iif(($hget(pnp.window. $+ $active,select) >= 1) && (($mid($hget(pnp.config,popups.6),1,1) != 0) || ($mouse.key & 2)),Select all):_selectall $active $hget(pnp.window. $+ $active,select)
+  $iif(($hget(pnp.window. $+ $active,copy)) && ((($mid($hget(pnp.config,popups.6),2,1) != 0) && ($sline($active,0))) || ($mouse.key & 2)),Copy):{
     if ($sline($active,0)) {
       var %num = 2,%clip = $strip($sline($active,1))
       if ($sline($active,0) > 1) {
@@ -1396,39 +1396,39 @@ $iif(($hget(pnp.window. $+ $active,copy)) && ((($mid($hget(pnp.config,popups.6),
     }
   }
   -
-$iif(($hget(pnp.window. $+ $active,window)) && (($mid($hget(pnp.config,popups.6),3,1) != 0) || ($mouse.key & 2)),Window)
-.Hide:window -h $active
-.Close:_dowclose $active | window -c $active
+  $iif(($hget(pnp.window. $+ $active,window)) && (($mid($hget(pnp.config,popups.6),3,1) != 0) || ($mouse.key & 2)),Window)
+  .Hide:window -h $active
+  .Close:_dowclose $active | window -c $active
   .-
-.$iif($hget(pnp.window. $+ $active,log),Logging)
-..On:log on
-..Off:log off
+  .$iif($hget(pnp.window. $+ $active,log),Logging)
+  ..On:log on
+  ..Off:log off
   ..-
-..View:var %file = $readini($_cfg(window.ini),n,$active,log) | if (%file) %file = $logdir $+ %file | else %file = $logdir $+ $active $+ .log | if ($exists(%file)) edit %file | else disps File ' $+ %file $+ ' does not exist!
-..Delete:var %file = $readini($_cfg(window.ini),n,$active,log) | if (%file) %file = $logdir $+ %file | else %file = $logdir $+ $active $+ .log | _remove %file
-.$iif($hget(pnp.window. $+ $active,log),Clear):clear $active | if ($active == @Whois) .remove $_temp(who)
-.$iif($line($active,0),Save...):_ssplay Question | var %save = $$sfile($logdir\ $+ $active $+ .txt,Save Buffer,Save) | if ($exists(%save)) _fileopt 2 %save | _bufsav $active %save
+  ..View:var %file = $readini($_cfg(window.ini),n,$active,log) | if (%file) %file = $logdir $+ %file | else %file = $logdir $+ $active $+ .log | if ($exists(%file)) edit %file | else disps File ' $+ %file $+ ' does not exist!
+  ..Delete:var %file = $readini($_cfg(window.ini),n,$active,log) | if (%file) %file = $logdir $+ %file | else %file = $logdir $+ $active $+ .log | _remove %file
+  .$iif($hget(pnp.window. $+ $active,log),Clear):clear $active | if ($active == @Whois) .remove $_temp(who)
+  .$iif($line($active,0),Save...):_ssplay Question | var %save = $$sfile($logdir\ $+ $active $+ .txt,Save Buffer,Save) | if ($exists(%save)) _fileopt 2 %save | _bufsav $active %save
   .-
-.$iif(p !isin $hget(pnp.window. $+ $active,flags),Font)
-..Select...:font
-..Default:window -h @.fontgrab | var %font = $window(@.fontgrab).fontsize $window(@.fontgrab).font $iif($window(@.fontgrab).fontbold,bold) | window -c @.fontgrab | font %font
+  .$iif(p !isin $hget(pnp.window. $+ $active,flags),Font)
+  ..Select...:font
+  ..Default:window -h @.fontgrab | var %font = $window(@.fontgrab).fontsize $window(@.fontgrab).font $iif($window(@.fontgrab).fontbold,bold) | window -c @.fontgrab | font %font
   .-
-.Position
-..$iif($hget(pnp.window. $+ $active,remember),$style(1)) Remember:if ($hget(pnp.window. $+ $active,remember)) { hadd pnp.window. $+ $active 0 | writeini $_cfg(window.ini) $active rem 0 } | else { hadd pnp.window. $+ $active 1 | remini $_cfg(window.ini) $active rem }
+  .Position
+  ..$iif($hget(pnp.window. $+ $active,remember),$style(1)) Remember:if ($hget(pnp.window. $+ $active,remember)) { hadd pnp.window. $+ $active 0 | writeini $_cfg(window.ini) $active rem 0 } | else { hadd pnp.window. $+ $active 1 | remini $_cfg(window.ini) $active rem }
   ..-
-..Record now:{
+  ..Record now:{
     if (f isin $gettok($hget(pnp.window. $+ $active,flags),1,32)) hadd pnp.window. $+ $active position $window($active).x $window($active).y $window($active).dw $window($active).dh
     else hadd pnp.window. $+ $active position $window($active).x $window($active).y $window($active).w $window($active).h
     writeini $_cfg(window.ini) $active pos $hget(pnp.window. $+ $active,position)
   }
-..Restore:window $active $hget(pnp.window. $+ $active,position)
-..Default:window $active $hget(pnp.window. $+ $active,default) | hadd pnp.window. $+ $active position $hget(pnp.window. $+ $active,default) | remini $_cfg(window.ini) $active pos
-.$iif(p !isin $hget(pnp.window. $+ $active,flags),$iif(!$window($active).mdi,$style(1)) Desktop):if ($window($active).mdi) _deskon $active | else _deskoff $active
-$iif(($istok($hget(pnp.window. $+ $active,window),$active,32)) && (($mid($hget(pnp.config,popups.6),4,1) != 0) || ($mouse.key & 2)),Close):_dowclose $active | window -c $active
-$iif(($istok($hget(pnp.window. $+ $active,window),$active,32)) && (($mid($hget(pnp.config,popups.6),5,1) != 0) || ($mouse.key & 2)),Hide):window -h $active
-;!!$iif(($istok($hget(pnp.window. $+ $active,help),$active,32)) && (($mid($hget(pnp.config,popups.6),6,1) != 0) || ($mouse.key & 2)),Help):{ }
+  ..Restore:window $active $hget(pnp.window. $+ $active,position)
+  ..Default:window $active $hget(pnp.window. $+ $active,default) | hadd pnp.window. $+ $active position $hget(pnp.window. $+ $active,default) | remini $_cfg(window.ini) $active pos
+  .$iif(p !isin $hget(pnp.window. $+ $active,flags),$iif(!$window($active).mdi,$style(1)) Desktop):if ($window($active).mdi) _deskon $active | else _deskoff $active
+  $iif(($istok($hget(pnp.window. $+ $active,window),$active,32)) && (($mid($hget(pnp.config,popups.6),4,1) != 0) || ($mouse.key & 2)),Close):_dowclose $active | window -c $active
+  $iif(($istok($hget(pnp.window. $+ $active,window),$active,32)) && (($mid($hget(pnp.config,popups.6),5,1) != 0) || ($mouse.key & 2)),Hide):window -h $active
+  ;!!$iif(($istok($hget(pnp.window. $+ $active,help),$active,32)) && (($mid($hget(pnp.config,popups.6),6,1) != 0) || ($mouse.key & 2)),Help):{ }
 }
- 
+
 ; Common routines
 alias -l _bufsav savebuf -a $1 " $+ $2- $+ " | disps Contents of $1 saved to ' $+ $2- $+ '
 alias -l _deskon if ($window($1).mdi) _desktog $1 1
@@ -1449,11 +1449,11 @@ alias -l _desktog {
   if ($2) writeini $_cfg(window.ini) $1 desk 1
   else remini $_cfg(window.ini) $1 desk
 }
- 
+
 ;
 ; Input wrappers
 ;
- 
+
 on &*:INPUT:*:{
   if ((($target !ischan) && ($query($target) == $null) && (=* !iswm $target)) || ($cmdbox)) return
   if (%.input.type == say) { if (($group(#pp-texts) == on) || (/say $1- != %.input.text)) { %.input.text | halt } }
@@ -1476,14 +1476,14 @@ on &*:INPUT:*:{
     elseif (%.input.text != $1-) { %.input.text | halt }
   }
 }
- 
+
 ; Once chat is opened, don't need to save why chat was opened
 on *:OPEN:=:hdel pnp chat.open. $+ $nick
- 
+
 ; Disconnect clearance
 on *:DISCONNECT:{
   _nickcol.kill
-hadd pnp. $+ $cid net Offline
+  hadd pnp. $+ $cid net Offline
   hdel -w pnp. $+ $cid -*
   hdel -w pnp.flood. $+ $cid *
   hfree -w pnp.flood. $+ $cid $+ .*
@@ -1491,7 +1491,7 @@ hadd pnp. $+ $cid net Offline
   unset %<*
   _upd.title
 }
- 
+
 ; flash/sounds that must be last
 ctcp &*:DCC CHAT:?:_ssplay DCC
 ctcp &*:DCC SEND:?:_ssplay DCCSend
@@ -1499,7 +1499,7 @@ on &^*:OPEN:?:*:_ssplay Open | if ($mid($hget(pnp.config,flash.opt),$iif($hget(p
 on &*:CHAT:*:if ($mid($hget(pnp.config,flash.opt),$iif($hget(pnp. $+ $cid,away),6,5),1)) flash $chr(91) $+ DCC- $nick: $strip($iif($1 == ACTION,$remove($2-,),$1-)) $+ $chr(93)
 on &*:TEXT:*:?:if ($mid($hget(pnp.config,flash.opt),$iif($hget(pnp. $+ $cid,away),4,3),1)) flash $chr(91) $+ Msg- $nick: $strip($1-) $+ $chr(93)
 on &*:ACTION:*:?:if ($mid($hget(pnp.config,flash.opt),$iif($hget(pnp. $+ $cid,away),4,3),1)) flash $chr(91) $+ Msg- $nick: $strip($1-) $+ $chr(93)
- 
+
 ; Dragdrop defaults
 on &*:SIGNAL:PNP.DRAGDROP:{
   if (($1 == n) && (*.wav iswm $3-)) sound $2 $3-

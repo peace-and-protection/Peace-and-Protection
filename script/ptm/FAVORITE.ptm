@@ -370,7 +370,7 @@ alias _favfind {
       %info = -i %info
     }
   }
-  
+
   return %serv %info
 }
 

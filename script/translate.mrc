@@ -61,7 +61,7 @@ alias _dotranslate {
     inc %line
   }
   window -c @.trans
-  
+
   ; Determine if we are updating everything or based on timestamp
   var %ts = $readini(script\transup.ini,n,translation,timestamp)
   ; If forced, diff options, never updated, new language, or language file was updated, update everything
@@ -93,11 +93,11 @@ alias _dotranslate {
     dline @.ptmsource 1
     ; Determine if the target directory exists
     if ($isdir($nofile(%dest))) {
-      
+
       ; Loop through file, replacing translation data
       var %line = $line(@.ptmsource,0)
       while (%line >= 1) {
-        
+
         var %text = $line(@.ptmsource,%line)
 
         var %orig = %text
@@ -190,11 +190,11 @@ alias _dotranslate {
   writeini script\transup.ini translation language %language
   writeini script\transup.ini translation timestamp $ctime
   writeini script\transup.ini translation transopt - $+ $remove($1,-,f,n)
-  
+
   ; Update scripts as needed
   _progress.2 $int($calc(%prog / %total * 100)) $replace($hget(pnp.trans.process,loading),<lang>,%language)
   .signal -n PNP.TRANSLATE %language
-  
+
   ; All files translated and reloaded as needed
   if (%error) %error = $replace($hget(pnp.trans.process,errors),|,,<num>,%error)
   _progress.2 100 $hget(pnp.trans.process,complete)

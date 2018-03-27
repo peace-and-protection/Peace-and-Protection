@@ -3,7 +3,7 @@
 ; Peace and Protection
 ; PnP 3.20 addon compatibility / support
 ; ########################################
- 
+
 ; $identifiers used by 3.20 addons or listed in 3.20 help
 alias _tf2yn return $iif($1,Yes,No)
 alias _ccdef return $1- $+ 
@@ -20,14 +20,14 @@ alias _col2text {
   if (%color != $null) %fore = $calc($gettok(%color,1,44) % 16 + 1)
   if (, isin %color) var %back = $calc($gettok(%color,2,44) % 16 + 1)
   else var %back = $color(back)
-if ( isin $1) %text = bold
-if ( isin $1) %text = %text underline
-if ( isin $1) %text = %text reverse
+  if ( isin $1) %text = bold
+  if ( isin $1) %text = %text underline
+  if ( isin $1) %text = %text reverse
   elseif (%fore != $null) {
     %text = %text $_colorword(%fore)
     if (%back != $color(back)) %text = %text on $_colorword(%fore)
   }
-if (%text == $null) return none
+  if (%text == $null) return none
   return %text
 }
 alias _getnicks {
@@ -79,7 +79,7 @@ alias _tf2any if ($1) return $_p2s($2) | return $_p2s($3-)
 alias _plural if ($2 == 1) return $1 | return $1 $+ s
 alias _plural2 if ($3 == 1) return $1 | return $2
 alias _color return  $+ $color($1).dd
- 
+
 ; /aliases used by 3.20 addons or listed in 3.20 help
 alias _timersinc inc -u $+ $1 % $+ $2 $3
 alias _massmode {
@@ -101,7 +101,7 @@ alias _askyn2 if ($_okcancel(1,$2-)) $1
 alias _arhelp %_arhelp $1- | unset %_arhelp
 alias _lookup {
   _Q.userhost _lookup2&n!&a $+ $_s2p($2-) _lookup3 $+ $1 $1
-dispa Looking up address of $:t($1) $+ ...
+  dispa Looking up address of $:t($1) $+ ...
   halt
 }
 alias _lookup2 {
@@ -128,11 +128,11 @@ alias _dynpop.rot {
   if ((%num <= $2) && (%num <= $line(@.recent,0))) goto loop
   savebuf 1- $+ $2 @.recent %rec2f
   window -c @.recent
-%^ [ $+ [ $1.clear ] ] = Clear this list
+  %^ [ $+ [ $1.clear ] ] = Clear this list
 }
 alias _timer924on _tut.on
 alias _timer924off return
- 
+
 ; Event halting interfaces (from 3.20 help)
 ctcp &*:*:if ((%.+disphalt) || (%.+ctcpprochalt)) { unset %.+ctcpprochalt %.+disphalt | halt }
 on &*:CTCPREPLY:*:if (%.+disphalt) { unset %.+disphalt | halt }
@@ -143,7 +143,7 @@ raw &*:*:.timer -mio 1 0 .disable #_rawhalts | halt
 on &*:INPUT:*:unset %.input.type | .timer -mio 1 0 .disable #_inputhalt
 #_inputhalt end
 on *:START:.disable #_rawhalts #_inputhalt
- 
+
 ; Color variables and other variables
 on *:CONNECT:%pp.net = $hget(pnp. $+ $cid,net)
 on *:DISCONNECT:.timer -mio 1 0 % $+ pp.net = Offline

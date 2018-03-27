@@ -337,7 +337,7 @@ alias -l _sound {
     if (%window == $null) %window = -s $+ , $+ $activecid
   }
   elseif ((* * iswm %window) || (@* iswm %window)) %window = -s, $+ $activecid
- 
+
   ; Play the sound itself
   _plsound $5 $1
 

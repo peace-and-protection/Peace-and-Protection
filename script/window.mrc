@@ -3,7 +3,7 @@
 ; Peace and Protection
 ; Generic and standard custom windows
 ; ########################################
- 
+
 ;
 ; Unhide all windows
 ;
@@ -27,7 +27,7 @@ alias unhide {
     dec %num
   }
 }
- 
+
 ;
 ; Hide a window
 ;
@@ -40,32 +40,32 @@ alias hide {
     hadd pnp hidden 1
     if ($active == %window) window -aw "Status Window"
   }
-else dispa Error- Can't hide $:s(%window)
+  else dispa Error- Can't hide $:s(%window)
   if ($_dlgi(unhide) != 1) {
     _ssplay Confirm
     if ($dialog(howunhide,howunhide,-4)) _dlgw unhide 1
   }
 }
 dialog howunhide {
-title "Hiding Windows"
+  title "Hiding Windows"
   icon script\pnp.ico
   option dbu
   size -1 -1 125 62
-text "To unhide a window, select it from the Window menu, or select 'Unhide all' from the PnP menu. You can also type /unhide.", 3, 5 5 115 50
-check "&Don't show this message again", 2, 20 30 85 10
-button "OK", 1, 42 45 40 12, ok default
+  text "To unhide a window, select it from the Window menu, or select 'Unhide all' from the PnP menu. You can also type /unhide.", 3, 5 5 115 50
+  check "&Don't show this message again", 2, 20 30 85 10
+  button "OK", 1, 42 45 40 12, ok default
   edit "", 4, 1 1 1 1, hide autohs result
 }
 on *:DIALOG:howunhide:sclick:1:did -o $dname 4 1 $did(2).state
- 
+
 ;
 ; Pick new windows
 ;
- 
+
 ;
 ; Pick new windows
 ;
- 
+
 alias _newwin {
   if ($window($1) == $null) return $1
   var %num = 2
@@ -82,13 +82,13 @@ alias _newdlg {
   if ($dialog(%try) == $null) return %try
   inc %num | goto loop
 }
- 
+
 ; Multiserver window finding
 ; $_mservwin(@prefix,postfix[,cid])
 ; returns @prefix[n]postfix where [n] is [2] [3] etc as needed to create a unique window
 ; returns existing window if one exists on the given cid
 ; returns @prefixpostfix for first window created
- 
+
 alias _mservwin {
   var %cid = $3
   if (!%cid) %cid = $cid
@@ -109,7 +109,7 @@ alias _mservwin {
   }
   return $1 $+ $chr(91) $+ %num $+ $chr(93) $+ $2
 }
- 
+
 ; _window n -abcefl[N]noprsx -tN,..,N|+bfmnstx|+ @Name x y w h [/command] [popup]
 ; second -+ param is p2s
 ; Opens window with remembered settings for position, size, font, and desktopping
@@ -163,11 +163,11 @@ alias _window {
     else .background -x $4
   }
 }
- 
+
 ; _windowreg @window call-on-close
 ; Registers an alias to call when the window closes (with window name as parameter)
 alias _windowreg hadd pnp.window. $+ $1 onclose $2-
- 
+
 ; select all items or all matching items
 alias _selectall {
   sline -r $1
@@ -181,7 +181,7 @@ alias _selectallw {
   :loop
   if (%num >= $2) { if ($3- iswm $line($1,%num)) sline -a $1 %num | dec %num | goto loop }
 }
- 
+
 ;
 ; Sort a window
 ; _dosort @window firstline tokennum tokentype numeric? descend?
@@ -191,7 +191,7 @@ alias _dosort {
   filter -tr $+ $iif($5,u) $+ $iif($6,e) %range $3 $4 $1 $1 *
   dline $1 %range
 }
- 
+
 ;
 ; Move selected items up or down in a window
 ; firstline is first line you allow to be modified; does checks in this routine
@@ -220,7 +220,7 @@ alias _doslidedn {
     goto loop
   }
 }
- 
+
 ;
 ; Randomizes selected items in a window
 ; firstline is first line you allow to be modified; does checks in this routine
@@ -241,7 +241,7 @@ alias _doshuffle {
     goto loop
   }
 }
- 
+
 ;
 ; Randomizes all items in a window
 ; firstline is first line you allow to be modified
@@ -259,17 +259,17 @@ alias _doshufflea {
   }
   if (%num > $2) { dec %num | goto loop }
 }
- 
+
 ;
 ; Replace a line but using iline/dline combo to preserve sorting
 ; _ridline [-a|s] [col] @win ln new line
 ;
 alias _ridline if (-* iswm $1) { dline $2-4 | iline $1- } | else { dline $1-3 | iline $1- }
- 
+
 ;
 ; Quick-error box
 ;
- 
+
 on *:KEYDOWN:@Error:13,27:window -c @Error | _check.specwins
 alias _error _doerror Error- $1-
 alias _doerror {
@@ -297,11 +297,11 @@ alias -l _check.specwins {
     if (($window(@Error) == $null) && ($window(@Progress) == $null) && ($window(@Quick) == $null)) _unlock.tb
   }
 }
- 
+
 ;
 ; Quick-help box
 ;
- 
+
 on *:INPUT:@Quick:window -c @Quick | .timer.quickflash off | hdel -w pnp qhelp.* | _check.specwins | _juryrig2 $1- | halt
 ; if info is in quikhelp.dat- _qhelp /cmd (what was entered)
 ; otherwise- _qhelp $_s2f(quikhelp.dat info) (what was entered)
@@ -348,7 +348,7 @@ alias _qhelp {
   }
   ; info on what to enter
   drawrect -nrf @Quick $rgb(hilight) 2 66 6 54 14
-drawtext -nr @Quick $rgb(text) "ms sans serif" 12 5 6 Please enter highlighted $chr(40) $+ required $+ $chr(41) parameters for $gettok($1,1,160) $+ -
+  drawtext -nr @Quick $rgb(text) "ms sans serif" 12 5 6 Please enter highlighted $chr(40) $+ required $+ $chr(41) parameters for $gettok($1,1,160) $+ -
   drawtext -nr @Quick $rgb(text) "ms sans serif" 12 5 22 $gettok(%read,2-,33)
   drawpic -nt @Quick $rgb(255,255,255) 334 1 65 65 64 64 script\icons.bmp
   drawdot @Quick
@@ -383,11 +383,11 @@ alias -l _qflash {
     }
   }
 }
- 
+
 ;
 ; Progress meter display
 ;
- 
+
 on *:KEYDOWN:@Progress:13,27:close -@ @Progress @.pbmp | _check.specwins
 alias _progress.1 {
   close -@ @Progress @.pbmp | _lock.tb
@@ -452,13 +452,13 @@ alias -l _gradient {
     goto loopR
   }
 }
- 
+
 ;
 ; @Info
 ;
- 
+
 alias _info if ($show == $false) return | if ($window(@Info)) dispr-div @Info | else _window 2 -ezi + @Info $_center(500,300) $1 @(nopopups) | .timer -mio 1 0 editbox -p @Info $1-
- 
+
 ; Remembers window settings on closing
 on *:CLOSE:@:_dowclose $target
 alias _dowclose {
@@ -488,11 +488,11 @@ alias _dowcleanup {
   hdel pnp picture. $+ $1
   hdel pnp calibrate. $+ $1
 }
- 
+
 ;
 ; Picture windows (/viewpic)
 ;
- 
+
 on *:KEYDOWN:@:*:{
   if ($window($target).font == Picture Window) {
     ; ESC
@@ -516,7 +516,7 @@ on *:KEYDOWN:@:*:{
     elseif ($keyval == 8) _picdel $target
   }
 }
- 
+
 on *:KEYUP:@:*:{
   if ($window($target).font == Picture Window) {
     ; PgUp
@@ -525,13 +525,13 @@ on *:KEYUP:@:*:{
     elseif ($keyval == 34) _picnext $target
   }
 }
- 
+
 on *:CLOSE:@:{
   if ($window($target).font == Picture Window) {
     hdel pnp picture. $+ $target | hdel pnp calibrate. $+ $target
   }
 }
- 
+
 menu @PictureWin {
   sclick:{ .timer.movepic -mio 0 50 _picmouse $calc($mouse.dx - $window($active).dx) $calc($mouse.dy - $window($active).dy) $active }
   dclick:{ _picnew $active }
@@ -725,8 +725,8 @@ alias -l _picbk {
   }
 }
 alias -l _picbkmethod {
-set %.fullmsg Select background style:
-var %items = Center,Fill,Normal,Stretch,Tile,Photo
+  set %.fullmsg Select background style:
+  var %items = Center,Fill,Normal,Stretch,Tile,Photo
   set %.found %items
   _ssplay Question
   var %sel = $$dialog(nickcomp,nickcomp,-4)

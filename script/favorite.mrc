@@ -3,11 +3,11 @@
 ; Peace and Protection
 ; Favorites, also default theme
 ; ########################################
- 
+
 ;
 ; Favorites
 ;
- 
+
 ; /fav
 ; /fav + [network|all] [#channel|server[ port]]...
 ; /fav - [network|all|*] [#channel|server]...
@@ -21,31 +21,31 @@ alias fav {
   if (($_ischan($2)) || (. isin $2)) %todo = $_c2s($2-)
   else { %todo = $_c2s($3-) | %net = $2 }
   if ($1 == k) {
-if ($_favnets == $null) dispa Your favorites are already empty.
+    if ($_favnets == $null) dispa Your favorites are already empty.
     elseif (($2 == *) || ($2 == $null)) {
-_okcancel 1 Delete ALL favorite channels/servers?
+      _okcancel 1 Delete ALL favorite channels/servers?
       remini $_cfg(config.ini) fav
       remini $_cfg(config.ini) favopt
       remini $_cfg(config.ini) favserv
       _cfgxw favopt all 0 0 - - -
-dispa All favorites deleted.
+      dispa All favorites deleted.
     }
     else {
-_okcancel 1 Delete ALL favorite channels/servers? ( $+ $2 $+ )
+      _okcancel 1 Delete ALL favorite channels/servers? ( $+ $2 $+ )
       remini $_cfg(config.ini) fav $2
       remini $_cfg(config.ini) favopt $2
       remini $_cfg(config.ini) favserv $2
       if ($2 == all) _cfgxw favopt all 0 0 - - -
-dispa All favorites deleted. ( $+ $2 $+ )
+      dispa All favorites deleted. ( $+ $2 $+ )
     }
   }
   elseif ($1 == +) {
     if (!%net) %net = all
     if (%todo == $null) {
       var %check
-if ((%net == all) && ($hget(pnp. $+ $cid,net) != Offline)) %net = $ifmatch
-if (%net != all) %check = Only for %net network favorites
-%todo = $_c2s($_entry(0,$iif($active ischan,$active),Channel $+ $chr(40) $+ s $+ $chr(41) or server $+ $chr(40) $+ s $+ $chr(41) to add to favorites?,1,%check))
+      if ((%net == all) && ($hget(pnp. $+ $cid,net) != Offline)) %net = $ifmatch
+      if (%net != all) %check = Only for %net network favorites
+      %todo = $_c2s($_entry(0,$iif($active ischan,$active),Channel $+ $chr(40) $+ s $+ $chr(41) or server $+ $chr(40) $+ s $+ $chr(41) to add to favorites?,1,%check))
       if (!%.entry.checkbox) %net = all
     }
     %fav = $_cfgx(fav,%net)
@@ -58,15 +58,15 @@ if (%net != all) %check = Only for %net network favorites
         %chan = %chan $+ : $+ $ifmatch
         inc %num
       }
-if (%net == all) dispa Can't add a server $chr(40) $+ $:t(%chan) $+ $chr(41) to favorites for all networks- you must specify a network.
-elseif ($istok(%serv,%chan,32)) dispa $:t(%chan) is already in your favorites. $chr(40) $+ cannot add $+ $chr(41)
-else { %serv = $addtok(%serv,%chan,32) | dispa Added $:t(%chan) to favorites. $chr(40) $+ on %net $+ $chr(41) }
+      if (%net == all) dispa Can't add a server $chr(40) $+ $:t(%chan) $+ $chr(41) to favorites for all networks- you must specify a network.
+      elseif ($istok(%serv,%chan,32)) dispa $:t(%chan) is already in your favorites. $chr(40) $+ cannot add $+ $chr(41)
+      else { %serv = $addtok(%serv,%chan,32) | dispa Added $:t(%chan) to favorites. $chr(40) $+ on %net $+ $chr(41) }
       inc %num | goto loop
     }
     elseif (%chan) {
       %chan = $_patch(%chan)
-if ($istok(%fav,%chan,32)) dispa $:t(%chan) is already in your favorites. $chr(40) $+ cannot add $+ $chr(41)
-else { %fav = $addtok(%fav,%chan,32) | dispa $iif(%net == all,Added $:t(%chan) to favorites. $chr(40) $+ all networks $+ $chr(41),Added $:t(%chan) to favorites. $chr(40) $+ on %net $+ $chr(41)) }
+      if ($istok(%fav,%chan,32)) dispa $:t(%chan) is already in your favorites. $chr(40) $+ cannot add $+ $chr(41)
+      else { %fav = $addtok(%fav,%chan,32) | dispa $iif(%net == all,Added $:t(%chan) to favorites. $chr(40) $+ all networks $+ $chr(41),Added $:t(%chan) to favorites. $chr(40) $+ on %net $+ $chr(41)) }
       inc %num | goto loop
     }
     _cfgxw fav %net %fav
@@ -74,10 +74,10 @@ else { %fav = $addtok(%fav,%chan,32) | dispa $iif(%net == all,Added $:t(%chan) t
     if ($_cfgx(favopt,%net) == $null) _cfgxw favopt %net $iif($gettok($_cfgx(favopt,all),1,32),1,0) 0 - - -
   }
   elseif ($1 == -) {
-if (%todo == $null) %todo = $_c2s($_entry(0,$iif($active ischan,$active,$null),Channel $+ $chr(40) $+ s $+ $chr(41) or server $+ $chr(40) $+ s $+ $chr(41) to remove from favorites?))
+    if (%todo == $null) %todo = $_c2s($_entry(0,$iif($active ischan,$active,$null),Channel $+ $chr(40) $+ s $+ $chr(41) or server $+ $chr(40) $+ s $+ $chr(41) to remove from favorites?))
     if ((%net == $null) || (%net == *)) {
       %net = $_favnets
-if (%net == $null) _error You have no favorites to remove.
+      if (%net == $null) _error You have no favorites to remove.
     }
     var %numn = $numtok(%net,44)
     var %found
@@ -92,12 +92,12 @@ if (%net == $null) _error You have no favorites to remove.
         if ($istok(%serv,%chan,32)) {
           %serv = $remtok(%serv,%chan,32)
           %found = $addtok(%found,%chan,32)
-dispa Removed $:t(%chan) from favorites. $chr(40) $+ on %netc $+ $chr(41)
+          dispa Removed $:t(%chan) from favorites. $chr(40) $+ on %netc $+ $chr(41)
         }
         if ($wildtok(%serv,%chan $+ :*,1,32)) {
           %serv = $remtok(%serv,$ifmatch,32)
           %found = $addtok(%found,%chan,32)
-dispa Removed $:t(%chan) from favorites. $chr(40) $+ on %netc $+ $chr(41)
+          dispa Removed $:t(%chan) from favorites. $chr(40) $+ on %netc $+ $chr(41)
         }
         inc %num
         goto loopA
@@ -105,7 +105,7 @@ dispa Removed $:t(%chan) from favorites. $chr(40) $+ on %netc $+ $chr(41)
       elseif (%chan) {
         %chan = $_patch(%chan)
         if ($istok(%fav,%chan,32)) {
-dispa $iif(%netc == all,Removed $:t(%chan) from favorites. $chr(40) $+ all networks $+ $chr(41),Removed $:t(%chan) from favorites. $chr(40) $+ on %netc $+ $chr(41))
+          dispa $iif(%netc == all,Removed $:t(%chan) from favorites. $chr(40) $+ all networks $+ $chr(41),Removed $:t(%chan) from favorites. $chr(40) $+ on %netc $+ $chr(41))
           %fav = $remtok(%fav,%chan,32)
           %found = $addtok(%found,%chan,32)
         }
@@ -122,7 +122,7 @@ dispa $iif(%netc == all,Removed $:t(%chan) from favorites. $chr(40) $+ all netwo
     :loopF
     %chan = $gettok(%todo,%num,32)
     if (%chan) {
-if (!$istok(%found,%chan,32)) dispa $:t(%chan) is not in your favorites. $chr(40) $+ cannot remove $+ $chr(41)
+      if (!$istok(%found,%chan,32)) dispa $:t(%chan) is not in your favorites. $chr(40) $+ cannot remove $+ $chr(41)
       inc %num
       goto loopF 
     }
@@ -131,8 +131,8 @@ if (!$istok(%found,%chan,32)) dispa $:t(%chan) is not in your favorites. $chr(40
   ; Join favorites or turn auto-join on off
   ; [x] surpesses any errors and only joins those with auto-join on
   elseif ($1 == j) {
-if (($2 == on) || ($2 == on) || ($2 == off) || ($2 == off) || ($2 == x)) tokenize 32 j * $2
-if (($3 == on) || ($3 == on) || ($3 == off) || ($3 == off)) {
+    if (($2 == on) || ($2 == on) || ($2 == off) || ($2 == off) || ($2 == x)) tokenize 32 j * $2
+    if (($3 == on) || ($3 == on) || ($3 == off) || ($3 == off)) {
       if (($2 == *) || ($2 == all)) {
         %net = $_favnets
         %num = $numtok(%net,44)
@@ -141,15 +141,15 @@ if (($3 == on) || ($3 == on) || ($3 == off) || ($3 == off)) {
           _cfgxw favopt %netc $_o2tf($3) $gettok($_cfgx(favopt,%netc),2-,32)
           dec %num
         }
-if ($_o2tf($3)) dispa Favorites will be automatically joined when you connect to IRC. $chr(40) $+ all networks $+ $chr(41)
-else dispa Favorites will not be joined when you connect to IRC. $chr(40) $+ all networks $+ $chr(41)
+        if ($_o2tf($3)) dispa Favorites will be automatically joined when you connect to IRC. $chr(40) $+ all networks $+ $chr(41)
+        else dispa Favorites will not be joined when you connect to IRC. $chr(40) $+ all networks $+ $chr(41)
       }
       else {
-if ($_cfgx(favopt,$2) == $null) dispa You don't have any favorites for $2 $+ .
+        if ($_cfgx(favopt,$2) == $null) dispa You don't have any favorites for $2 $+ .
         else {
           _cfgxw favopt $2 $_o2tf($3) $gettok($_cfgx(favopt,$2),2-,32)
-if ($_o2tf($3)) dispa Favorites will be automatically joined when you connect to IRC. $chr(40) $+ on $2 $+ $chr(41)
-else dispa Favorites will not be joined when you connect to IRC. $chr(40) $+ on $2 $+ $chr(41)
+          if ($_o2tf($3)) dispa Favorites will be automatically joined when you connect to IRC. $chr(40) $+ on $2 $+ $chr(41)
+          else dispa Favorites will not be joined when you connect to IRC. $chr(40) $+ on $2 $+ $chr(41)
         }
       }
     }
@@ -163,18 +163,18 @@ else dispa Favorites will not be joined when you connect to IRC. $chr(40) $+ on 
         var %flag
         if (($cid != $activecid) && ($3 == x)) %flag = -n
         ; scid $activecid is just to suppress [network] token (since msg has that already)
-if ($_favs(%net,1,$iif($3 == x,1,0))) { _linedance join %flag $ifmatch | scid $activecid dispa Joining favorite channels... $chr(40) $+ %net $+ $chr(41) }
-elseif ($3 != x) dispa You are already on all of your favorite channels. $chr(40) $+ %net $+ $chr(41)
+        if ($_favs(%net,1,$iif($3 == x,1,0))) { _linedance join %flag $ifmatch | scid $activecid dispa Joining favorite channels... $chr(40) $+ %net $+ $chr(41) }
+        elseif ($3 != x) dispa You are already on all of your favorite channels. $chr(40) $+ %net $+ $chr(41)
       }
-elseif ($3 != x) _error You have no favorite channels to join. $chr(40) $+ %net $+ $chr(41) $+ Use /fav + to add to your favorites.
+      elseif ($3 != x) _error You have no favorite channels to join. $chr(40) $+ %net $+ $chr(41) $+ Use /fav + to add to your favorites.
     }
   }
   ; /fav c [network|*] [on/off/x]
   ; Connect to a favorite network or turn auto-connect on off
   ; [x] surpesses any errors and only connects to those with auto-connect on
   elseif ($1 == c) {
-if (($2 == on) || ($2 == on) || ($2 == off) || ($2 == off) || ($2 == x)) tokenize 32 c * $2
-if (($3 == on) || ($3 == on) || ($3 == off) || ($3 == off)) {
+    if (($2 == on) || ($2 == on) || ($2 == off) || ($2 == off) || ($2 == x)) tokenize 32 c * $2
+    if (($3 == on) || ($3 == on) || ($3 == off) || ($3 == off)) {
       if (($2 == *) || ($2 == all)) {
         %net = $remtok($_favnets,all,44)
         %num = $numtok(%net,44)
@@ -183,15 +183,15 @@ if (($3 == on) || ($3 == on) || ($3 == off) || ($3 == off)) {
           _cfgxw favopt %netc $puttok($_cfgx(favopt,%netc),$_o2tf($3),2,32)
           dec %num
         }
-if ($_o2tf($3)) dispa You will automatically connect to all favorite networks when you start mIRC.
-else dispa You will not connect to any favorite networks automatically when starting mIRC.
+        if ($_o2tf($3)) dispa You will automatically connect to all favorite networks when you start mIRC.
+        else dispa You will not connect to any favorite networks automatically when starting mIRC.
       }
       else {
-if ($_cfgx(favopt,$2) == $null) You don't have any favorites for $2 $+ .
+        if ($_cfgx(favopt,$2) == $null) You don't have any favorites for $2 $+ .
         else {
           _cfgxw favopt $2 $puttok($_cfgx(favopt,$2),$_o2tf($3),2,32)
-if ($_o2tf($3)) dispa You will automatically connect to $2 when you start mIRC.
-else dispa You will not connect to $2 automatically when starting mIRC.
+          if ($_o2tf($3)) dispa You will automatically connect to $2 when you start mIRC.
+          else dispa You will not connect to $2 automatically when starting mIRC.
         }
       }
     }
@@ -206,16 +206,16 @@ else dispa You will not connect to $2 automatically when starting mIRC.
       while ($gettok(%net,%num,44)) {
         var %netc = $ifmatch
         ; No favs for this? (allowed to connect if no SERVERS, but network must still be in favorites)
-if (($_cfgx(favopt,%netc) == $null) && ($3 != x)) _error %netc is not in your favorites.Try /server to connect to a network.
+        if (($_cfgx(favopt,%netc) == $null) && ($3 != x)) _error %netc is not in your favorites.Try /server to connect to a network.
         ; Already connected to this net somewhere? or connecting?
         var %scon = $scon(0)
         while (%scon) {
           if ($hget(pnp. $+ $scon(%scon),net) == %netc) {
-if ($3 != x) dispa You are already connected to %netc $+ .
+            if ($3 != x) dispa You are already connected to %netc $+ .
             goto nextserv
           }
           if (($scon(%scon).status == connecting) && ($server($scon(%scon).server).group == %netc)) {
-if ($3 != x) dispa You are currently connecting to %netc $+ .
+            if ($3 != x) dispa You are currently connecting to %netc $+ .
             goto nextserv
           }
           dec %scon
@@ -230,7 +230,7 @@ if ($3 != x) dispa You are currently connecting to %netc $+ .
           %serv = $gettok(%serv,1,58) $gettok(%serv,2,58) $_p2s($gettok(%serv,3-,58))
         }
         ; Connect (server cmd will determine -i info for us)
-dispa Connecting to favorite networks... $chr(40) $+ %netc $+ $chr(41)
+        dispa Connecting to favorite networks... $chr(40) $+ %netc $+ $chr(41)
         _juryrig2 %scmd %serv %info
         ; Any further connections must be new windows
         %scmd = server -m
@@ -243,23 +243,23 @@ dispa Connecting to favorite networks... $chr(40) $+ %netc $+ $chr(41)
   ; Set info for a favorite network or for all favorite networks
   elseif ($1 == i) {
     ; (realname is technically optional, others must be placeheld with a hyphen)
-if ($5 == $null) { dispa Syntax: /fav i network nickname alternate email fullname | halt }
+    if ($5 == $null) { dispa Syntax: /fav i network nickname alternate email fullname | halt }
     %net = $2
     if ((%net == *) || (%net == all)) %net = $remtok($_favnets,all,44)
     %num = 1
     while ($gettok(%net,%num,44)) {
       var %netc = $ifmatch
       ; No favs for this?
-if ($_cfgx(favopt,%netc) == $null) _error %netc is not in your favorites.Try /server to connect to a network.
+      if ($_cfgx(favopt,%netc) == $null) _error %netc is not in your favorites.Try /server to connect to a network.
       ; Update info
       _cfgxw favopt %netc $gettok($_cfgx(favopt,%netc),1-2,32) $3-
-dispa Updated info for favorite network %netc $+ . $chr(40) $+ $3- $+ $chr(41)
+      dispa Updated info for favorite network %netc $+ . $chr(40) $+ $3- $+ $chr(41)
       inc %num
     }
   }
   else config 26
 }
- 
+
 ; Returns a comma delimited list of what networks there are stored favorites for
 ; 'all' will always be LAST
 alias -l _favnets {
@@ -301,7 +301,7 @@ alias -l _favs {
   }
   return %results
 }
- 
+
 ; Scans favorites for a server name and returns the network name in favorites
 alias _favfindnet {
   ; Find server listed in any favorites network
@@ -320,7 +320,7 @@ alias _favfindnet {
   }
   return
 }
- 
+
 ; Scans favorites for a network or server name- if found, returns info
 ; Randomly selected server if network given; randomly selected port in any case
 ; server port [connect info]
@@ -355,7 +355,7 @@ alias _favfind {
     }
     if (%serv == $null) return
   }
- 
+
   ; Determine info to use, if any
   var %info
   if ($_cfgx(favopt,%net)) {
@@ -369,10 +369,10 @@ alias _favfind {
       %info = -i %info
     }
   }
-  
+
   return %serv %info
 }
- 
+
 ; Favorites popup list; use with $submenu
 alias _favpop {
   if ($1 == begin) {
@@ -397,17 +397,17 @@ alias _favpop {
   :1
   return -
   :2
-return $!iif((( $+ $iif(%.popfav,1,0) $+ ) && ($server)) || ($mouse.key & 2),Join all):fav j
+  return $!iif((( $+ $iif(%.popfav,1,0) $+ ) && ($server)) || ($mouse.key & 2),Join all):fav j
   :3
-if ($hget(pnp. $+ $cid,net) != Offline) {
+  if ($hget(pnp. $+ $cid,net) != Offline) {
     var %enabled = $gettok($_cfgx(favopt,$hget(pnp. $+ $cid,net)),1,32)
-if (%enabled) return $style(1) Join on connect:fav j $hget(pnp. $+ $cid,net) off
-return Join on connect:fav j $hget(pnp. $+ $cid,net) on
+    if (%enabled) return $style(1) Join on connect:fav j $hget(pnp. $+ $cid,net) off
+    return Join on connect:fav j $hget(pnp. $+ $cid,net) on
   }
   :4
   return
 }
- 
+
 ; Favorite SERVERS popup list; use with $submenu
 alias _favservpop {
   if ($1 == begin) {

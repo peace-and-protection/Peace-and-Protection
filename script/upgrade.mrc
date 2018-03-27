@@ -3,14 +3,14 @@
 ; |  Peace and Protection                |
 ; |  Upgrade/patch, translation routines |
 ; `======================================'
- 
+
 ;
 ; Translation support
 ;
- 
+
 ; Quickly load english
 alias english { translate $1 script\trans\english.ini }
- 
+
 ; /translate [-opt] [languagefile]
 ; opts- f to force translation update
 ;       p for lowercase popups
@@ -39,7 +39,7 @@ alias translate {
   _load translate
   .timer -mio 1 0 _dotranslate %flags %file
 }
- 
+
 ; Misc updates done after a translation
 on *:SIGNAL:PNP.TRANSLATE:{
   ; Update %=*.clr
@@ -47,7 +47,7 @@ on *:SIGNAL:PNP.TRANSLATE:{
   ; Update 'net' in all pnp.$cid hashes if offline
   var %scon = $scon(0)
   while (%scon) {
-if (!$scon(%scon).server) hadd pnp. $+ $scon(%scon) Offline
+    if (!$scon(%scon).server) hadd pnp. $+ $scon(%scon) Offline
     dec %scon
   }
 }

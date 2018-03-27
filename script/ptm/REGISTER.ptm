@@ -4,7 +4,7 @@ script\register.mrc
 ; Peace and Protection
 ; Register, bug report, etc.
 ; ########################################
- 
+
 alias _registerunload {
   if ($dialog(bugrep)) return
   if ($dialog(bugresend)) return
@@ -18,42 +18,42 @@ dialog bugrep {
   icon script\pnp.ico
   option dbu
   size -1 -1 250 192
-   
+
   text "[bug_dialog:instructions]", 1, 5 5 240 20
   radio "&[bug_dialog:bug]", 2, 5 25 50 12, push
   radio "&[bug_dialog:feedback]", 3, 60 25 50 12, push
   box "", 4, 5 40 240 117
-   
+
   text "[bug_dialog:bug_instructions]", 5, 10 50 230 20
-   
+
   edit "", 6, 10 70 230 40, return vsbar multi
-   
+
   text "[bug_dialog:email_instructions]", 7, 10 115 230 25
-   
+
   text "&[bug_dialog:email_prompt]:", 8, 10 142 30 10, right
   edit "", 9, 41 140 100 11, autohs
-   
+
   text "[bug_dialog:continue]", 11, 10 162 150 10
   button "&[bug_dialog:next] >>", 12, 10 175 60 12, disable default
-   
+
   text "[bug_dialog:more_instructions]", 13, 10 50 230 15, hide
-   
+
   check "&[bug_dialog:send_basic]", 14, 10 69 100 8, hide
   check "&[bug_dialog:send_config]", 15, 10 94 100 8, hide
   check "&[bug_dialog:send_debug]", 16, 10 124 100 8, hide
-   
+
   text "[bug_dialog:info_basic]", 17, 110 70 120 20, hide
   text "[bug_dialog:info_config]", 18, 110 95 120 27, hide
   text "[bug_dialog:info_debug]", 19, 110 125 120 30, hide
-   
+
   text "[bug_dialog:bug_final]", 20, 10 162 230 10, hide
   button "&[bug_dialog:send]", 21, 10 175 60 12, hide disable OK
-   
+
   button "<< &[bug_dialog:back]", 22, 95 175 60 12, hide
-   
+
   text "[bug_dialog:feedback_instructions]", 23, 10 50 230 20, hide
   text "[bug_dialog:feedback_final]", 24, 10 162 150 10, hide
-   
+
   button "[dialog:cancel]", 100, 180 175 60 12, cancel
 }
 alias _bug set -u %.option $1 | _dialog -md bugrep bugrep

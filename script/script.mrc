@@ -2,9 +2,9 @@
 ; **********************
 ; Unsorted routines
 ; **********************
- 
+
 ;;;###*** Not yet divided ***###;;;
- 
+
 ; titlebar and other things that change on active window
 on *:ACTIVE:*:{
   _upd.title
@@ -15,7 +15,7 @@ on *:ACTIVE:*:{
 on *:APPACTIVE:{
   if (($appactive) && ($hget(pnp,in.flash))) { hdel pnp in.flash | _upd.title }
 }
- 
+
 ; $modeto(from,to)
 ; returns +- to go from one mode to the other
 alias modeto {
@@ -32,7 +32,7 @@ alias modeto {
   }
   return $iif(%remove,- $+ %remove) $+ $iif(%add,+ $+ %add)
 }
- 
+
 ; umode (to view/edit)
 ; umode +/- (normal changes)
 ; umode * mode (to set to exactly those modes)
@@ -43,43 +43,43 @@ alias umode {
   elseif ($1) .raw mode $me $1-
   else _dialog -am usermode usermode
 }
- 
+
 dialog usermode {
-title "Usermodes"
+  title "Usermodes"
   icon script\pnp.ico
   option dbu
   size -1 -1 182 80
- 
-box "&Current", 1, 5 5 30 52
+
+  box "&Current", 1, 5 5 30 52
   check "+&i", 11, 10 15 18 8
   check "+&s", 12, 10 24 18 8
   check "+&w", 13, 10 33 18 8
   edit "", 14, 10 42 20 11, autohs
- 
-box "&Default", 2, 40 5 30 52
+
+  box "&Default", 2, 40 5 30 52
   check "+&i", 21, 45 15 18 8
   check "+&s", 22, 45 24 18 8
   check "+&w", 23, 45 33 18 8
   edit "", 24, 45 42 20 11, autohs
- 
-box "&Away", 3, 75 5 30 52
+
+  box "&Away", 3, 75 5 30 52
   check "+&i", 31, 80 15 18 8
   check "+&s", 32, 80 24 18 8
   check "+&w", 33, 80 33 18 8
   edit "", 34, 80 42 20 11, autohs
- 
-text "(invisible)", 4, 110 15 60 10
-text "(server notices)", 5, 110 24 60 10
-text "(wallops)", 6, 110 33 60 10
-text "(other)", 7, 110 44 60 10
- 
-button "&Filters...", 104, 150 22 27 10
-button "&Filters...", 105, 150 33 27 10
- 
-button "OK", 101, 25 63 40 12, OK default
-button "Cancel", 102, 70 63 40 12, cancel
-button "&Help", 103, 115 63 40 12, disable
- 
+
+  text "(invisible)", 4, 110 15 60 10
+  text "(server notices)", 5, 110 24 60 10
+  text "(wallops)", 6, 110 33 60 10
+  text "(other)", 7, 110 44 60 10
+
+  button "&Filters...", 104, 150 22 27 10
+  button "&Filters...", 105, 150 33 27 10
+
+  button "OK", 101, 25 63 40 12, OK default
+  button "Cancel", 102, 70 63 40 12, cancel
+  button "&Help", 103, 115 63 40 12, disable
+
   edit $cid, 200, 1 1 1 1, hide autohs
 }
 on *:DIALOG:usermode:init:*:{
@@ -106,7 +106,7 @@ on *:DIALOG:usermode:sclick:101:{
 on *:DIALOG:usermode:sclick:104:config 10
 on *:DIALOG:usermode:sclick:105:config 12
 alias -l _ummerge return $iif($did($calc($1 + 1)).state,i) $+ $iif($did($calc($1 + 2)).state,s) $+ $iif($did($calc($1 + 3)).state,w) $+ $did($calc($1 + 4))
- 
+
 ; Temp - May expand/replace later
 on me:^*:JOIN:#:{
   ; (highlight on join)
@@ -116,11 +116,11 @@ on me:^*:JOIN:#:{
   if ($_cfgi(fill.chan)) _recent chan $_cfgi(num.chan) 0 $chan
   _recseen 10 chan $chan
 }
- 
+
 ;
 ; Userhost queue wrapper
 ;
- 
+
 ; Methods this supports-
 ; Standard- up to five replies per line, no-such-users are missing, blank line if all are no-such-user
 ; Undernet- up to five replies per line, no-such-users produce no-such-user and split reply, blank line if all or last are no-such-user
@@ -132,7 +132,7 @@ on me:^*:JOIN:#:{
 ; * Special markers mark end of each line of requests, and are discarded otherwise (* is a special marker)
 ; Can't (ever) handle ConfRoom doing /userhost a b c and getting :a and :b back
 ; Juryrig sucks- use _blackbox?
- 
+
 raw 401:*no such*:{
   if ($2 == $hget(pnp. $+ $cid,nickrc)) _retakecheck
   var %next = $hget(pnp.quserhost,$cid $+ . $+ $calc($hget(pnp.quserhost,$cid $+ .head) + 1))
@@ -165,11 +165,11 @@ raw 302:*:{
   goto inner
 }
 on *:DISCONNECT:{ hdel -w pnp.quserhost $cid $+ .* }
- 
+
 ;
 ; Channel nick completion
 ;
- 
+
 ;;; clean up?
 alias _do.thenc {
   if (($right($2,1) isin $hget(pnp.config,nc.char)) && ($3)) { var %chr = $right($2,1),%part = $left($2,-1),%msg = $3- }
@@ -222,19 +222,19 @@ alias _nci {
   return $_qnc($1,$2)
 }
 dialog nickcomp {
-title "Selection"
+  title "Selection"
   icon script\pnp.ico
   option dbu
   size -1 -1 70 78
   text "", 1, 1 1 65 14
   list 2, 0 16 70 51, sort
-button "&Select", 3, 10 66 48 10, default ok
+  button "&Select", 3, 10 66 48 10, default ok
   edit "", 4, 1 1 1 1, hide result autohs
   button "", 5, 1 1 1 1, hide cancel
 }
 on *:DIALOG:nickcomp:init:*:{
   if (%.fullmsg) did -a $dname 1 & $+ %.fullmsg
-else did -a $dname 1 ' $+ %.part $+ ' matches multiple nicks $+ $chr(44) please select one:
+  else did -a $dname 1 ' $+ %.part $+ ' matches multiple nicks $+ $chr(44) please select one:
   var %num = $numtok(%.found,44)
   :loop
   if (%num) { did -a $dname 2 $gettok(%.found,%num,44) | dec %num | goto loop }
@@ -243,11 +243,11 @@ else did -a $dname 1 ' $+ %.part $+ ' matches multiple nicks $+ $chr(44) please 
 }
 on *:DIALOG:nickcomp:dclick:2:dialog -k $dname
 on *:DIALOG:nickcomp:sclick:3:did -o $dname 4 1 $did(2,$did(2).sel)
- 
+
 ;
 ; Nick completion identifiers
 ;
- 
+
 ; $_nc(partial)
 ; Returns partial if no match
 alias _nc {
@@ -402,66 +402,66 @@ alias _nccs {
   if (%num < $numtok($3-,$1)) { inc %num | goto loop }
   return %ret
 }
- 
+
 ;
 ; Adds nick to recent nicknames; detects query-open flood
 ;
- 
+
 on ^*:OPEN:?:*:{
   if (($notify($nick) == $null) && ($level($fulladdress) == $dlevel)) {
     if ($hget(pnp.flood. $+ $cid,newqueryhalt)) { hadd -u60 pnp.flood. $+ $cid newqueryhalt 1 | halt }
     if ($_genflood(newquery,$_cfgi(xquery.cfg))) {
       hadd -u60 pnp.flood. $+ $cid newqueryhalt 1
-_alert Flood Query flood detected- Further queries from unknown users won't be opened
+      _alert Flood Query flood detected- Further queries from unknown users won't be opened
       halt
     }
   }
   _recseen 10 user $nick
 }
- 
+
 ;
 ; Ignore
 ;
- 
+
 dialog ignore {
-title "Ignore User"
+  title "Ignore User"
   icon script\pnp.ico
   option dbu
   size -1 -1 150 138
- 
-box "&Ignoring:", 101, 5 5 140 27
+
+  box "&Ignoring:", 101, 5 5 140 27
   combo 1, 10 15 130 50, edit drop
- 
-box "Duration:", 102, 5 34 140 33
-radio "&Permanent", 5, 10 44 130 8
-radio "&Ignore for", 6, 10 54 40 8
-text "minutes", 103, 74 55 60 10
+
+  box "Duration:", 102, 5 34 140 33
+  radio "&Permanent", 5, 10 44 130 8
+  radio "&Ignore for", 6, 10 54 40 8
+  text "minutes", 103, 74 55 60 10
   edit "1", 7, 52 52 20 11
- 
-text "&Ignore:", 104, 10 73 23 10, right
+
+  text "&Ignore:", 104, 10 73 23 10, right
   combo 8, 35 71 100 60, drop
-check "&All networks", 11, 35 84 110 8
-check "&Tell user that they are being ignored:", 9, 35 93 110 8
+  check "&All networks", 11, 35 84 110 8
+  check "&Tell user that they are being ignored:", 9, 35 93 110 8
   edit "", 10, 43 103 100 11, autohs disable
- 
-button "&Ignore", 201, 5 120 40 12, OK default result
-button "Cancel", 202, 55 120 40 12, cancel
-button "&Help", 203, 105 120 40 12, disable
-  
+
+  button "&Ignore", 201, 5 120 40 12, OK default result
+  button "Cancel", 202, 55 120 40 12, cancel
+  button "&Help", 203, 105 120 40 12, disable
+
   edit $cid, 300, 1 1 1 1, hide autohs
 }
 on *:DIALOG:ignore:init:*:{
   var %opt = $_dlgi(ign)
   if (%opt == $null) %opt = 5 10 1 0 0
- 
+
   loadbuf -otignore $dname 8 script\dlgtext.dat
- 
-if (* !isin $gettok(%.mask,1,33)) did -o $dname 101 1 Ignoring: ( $+ $gettok(%.mask,1,33) $+ )
+
+  if (* !isin $gettok(%.mask,1,33)) did -o $dname 101 1 Ignoring: ( $+ $gettok(%.mask,1,33) $+ )
   else did -b $dname 9
   _ddaddm $dname 1 %.mask 022 030 100 002 111
   did -c $dname 1 1
   unset %.mask
- 
+
   did -c $dname $gettok(%opt,1,32)
   if ($gettok(%opt,1,32) == 5) did -b $dname 7
   did -o $dname 7 1 $gettok(%opt,2,32)
@@ -506,9 +506,9 @@ alias ign {
   elseif (($query(%who) == %who) && ($query(%who).address != %who)) %mask = %who $+ ! $+ $ifmatch
   elseif ($address(%who,5)) %mask = $ifmatch
   else {
-dispa Looking up address of $:t(%who) $+ ...
+    dispa Looking up address of $:t(%who) $+ ...
     _notconnected
-_Q.userhost ign $+ %flag $+ &n!&a $+ $3 dispa $+ User $+ $:t(%who) $+ notfound %who
+    _Q.userhost ign $+ %flag $+ &n!&a $+ $3 dispa $+ User $+ $:t(%who) $+ notfound %who
     halt
   }
   if (r isin %flag) {
@@ -519,14 +519,14 @@ _Q.userhost ign $+ %flag $+ &n!&a $+ $3 dispa $+ User $+ $:t(%who) $+ not
       if ((%mask iswm $ignore(%num)) || ($ignore(%num) iswm %mask)) {
         inc %count
         %who = $ignore(%num)
-dispa Removed $:s(%who) from ignore list
+        dispa Removed $:s(%who) from ignore list
         .ignore -r $+ $iif($ignore(%num).network == $null,w) %who
         scid -at1 _nickcol.updatemask %who 1
       }
       dec %num | goto loop
     }
-if (%count) dispa Removed $:t(%count) ignore $+ $chr(40) $+ s $+ $chr(41) total
-else dispa No ignores matching $:s(%mask) found to remove
+    if (%count) dispa Removed $:t(%count) ignore $+ $chr(40) $+ s $+ $chr(41) total
+    else dispa No ignores matching $:s(%mask) found to remove
   }
   elseif (%flag != -) {
     if ($3 isnum) %who = $_ppmask(%mask,$3)
@@ -545,12 +545,12 @@ else dispa No ignores matching $:s(%mask) found to remove
   }
   else { set %.mask %mask | _ssplay Dialog | return $dialog(ignore,ignore,-4) }
 }
- 
+
 ;
 ; Nickname retake
 ;
 alias _retakecheck {
-if ($hget(pnp. $+ $cid,net) == Offline) halt
+  if ($hget(pnp. $+ $cid,net) == Offline) halt
   .timer.nickretake. $+ $cid 1 15 _retakecheck
   if ($hget(pnp. $+ $cid,-sp.count) > 20) halt
   _linedance _Q.userhost halt _donretake $hget(pnp. $+ $cid,-nickrc)
@@ -564,14 +564,14 @@ on *:NOTICE:*Your ghost has been killed*:?:if ($hget(pnp. $+ $cid,-nickrc)) .tim
 on *:NOTICE:*Nick*has been released from custody*:?:if ($hget(pnp. $+ $cid,-nickrc)) .timer.nickretake. $+ $cid 1 1 _retakecheck
 alias _donretake {
   if ($hget(pnp. $+ $cid,-nickrc)) {
-disptn -a $hget(pnp. $+ $cid,-nickrc) Nickname no longer in use. Changing to nick...
+    disptn -a $hget(pnp. $+ $cid,-nickrc) Nickname no longer in use. Changing to nick...
     nick $hget(pnp. $+ $cid,-nickrc)
   }
   .timer.nickretake. $+ $cid off
   hdel pnp. $+ $cid -nickrc
   hdel pnp. $+ $cid -nickretake
 }
- 
+
 ;
 ; Channel rejoin
 ;
@@ -583,17 +583,17 @@ alias repjoin {
         hdel pnp. $+ $cid -repjoin
         .timer.repjoin. $+ $cid off
       }
-dispa Removed $:s($1) from rejoin attempts
+      dispa Removed $:s($1) from rejoin attempts
     }
     else {
       hadd pnp. $+ $cid -repjoin $addtok($hget(pnp. $+ $cid,-repjoin),$1,44)
-dispa Added $:s($1) to rejoin attempts; You will attempt to rejoin every 20 seconds; Use /repjoin -c to cancel
+      dispa Added $:s($1) to rejoin attempts; You will attempt to rejoin every 20 seconds; Use /repjoin -c to cancel
       .timer.repjoin. $+ $cid 0 20 _linedance .raw join $!hget(pnp. $+ $cid $+ ,-repjoin)
     }
   }
   elseif ($1 == -c) {
-if ($hget(pnp. $+ $cid,-repjoin),$1,44) dispa All rejoin attempts cancelled
-else dispa No channel rejoins being attempted
+    if ($hget(pnp. $+ $cid,-repjoin),$1,44) dispa All rejoin attempts cancelled
+    else dispa No channel rejoins being attempted
     hdel pnp. $+ $cid -repjoin
     .timer.repjoin. $+ $cid off
   }
@@ -605,11 +605,11 @@ else dispa No channel rejoins being attempted
     }
   }
   else {
-if ($hget(pnp. $+ $cid,-repjoin)) { dispa You are currently attempting to rejoin: $:l($hget(pnp. $+ $cid,-repjoin)) | dispa Use /repjoin $chr(35) $+ chan to add or remove channels | dispa Use /repjoin -c to clear all rejoins }
-else { dispa No channel rejoins being attempted | dispa Use /repjoin $chr(35) $+ chan to add or remove channels }
+    if ($hget(pnp. $+ $cid,-repjoin)) { dispa You are currently attempting to rejoin: $:l($hget(pnp. $+ $cid,-repjoin)) | dispa Use /repjoin $chr(35) $+ chan to add or remove channels | dispa Use /repjoin -c to clear all rejoins }
+    else { dispa No channel rejoins being attempted | dispa Use /repjoin $chr(35) $+ chan to add or remove channels }
   }
 }
- 
+
 ;
 ; Connect routines- Obtain my address, network, services, and determine server features from version
 ;
@@ -617,7 +617,7 @@ else { dispa No channel rejoins being attempted | dispa Use /repjoin $chr(35) $+
 ; network from 1 raw, 4 raw, or certain connection data
 ; services from network name
 ; features from raws or network name
- 
+
 raw 1:& Welcome to & IRC *:_do.raw1 $4 $1-
 raw 1:& Welcome to IRC at & *:_do.raw1 $6 $1-
 raw 1:& Welcome to the & *network *:_do.raw1 $5 $1-
@@ -633,15 +633,15 @@ alias -l _do.raw1 {
   hadd pnp. $+ $cid -signon progress
   _upd.title
   remini config\ $+ $hget(pnp,user) $+ \config.ini c
- 
+
   _cfgw lastserv $server $port
   _recent srv 9 44 $server $+ , $port
   if ($_cfgi($iif($hget(pnp. $+ $cid,away),uaway,umode)) != $null) umode $ifmatch
 }
- 
+
 raw 4:*:{
   if ((nn-* iswm $3) && ($hget(pnp. $+ $cid,net) == internet)) hadd pnp. $+ $cid net NewNet
- 
+
   ; Find matching server version for "additional features", max modes, num targets, identd prefixes
   window -hl @.servfeat
   loadbuf @.servfeat script\servfeat.dat
@@ -655,7 +655,7 @@ raw 4:*:{
   }
   elseif (%num > 1) { dec %num | goto loop }
   window -c @.servfeat
- 
+
   ; Network
   if ($hget(pnp. $+ $cid,net) == internet) {
     hadd pnp. $+ $cid net $_cap1st($network)
@@ -664,7 +664,7 @@ raw 4:*:{
   }
   if ((CR* iswm $3) && ($hget(pnp. $+ $cid,net) == internet)) hadd pnp. $+ $cid net $_cap1st($gettok($server,$count($server,.),46))
 }
- 
+
 raw 5:*:{
   ; Decode raw 5- Add to feat / etc. as found
   if ($findtok($2-,WALLCHOPS,1,32)) hadd pnp. $+ $cid -feat $hget(pnp. $+ $cid,-feat) $+ @
@@ -683,12 +683,12 @@ raw 5:*:{
   }
   if ($wildtok($2-,NICKLEN=*,1,32)) hadd pnp. $+ $cid -nicklen $gettok($ifmatch,2,61)
 }
- 
+
 raw 250:*Highest connection count*:if (($hget(pnp. $+ $cid,net) == internet) && ($network == $null)) hadd pnp. $+ $cid net EFNet
 raw 265:*Current local*:if (($hget(pnp. $+ $cid,net) == internet) && ($network == $null)) hadd pnp. $+ $cid net EFNet
 raw 251:*There are & users plus & invisible and & services on & servers:if (($hget(pnp. $+ $cid,net) == internet) && ($network == $null)) hadd pnp. $+ $cid net IRCnet
 raw 255:*I have & clients, & services and & servers:if (($hget(pnp. $+ $cid,net) == internet) && ($network == $null)) hadd pnp. $+ $cid net IRCnet
- 
+
 ; MOTD missing
 raw 422:*:_fin.signon
 ; Start of MOTD
@@ -701,22 +701,22 @@ alias -l _fin.signon {
   if ($hget(pnp. $+ $cid,net) == internet) hadd pnp. $+ $cid net $iif(*.oz.org iswm $server,Oz_ORG,$_cap1st($gettok($server,$count($server,.),46)))
   ; Always override with favorites network setting
   if ($_favfindnet($server)) hadd pnp. $+ $cid net $ifmatch
-  
+
   ; Verify network has only alphanumerics
   hadd pnp. $+ $cid net $_escape2($hget(pnp. $+ $cid,net))
- 
+
   ; If matched server is *, load certain features from mirc vars
   if ($hget(pnp. $+ $cid,-matched) == *) {
     hadd pnp. $+ $cid -modes $modespl
   }
   hdel pnp. $+ $cid -matched
- 
+
   ; Determine services on network and approx. number of servers
   tokenize 32 $read(script\netwfeat.dat,tns,$hget(pnp. $+ $cid,net))
   hadd pnp. $+ $cid -serv $1
   hadd pnp. $+ $cid -servopt $2
   hadd pnp. $+ $cid -servaddr $replace($3-,???,$gettok($server,-2-,46))
- 
+
   ; Chops all servnicks pre-@; replaces ??? in addresses
   var %servnick = $3-
   var %num = $numtok(%servnick,32)
@@ -725,17 +725,17 @@ alias -l _fin.signon {
     dec %num
   }
   hadd pnp. $+ $cid -servnick %servnick
- 
+
   _ssplay Connect
   .signal PNP.SIGNON
   if (($mouse.key !& 2) || ($mouse.key !& 4)) .timer -m 1 0 fav j x
   _upd.title
 }
- 
+
 alias _trackcode if (*!*@* !iswm $hget(pnp. $+ $cid,-myself)) hadd pnp. $+ $cid -myself $me | _Q.userhost _addself&n!&a _trackcode $me
 alias _addself hadd pnp. $+ $cid -myself $1
- 
- 
+
+
 ; $msg.compile(msgtext,&var1&,var1value,&var2&,var2value,...)
 ; Compiles a message. msgtext may contain &vars& that are replaced, or $idents(...) that are run.
 ; Uses regex, etc. to prevent any double-evaluation of any vars or any idents that may be within a var.
@@ -746,7 +746,7 @@ alias msg.compile {
   var %col = 02 03 04 05 06 07 10 12 13 14
   var %new
   var %leftspace = 1
- 
+
   ; Fill local %&vars&
   if ($prop != recurse) {
     var %&me& = $me
@@ -759,9 +759,9 @@ alias msg.compile {
       inc %pos 2
     }
   }
- 
+
   var %pos = 1
-  
+
   ; find next instance of a &var&, $ident( ), or special character needing escaping
   while ($regex(msgc,$mid($1,%pos),/(&[-_.a-zA-Z0-9\[\]]+&|\$[-_.a-zA-Z0-9\x3A]+\([^\ $+ $chr(41) $+ ]*\)|[%#{|}\[\]$])/)) {
     var %found = $regml(msgc,1)
@@ -825,13 +825,13 @@ alias msg.compile {
     ; Next position
     %pos = %foundpos + %foundlen
   }
-  
+
   ; Append any remaining portion
   if (%pos <= $len($1)) {
     if (($mid($1,%pos,1) == $chr(32)) || (%new == $null)) %new = %new $mid($1,%pos)
     else %new = %new $!+ $mid($1,%pos)
   }
-  
+
   ; Return result- recursed?
   if ($prop == recurse) return %new
   set -n %new [ [ %new ] ]
@@ -839,7 +839,7 @@ alias msg.compile {
 }
 alias -l msg.recurse { return $msg.compile($1,$2).recurse }
 alias _stripout if ($hget(pnp.config,strip.auto)) return $strip($1-) | return $1-
- 
+
 ; $_msg(code[,msg])
 ; Returns a message from current scheme; default if none; uses msg if present; Handles !Random:* stuff
 alias _msg {
@@ -854,7 +854,7 @@ alias _msg {
   if (!Random:* iswm %found) %found = $read($gettok(%found,2-,58),n)
   return %found
 }
- 
+
 ; $_msgwrap(wrapcode,msgcode[,msg])
 ; Used for kick wrappers / etc.
 ; &msg& is done with normal $replace, very unlikely this will cause a problem

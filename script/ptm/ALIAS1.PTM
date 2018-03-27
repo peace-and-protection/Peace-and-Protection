@@ -61,12 +61,12 @@ _chrescape {
   var %new
   var %leftspace = 1
   var %pos = 1
-  
+
   while ($regex(prep,$mid($1,%pos),/([ $+ $2 $+ ])/)) {
     var %found = $regml(prep,1)
     var %foundpos = $calc($regml(prep,1).pos + %pos - 1)
     var %foundlen = $len(%found)
-    
+
     ; Append any non-matching portion now
     if (%foundpos > %pos) {
       if (($mid($1,%pos,1) == $chr(32)) || (%new == $null)) %new = %new $mid($1,%pos,$calc(%foundpos - %pos))
@@ -80,13 +80,13 @@ _chrescape {
     ; Next position
     %pos = %foundpos + %foundlen
   }
-  
+
   ; Append any remaining portion
   if (%pos <= $len($1)) {
     if (($mid($1,%pos,1) == $chr(32)) || (%new == $null)) %new = %new $mid($1,%pos)
     else %new = %new $!+ $mid($1,%pos)
   }
-  
+
   return %new
 }
 
@@ -510,7 +510,7 @@ dns {
   else { %dns = $_nc($1) | %type = -n }
   if ($show) {
     _Q.dns _dnsshow _dnsfail %type %dns
-    
+
     if (%type == -n) set -u %::nick %dns
     else set -u %::address %dns
     set -u %:echo echo $color(other) -t $+ $_cfgi(eroute)

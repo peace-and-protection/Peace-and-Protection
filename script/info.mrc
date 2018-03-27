@@ -3,17 +3,17 @@
 ; Peace and Protection
 ; Bulk info- channel info, clone info, server ping, stats, etc.
 ; ########################################
- 
+
 ;
 ; Speedy clone scan
 ;
- 
+
 ; /clones [-action] [#chan] [nick|mask]
 alias _cln if ($nick($1,0)) { :loop | aline @.clonedat $gettok($address($nick($1,$ifmatch),5),2-,64) | if ($calc($ifmatch - 1)) goto loop }
 alias clones {
-if ($ial == $false) _error The IAL is not enabled!You need the IAL for that command.
+  if ($ial == $false) _error The IAL is not enabled!You need the IAL for that command.
   _ssplit cc /clones $1-
-if ($chan(%.chan.cc).ial != $true) _error The IAL is not fully updated.Wait a few seconds and try again.
+  if ($chan(%.chan.cc).ial != $true) _error The IAL is not fully updated.Wait a few seconds and try again.
   if ($window(@Clones)) window -c @Clones
   _window 2. -hlnv -t20,35 @Clones -1 -1 -1 -1 @Clones
   var %num,%mask,%chan = %.chan.cc,%targ = %.targ.cc
@@ -49,54 +49,54 @@ if ($chan(%.chan.cc).ial != $true) _error The IAL is not fully updated.Wait a f
   }
   :done
   window -c @.clonedat
- 
+
   if ($_ismask(%targ)) {
-if ($sline(@Clones,0)) titlebar @Clones ( $+ %chan $+ ) $ifmatch user $+ $chr(40) $+ s $+ $chr(41) matching %targ
+    if ($sline(@Clones,0)) titlebar @Clones ( $+ %chan $+ ) $ifmatch user $+ $chr(40) $+ s $+ $chr(41) matching %targ
     else {
       window -c @Clones | _dowcleanup @Clones
-disprc %chan No users matching $:s(%targ) found on channel.
+      disprc %chan No users matching $:s(%targ) found on channel.
     }
   }
   elseif (%targ) {
-if ($sline(@Clones,0) > 1) titlebar @Clones ( $+ %chan $+ ) $ifmatch clones from %targ
+    if ($sline(@Clones,0) > 1) titlebar @Clones ( $+ %chan $+ ) $ifmatch clones from %targ
     else {
       window -c @Clones | _dowcleanup @Clones
-disprc %chan User $:t(%targ) does not have any clones.
+      disprc %chan User $:t(%targ) does not have any clones.
     }
   }
   else {
-if ($sline(@Clones,0)) titlebar @Clones ( $+ %chan $+ ) $ifmatch clones found
+    if ($sline(@Clones,0)) titlebar @Clones ( $+ %chan $+ ) $ifmatch clones found
     else {
       window -c @Clones | _dowcleanup @Clones
-disprc %chan No clones found on channel.
+      disprc %chan No clones found on channel.
     }
   }
   if ($window(@Clones)) {
     window -aw @Clones
-iline -a @Clones 1 Select one or more users and right-click for options.
+    iline -a @Clones 1 Select one or more users and right-click for options.
     sline -r @Clones 1
     iline @Clones 2  
-iline @Clones 3 Nickname	Userid	Hostname
+    iline @Clones 3 Nickname	Userid	Hostname
     iline @Clones 4  
   }
 }
- 
+
 alias -l _clonepop set -u1 %.clonepop $iif(($sline($active,1).ln > 4) && ($numtok($sline($active,1),9) > 1),1,0)
 menu @Clones {
   $_clonepop:{ }
-$iif(%.clonepop,Ping):ping $_clonesel
-$iif(%.clonepop,Whois):whois $_clonesel
+  $iif(%.clonepop,Ping):ping $_clonesel
+  $iif(%.clonepop,Whois):whois $_clonesel
   -
-$iif(%.clonepop,Warn...):_clonedo warn $_entry(0,$_s2p($_clonewarn),Warning to send?)
+  $iif(%.clonepop,Warn...):_clonedo warn $_entry(0,$_s2p($_clonewarn),Warning to send?)
   -
-$iif(%.clonepop,Kick...):_clonedo kick $_rentry(kick,0,$_s2p($_clonewhy),Reason for kick?)
-$iif(%.clonepop,Cloneban...):_clonedo cb $_rentry(kick,0,$_s2p($_clonewhy),Reason for cloneban?)
+  $iif(%.clonepop,Kick...):_clonedo kick $_rentry(kick,0,$_s2p($_clonewhy),Reason for kick?)
+  $iif(%.clonepop,Cloneban...):_clonedo cb $_rentry(kick,0,$_s2p($_clonewhy),Reason for cloneban?)
   -
-Select all
+  Select all
   .$iif(%.clonepop,$replace($gettok($sline($active,1),2-3,9),	,@	)):_selectallw $active 5 * $+ $gettok($sline($active,1),2-3,9)
   .$iif(%.clonepop,	 $+ $gettok($sline($active,1),3,9)):_selectallw $active 5 * $+ $gettok($sline($active,1),3,9)
   .-
-.	All users:_selectallw $active 5 *	*
+  .	All users:_selectallw $active 5 *	*
   -
 }
 alias -l _clonewarn if (clone isin $gettok($window($active).title,3,32)) { if ($_dlgi(clonewarn)) return $_readprep($ifmatch) | return I have detected &num& clones from you $chr(40) $+ &host& $+ $chr(41) Please remove them at once. } | return
@@ -136,7 +136,7 @@ alias -l _clonesel {
   if (%num < $sline($active,0)) { inc %num | goto loop }
   return %all
 } 
- 
+
 ;
 ; Chan info
 ;
@@ -144,15 +144,15 @@ alias chaninfo {
   _notconnected /chaninfo
   _simsplit ci /chaninfo $1-
   hadd pnp. $+ $cid -chaninfo $hget(pnp. $+ $cid,-chaninfo) %.chan.ci
-disprc %.chan.ci Retrieving channel info...
+  disprc %.chan.ci Retrieving channel info...
   .raw mode %.chan.ci
   .raw topic %.chan.ci
   .raw names %.chan.ci
 }
 alias count {
   _simsplit ci /count $1-
-if ($me !ison %.chan.ci) _error You are not on %.chan.ci $+ ! $+ $chr(40) $+ You must be on a channel to use /count $+ $chr(41)
- 
+  if ($me !ison %.chan.ci) _error You are not on %.chan.ci $+ ! $+ $chr(40) $+ You must be on a channel to use /count $+ $chr(41)
+
   set -u %::chan %.chan.ci
   set -u %::count $nick(%.chan.ci,0)
   set -u %::countreg $nick(%.chan.ci,0,r)
@@ -164,48 +164,48 @@ if ($me !ison %.chan.ci) _error You are not on %.chan.ci $+ ! $+ $chr(40) $+ Yo
   }
   set -u %:echo echo $:c1 -ti2 %.chan.ci
   set -u %:linesep dispr-div %.chan.ci
- 
+
   dispr-div %.chan.ci
   theme.text RAW.366uc
   dispr-div %.chan.ci
 }
- 
+
 ; /scan [#chan] [[=]adhilmrsw]
 alias scan {
   if (=* iswm $1) %.msg.ci = $1 | else _simsplit ci /scan $1-
-if (=* iswm %.msg.ci) { _cfgw scan.flag $right(%.msg.ci,-1) | dispa Default scan flags set to $:s($right(%.msg.ci,-1)) | return }
+  if (=* iswm %.msg.ci) { _cfgw scan.flag $right(%.msg.ci,-1) | dispa Default scan flags set to $:s($right(%.msg.ci,-1)) | return }
   if (%.msg.ci == $null) {
     set %.chan.ci %.chan.ci
     _ssplay Dialog
     _simsplit ci /scan $$dialog(scan,scan,-4)
   }
-disprc %.chan.ci Scanning channel...
+  disprc %.chan.ci Scanning channel...
   _who.queue %.chan.ci _fin.scan $gettok(%.msg.ci,1,32)
 }
 alias _fin.scan {
   if ($hget(pnp. $+ $cid,-dwho.num) < 1) {
-disprc $2 Scan results - No users found
+    disprc $2 Scan results - No users found
     return
   }
   var %ppl,%best,%num,%where,%win,%flags = $1
   if ($remove(%flags,r,d)) {
     if (r isin %flags) { _info /scan | %win = @Info } | else %win = $2
     dispr-div %win
-disptc %win $2 Scan results for $:t($hget(pnp. $+ $cid,-dwho.num)) user $+ $chr(40) $+ s $+ $chr(41) $+ -
+    disptc %win $2 Scan results for $:t($hget(pnp. $+ $cid,-dwho.num)) user $+ $chr(40) $+ s $+ $chr(41) $+ -
     if (a isin %flags) {
       var %here = $calc($hget(pnp. $+ $cid,-dwho.num) - $hget(pnp. $+ $cid,-dwho.gone))
-disptc %win $2 Away- $:t($hget(pnp. $+ $cid,-dwho.gone)) user $+ $chr(40) $+ s $+ $chr(41) $:s($_p($hget(pnp. $+ $cid,-dwho.gone),$hget(pnp. $+ $cid,-dwho.num)))
-disptc %win $2 Here- $:t(%here) user $+ $chr(40) $+ s $+ $chr(41) $:s($_p(%here,$hget(pnp. $+ $cid,-dwho.num)))
+      disptc %win $2 Away- $:t($hget(pnp. $+ $cid,-dwho.gone)) user $+ $chr(40) $+ s $+ $chr(41) $:s($_p($hget(pnp. $+ $cid,-dwho.gone),$hget(pnp. $+ $cid,-dwho.num)))
+      disptc %win $2 Here- $:t(%here) user $+ $chr(40) $+ s $+ $chr(41) $:s($_p(%here,$hget(pnp. $+ $cid,-dwho.num)))
     }
     if (w isin %flags) {
       if ($hget(pnp. $+ $cid,-dwho.gone) == 0) {
-if (a !isin %flags) disptc %win $2 Away- None
+        if (a !isin %flags) disptc %win $2 Away- None
       }
       else {
-disptc %win $2 Away- $:l($hget(pnp. $+ $cid,-dwho.away))
+        disptc %win $2 Away- $:l($hget(pnp. $+ $cid,-dwho.away))
         var %count = 1
         while ($hget(pnp. $+ $cid,-dwho.away $+ %count)) {
-disptc %win $2 Away- $:l($hget(pnp. $+ $cid,-dwho.away $+ %count))
+          disptc %win $2 Away- $:l($hget(pnp. $+ $cid,-dwho.away $+ %count))
           inc %count
         }
       }
@@ -213,19 +213,19 @@ disptc %win $2 Away- $:l($hget(pnp. $+ $cid,-dwho.away $+ %count))
     if (i isin %flags) {
       var %count = $numtok($hget(pnp. $+ $cid,-dwho.ircop),32)
       if (%count < 1) {
-disptc %win $2 IRCop- None
+        disptc %win $2 IRCop- None
       }
       else {
-disptc %win $2 IRCop- $:t(%count) user $+ $chr(40) $+ s $+ $chr(41) $:s($_p(%count,$hget(pnp. $+ $cid,-dwho.num)))
-disptc %win $2 IRCop- $:l($hget(pnp. $+ $cid,-dwho.ircop))
+        disptc %win $2 IRCop- $:t(%count) user $+ $chr(40) $+ s $+ $chr(41) $:s($_p(%count,$hget(pnp. $+ $cid,-dwho.num)))
+        disptc %win $2 IRCop- $:l($hget(pnp. $+ $cid,-dwho.ircop))
         var %count = 1
         while ($hget(pnp. $+ $cid,-dwho.ircop $+ %count)) {
-disptc %win $2 IRCop- $:l($hget(pnp. $+ $cid,-dwho.ircop $+ %count))
+          disptc %win $2 IRCop- $:l($hget(pnp. $+ $cid,-dwho.ircop $+ %count))
           inc %count
         }
       }
     }
-if (h isin %flags) disptc %win $2 Hops- $:t($round($calc($hget(pnp. $+ $cid,-dwho.hops) / $hget(pnp. $+ $cid,-dwho.num)),1)) average hops among $:t($_who.countseries(-dwho.serv)) unique server $+ $chr(40) $+ s $+ $chr(41)
+    if (h isin %flags) disptc %win $2 Hops- $:t($round($calc($hget(pnp. $+ $cid,-dwho.hops) / $hget(pnp. $+ $cid,-dwho.num)),1)) average hops among $:t($_who.countseries(-dwho.serv)) unique server $+ $chr(40) $+ s $+ $chr(41)
     if ((s isin %flags) || (l isin %flags)) {
       var %count,%best = -1
       ; Find best server
@@ -244,15 +244,15 @@ if (h isin %flags) disptc %win $2 Hops- $:t($round($calc($hget(pnp. $+ $cid,-dwh
       dec %best
       if ((m isin %flags) && ($me ison $2) && (%where == $server)) goto your
       _recseen 10 serv %where
-if (s isin %flags) disptc %win $2 Favorite server- $:s(%where) with $:t(%best) user $+ $chr(40) $+ s $+ $chr(41) $:s($_p(%best,$hget(pnp. $+ $cid,-dwho.num)))
+      if (s isin %flags) disptc %win $2 Favorite server- $:s(%where) with $:t(%best) user $+ $chr(40) $+ s $+ $chr(41) $:s($_p(%best,$hget(pnp. $+ $cid,-dwho.num)))
       if (l isin %flags) {
         %ppl = $hget(pnp. $+ $cid,-dwho. $+ %where)
         %ppl = $gettok(%ppl,2-,32)
-if (s isin %flags) disptc %win $2 Favorite server- $:l(%ppl)
-else disptc %win $2 Favorite server- ( $+ $:s(%where) $+ ) $:l(%ppl)
+        if (s isin %flags) disptc %win $2 Favorite server- $:l(%ppl)
+        else disptc %win $2 Favorite server- ( $+ $:s(%where) $+ ) $:l(%ppl)
         var %count = 1
         while ($hget(pnp. $+ $cid,-dwho. $+ %where $+ %count)) {
-disptc %win $2 Favorite server- $:l($hget(pnp. $+ $cid,-dwho. $+ %where $+ %count))
+          disptc %win $2 Favorite server- $:l($hget(pnp. $+ $cid,-dwho. $+ %where $+ %count))
           inc %count
         }
       }
@@ -263,9 +263,9 @@ disptc %win $2 Favorite server- $:l($hget(pnp. $+ $cid,-dwho. $+ %where $+ %coun
       %ppl = $gettok(%ppl,2-,32)
       %best = $_who.countseries(-dwho. $+ $server) - 1
       %num = %best - 1
-if (%where == $server) %where = Favorite server (your server)-
-else %where = Your server-
-disptc %win $2 %where $:s($server) with $:t(%best) user $+ $chr(40) $+ s $+ $chr(41) $:s($_p(%best,$hget(pnp. $+ $cid,-dwho.num))) (not counting you- $:t(%num) user $+ $chr(40) $+ s $+ $chr(41) $:s($_p(%num,$hget(pnp. $+ $cid,-dwho.num))) $+ )
+      if (%where == $server) %where = Favorite server (your server)-
+      else %where = Your server-
+      disptc %win $2 %where $:s($server) with $:t(%best) user $+ $chr(40) $+ s $+ $chr(41) $:s($_p(%best,$hget(pnp. $+ $cid,-dwho.num))) (not counting you- $:t(%num) user $+ $chr(40) $+ s $+ $chr(41) $:s($_p(%num,$hget(pnp. $+ $cid,-dwho.num))) $+ )
       disptc %win $2 %where $:l(%ppl)
       var %count = 1
       while ($hget(pnp. $+ $cid,-dwho. $+ $server $+ %count)) {
@@ -279,7 +279,7 @@ disptc %win $2 %where $:s($server) with $:t(%best) user $+ $chr(40) $+ s $+ $chr
     if ($window(@ServerDetails)) window -c @ServerDetails
     _window 2.6 -lv -t25,30,35,40 @ServerDetails -1 -1 -1 -1 @ServerDetails
     %num = $_who.countseries(-dwho.serv)
-titlebar @ServerDetails - $2 ( $+ $hget(pnp. $+ $cid,-dwho.num) user $+ $chr(40) $+ s $+ $chr(41) / %num server $+ $chr(40) $+ s $+ $chr(41) $+ )
+    titlebar @ServerDetails - $2 ( $+ $hget(pnp. $+ $cid,-dwho.num) user $+ $chr(40) $+ s $+ $chr(41) / %num server $+ $chr(40) $+ s $+ $chr(41) $+ )
     var %count
     :loop2a
     var %var = -dwho.serv $+ %count,%num = $numtok($hget(pnp. $+ $cid,%var),32)
@@ -293,31 +293,31 @@ titlebar @ServerDetails - $2 ( $+ $hget(pnp. $+ $cid,-dwho.num) user $+ $chr(40)
     if (%num > 1) { dec %num | goto loop2b }
     inc %count
     if ($hget(pnp. $+ $cid,-dwho.serv $+ %count) != $null) goto loop2a
-iline @ServerDetails 1 Double-click to connect to a server $+ $chr(44) right-click for options
-iline @ServerDetails 2 $chr(40) $+ 'hops' is a count of servers between you and a given server $+ $chr(41)
+    iline @ServerDetails 1 Double-click to connect to a server $+ $chr(44) right-click for options
+    iline @ServerDetails 2 $chr(40) $+ 'hops' is a count of servers between you and a given server $+ $chr(41)
     iline @ServerDetails 3  
-iline @ServerDetails 4 Server	Hops	Ping	Num	Users
+    iline @ServerDetails 4 Server	Hops	Ping	Num	Users
     iline @ServerDetails 5  
     if (($hget(pnp,detailsort) == 1) || ($hget(pnp,detailsort) == 4)) _servdsort $ifmatch
     else _servdsort 2
     window -b @ServerDetails
   }
 }
- 
+
 menu @ServerDetails {
   dclick:if ($1 > 5) server $gettok($line(@ServerDetails,$1),1,9) ?
-$iif($sline(@ServerDetails,1).ln > 5,Connect...):server $gettok($sline(@ServerDetails,1),1,9) ?
+  $iif($sline(@ServerDetails,1).ln > 5,Connect...):server $gettok($sline(@ServerDetails,1),1,9) ?
   -
-$iif($sline(@ServerDetails,1).ln > 5,Ping server):_sdping 1
-Ping all:_sdping 6
+  $iif($sline(@ServerDetails,1).ln > 5,Ping server):_sdping 1
+  Ping all:_sdping 6
   -
-Sort
-.$iif($hget(pnp,detailsort) == 1,$style(1)) by name:_servdsort 1
-.$iif($hget(pnp,detailsort) == 2,$style(1)) by hops:_servdsort 2
-.$iif($hget(pnp,detailsort) == 3,$style(1)) by ping:_servdsort 3
-.$iif($hget(pnp,detailsort) == 4,$style(1)) by user count:_servdsort 4
+  Sort
+  .$iif($hget(pnp,detailsort) == 1,$style(1)) by name:_servdsort 1
+  .$iif($hget(pnp,detailsort) == 2,$style(1)) by hops:_servdsort 2
+  .$iif($hget(pnp,detailsort) == 3,$style(1)) by ping:_servdsort 3
+  .$iif($hget(pnp,detailsort) == 4,$style(1)) by user count:_servdsort 4
   -
-Refresh:scan $gettok($window(@ServerDetails).title,2,32) d
+  Refresh:scan $gettok($window(@ServerDetails).title,2,32) d
 }
 alias _servdsort {
   hadd pnp detailsort $1
@@ -329,38 +329,38 @@ alias -l _sdping {
   if ($1 == 6) %line = $line(@ServerDetails,%num) | else %line = $sline(@ServerDetails,%num)
   if (%line) {
     _linedance .sping $gettok($ifmatch,1,9) @ServerDetails
-rline -a @ServerDetails $iif($1 == 6,%num,$sline(@ServerDetails,%num).ln) $puttok(%line,(ping...),3,9)
+    rline -a @ServerDetails $iif($1 == 6,%num,$sline(@ServerDetails,%num).ln) $puttok(%line,(ping...),3,9)
     inc %num | goto loop
   }
 }
- 
+
 ; /scan dialog
 dialog scan {
-title "Channel Scan"
+  title "Channel Scan"
   icon script\pnp.ico
   option dbu
   size -1 -1 175 108
- 
-text "&Channel to scan:", 249, 5 7 55 10, right
+
+  text "&Channel to scan:", 249, 5 7 55 10, right
   edit "", 100, 62 5 105 11, autohs result
- 
-box "Scan and show:", 250, 5 20 165 53
- 
-check "&Away / here count", 1, 10 30 64 8
-check "&Who is away", 2, 10 40 64 8
-check "&IRCops", 3, 10 50 64 8
-check "&Average server hops", 4, 10 60 64 8
- 
-check "&Favorite server", 5, 76 30 90 8
-check "&List who is on favorite server", 6, 76 40 90 8
-check "&Who is on my server", 7, 76 50 90 8
-check "&Server details (separate window)", 8, 76 60 90 8
- 
-check "&Route to separate window", 9, 10 78 90 8
- 
-button "Scan", 201, 10 91 30 12, OK default
-button "&Save as default options", 202, 50 91 70 12, disable
-button "Cancel", 203, 130 91 30 12, cancel
+
+  box "Scan and show:", 250, 5 20 165 53
+
+  check "&Away / here count", 1, 10 30 64 8
+  check "&Who is away", 2, 10 40 64 8
+  check "&IRCops", 3, 10 50 64 8
+  check "&Average server hops", 4, 10 60 64 8
+
+  check "&Favorite server", 5, 76 30 90 8
+  check "&List who is on favorite server", 6, 76 40 90 8
+  check "&Who is on my server", 7, 76 50 90 8
+  check "&Server details (separate window)", 8, 76 60 90 8
+
+  check "&Route to separate window", 9, 10 78 90 8
+
+  button "Scan", 201, 10 91 30 12, OK default
+  button "&Save as default options", 202, 50 91 70 12, disable
+  button "Cancel", 203, 130 91 30 12, cancel
 }
 on *:DIALOG:scan:init:*:{
   var %num = 1,%flag = $_cfgi(scan.flag)
@@ -393,12 +393,12 @@ on *:DIALOG:scan:sclick:*:{
     else did -b $dname 201,202
   }
 }
- 
+
 ; /sping nick|server
 ;;; multiple nicks or other no such user causes problems
 alias _dosping {
-if ($hget(pnp.twhois. $+ $cid,error)) disptn $_cfgi(eroute) $hget(pnp.twhois. $+ $cid,nick) No such user $chr(40) $+ $:s(sping) $+ $chr(41)
-elseif (* isin $hget(pnp.twhois. $+ $cid,wserver)) disptn $_cfgi(eroute) $hget(pnp.twhois. $+ $cid,nick) Sorry $+ $chr(44) server ping does not work on this server
+  if ($hget(pnp.twhois. $+ $cid,error)) disptn $_cfgi(eroute) $hget(pnp.twhois. $+ $cid,nick) No such user $chr(40) $+ $:s(sping) $+ $chr(41)
+  elseif (* isin $hget(pnp.twhois. $+ $cid,wserver)) disptn $_cfgi(eroute) $hget(pnp.twhois. $+ $cid,nick) Sorry $+ $chr(44) server ping does not work on this server
   else sping $hget(pnp.twhois. $+ $cid,nick) $hget(pnp.twhois. $+ $cid,wserver)
 }
 alias sping {
@@ -406,28 +406,28 @@ alias sping {
   if (. !isin $1) {
     if ($2 == $null) {
       var %target = $_nc($1)
-disptn $_cfgi(eroute) %target Looking up server of user...
+      disptn $_cfgi(eroute) %target Looking up server of user...
       _whois.queue %target 0 _dosping
       return
     }
     if (* isin $2) hadd pnp. $+ $cid -servmask $hget(pnp. $+ $cid,-servmask) $2
     hadd pnp. $+ $cid -servping. $+ $2 $ticks $1
     .raw time $2
-disptn $_cfgi(eroute) $1 Pinging server $:s($2)
+    disptn $_cfgi(eroute) $1 Pinging server $:s($2)
     return
   }
   if (* isin $1) hadd pnp. $+ $cid -servmask $hget(pnp. $+ $cid,-servmask) $1
   hadd pnp. $+ $cid -servping. $+ $1 $ticks $2
   .raw time $1
-disp Pinging server $:s($1)
+  disp Pinging server $:s($1)
 }
- 
+
 ;
 ; Port scan
 ;
- 
+
 alias ports hadd pnp. $+ $cid -portscan 1 | var %win = $_mservwin(@Ports) | if ($window(%win)) { _dowclose %win | window -c %win } | .raw stats l
- 
+
 raw &211:*:{
   if (!$hget(pnp. $+ $cid,-portscan)) return
   if (($2 !isnum) && ($3 !isnum)) halt
@@ -460,7 +460,7 @@ raw &211:*:{
   }
   %port = [[ $+ %port $+ ]]
   var %ks =  $+ $round($calc(%speed / $8),2)
-iline %switch %win %num Port $:t(%port) >> $+ $_p2s($:s(%ks)) $+ k/s	 	( $+ $:s($round($calc(%speed / 1024),0)) $+ mb total traffic $+ )
+  iline %switch %win %num Port $:t(%port) >> $+ $_p2s($:s(%ks)) $+ k/s	 	( $+ $:s($round($calc(%speed / 1024),0)) $+ mb total traffic $+ )
   halt
 }
 raw 219:*:{
@@ -468,37 +468,37 @@ raw 219:*:{
   hdel pnp. $+ $cid -portscan
   var %win = $_mservwin(@Ports)
   if ($nick == $gettok($window(%win).title,2,32)) {
-iline %win 1 Found $:t($line(%win,0)) active ports on $nick
-var %method = $iif($hget(pnp,portsort) == 0,port number,speed $chr(40) $+ fastest ports first $+ $chr(41))
-iline %win 2 Currently sorted by %method
-iline %win 3 Double click to connect to a port $+ $chr(44) right-click for options
-iline %win 4 $chr(40) $+ note- 'total traffic' is measured over entire uptime of port $+ $chr(41)
+    iline %win 1 Found $:t($line(%win,0)) active ports on $nick
+    var %method = $iif($hget(pnp,portsort) == 0,port number,speed $chr(40) $+ fastest ports first $+ $chr(41))
+    iline %win 2 Currently sorted by %method
+    iline %win 3 Double click to connect to a port $+ $chr(44) right-click for options
+    iline %win 4 $chr(40) $+ note- 'total traffic' is measured over entire uptime of port $+ $chr(41)
     iline %win 5  
     if ($sline(%win,1).ln) rline -s %win $ifmatch $puttok($sline(%win,1),$:b((fastest)),2,9)
     titlebar %win $gettok($window(%win).title,1-2,32)
     halt
   }
 }
- 
+
 menu @Ports {
   dclick:if ($1 < 6) halt | server $gettok($window($active).title,2,32) $remove($strip($gettok($line($active,$1),2,32)),[,])
-Connect to port:if ($sline($active,1).ln < 6) halt | server $gettok($window($active).title,2,32) $remove($strip($gettok($sline($active,1),2,32)),[,])
+  Connect to port:if ($sline($active,1).ln < 6) halt | server $gettok($window($active).title,2,32) $remove($strip($gettok($sline($active,1),2,32)),[,])
   -
-$iif($hget(pnp,portsort) == 0,Sort by speed):{
+  $iif($hget(pnp,portsort) == 0,Sort by speed):{
     _dosort $active 6 4 32 1 0
     hadd pnp portsort 1
-var %method = speed $chr(40) $+ fastest ports first $+ $chr(41)
-rline $active 2 Currently sorted by %method
+    var %method = speed $chr(40) $+ fastest ports first $+ $chr(41)
+    rline $active 2 Currently sorted by %method
   }
-$iif($hget(pnp,portsort) != 0,Sort by port number):{
+  $iif($hget(pnp,portsort) != 0,Sort by port number):{
     _dosort $active 6 2 91 1 0
     hadd pnp portsort 0
-var %method = port number
-rline $active 2 Currently sorted by %method
+    var %method = port number
+    rline $active 2 Currently sorted by %method
   }
-Get new list:ports
+  Get new list:ports
 }
- 
+
 ;
 ; Nearby servers
 ;
@@ -514,35 +514,35 @@ raw 365:*:{
   if (!$hget(pnp. $+ $cid,-ns.min)) return
   if ($hget(pnp. $+ $cid,-ns.found)) {
     _Q.fkey 1 $calc($ctime + 300) _randserv $hget(pnp. $+ $cid,-ns.found)
-dispa Found $:t($numtok($hget(pnp. $+ $cid,-ns.found),32)) servers. Press $:s($result) to select one randomly.
+    dispa Found $:t($numtok($hget(pnp. $+ $cid,-ns.found),32)) servers. Press $:s($result) to select one randomly.
   }
-else dispa No servers found in this range.
+  else dispa No servers found in this range.
   hdel -w pnp. $+ $cid -ns.*
   halt
 }
 alias _randserv server $gettok($1-,$_pprand($numtok($1-,32)),32) ?
- 
+
 dialog nearserv {
-title "Nearby Servers"
+  title "Nearby Servers"
   icon script\pnp.ico
   option dbu
   size -1 -1 88 57
- 
-text "List servers that are-", 1, 5 5 80 10
- 
-text "&At least", 2, 5 16 33 10, right
+
+  text "List servers that are-", 1, 5 5 80 10
+
+  text "&At least", 2, 5 16 33 10, right
   edit "1", 3, 40 14 12 11, autohs result
-text "hop(s) away", 4, 54 16 30 10
- 
-text "&No more than", 5, 5 27 33 10, right
+  text "hop(s) away", 4, 54 16 30 10
+
+  text "&No more than", 5, 5 27 33 10, right
   edit "", 6, 40 25 12 11
-text "hop(s) away", 7, 54 27 30 10
- 
-button "OK", 101, 15 40 27 12, OK default
-button "Cancel", 102, 48 40 27 12, cancel
+  text "hop(s) away", 7, 54 27 30 10
+
+  button "OK", 101, 15 40 27 12, OK default
+  button "Cancel", 102, 48 40 27 12, cancel
 }
 on *:DIALOG:nearserv:sclick:101:did -o $dname 3 1 $gettok($did(3),1,32) $gettok($iif($did(6),$did(6),+),1,32)
- 
+
 alias nearserv {
   var %min = 1,%max = 2
   if ($1 == ?) {
@@ -556,16 +556,16 @@ alias nearserv {
   if (%min !isnum) %min = 1
   if (%max !isnum) %max = 2
   if (%min > %max) { var %tmp = %min | %min = %max | %max = %tmp }
-dispa Nearby servers- $chr(40) $+ $:t(%min) to $:t(%max) hop $+ $chr(40) $+ s $+ $chr(41) away $+ $chr(41)
+  dispa Nearby servers- $chr(40) $+ $:t(%min) to $:t(%max) hop $+ $chr(40) $+ s $+ $chr(41) away $+ $chr(41)
   links
   hdel pnp. $+ $cid -ns.found
   hadd pnp. $+ $cid -ns.min %min
   hadd pnp. $+ $cid -ns.max %max
 }
- 
+
 alias stats {
   if ($1) var %stats = $1-
-else var %stats = $_entry(-1,$null,Server stats to request? $+ $chr(40) $+ Enter a single lowercase or uppercase letter. $+ $chr(41))
+  else var %stats = $_entry(-1,$null,Server stats to request? $+ $chr(40) $+ Enter a single lowercase or uppercase letter. $+ $chr(41))
   stats %stats
   if ((%stats !isincs gkmou) && ($len(%stats) == 1) && (%stats isletter)) _recent stats 5 0 %stats
 }

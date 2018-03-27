@@ -2245,7 +2245,7 @@ alias -l theme.apply {
     if (<text> !isin %parentext) %parentext = (<text>)
     elseif (<text> !isin %parentext) %parentext = $replace(%parentext,<text>,<text>)
     %parentext = $theme.precompile(prefix,%prefix,%boldl,%boldr,%base,%parentext)
-    
+
     ; Network prefix items (allowed to be blank, but not missing- if missing, defaults to the other, else a normal default)
     var %netprefix,%netnickprefix
     if ($hfind($1,PnPNetworkPrefix,0)) %netprefix = $hget($1,PnPNetworkPrefix)
@@ -2254,7 +2254,7 @@ alias -l theme.apply {
     if ($hfind($1,PnPNetNickPrefix,0)) %netnickprefix = $hget($1,PnPNetNickPrefix)
     elseif ($hfind($1,PnPNetworkPrefix,0)) %netnickprefix = $hget($1,PnPNetworkPrefix)
     else %netnickprefix = <bl>[<br> <network> $chr(58) <me> <bl>]<br>
-    
+
     ; Precompile network prefixes
     %netprefix = $theme.precompile(prefix,%prefix,%boldl,%boldr,%base,%netprefix)
     %netnickprefix = $theme.precompile(prefix,%prefix,%boldl,%boldr,%base,%netnickprefix)
@@ -2269,7 +2269,7 @@ alias -l theme.apply {
     hadd %eventhash PnPNetNickPrefix %netnickprefix
     if ($hget($1,LineSep) != OFF) hadd %eventhash LineSep $eval($theme.precompile(prefix,%prefix,%boldl,%boldr,%base,$ifmatch),2)
     else hadd %eventhash LineSep
-    
+
     ; Load all items into pnp.theme; load events into pnp.events (compiled)
     var %count = $hget($1,0).item
     while (%count >= 1) {
@@ -2631,17 +2631,17 @@ alias _theme.start {
     else {
       ; Load theme into mIRC (ignoring any precreated hash files, but recreate them)
       theme.apply mts.start hsvctax $_cfg(theme.ct)
-  
+
       ; Cleanup
       hfree mts.start
-  
+
       ; Startup sound
       _ssplay Start
-  
+
       return
     }
   }
-  
+
   ; No theme? Special situation- most likely first time loaded; possibly, theme was lost
   ; Load pnp theme and current settings in so we can auto-generate some things
   theme.hash -m mts.start script\defcfg\theme.mtp
@@ -2654,7 +2654,7 @@ alias _theme.start {
   theme.def mts.start colorerror
   theme.def mts.start linesep 1
   theme.def mts.start prefix 1
-  
+
   ; Save and apply
   theme.save +ipnled mts.start $_cfg(theme.mtp)
   theme.apply mts.start hsvca $_cfg(theme.ct)
@@ -2694,7 +2694,7 @@ alias theme.transreload {
     hsave -bo pnp.events " $+ $_cfg(theme.ct2) $+ "
   }
 }
-  
+
 ; /theme.alias themehash eventhash
 ; Updates dynamic aliases using pnp.theme / pnp.events aliases
 alias theme.alias {
@@ -2712,7 +2712,7 @@ alias theme.alias {
   aline @.themeals ; $chr(124)  Peace and Protection                $chr(124)
   aline @.themeals ; $chr(124)  Theme aliases (*auto-generated*)    $chr(124)
   aline @.themeals ; `======================================'
-  
+
   ; BaseColors
   aline @.themeals :c1 return $gettok(%base,1,44)
   aline @.themeals :c2 return $gettok(%base,2,44)
@@ -2732,7 +2732,7 @@ alias theme.alias {
   ; Line separator, prefix
   aline @.themeals ::: return %linesep
   aline @.themeals :* return %prefix
-  
+
   ; Network identifiers
   aline @.themeals :np return $replace($hget($2,PnPNetworkPrefix),% $+ ::network,$!hget(pnp. $!+ $!cid,net))
   aline @.themeals :nnp return $replace($hget($2,PnPNetNickPrefix),% $+ ::network,$!hget(pnp. $!+ $!cid,net))
@@ -3306,7 +3306,7 @@ alias -l theme.def {
   elseif ($istok($hget($1,BaseColors),$gettok($hget($1,Colors),4,44),44)) hadd $1 ColorError $gettok($hget($1,Colors),4,44)
   else hadd $1 ColorError $gettok($hget($1,Colors),14,44)
   return
-  
+
   :linesep
   ; PnP auto-create linesep settings? Use those (length char color color...)
   if ((!$3) && ($hget($1,PnPLineSep))) {

@@ -66,7 +66,7 @@ on *:DIALOG:howunhide:sclick:1:did -o $dname 4 1 $did(2).state
 ;
 ; Pick new windows
 ;
- 
+
 alias _newwin {
   if ($window($1) == $null) return $1
   var %num = 2

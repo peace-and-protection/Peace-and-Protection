@@ -3,11 +3,11 @@
 ; Peace and Protection
 ; DCC and related routines and scripts
 ; ########################################
- 
+
 ;
 ; DCC authorization
 ;
- 
+
 ; /auth [-t|-r|-x] nick/addr [time]
 ; -t = toggle (off if already on permanent, or if time given, off if already on temp); -x = expire, -r = remove, else add (optionally with time)
 ; Authorizes by site to accept DCCs
@@ -18,15 +18,15 @@ alias auth {
   %who = $_nc(%who)
   var %auth = $_ppmask(%who,$_stmask(3),1)
   if (%auth == $null) {
-dispa Looking up address of $:t(%who) $+ ...
+    dispa Looking up address of $:t(%who) $+ ...
     _notconnected
-_Q.userhost auth $+ %opt $+ &n!&a $+ %time dispaUser $+ $:t(%who) $+ notfound %who
+    _Q.userhost auth $+ %opt $+ &n!&a $+ %time dispaUser $+ $:t(%who) $+ notfound %who
     halt
   }
   if (* isin $gettok(%who,1,33)) var %show = $:t(%auth)
   else var %show = $:t($gettok(%who,1,33)) ( $+ $:s(%auth) $+ )
   if (x isin %opt) {
-disp DCC authorization for %show has expired
+    disp DCC authorization for %show has expired
     .ruser =dcc,=auth %auth
     if ($level(%auth) == $dlevel) .ruser %auth
     .timer.auth. $+ $replace(%auth,*,`,?,') off
@@ -35,8 +35,8 @@ disp DCC authorization for %show has expired
   }
   :remove
   if (r isin %opt) {
-if ($istok($level(%auth),=dcc,44)) dispa Removing DCC authorization for %show
-else dispa %show does not have DCC authorization
+    if ($istok($level(%auth),=dcc,44)) dispa Removing DCC authorization for %show
+    else dispa %show does not have DCC authorization
     .ruser =dcc,=auth %auth
     if ($level(%auth) == $dlevel) .ruser %auth
     .timer.auth. $+ $replace(%auth,*,`,?,') off
@@ -44,11 +44,11 @@ else dispa %show does not have DCC authorization
   elseif (%time) {
     if ($istok($level(%auth),=dcc,44)) {
       if ((t isin %opt) && ($istok($level(%auth),=auth,44))) { %opt = -r | goto remove }
-dispa Giving %show DCC authorization for %time minute $+ $chr(40) $+ s $+ $chr(41)
+      dispa Giving %show DCC authorization for %time minute $+ $chr(40) $+ s $+ $chr(41)
     }
     else {
-dispa Giving %show DCC authorization for %time minute $+ $chr(40) $+ s $+ $chr(41)
-if ($window(@DCClist)) aline @DCClist %auth $+ 	(temp)
+      dispa Giving %show DCC authorization for %time minute $+ $chr(40) $+ s $+ $chr(41)
+      if ($window(@DCClist)) aline @DCClist %auth $+ 	(temp)
     }
     if ($level(%auth) == $dlevel) .auser $dlevel %auth
     .auser -a =dcc,=auth %auth
@@ -57,7 +57,7 @@ if ($window(@DCClist)) aline @DCClist %auth $+ 	(temp)
   else {
     if ((t isin %opt) && ($istok($level(%auth),=dcc,44)) && ($istok($level(%auth),=auth,44) == $false)) { %opt = -r | goto remove }
     if (($window(@DCClist)) && ($istok($level(%auth),=dcc,44) == $false)) aline @DCClist %auth
-dispa Granting %show DCC authorization $chr(40) $+ permanent $+ $chr(41)
+    dispa Granting %show DCC authorization $chr(40) $+ permanent $+ $chr(41)
     if ($level(%auth) == $dlevel) .auser $dlevel %auth
     else .ruser =auth %auth
     .auser -a =dcc %auth
@@ -65,7 +65,7 @@ dispa Granting %show DCC authorization $chr(40) $+ permanent $+ $chr(41)
   }
   scid -a _nickcol.updatemask %auth 1
 }
- 
+
 alias _clrtauth {
   ;  clear any temp auths (designed ONLY for startup, otherwise saveini is needed)
   var %who,%num = $ulist(*,auth,0)
@@ -77,11 +77,11 @@ alias _clrtauth {
     dec %num | goto loop
   }
 }
- 
+
 ;
 ; /dcc replacement
 ;
- 
+
 alias c dcc chat $1-
 alias s dcc send $1-
 alias chat dcc chat $1-
@@ -98,13 +98,13 @@ alias dcc {
     else { var %p2 = $2 | var %port = :59 }
     var %dns = $_nc($right(%p2,-1))
     if (@ isin %dns) %dns = $gettok(%dns,2-,64)
-dispa Looking up address of $:t(%dns) for direct DCC connection to IP...
+    dispa Looking up address of $:t(%dns) for direct DCC connection to IP...
     _Q.dns _dccdo $+ %cflag $+  $+ $1 $+  $+ %port $+  $+ $iif($3,$_s2p($3-)) _dccerr $+ %cflag $+  $+ $1 $+  $+ %port $+  $+ $iif($3,$_s2p($3-)) $iif(. isin %dns,-h,-n) %dns
     halt
   }
   if ($1 == $null) _qhelp /dcc
   if (($1 == send) || ($1 == chat) || ($1 == fserve)) {
-if (. !isin $2) _notconnected (can't send dcc request)
+    if (. !isin $2) _notconnected (can't send dcc request)
     if (($1 == send) && ($3 != $null) && ($nopath($3) == $null)) tokenize 32 $1- $+ *.*
     var %who
     if ($2) { %who = $_nc($2) | dcc $1 $iif(%cflag,-c) %who $3- }
@@ -117,7 +117,7 @@ if (. !isin $2) _notconnected (can't send dcc request)
 }
 alias _dccerr if ($iaddress) _dccdo $1- | else _error Could not resolve address for direct DCC.Use / $+ $2 $nick to attempt a normal connection.
 alias _dccdo _juryrig2 dcc $2 $iif($1,-c) $iaddress $+ $3 $4-
- 
+
 ;
 ; DCC auth list editing
 ;
@@ -129,26 +129,26 @@ alias authlist {
   var %num = $ulist(*,dcc,0)
   :loop
   if (%num) {
-aline @DCClist $ulist(*,dcc,%num) $+ 	 $+ $iif($istok($level($ulist(*,dcc,%num)),=auth,44),(temp))
+    aline @DCClist $ulist(*,dcc,%num) $+ 	 $+ $iif($istok($level($ulist(*,dcc,%num)),=auth,44),(temp))
     dec %num | goto loop
   }
-iline @DCClist 1 The following addresses have authorization to send you DCC chats and sends. $chr(40) $+ files $+ $chr(41)
-iline @DCClist 2 Any DCCs from these users will be automatically accepted. $chr(40) $+ unless you are away $+ $chr(41)
-iline @DCClist 3 Double-click to remove a user $+ $chr(44) or right-click for options.
+  iline @DCClist 1 The following addresses have authorization to send you DCC chats and sends. $chr(40) $+ files $+ $chr(41)
+  iline @DCClist 2 Any DCCs from these users will be automatically accepted. $chr(40) $+ unless you are away $+ $chr(41)
+  iline @DCClist 3 Double-click to remove a user $+ $chr(44) or right-click for options.
   iline @DCClist 4  
-iline @DCClist 5 Address	Status
+  iline @DCClist 5 Address	Status
   iline @DCClist 6  
   window -b @DCClist
 }
 menu @DCClist {
   dclick:.auth -r $gettok($line($active,$1),1,9) | dline $active $1
-Add authorization...:.auth $_entry(-1,$null,Nickname or address to add DCC authorization for?)
-Add temporary auth...:var %who = $_entry(-1,$null,Nickname or address to add DCC authorization for?) | .auth %who $_entry(-2,15,Number of minutes to authorize for?)
+  Add authorization...:.auth $_entry(-1,$null,Nickname or address to add DCC authorization for?)
+  Add temporary auth...:var %who = $_entry(-1,$null,Nickname or address to add DCC authorization for?) | .auth %who $_entry(-2,15,Number of minutes to authorize for?)
   -
-$iif($sline($active,1).ln > 6,Remove authorization)::loop | .auth -r $gettok($sline($active,1),1,9) | dline $active $sline($active,1).ln | if ($sline($active,1)) goto loop
-$iif($sline($active,1).ln > 6,Change to temporary auth...):var %time = $_entry(-2,15,Number of minutes to authorize for?) | :loop | .auth $gettok($sline($active,1),1,9) %time | rline $active $sline($active,1).ln $gettok($sline($active,1),1,9) $+ 	(temp) | if ($sline($active,1)) goto loop
+  $iif($sline($active,1).ln > 6,Remove authorization)::loop | .auth -r $gettok($sline($active,1),1,9) | dline $active $sline($active,1).ln | if ($sline($active,1)) goto loop
+  $iif($sline($active,1).ln > 6,Change to temporary auth...):var %time = $_entry(-2,15,Number of minutes to authorize for?) | :loop | .auth $gettok($sline($active,1),1,9) %time | rline $active $sline($active,1).ln $gettok($sline($active,1),1,9) $+ 	(temp) | if ($sline($active,1)) goto loop
 }
- 
+
 ;
 ; DCC Ping
 ;
@@ -157,9 +157,9 @@ on &^*:CHAT:PONG &:if (($len($2) < 25) && ($2 isnum)) { _dccpprot | $_show.reply
 alias -l _dccpprot {
   hinc -u10 pnp dccping
   if ($hget(pnp,dccping) > 9) {
-.msg =$nick DCC chat with $nick closed due to detection of a DCC PING flood
+    .msg =$nick DCC chat with $nick closed due to detection of a DCC PING flood
     close -c $nick
-dispa DCC chat with $:t($nick) closed due to detection of a DCC PING flood
+    dispa DCC chat with $:t($nick) closed due to detection of a DCC PING flood
     halt
   }
 }
@@ -167,29 +167,29 @@ alias dcp {
   if ($1) {
     var %who
     if (=* iswm $1) %who = $right($1,-1) | else %who = $1
-if ($chat(%who) != %who) _error DCC ping $chr(40) $+ /dcp $+ $chr(41) is only for DCC chats.Use /ping for channels or queries.
+    if ($chat(%who) != %who) _error DCC ping $chr(40) $+ /dcp $+ $chr(41) is only for DCC chats.Use /ping for channels or queries.
     .msg = $+ %who PING 0 $+ $ticks
     $_show.ctcp.send(= $+ %who,DCC PING)
   }
   else {
-if (=* !iswm $active) _error DCC ping $chr(40) $+ /dcp $+ $chr(41) is only for DCC chats.Use /ping for channels or queries.
+    if (=* !iswm $active) _error DCC ping $chr(40) $+ /dcp $+ $chr(41) is only for DCC chats.Use /ping for channels or queries.
     .msg $active PING 0 $+ $ticks
     $_show.ctcp.send($active,DCC PING)
   }
 }
- 
+
 ;
 ; Flood-in-DCC protection
 ;
 on *:CHAT:*:{
   if ($_genflood(dcc. $+ $nick,$hget(pnp.config,xchat.cfg))) {
-.msg =$nick DCC chat with $nick closed due to detection of a DCC flood
+    .msg =$nick DCC chat with $nick closed due to detection of a DCC flood
     close -c $nick
-dispa DCC chat with $:t($nick) closed due to detection of a DCC flood
+    dispa DCC chat with $:t($nick) closed due to detection of a DCC flood
     halt
   }
 }
- 
+
 ; Count unfinished sends to a user
 ; $_numsend($nick)
 alias _numsend {
@@ -199,7 +199,7 @@ alias _numsend {
   if (%num > 1) { dec %num | goto loop }
   return %total
 }
- 
+
 ; Count unfinished sends to any user any cid
 ; $_numsendall
 alias _numsendall {
@@ -216,7 +216,7 @@ alias _numsendall {
   scid -r
   return %total
 }
- 
+
 ;
 ; DCC queueing
 ;
@@ -224,24 +224,24 @@ alias _Q.dcc {
   if ($window(@DCCQueue) == $null) {
     _window 2.3 -lnzk $+ $iif($_cfgi(dccqueuehide),h) -t20 @DCCQueue -1 -1 -1 -1 @DCCQueue
     _windowreg @DCCQueue .timer.dcc.queue off
-aline @DCCQueue Nickname	Network	File
+    aline @DCCQueue Nickname	Network	File
     aline @DCCQueue  
   }
   aline @DCCQueue $1 $+ 	 $+ $hget(pnp. $+ $cid,net) $chr(91) $+ $cid $+ $chr(93) $+ 	 $+ $2-
   .timer.dcc.queue -io 0 30 _check.dcc
 }
 menu @DCCQueue {
-$iif($sline(@DCCQueue,1).ln > 2,Remove):{
+  $iif($sline(@DCCQueue,1).ln > 2,Remove):{
     :loop | if ($sline(@DCCQueue,1).ln) { dline @DCCQueue $ifmatch | goto loop }
     if ($line(@DCCQueue,0) < 3) {
       window -c @DCCQueue
       .timer.dcc.queue off
     }
   }
-$iif($sline(@DCCQueue,1).ln > 2,Move to top):{
+  $iif($sline(@DCCQueue,1).ln > 2,Move to top):{
     :loop | if ($sline(@DCCQueue,1)) { iline @DCCQueue 3 $sline(@DCCQueue,1) | dline @DCCQueue $sline(@DCCQueue,1).ln | goto loop }
   }
-Settings...:dcc queue
+  Settings...:dcc queue
 }
 alias _hide.dcc .dcc send -c $1 " $+ $2- $+ " | if ($_cfgi(dccsendhide)) window -h "Send $1 $nopath($2-) $+ "
 ; Returns -1 if failed due to user total queued
@@ -367,7 +367,7 @@ on *:KICK:#:{
     if (($mid($hget(pnp.config,dccqueueclean),4,1)) && ($window(@DCCQueue))) _clean.dcc
   }
   else {
-if (($comchan($knick,0) == 1) && ($mid($hget(pnp.config,dccqueueclean),2,1))) { _cancel.dcc $knick | if ($result) _linedance _qnotice $knick $result files queued to you have been cancelled }
+    if (($comchan($knick,0) == 1) && ($mid($hget(pnp.config,dccqueueclean),2,1))) { _cancel.dcc $knick | if ($result) _linedance _qnotice $knick $result files queued to you have been cancelled }
   }
 }
 on *:QUIT:if ($send(0)) _pend.dcc $nick (user quit irc) | if ($mid($hget(pnp.config,dccqueueclean),3,1)) _cancel.dcc $nick
@@ -383,7 +383,7 @@ alias -l _pend.dcc {
   if (%num > 1) { dec %num | goto loop }
   if (%total) {
     close -s $1
-disps Removed %total pending send $+ $chr(40) $+ s $+ $chr(41) from DCC Queue to $1 $2-
+    disps Removed %total pending send $+ $chr(40) $+ s $+ $chr(41) from DCC Queue to $1 $2-
     .timer.dcc.queue -e
   }
 }
@@ -392,43 +392,43 @@ alias -l _clean.dcc {
   :loop
   if ($comchan($nick($chan,%num),0) == 1) {
     _cancel.dcc $nick($chan,%num)
-if ($result) _linedance _qnotice $nick($chan,%num) $result files queued to you have been cancelled
+    if ($result) _linedance _qnotice $nick($chan,%num) $result files queued to you have been cancelled
   }
   if (%num > 1) { dec %num | goto loop }
 }
 ; dcc queue config
 dialog dccqcfg {
-title "DCC Queueing Config"
+  title "DCC Queueing Config"
   icon script\pnp.ico
   option dbu
   size -1 -1 150 166
- 
-text "These options determine how many total files a user can request from PnP addons at one time. (sound, XDCC, etc)", 1, 2 2 145 15
-box "Maximum simultaneous DCC sends:", 2, 2 20 145 35
-text "&Per user:", 3, 5 31 39 8, right
+
+  text "These options determine how many total files a user can request from PnP addons at one time. (sound, XDCC, etc)", 1, 2 2 145 15
+  box "Maximum simultaneous DCC sends:", 2, 2 20 145 35
+  text "&Per user:", 3, 5 31 39 8, right
   edit "", 5, 45 29 25 11
-text "&Total:", 4, 72 31 42 8, right
+  text "&Total:", 4, 72 31 42 8, right
   edit "", 6, 115 29 25 11
-check "&Hide DCC sends (if automated)", 7, 35 42 105 8
-check "&Queue DCCs when maximum reached", 8, 7 60 140 8
-box "Maximum queued DCCs:", 9, 2 71 145 35
-text "&Per user:", 10, 5 82 39 8, right
+  check "&Hide DCC sends (if automated)", 7, 35 42 105 8
+  check "&Queue DCCs when maximum reached", 8, 7 60 140 8
+  box "Maximum queued DCCs:", 9, 2 71 145 35
+  text "&Per user:", 10, 5 82 39 8, right
   edit "", 12, 45 80 25 11
-text "&Total:", 11, 72 82 42 8, right
+  text "&Total:", 11, 72 82 42 8, right
   edit "", 13, 115 80 25 11
-check "&Hide queue window", 14, 35 93 105 8
-box "Queue cleanup:", 15, 2 110 145 35
-text "When user:", 16, 5 120 33 8, right
-text "When you:", 17, 5 131 33 8, right
-check "&Quits", 20, 40 120 30 8
-check "&Parts", 18, 70 120 30 8
-check "&Is kicked", 19, 100 120 45 8
-check "&Leave channel", 21, 40 131 60 8
-check "&Disconnect", 22, 100 131 45 8
- 
-button "OK", 101, 10 150 35 12, ok default
-button "Cancel", 102, 57 150 35 12, cancel
-button "&Help", 103, 105 150 35 12, disable
+  check "&Hide queue window", 14, 35 93 105 8
+  box "Queue cleanup:", 15, 2 110 145 35
+  text "When user:", 16, 5 120 33 8, right
+  text "When you:", 17, 5 131 33 8, right
+  check "&Quits", 20, 40 120 30 8
+  check "&Parts", 18, 70 120 30 8
+  check "&Is kicked", 19, 100 120 45 8
+  check "&Leave channel", 21, 40 131 60 8
+  check "&Disconnect", 22, 100 131 45 8
+
+  button "OK", 101, 10 150 35 12, ok default
+  button "Cancel", 102, 57 150 35 12, cancel
+  button "&Help", 103, 105 150 35 12, disable
 }
 on *:DIALOG:dccqcfg:init:*:{
   did -a $dname 5 $_cfgi(dccmaxsendone)
@@ -463,7 +463,7 @@ on *:DIALOG:dccqcfg:sclick:101:{
   if (%num < 22) { inc %num | goto loop }
   `set dccqueueclean %opts
 }
- 
+
 ; Last DCC action
 ; /rec [n] to run/view, /rec d [n] to delete, /rec e [n] to edit, /rec f [n] for folder, /rec v to view list
 on *:FILERCVD:*:_recent dccget 10 0 $filename
@@ -475,32 +475,32 @@ alias rec {
     var %num = 1
     :loop
     if (%=dccget. [ $+ [ %num ] ] ) {
-dispa   - $:t(%num) $+ . $ifmatch $iif($exists($ifmatch) == $false,( $+ $:s(deleted) $+ ))
+      dispa   - $:t(%num) $+ . $ifmatch $iif($exists($ifmatch) == $false,( $+ $:s(deleted) $+ ))
       inc %num | goto loop
     }
-%num = (num)
-if (%num == 1) dispa No recently received DCC files
-else dispa $:s(/rec) $chr(40) $+ number optional $+ $chr(41) to run a file $+ $chr(44) $:s(/rec d %num) to delete $+ $chr(44) $:s(/rec e %num) to edit $+ $chr(44) $:s(/rec f %num) for folder
+    %num = (num)
+    if (%num == 1) dispa No recently received DCC files
+    else dispa $:s(/rec) $chr(40) $+ number optional $+ $chr(41) to run a file $+ $chr(44) $:s(/rec d %num) to delete $+ $chr(44) $:s(/rec e %num) to edit $+ $chr(44) $:s(/rec f %num) for folder
     dispa-div
   }
   else {
     var %file
     if ($1 isnum) {
       if (%=dccget. [ $+ [ $1 ] ] ) %file = $ifmatch
-else dispa That is not the number of a recently received DCC file
+      else dispa That is not the number of a recently received DCC file
     }
     elseif ($2 isnum) {
       if (%=dccget. [ $+ [ $2 ] ] ) %file = $ifmatch
-else dispa That is not the number of a recently received DCC file
+      else dispa That is not the number of a recently received DCC file
     }
     elseif (%=dccget.1) %file = $ifmatch
-else dispa No recently received DCC files
+    else dispa No recently received DCC files
     if (%file != $null) {
       if ($1 == f) run $nofile(%file)
-elseif ($exists(%file) == $false) dispa File $:s(%file) no longer exists
+      elseif ($exists(%file) == $false) dispa File $:s(%file) no longer exists
       elseif ($1 == e) edit %file
       elseif ($1 == d) {
-_okcancel 1 Delete ' $+ %file $+ '?
+        _okcancel 1 Delete ' $+ %file $+ '?
         _remove %file
       }
       elseif ($pic(%file).width) viewpic %file
@@ -508,7 +508,7 @@ _okcancel 1 Delete ' $+ %file $+ '?
     }
   }
 }
- 
+
 ; CTCP DCC code tracks why a DCC chat is opened
 ; Above /dcc alias tracks why a DCC chat is opened
 ; This tracks why a DCC chat is opened if DCCSERVER

@@ -3,7 +3,7 @@
 ; Peace and Protection
 ; Theme / scheme editing and related, also some sound scheme
 ; ########################################
- 
+
 ; Make sure nicklist/textscheme options are correct (startup)
 alias _upd.texts {
   if ($_cfgi(texts)) .enable #pp-texts
@@ -12,11 +12,11 @@ alias _upd.texts {
   else .disable #pp-nicklist
 }
 on *:SIGNAL:PNP.TRANSLATE:{ _upd.texts }
- 
+
 ;
 ; Some sound schemes
 ;
- 
+
 on me:*:JOIN:#:_ssplay JoinSelf
 on me:*:PART:#:_ssplay PartSelf
 on *:KICK:#:_ssplay $iif($knick == $me,KickSelf,Kick) | if ($knick == $me) flash $chr(91) $+ kicked from $chan $+ $chr(93)
@@ -34,58 +34,58 @@ on *:FILESENT:*:_ssplay FileSent
 on *:FILERCVD:*:_ssplay FileRcvd
 on *:SENDFAIL:*:_ssplay GetFail
 on *:GETFAIL:*:_ssplay GetFail
- 
+
 ;
 ; Events routing
 ;
 alias route set -u %.chan $1 | _dialog -am evroute evroute
 dialog evroute {
-title "Event routing"
+  title "Event routing"
   icon script\pnp.ico
   option dbu
   size -1 -1 173 111
- 
-text "&Event routing for:", 1, 2 5 50 8
+
+  text "&Event routing for:", 1, 2 5 50 8
   combo 9, 47 3 115 50, drop edit sort
- 
-text "&Joins:", 2, 4 19 25 10
-radio "mIRC setting", 11, 30 19 40 8, group
-radio "Events window", 12, 72 19 50 8
-radio "Don't show", 13, 122 19 50 8
- 
-text "&Parts:", 3, 4 29 25 10
-radio "mIRC setting", 21, 30 29 40 8, group
-radio "Events window", 22, 72 29 50 8
-radio "Don't show", 23, 122 29 50 8
- 
-text "&Quits:", 4, 4 39 25 10
-radio "mIRC setting", 31, 30 39 40 8, group
-radio "Events window", 32, 72 39 50 8
-radio "Don't show", 33, 122 39 50 8
- 
-text "&Kicks:", 5, 4 49 25 10
-radio "mIRC setting", 41, 30 49 40 8, group
-radio "Events window", 42, 72 49 50 8
-radio "Don't show", 43, 122 49 50 8
- 
-text "&Modes:", 6, 4 59 25 10
-radio "mIRC setting", 51, 30 59 40 8, group
-radio "Events window", 52, 72 59 50 8
-radio "Don't show", 53, 122 59 50 8
- 
-text "&Topics:", 7, 4 69 25 10
-radio "mIRC setting", 61, 30 69 40 8, group
-radio "Events window", 62, 72 69 50 8
-radio "Don't show", 63, 122 69 50 8
- 
-text "&Nicks:", 8, 4 79 25 10
-radio "mIRC setting", 71, 30 79 40 8, group
-radio "Events window", 72, 72 79 50 8
-radio "Don't show", 73, 122 79 50 8
- 
-button "Close", 101, 7 94 40 12, cancel default
-button "&Reset", 102, 66 94 40 12
-button "&Help", 103, 126 94 40 12, disable
+
+  text "&Joins:", 2, 4 19 25 10
+  radio "mIRC setting", 11, 30 19 40 8, group
+  radio "Events window", 12, 72 19 50 8
+  radio "Don't show", 13, 122 19 50 8
+
+  text "&Parts:", 3, 4 29 25 10
+  radio "mIRC setting", 21, 30 29 40 8, group
+  radio "Events window", 22, 72 29 50 8
+  radio "Don't show", 23, 122 29 50 8
+
+  text "&Quits:", 4, 4 39 25 10
+  radio "mIRC setting", 31, 30 39 40 8, group
+  radio "Events window", 32, 72 39 50 8
+  radio "Don't show", 33, 122 39 50 8
+
+  text "&Kicks:", 5, 4 49 25 10
+  radio "mIRC setting", 41, 30 49 40 8, group
+  radio "Events window", 42, 72 49 50 8
+  radio "Don't show", 43, 122 49 50 8
+
+  text "&Modes:", 6, 4 59 25 10
+  radio "mIRC setting", 51, 30 59 40 8, group
+  radio "Events window", 52, 72 59 50 8
+  radio "Don't show", 53, 122 59 50 8
+
+  text "&Topics:", 7, 4 69 25 10
+  radio "mIRC setting", 61, 30 69 40 8, group
+  radio "Events window", 62, 72 69 50 8
+  radio "Don't show", 63, 122 69 50 8
+
+  text "&Nicks:", 8, 4 79 25 10
+  radio "mIRC setting", 71, 30 79 40 8, group
+  radio "Events window", 72, 72 79 50 8
+  radio "Don't show", 73, 122 79 50 8
+
+  button "Close", 101, 7 94 40 12, cancel default
+  button "&Reset", 102, 66 94 40 12
+  button "&Help", 103, 126 94 40 12, disable
 }
 on *:DIALOG:evroute:*:9:_evswitchto
 alias -l _evconv if ($_ischan($1-)) return . $+ $1 | return
@@ -122,7 +122,7 @@ on *:DIALOG:evroute:init:*:{
     goto loop2
   }
   window -c @.evroute
-did -ac $dname 9 (all channels)
+  did -ac $dname 9 (all channels)
   if ($_ischan(%.chan)) {
     if ($_finddid($dname,9,%.chan)) did -c $dname 9 $ifmatch
     else did -ac $dname 9 %.chan
@@ -158,25 +158,25 @@ on *:DIALOG:evroute:sclick:*:{
     `set event. $+ %name $+ %where %value
   }
 }
- 
+
 ;
 ; Font control dialog
 ;
- 
+
 dialog fontfix {
-title "Font Control"
+  title "Font Control"
   icon script\pnp.ico
   option dbu
   size -1 -1 135 87
-text "PnP can change the fonts of other window types to match your current status window font. Select the window types to update and press Update to do so.", 1, 5 7 135 30
-check "&Channels", 10, 5 35 60 8
-check "&Queries / Chats", 11, 5 45 60 8
-check "&DCC Send / Get", 12, 5 55 60 8
-check "&Notify / URL List", 13, 67 35 60 8
-check "&Other mIRC Windows", 14, 67 45 60 8
-check "&PnP Windows", 15, 67 55 60 8
-button "&Update", 101, 15 70 40 12, OK default
-button "Cancel", 102, 77 70 40 12, cancel
+  text "PnP can change the fonts of other window types to match your current status window font. Select the window types to update and press Update to do so.", 1, 5 7 135 30
+  check "&Channels", 10, 5 35 60 8
+  check "&Queries / Chats", 11, 5 45 60 8
+  check "&DCC Send / Get", 12, 5 55 60 8
+  check "&Notify / URL List", 13, 67 35 60 8
+  check "&Other mIRC Windows", 14, 67 45 60 8
+  check "&PnP Windows", 15, 67 55 60 8
+  button "&Update", 101, 15 70 40 12, OK default
+  button "Cancel", 102, 77 70 40 12, cancel
   edit "", 200, 1 1 1 1, autohs hide result
 }
 on *:DIALOG:fontfix:init:*:did -c $dname 10,11,12,13,14,15
@@ -191,7 +191,7 @@ alias fontfix {
     %flags = $$dialog(fontfix,fontfix,-4)
     %font = $1-
   }
- 
+
   ; Grab font?
   if (%font == $null) {
     window -h @.fontgrab
@@ -199,10 +199,10 @@ alias fontfix {
     %flags = $remove(%flags,b) $+ $iif($window(@.fontgrab).fontbold,b)
     window -c @.fontgrab
   }
-  
+
   var %error,%num,%data,%font2
   %font2 = $gettok(%font,2-,32) $+ , $+ $calc($iif(b isin %flags,700,400) + $gettok(%font,1,32))
- 
+
   saveini
   flushini " $+ $mircini $+ "
   if (s isin %flags) {
@@ -276,5 +276,5 @@ alias fontfix {
     if ($exists($_cfg(window.ini))) filter -ffxc $_cfg(window.ini) $_cfg(window.ini) font=*
   }
   flushini " $+ $mircini $+ "
-if (%error) _error Warning- Could not change open DCCs.Any open DCC windows will not be updated until reopened.
+  if (%error) _error Warning- Could not change open DCCs.Any open DCC windows will not be updated until reopened.
 }

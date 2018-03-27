@@ -325,16 +325,16 @@ viewpic {
     var %dir = $mircdir
     if ($_dlgi(imagedir)) %dir = $ifmatch
     if ($isdir(%file)) %dir = %file
-  
+
     ; Add filemask
     if (*\ !iswm %dir) %dir = %dir $+ \
     %dir = %dir $+ *.bmp;*.png;*.jpg
-  
+
     ; Select file, enable style combo if any
     _ssplay Question
     %file = $$sfile(%dir,[misc:sel_image_prompt])
     if ($isfile(%file)) _dlgw imagedir $nofile(%file)
-    
+
     %newfile = 1
   }
 
@@ -349,7 +349,7 @@ viewpic {
   var %top = $window(@.targetsize).dy
   var %left = $window(@.targetsize).dx
   window -c @.targetsize
-  
+
   ; Resize as needed (nearest percent)
   if (f !isin %flags) {
     if (%targetwidth < $pic(%file).width) %ratio = $round($calc(%targetwidth / $pic(%file).width),2)

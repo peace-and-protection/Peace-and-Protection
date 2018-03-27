@@ -3,7 +3,7 @@
 ; Peace and Protection
 ; CTCP, CTCP reply, self-ping, DCC ping
 ; ########################################
- 
+
 ;
 ; Random nickname
 ;
@@ -11,19 +11,19 @@ alias rn if ($hget(pnp. $+ $cid,oldrnick) == $null) hadd pnp. $+ $cid oldrnick $
 alias urn if ($hget(pnp. $+ $cid,oldrnick) == $null) _error No previous nick to return to. $+ $chr(40) $+ use this after /rn to undo a random nick $+ $chr(41) | nick $hget(pnp. $+ $cid,oldrnick) | unset pnp. $+ $cid oldrnick
 ; only do one random nick within X seconds, and only if option is set
 alias -l _trn if ($hget(pnp.config,myflood.prot) & 4) { hinc -u30 pnp. $+ $cid -delayrnick | if ($hget(pnp. $+ $cid,-delayrnick) == 1) rn }
- 
+
 ; Reset PnP flood counters
 alias defld {
   scid -a hdel -w pnp.flood. $!+ $!cid *
   scid -a .ignore -r **!**@**
   hdel pnp dccping
-dispa Flood counters reset.
+  dispa Flood counters reset.
 }
- 
+
 ;
 ; CTCP flood protection, DCC protect and auto accept/reject
 ;
- 
+
 ; no replies after any 2 within 3 seconds
 ; no replies after any 2 from an address or any 4 total within 16 seconds
 ; any 4 from an address or any 7 total within 16 seconds is a flood and causes a 45 second 'ignore'
@@ -68,44 +68,44 @@ alias _do.rctcp {
       if ($hget(pnp.flood. $+ $cid,ignore.ctcp)) .ignore -dtu20 **!**@**
       elseif ($hget(pnp.flood. $+ $cid,ignore.ctcp. $+ $site)) .ignore -dtu20 $wildsite
     }
- 
+
     hinc -u16 pnp.flood. $+ $cid recd.ctcp
     hinc -u16 pnp.flood. $+ $cid recd.ctcp. $+ $site
- 
+
     if (($hget(pnp.flood. $+ $cid,ignore.ctcp)) || ($hget(pnp.flood. $+ $cid,ignore.ctcp. $+ $site))) { unset %.ctcp.reply | halt }
   }
- 
+
   if (($1 == DCC) && ($istok(CHAT SEND RESUME ACCEPT,$2,32))) {
     if ($hget(pnp.config,myflood.prot) !& 2) return
     ; if (standard) DCC, check for invalid
     if (%.dcc.invalid) {
-$iif($chan,disprc $chan,disp) ¢ Invalid DCC from $:t($nick) - %.dcc.invalid $chr(40) $+ $1- $+ $chr(41) $iif(($me isop $chan) || ($me ishop $chan),(F8 to punish))
+      $iif($chan,disprc $chan,disp) ¢ Invalid DCC from $:t($nick) - %.dcc.invalid $chr(40) $+ $1- $+ $chr(41) $iif(($me isop $chan) || ($me ishop $chan),(F8 to punish))
       halt
     }
- 
+
     ; no further handling for resumes or to chan
     if (($chan) || ($istok(RESUME ACCEPT,$2,32))) return
- 
+
     ; accept modes
     if ($istok($level($fulladdress),=dcc,44)) var %type = 2
     elseif ($_known($nick,$fulladdress)) var %type = 0
     else {
       var %type = 1
- 
+
       ; Only unknown users can contribute to flood, and settings are higher
       hinc -u16 pnp.flood. $+ $cid recd.dcc
       hinc -u16 pnp.flood. $+ $cid recd.dcc. $+ $site
- 
+
       if ($hget(pnp.flood. $+ $cid,recd.dcc) > 8) {
         ; Overall flood activated
         hinc -u45 pnp.flood. $+ $cid ignore.ctcp
-_alert Flood DCC flood detected- Further CTCPs won't be shown $chr(40) $+ ignored $+ $chr(41)
+        _alert Flood DCC flood detected- Further CTCPs won't be shown $chr(40) $+ ignored $+ $chr(41)
         halt
       }
       elseif ($hget(pnp.flood. $+ $cid,recd.dcc. $+ $site) > 6) {
         ; Site flood activated
         hinc -u45 pnp.flood. $+ $cid ignore.ctcp. $+ $site
-_alert Flood DCC flood from $:b($nick) $chr(40) $+ $address $+ $chr(41) Further CTCPs from address won't be shown $chr(40) $+ ignored $+ $chr(41)
+        _alert Flood DCC flood from $:b($nick) $chr(40) $+ $address $+ $chr(41) Further CTCPs from address won't be shown $chr(40) $+ ignored $+ $chr(41)
         halt
       }
     }
@@ -126,75 +126,75 @@ _alert Flood DCC flood from $:b($nick) $chr(40) $+ $address $+ $chr(41) Further 
     }
     return
   }
- 
+
   if ($hget(pnp.config,myflood.prot) !& 1) goto ctcpokay
- 
+
   _recseen 10 user $nick
   hinc -u3 pnp.flood. $+ $cid recd.quick
- 
+
   if ($hget(pnp.flood. $+ $cid,recd.ctcp) > 6) {
     ; Overall flood activated
     hinc -u45 pnp.flood. $+ $cid ignore.ctcp
     if ($1- == VERSION) .ignore -dtu20 **!**@**
-_alert Flood CTCP flood detected- Further CTCPs won't be shown $chr(40) $+ ignored $+ $chr(41)
+    _alert Flood CTCP flood detected- Further CTCPs won't be shown $chr(40) $+ ignored $+ $chr(41)
     if ($chan !ischan) _trn
   }
   elseif ($hget(pnp.flood. $+ $cid,recd.ctcp. $+ $site) > 3) {
     ; Site flood activated
     hinc -u45 pnp.flood. $+ $cid ignore.ctcp. $+ $site
     if ($1- == VERSION) .ignore -dtu20 $wildsite
-_alert Flood CTCP flood from $:b($nick) $chr(40) $+ $address $+ $chr(41) Further CTCPs from address won't be shown $chr(40) $+ ignored $+ $chr(41)
+    _alert Flood CTCP flood from $:b($nick) $chr(40) $+ $address $+ $chr(41) Further CTCPs from address won't be shown $chr(40) $+ ignored $+ $chr(41)
     if ($chan !ischan) _trn
   }
   elseif (($1 == ECHO) || (($1 == PING) && ($len($2-) > 30))) {
     ; Oversized ping or echo
     if ($hget(pnp.flood. $+ $cid,-echo.ctcp)) {
       hinc -u45 pnp.flood. $+ $cid ignore.ctcp. $+ $site
-_alert Flood Flood $upper($1) $chr(40) $+ $len($1-) bytes $+ $chr(41) from $:b($nick) $chr(40) $+ $address $+ $chr(41) Further CTCPs from address won't be shown $chr(40) $+ ignored $+ $chr(41)
+      _alert Flood Flood $upper($1) $chr(40) $+ $len($1-) bytes $+ $chr(41) from $:b($nick) $chr(40) $+ $address $+ $chr(41) Further CTCPs from address won't be shown $chr(40) $+ ignored $+ $chr(41)
       if ($chan !ischan) _trn
     }
     else {
       hinc -u16 pnp.flood. $+ $cid -echo.ctcp
-$_show.ctcp($nick,$address,$1,$null,- Ignored ( $+ $:s($len($1-)) bytes))
+      $_show.ctcp($nick,$address,$1,$null,- Ignored ( $+ $:s($len($1-)) bytes))
     }
   }
   elseif (($hget(pnp.flood. $+ $cid,recd.ctcp) > 4) || ($hget(pnp.flood. $+ $cid,recd.ctcp. $+ $site) > 2) || ($hget(pnp.flood. $+ $cid,recd.quick) > 2)) {
     ; Show but no reply
-$_show.ctcp($nick,$address,$1,$2-,- Ignored)
+    $_show.ctcp($nick,$address,$1,$2-,- Ignored)
   }
   else {
     :ctcpokay
     var %reply = $_repl.ctcp($1,$2-)
- 
+
     if ($1 == PING) {
       ; Standard ping
       _qcr $nick $1-
       if (%reply) {
         _linedance _qnotice $nick %reply
-$_show.ctcp($nick,$address,$1,$iif($hget(pnp.config,show.pingcode),$2-,$null),$iif(%.replrand,Replied $:q(%reply)))
+        $_show.ctcp($nick,$address,$1,$iif($hget(pnp.config,show.pingcode),$2-,$null),$iif(%.replrand,Replied $:q(%reply)))
       }
       else {
         $_show.ctcp($nick,$address,$1,$iif($hget(pnp.config,show.pingcode),$2-))
       }
     }
- 
+
     elseif (%reply) {
       ; Normal reply
       _linedance _qcr $nick $1 %reply
-$_show.ctcp($nick,$address,$1,$2-,$iif(%.replrand,Replied $:q(%reply)))
+      $_show.ctcp($nick,$address,$1,$2-,$iif(%.replrand,Replied $:q(%reply)))
     }
     elseif (($1- == VERSION) || (%.ctcp.reply == 0)) $_show.ctcp($nick,$address,$1,$2-)
     else {
       ; No known reply
-_Q.fkey 1 $calc($ctime + 180) _cidexists $cid $chr(124) scid $cid $chr(124) ctcpreply $nick $1 $!_entry(0,$null, $+ $1 reply to send to $nick $+ ? $+ )
-$_show.ctcp($nick,$address,$1,$2-,No known reply $+ $chr(44) press $:s($result) to reply)
+      _Q.fkey 1 $calc($ctime + 180) _cidexists $cid $chr(124) scid $cid $chr(124) ctcpreply $nick $1 $!_entry(0,$null, $+ $1 reply to send to $nick $+ ? $+ )
+      $_show.ctcp($nick,$address,$1,$2-,No known reply $+ $chr(44) press $:s($result) to reply)
     }
   }
- 
+
   unset %.ctcp.reply %.replrand
   halt
 }
- 
+
 ; Show a received CTCP or PING
 ; Assumes $chan is 'valid'
 ; $_show.ctcp($nick,$address,$1,$2-[,comments])
@@ -207,7 +207,7 @@ alias _show.ctcp {
   set -u %::text $4
   if ($chan) {
     set -u %:echo echo $color(ctcp) -ti2 $chan
-set -u %:comments $5- $iif(($me isop $chan) || ($me ishop $chan),(F8 to punish))
+    set -u %:comments $5- $iif(($me isop $chan) || ($me ishop $chan),(F8 to punish))
     set -u %::chan $chan
     theme.text CtcpChan cp
   }
@@ -219,7 +219,7 @@ set -u %:comments $5- $iif(($me isop $chan) || ($me ishop $chan),(F8 to punish))
   }
   return
 }
- 
+
 ; _show.ctcp.send $target $1 $2-
 ; $target can be =$nick
 alias _show.ctcp.send {
@@ -239,7 +239,7 @@ alias _show.ctcp.send {
   }
   return
 }
- 
+
 ; $_show.reply($nick,$address,$1,$2-[,comments])
 ; Assumes $chan is valid
 alias _show.reply {
@@ -254,7 +254,7 @@ alias _show.reply {
   theme.text CtcpReply $iif($chan,cp,p)
   return
 }
- 
+
 ; $_show.reply.ping($nick,$address,$1,$2-,$_dur,chan,target)
 alias _show.reply.ping {
   if (!$show) return
@@ -267,7 +267,7 @@ alias _show.reply.ping {
   set -u %::text $5
   ; (don't show chan if echoing to @win)
   set -u %::chan $iif(@* !iswm $7,$6)
-set -u %:comments $iif(($3 != PING) && ($4 != $null),( $+ reply of $:q($4) $+ ))
+  set -u %:comments $iif(($3 != PING) && ($4 != $null),( $+ reply of $:q($4) $+ ))
   theme.text CtcpReply p
   if (@* iswm $7) sline -r $7 $line($7,0)
   return
@@ -281,7 +281,7 @@ alias _show.reply.ping.retain {
   hinc -m %hash last
   hadd %hash $hget(%hash,last) $3-
 }
- 
+
 ; _show.reply.send $target $1 $2-
 alias _show.reply.send {
   if (!$show) return
@@ -297,27 +297,27 @@ alias _show.reply.send {
   theme.text CtcpReplySelf p
   return
 }
- 
+
 ; $1 target $2 replies remaining or 0 for done/unknown $3 average (in ticks) or 0/null for none
 alias _ping.avg { disprc $1 $_ping.summary($3,$2) }
 ; $1 = average lag dur $2 = count waiting for
 alias _ping.summary {
-if (!$1) return ¢ Average ping unknown
-elseif ($2) return ¢ Average ping $:s($_dur($calc($1 / 1000))) - Waiting for $:t($2) reply $+ $chr(40) $+ s $+ $chr(41)
-else return ¢ Average ping $:s($_dur($calc($1 / 1000))) $chr(91) $+ ping complete $+ $chr(93)
+  if (!$1) return ¢ Average ping unknown
+  elseif ($2) return ¢ Average ping $:s($_dur($calc($1 / 1000))) - Waiting for $:t($2) reply $+ $chr(40) $+ s $+ $chr(41)
+  else return ¢ Average ping $:s($_dur($calc($1 / 1000))) $chr(91) $+ ping complete $+ $chr(93)
 }
- 
+
 ;
 ; Self pings
 ;
- 
+
 raw 421:& *§ *:{
   if ($hget(pnp. $+ $cid,-sp. $+ $round($2,0))) {
     hadd pnp. $+ $cid -self.ticks $calc($ticks - $ifmatch)
     hadd pnp. $+ $cid -self.lag $_dur($calc(($ticks - $ifmatch) / 1000))
   }
   else { hdel -w pnp. $+ $cid -sp.* | .timer -m 1 0 _qsp | halt }
-if (R isin $2) disp Self-Ping of $:s($hget(pnp. $+ $cid,-self.lag))
+  if (R isin $2) disp Self-Ping of $:s($hget(pnp. $+ $cid,-self.lag))
   if ($round($2,0) == $hget(pnp. $+ $cid,-sp.index)) hdel -w pnp. $+ $cid -sp.*
   else hdel pnp. $+ $cid -sp. $+ $round($2,0)
   if ($_cfgi(sptime)) {
@@ -348,17 +348,17 @@ alias _qsp {
     hdel pnp. $+ $cid -self.*
   }
   if (X !isin $1) {
-if ($_cfgi(spwarn1) isnum) if ($ifmatch > 0) .timer.selfwarn1. $+ $cid 1 $ifmatch _alert Self-lag Warning- Over $:b($ifmatch) sec lag to self!
-if ($_cfgi(spwarn2) isnum) if ($ifmatch > 0) .timer.selfwarn2. $+ $cid 1 $ifmatch _alert Self-lag Warning- Over $:b($ifmatch) sec lag to self!
+    if ($_cfgi(spwarn1) isnum) if ($ifmatch > 0) .timer.selfwarn1. $+ $cid 1 $ifmatch _alert Self-lag Warning- Over $:b($ifmatch) sec lag to self!
+    if ($_cfgi(spwarn2) isnum) if ($ifmatch > 0) .timer.selfwarn2. $+ $cid 1 $ifmatch _alert Self-lag Warning- Over $:b($ifmatch) sec lag to self!
     hadd pnp. $+ $cid -sp.count 0
-.timer.selflagup. $+ $cid -c 0 1 hinc pnp. $+ $cid -sp.count $chr(124) hadd pnp. $+ $cid -self.lag $!hget(pnp. $+ $cid $+ ,-sp.count) $!+ + s $chr(124) hadd pnp. $+ $cid -self.ticks $!calc(1000 * $!hget(pnp. $+ $cid $+ ,-sp.count))
+    .timer.selflagup. $+ $cid -c 0 1 hinc pnp. $+ $cid -sp.count $chr(124) hadd pnp. $+ $cid -self.lag $!hget(pnp. $+ $cid $+ ,-sp.count) $!+ + s $chr(124) hadd pnp. $+ $cid -self.ticks $!calc(1000 * $!hget(pnp. $+ $cid $+ ,-sp.count))
   }
 }
 raw 1:*:if ($_cfgi(sptime)) { .timer.selfping. $+ $cid 1 $ifmatch _qsp | hdel pnp. $+ $cid -self.ticks | hadd pnp. $+ $cid -self.lag ?? s } | else .timer.selfping 0 99 if ($_cfgi(sptime)) _qsp
- 
+
 ; Update address (and possibly titlebar) instantly on nickchange
 on me:*:NICK:{ hadd pnp. $+ $cid -myself $newnick $+ ! $+ $gettok($fulladdress,2-,33) | .timer -mo 1 0 _upd.title }
- 
+
 ;
 ; CTCP-related commands
 ;
@@ -370,7 +370,7 @@ alias script if ($1) var %target = $_ncs(44,$_s2c($1-)) | else _qhelp /script | 
 alias fing if ($1) var %target = $_ncs(44,$_s2c($1-)) | else _qhelp /fing | _show.ctcp.send %target FINGER | _qc %target FINGER
 alias date time $1-
 alias time {
-if ($1 == $null) dispa It is currently - $_datetime
+  if ($1 == $null) dispa It is currently - $_datetime
   else {
     var %target = $_ncs(44,$_s2c($1-))
     _show.ctcp.send %target TIME
@@ -380,9 +380,9 @@ if ($1 == $null) dispa It is currently - $_datetime
 alias ver version $1-
 alias version {
   if ($1 == $null) {
-if ($hget(pnp,addon.ids) == $null) dispa $me is using Peace and Protection $:t($:ver) by pai
-else dispa $me is using Peace and Protection $:t($:ver) by pai - with addons $_addon.names(1)
-dispa Peace and Protection homepage- $:s($:www())
+    if ($hget(pnp,addon.ids) == $null) dispa $me is using Peace and Protection $:t($:ver) by pai
+    else dispa $me is using Peace and Protection $:t($:ver) by pai - with addons $_addon.names(1)
+    dispa Peace and Protection homepage- $:s($:www())
   }
   else {
     var %target = $_ncs(44,$_s2c($1-))
@@ -401,15 +401,15 @@ alias ctcp {
   _qc %target $upper($2) $3-
 }
 alias ctcpreply if ($2) var %target = $_ncs(44,$1) | else _qhelp /ctcpreply $1 | _show.reply.send %target $2- | _qcr %target $2-
- 
+
 ;
 ; Pinging and CTCP replies
 ;
- 
+
 alias ping {
   if ($1) var %target = $_ncs(44,$_s2c($1-))
   elseif ($_targ(=?#)) var %target = $active
-else _error You must specify a user or channel to /ping $+ . $+ $chr(40) $+ or use /ping in a query or channel window $+ $chr(41)
+  else _error You must specify a user or channel to /ping $+ . $+ $chr(40) $+ or use /ping in a query or channel window $+ $chr(41)
   if (=* iswm %target) dcp %target
   else { var %ticks = $ticks | _qc %target PING $ctime 0 %ticks | if ($show) $_show.ctcp.send(%target,PING) | _prepping %target %ticks PING }
 }
@@ -417,7 +417,7 @@ alias vping verping $1-
 alias verping {
   if ($1) var %target = $_ncs(44,$1)
   elseif ($_targ(=?#)) var %target = $active
-else _error You must specify a user or channel to /verping $+ . $+ $chr(40) $+ or use /verping in a query or channel window $+ $chr(41)
+  else _error You must specify a user or channel to /verping $+ . $+ $chr(40) $+ or use /verping in a query or channel window $+ $chr(41)
   if (=* iswm %target) dcp %target
   else { var %ticks = $ticks | _qc %target $iif($2,$upper($2),VERSION) | if ($show) $_show.ctcp.send(%target,$iif($2,$upper($2),VERSION) PING) | _prepping %target %ticks $iif($2,$upper($2),VERSION) }
 }
@@ -514,7 +514,7 @@ alias _do.creply {
       var %avg = $round($calc($hget(pnp.ping. $+ $cid,total. $+ %target) / $hget(pnp.ping. $+ $cid,reply. $+ %target)),0)
       hadd pnp.ping. $+ $cid avg. $+ %target %avg
       hdec pnp.ping. $+ $cid count. $+ %target
-hadd -u180 pnp. $+ $cid -titleavg. $+ %target lag [[ $+ $_dur($calc(%avg / 1000)) $+ ]] $iif($hget(pnp.ping. $+ $cid,count. $+ %target),need $chr(91) $+ $hget(pnp.ping. $+ $cid,count. $+ %target) $+ $chr(93) ping)
+      hadd -u180 pnp. $+ $cid -titleavg. $+ %target lag [[ $+ $_dur($calc(%avg / 1000)) $+ ]] $iif($hget(pnp.ping. $+ $cid,count. $+ %target),need $chr(91) $+ $hget(pnp.ping. $+ $cid,count. $+ %target) $+ $chr(93) ping)
       if ($hget(pnp.config,ping.bulk) == *) $_show.reply.ping($nick,$address,$1,$2-,$_dur($calc((%ticks - %time) / 1000)),%target,%target)
       elseif ($hget(pnp.config,ping.bulk) == @Ping) {
         var %win = $_mservwin(@Ping,$chr(160) $+ %target)
@@ -556,7 +556,7 @@ alias -l _removepc {
 ; /avglag (ctrlf2) also clears ping colors from nicks
 alias avglag {
   if ($1) var %target = $1 | else var %target = $active
-if (!$_ischan(%target)) _error You can only check average lag of a channel.Either use in a channel or specify a channel name.
+  if (!$_ischan(%target)) _error You can only check average lag of a channel.Either use in a channel or specify a channel name.
   _ping.avg %target $iif($hget(pnp.ping. $+ $cid,count. $+ %target),$ifmatch,0) $hget(pnp.ping. $+ $cid,avg. $+ %target)
   if (($_cfgi(nickcol)) && ($me ison %target)) {
     var %num = $nick(%target,0)
@@ -567,7 +567,7 @@ if (!$_ischan(%target)) _error You can only check average lag of a channel.Eith
 }
 alias pwin {
   if ($1) var %target = $1 | else var %target = $active
-if (!$_ischan(%target)) _error You can only view stored pings for a channel.Either use in a channel or specify a channel name.
+  if (!$_ischan(%target)) _error You can only view stored pings for a channel.Either use in a channel or specify a channel name.
   var %win = $_mservwin(@Ping,$chr(160) $+ %target)
   if ($window(%win) == $null) {
     var %retain = pnp.pingret. $+ $cid $+ . $+ %target
@@ -582,7 +582,7 @@ if (!$_ischan(%target)) _error You can only view stored pings for a channel.Eit
       window -b %win
       iline $color(ctcp) %win 1 $:* $_ping.summary($hget(pnp.ping. $+ $cid,avg. $+ %target),$hget(pnp.ping. $+ $cid,count. $+ %target))
     }
-else _doerror Warning- No stored pings for %target $+ .Verify that the option to retain ping replies is enabled.
+    else _doerror Warning- No stored pings for %target $+ .Verify that the option to retain ping replies is enabled.
   }
   else window -a %win
 }
@@ -596,18 +596,18 @@ alias -l _recd.reply {
     hinc -u20 pnp.flood. $+ $cid ignore.ctcp. $+ $site
     halt
   }
- 
+
   $_show.reply($nick,$address,$1,$2-)
   haltdef
 }
 menu @Ping {
-Configure...:config 9
+  Configure...:config 9
 }
- 
+
 ;
 ; Basic messaging/ctcp'ing
 ;
- 
+
 ; quiet privmsg, notice, ctcp, action, ctcp reply
 alias _privmsg .raw privmsg $1 : $+ $2-
 alias _qnotice .raw notice $1 : $+ $2-
@@ -622,34 +622,34 @@ alias _tnotice {
 alias _qc if (=* iswm $1) .msg $1  $+ $2- $+  | else .raw privmsg $1 : $+ $2- $+ 
 alias _qca if (=* iswm $1) .msg $1 ACTION $2- $+  | else .raw privmsg $1 :ACTION $2- $+ 
 alias _qcr if (=* iswm $1) .msg $1 \ $+ $2- $+  | else .raw notice $1 : $+ $2- $+ 
- 
+
 ;
 ; CTCP reply editing
 ;
 alias ctcpedit dialog -dm ctcpedit ctcpedit
 dialog ctcpedit {
-title "CTCP replies"
+  title "CTCP replies"
   icon script\pnp.ico
   option dbu
   size -1 -1 200 174
- 
+
   box "&CTCPs:", 21, 5 5 190 92
   list 2, 10 15 180 60, extsel sort
- 
-button "&Add...", 10, 10 77 40 12
-button "&Remove", 11, 55 77 40 12
-button "&Load default", 12, 134 77 55 12
- 
+
+  button "&Add...", 10, 10 77 40 12
+  button "&Remove", 11, 55 77 40 12
+  button "&Load default", 12, 134 77 55 12
+
   box "", 22, 5 105 190 42
- 
+
   combo 4, 10 115 50 50, drop
   edit "", 5, 65 115 125 11, autohs
-button "&Select...", 8, 10 130 30 11
-button "&Default", 9, 155 130 35 11
- 
-button "OK", 100, 5 155 40 12, ok
-button "Cancel", 101, 50 155 40 12, cancel
-button "&Help", 102, 155 155 40 12, disable
+  button "&Select...", 8, 10 130 30 11
+  button "&Default", 9, 155 130 35 11
+
+  button "OK", 100, 5 155 40 12, ok
+  button "Cancel", 101, 50 155 40 12, cancel
+  button "&Help", 102, 155 155 40 12, disable
 }
 on *:DIALOG:ctcpedit:init:*:{
   loadbuf -otctcp $dname 4 script\dlgtext.dat
@@ -666,7 +666,7 @@ alias -l _loadctcp {
   if (%count == 1) {
     var %ctcp = $did(ctcpedit,2,$did(ctcpedit,2).sel)
     var %name = $gettok(%ctcp,1,32)
-did -ae ctcpedit 22 Response to %name $+ :
+    did -ae ctcpedit 22 Response to %name $+ :
     var %def = $read(script\defcfg\ctcp.dat,ns,%name)
     did $iif(%def,-e,-b) ctcpedit 9
     %ctcp = $gettok(%ctcp,2-,32)
@@ -692,7 +692,7 @@ did -ae ctcpedit 22 Response to %name $+ :
     }
   }
   else {
-did -ab ctcpedit 22 Response to CTCP $+ :
+    did -ab ctcpedit 22 Response to CTCP $+ :
     did -ub ctcpedit 4
     did -rb ctcpedit 5
     did -b ctcpedit 8,9
@@ -720,12 +720,12 @@ on *:DIALOG:ctcpedit:sclick:8:{
   var %file = $did(ctcpedit,5)
   if (!$isfile(%file)) %file = $mircdir $+ \*.txt
   _ssplay Question
-var %new = $$sfile(%file,File to take random replies from?)
+  var %new = $$sfile(%file,File to take random replies from?)
   did -o ctcpedit 5 1 %new
   _savectcp
 }
 on *:DIALOG:ctcpedit:sclick:10:{
-var %new = $_entry(-1,$null,CTCP to add a reply for?)
+  var %new = $_entry(-1,$null,CTCP to add a reply for?)
   if ($_finddid(ctcpedit,2,%new)) did -c ctcpedit 2 $ifmatch
   else did -ac ctcpedit 2 $upper(%new)
   _loadctcp

@@ -3,7 +3,7 @@
 ; Peace and Protection
 ; Banlist / etc. editing, and blacklist
 ; ########################################
- 
+
 ;
 ; Banlist/etc. editing
 ;
@@ -28,19 +28,19 @@ alias -l _finlist {
   if ($line(%win,0) == 0) {
     window -c %win
     if ($halted) return
-disprc $2 $1 list is empty.
+    disprc $2 $1 list is empty.
     halt
   }
-iline %win 1 Double-click to toggle an entry. (right-click for options)
-iline %win 2 Changes will *not* be made until you close the window.
+  iline %win 1 Double-click to toggle an entry. (right-click for options)
+  iline %win 2 Changes will *not* be made until you close the window.
   iline %win 3  
-iline %win 4  	 $+ $1 $+ 	Days old	Set by
+  iline %win 4  	 $+ $1 $+ 	Days old	Set by
   iline %win 5  
   window -awb %win
   _banupd %win
   halt
 }
- 
+
 ; opens a list from the ibl
 alias _iblbanlist {
   var %win = $_openlist(@Ban-list,- $+ $1)
@@ -51,7 +51,7 @@ alias _iblbanlist {
   }  
   _finlist Ban $1
 }
- 
+
 raw 367:*:{
   var %hashhit = $+(pnp.scanfound.,$cid,.,$cha2)
   if ($hget(%hashhit)) {
@@ -80,47 +80,47 @@ raw &346:*:{ _addlist $_openlist(@Invite-list,- $+ $2) $3- | halt }
 raw 347:*:_finlist Invite $2
 raw &348:*:{ _addlist $_openlist(@Exception-list,- $+ $2) $3- | halt }
 raw 349:*:_finlist Exception $2
- 
+
 menu @Banlist {
   dclick:_bangroup $active _bantog
-$iif($sline($active,1).ln > 5,Toggle):_bangroup $active _bantog
-$iif($sline($active,1).ln > 5,Remove):_bangroup $active _banrem
-Add...:_banadd $active $mid(beI,$pos(bei,$mid($active,2,1),1),1) $_entry(-1,$null,$remove($gettok($active,1,45),@) to add to $gettok($active,3-,45) $+ ? $+ $chr(40) $+ You must enter a mask $+ $chr(44) not a nickname. $+ $chr(41)) +
-$iif($sline($active,1).ln > 5,Modify...):_bangroup $active _banmod
+  $iif($sline($active,1).ln > 5,Toggle):_bangroup $active _bantog
+  $iif($sline($active,1).ln > 5,Remove):_bangroup $active _banrem
+  Add...:_banadd $active $mid(beI,$pos(bei,$mid($active,2,1),1),1) $_entry(-1,$null,$remove($gettok($active,1,45),@) to add to $gettok($active,3-,45) $+ ? $+ $chr(40) $+ You must enter a mask $+ $chr(44) not a nickname. $+ $chr(41)) +
+  $iif($sline($active,1).ln > 5,Modify...):_bangroup $active _banmod
   -
-Remove
-.Entries matching...:{
-var %whom = $_entry(-1,$null,Nickname address or wildcard mask to clear matches for?)
+  Remove
+  .Entries matching...:{
+    var %whom = $_entry(-1,$null,Nickname address or wildcard mask to clear matches for?)
     if ($_ppmask(%whom,1,1,1)) _bancln $active * $ifmatch
     else {
       _notconnected
-_Q.userhost _bancln $+ $active $+ *&n!&a disps $+ User $+ $:t(%whom) $+ notfound-cannotcleanmatchingentries %whom
+      _Q.userhost _bancln $+ $active $+ *&n!&a disps $+ User $+ $:t(%whom) $+ notfound-cannotcleanmatchingentries %whom
     }
   }
-.Nick-based entries:_bancln $active n
-.Single IP entries:_bancln $active i
+  .Nick-based entries:_bancln $active n
+  .Single IP entries:_bancln $active i
   .-
-.Entries set by servers:_bancln $active s
-.Entries set by...:_bancln $active b $_entry(-1,$me,Remove all entries set by whom? $chr(40) $+ wildcards OK $+ $chr(41))
+  .Entries set by servers:_bancln $active s
+  .Entries set by...:_bancln $active b $_entry(-1,$me,Remove all entries set by whom? $chr(40) $+ wildcards OK $+ $chr(41))
   .-
-.Entries newer than...:_bancln $active <= $_entry(-2,0.1,Remove all entries younger than how many days?)
-.Entries older than...:_bancln $active >= $_entry(-2,5,Remove all entries older than how many days?)
+  .Entries newer than...:_bancln $active <= $_entry(-2,0.1,Remove all entries younger than how many days?)
+  .Entries older than...:_bancln $active >= $_entry(-2,5,Remove all entries older than how many days?)
   .-
-.All entries:_banall $active _banrem
-Backup
-.Export...:_ssplay Question | var %export = $$sfile(*.txt,File to export to?,Export) | if ($exists(%export)) _fileopt 1 %export | _banexp $active %export
+  .All entries:_banall $active _banrem
+  Backup
+  .Export...:_ssplay Question | var %export = $$sfile(*.txt,File to export to?,Export) | if ($exists(%export)) _fileopt 1 %export | _banexp $active %export
   .-
-.Import $+ $chr(44) adding to list...:_ssplay Question | _banimp $active 0 $$sfile(*.txt,Banlist to import?,Import)
-.Import $+ $chr(44) replacing list...:_ssplay Question | _banimp $active 1 $$sfile(*.txt,Banlist to import?,Import)
+  .Import $+ $chr(44) adding to list...:_ssplay Question | _banimp $active 0 $$sfile(*.txt,Banlist to import?,Import)
+  .Import $+ $chr(44) replacing list...:_ssplay Question | _banimp $active 1 $$sfile(*.txt,Banlist to import?,Import)
   .-
-.$iif($sline($active,1).ln > 5,Copy to blacklist...):black $active
-.$iif($sline($active,1).ln > 5,Move to blacklist...):var %win = $active | black %win | _bangroup %win _banrem
+  .$iif($sline($active,1).ln > 5,Copy to blacklist...):black $active
+  .$iif($sline($active,1).ln > 5,Move to blacklist...):var %win = $active | black %win | _bangroup %win _banrem
   -
-$iif($count($window($active).title,-) > 1,Changes)
-.Perform changes:_closebanlist $active
+  $iif($count($window($active).title,-) > 1,Changes)
+  .Perform changes:_closebanlist $active
   .-
-.Cancel changes:_banall $active _banok
-.Close and cancel:_windowreg $active | _dowclose $active | window -c $active
+  .Cancel changes:_banall $active _banok
+  .Close and cancel:_windowreg $active | _dowclose $active | window -c $active
 }
 alias -l _bangroup var %blip = $mid(beI,$pos(bei,$mid($1,2,1),1),1),%num = $sline($1,0) | :loop | if (%num) { if ($sline($1,%num).ln > 5) $2 $1 $ifmatch %blip | dec %num | goto loop } | _banupd $1
 alias -l _banall var %blip = $mid(beI,$pos(bei,$mid($1,2,1),1),1),%num = $line($1,0) | :loop | if (%num > 5) { $2 $1 $ifmatch %blip | dec %num | goto loop } | _banupd $1
@@ -145,7 +145,7 @@ alias _bancln {
 alias -l _bantog {
   if (+ isin $gettok($line($1,$2),1,9)) dline $1 $2
   elseif (- isin $gettok($line($1,$2),1,9)) rline $1 $2  	 $+ $gettok($line($1,$2),2-4,9)
-else rline $1 $2 - $+ $3 $+ 	 $+ $gettok($line($1,$2),2-4,9) $+ 	 ( $+ removing $remove($gettok($1,1,45),@) $+ )
+  else rline $1 $2 - $+ $3 $+ 	 $+ $gettok($line($1,$2),2-4,9) $+ 	 ( $+ removing $remove($gettok($1,1,45),@) $+ )
 }
 alias -l _banok {
   if (+ isin $gettok($line($1,$2),1,9)) dline $1 $2
@@ -153,7 +153,7 @@ alias -l _banok {
 }
 alias _banrem {
   if (+ isin $gettok($line($1,$2),1,9)) dline $1 $2
-else rline $1 $2 - $+ $3 $+ 	 $+ $gettok($line($1,$2),2-4,9) $+ 	 ( $+ removing $remove($gettok($1,1,45),@) $+ )
+  else rline $1 $2 - $+ $3 $+ 	 $+ $gettok($line($1,$2),2-4,9) $+ 	 ( $+ removing $remove($gettok($1,1,45),@) $+ )
 }
 alias _banadd {
   var %num = $line($1,0)
@@ -163,7 +163,7 @@ alias _banadd {
     goto done
   }
   if (%num > 5) { dec %num | goto loop }
-aline $1 + $+ $2 $+ 	 $+ $3 $+ 	 0 $+ 	 $+ $me $+ 	 ( $+ adding $remove($gettok($1,1,45),@) $+ )
+  aline $1 + $+ $2 $+ 	 $+ $3 $+ 	 0 $+ 	 $+ $me $+ 	 ( $+ adding $remove($gettok($1,1,45),@) $+ )
   :done
   if ($4) _banupd $1
 }
@@ -187,24 +187,24 @@ alias -l _bankill {
   _banupd $1
 }
 alias -l _banmod {
-var %newban = $_entry(-1,$gettok($line($1,$2),2,9),New mask for $remove($gettok($1,1,45),@) $+ ?) +
+  var %newban = $_entry(-1,$gettok($line($1,$2),2,9),New mask for $remove($gettok($1,1,45),@) $+ ?) +
   _banrem $1-
   _banadd $1 $3 %newban
 }
 alias -l _banupd {
   var %title = -
-if ($fline($1,+*,0,0)) %title = %title Adding $ifmatch $remove($gettok($1,1,45),@) $+ $chr(40) $+ s $+ $chr(41) -
-if ($fline($1,-*,0,0)) %title = %title Removing $ifmatch $remove($gettok($1,1,45),@) $+ $chr(40) $+ s $+ $chr(41) -
+  if ($fline($1,+*,0,0)) %title = %title Adding $ifmatch $remove($gettok($1,1,45),@) $+ $chr(40) $+ s $+ $chr(41) -
+  if ($fline($1,-*,0,0)) %title = %title Removing $ifmatch $remove($gettok($1,1,45),@) $+ $chr(40) $+ s $+ $chr(41) -
   var %cur = $calc($line($1,0) - $fline($1,-*,0,0) - 5)
-if (%title == -) %title = - %cur total $remove($gettok($1,1,45),@) $+ $chr(40) $+ s $+ $chr(41)
-else %title = %title Resulting in %cur total $remove($gettok($1,1,45),@) $+ $chr(40) $+ s $+ $chr(41)
+  if (%title == -) %title = - %cur total $remove($gettok($1,1,45),@) $+ $chr(40) $+ s $+ $chr(41)
+  else %title = %title Resulting in %cur total $remove($gettok($1,1,45),@) $+ $chr(40) $+ s $+ $chr(41)
   titlebar $1 %title ( $+ $hget(pnp. $+ $window($1).cid,net) $+ )
 }
 alias _closebanlist {
   var %channel = $mid($1,$calc($pos($1,-,2) + 1),$len($1))
   _init.mass %channel
   if (($fline($1,-*,1,0)) || ($fline($1,+*,1,0))) {
-if (($me !ishop %channel) && ($me !isop %channel)) { disprc %channel Changes to $remove($gettok($1,1,45),@) list canceled- You are not opped | return }
+    if (($me !ishop %channel) && ($me !isop %channel)) { disprc %channel Changes to $remove($gettok($1,1,45),@) list canceled- You are not opped | return }
   }
   :loopu
   if ($fline($1,-*,1,0)) {
@@ -236,7 +236,7 @@ alias _banexp {
   %line = $line($1,%num)
   if (%line) {
     if (- !isin $gettok(%line,1,9)) {
-if ($gettok(%line,3,9)) write " $+ $2- $+ " $gettok(%line,2,9) 	set by $gettok(%line,4,9) $gettok(%line,3,9) days old
+      if ($gettok(%line,3,9)) write " $+ $2- $+ " $gettok(%line,2,9) 	set by $gettok(%line,4,9) $gettok(%line,3,9) days old
       else write " $+ $2- $+ " $gettok(%line,2,9)
     }
     inc %num | goto loop
@@ -244,7 +244,7 @@ if ($gettok(%line,3,9)) write " $+ $2- $+ " $gettok(%line,2,9) 	set by $gettok(%
 }
 on *:BAN:#:if ($window($_mservwin(@Ban-list,- $+ $chan))) _banmake $ifmatch $banmask $nick
 on *:UNBAN:#:if ($window($_mservwin(@Ban-list,- $+ $chan))) _bankill $ifmatch $banmask $nick
- 
+
 ;
 ; Blacklist
 ;
@@ -261,52 +261,52 @@ alias blackedit {
     %nick = $readini(%file,n,%line,nick)
     %chan = $readini(%file,n,%line,chan)
     %note = $readini(%file,n,%line,note)
-aline @Blacklist $iif(%nick == $null,-,%nick) $+ 	 $+ %line $+ 	 $+ ( $+ $iif(%chan == $null,all,%chan) $+ ) $+ 	 $+ $_readprep(%note)
+    aline @Blacklist $iif(%nick == $null,-,%nick) $+ 	 $+ %line $+ 	 $+ ( $+ $iif(%chan == $null,all,%chan) $+ ) $+ 	 $+ $_readprep(%note)
     dec %num | goto loop
   }
-iline @Blacklist 1 The following addresses will be banned and kicked where you are op.
-iline @Blacklist 2 You will also ignore private messages and CTCPs from them.
-iline @Blacklist 3 Double-click to edit a user $+ $chr(44) or right-click for options.
+  iline @Blacklist 1 The following addresses will be banned and kicked where you are op.
+  iline @Blacklist 2 You will also ignore private messages and CTCPs from them.
+  iline @Blacklist 3 Double-click to edit a user $+ $chr(44) or right-click for options.
   iline @Blacklist 4  
-iline @Blacklist 5 Nickname	Address	Channel	Reason
+  iline @Blacklist 5 Nickname	Address	Channel	Reason
   iline @Blacklist 6  
   window -b @Blacklist
 }
- 
+
 menu @Blacklist {
   dclick:if ($sline($active,1).ln > 6) black $gettok($sline($active,1),2,9)
-Add user...:black $_entry(-1,$null,Nickname or address to blacklist?)
-$iif($sline($active,1).ln > 6,Remove)::loop | black -r $gettok($sline($active,1),2,9) | if ($sline($active,1).ln) goto loop
+  Add user...:black $_entry(-1,$null,Nickname or address to blacklist?)
+  $iif($sline($active,1).ln > 6,Remove)::loop | black -r $gettok($sline($active,1),2,9) | if ($sline($active,1).ln) goto loop
   -
-$iif($sline($active,1).ln > 6,Edit...):black $gettok($sline($active,1),2,9)
+  $iif($sline($active,1).ln > 6,Edit...):black $gettok($sline($active,1),2,9)
 }
- 
+
 dialog blackedit {
-title "Blacklist"
+  title "Blacklist"
   icon script\pnp.ico
   option dbu
   size -1 -1 150 130
- 
-box "Blacklisting:", 101, 5 5 140 39
-text "&Nickname:", 106, 8 17 25 10, right
+
+  box "Blacklisting:", 101, 5 5 140 39
+  text "&Nickname:", 106, 8 17 25 10, right
   edit "", 1, 35 15 50 11
-text "(for reference only)", 107, 87 17 50 10
-text "&Usermask:", 108, 8 29 25 10, right
+  text "(for reference only)", 107, 87 17 50 10
+  text "&Usermask:", 108, 8 29 25 10, right
   combo 2, 35 27 105 60, edit drop
- 
-box "Where:", 102, 5 46 140 43
-radio "&All channels", 5, 10 56 130 8
-radio "&Only in:", 6, 10 66 35 8
+
+  box "Where:", 102, 5 46 140 43
+  radio "&All channels", 5, 10 56 130 8
+  radio "&Only in:", 6, 10 66 35 8
   edit "", 7, 45 65 90 11, disable
-text "(multiple channels ok)", 103, 47 78 94 10
- 
-text "&Reason:", 104, 8 95 25 10, right
+  text "(multiple channels ok)", 103, 47 78 94 10
+
+  text "&Reason:", 104, 8 95 25 10, right
   combo 8, 35 93 105 70, edit drop
- 
-button "&Blacklist", 201, 5 112 40 12, default
-button "Cancel", 202, 55 112 40 12, cancel
-button "&Remove", 203, 105 112 40 12, disable
- 
+
+  button "&Blacklist", 201, 5 112 40 12, default
+  button "Cancel", 202, 55 112 40 12, cancel
+  button "&Remove", 203, 105 112 40 12, disable
+
   edit "", 241, 1 1 1 1, hide autohs
   edit "", 242, 1 1 1 1, hide autohs result
 }
@@ -318,7 +318,7 @@ on *:DIALOG:blackedit:init:*:{
     var %chan = $mid(%.who,$calc($pos(%.who,-,2) + 1),$len(%.who))
     did -ae $dname 7 %chan
     did -cf $dname 6
-did -abc $dname 2 ( $+ banlist transfer from %chan $+ )
+    did -abc $dname 2 ( $+ banlist transfer from %chan $+ )
     did -a $dname 242 %.who
   }
   else {
@@ -352,7 +352,7 @@ did -abc $dname 2 ( $+ banlist transfer from %chan $+ )
   unset %.who %.addr
 }
 on *:DIALOG:blackedit:sclick:201:{
-if ($did(8) == $null) _okcancel 1 You have not entered a blacklist reason- Continue?
+  if ($did(8) == $null) _okcancel 1 You have not entered a blacklist reason- Continue?
   ; remove old?
   if (($did(241) != $did(2)) && ($did(241) != $null)) .black -r $did(241)
   ; add new
@@ -375,7 +375,7 @@ if ($did(8) == $null) _okcancel 1 You have not entered a blacklist reason- Conti
   dialog -c $dname
 }
 on *:DIALOG:blackedit:sclick:203:black -r $did(241) | dialog -c $dname
- 
+
 ; /black [-r|#channel(s)|*] nick|addr|@window [=nick] [reason]
 ; pops up dialog only if just nick/addr is given
 alias black {
@@ -383,31 +383,31 @@ alias black {
   if ((-* iswm $1) || ($_ischan($1)) || ($1 == *)) { var %where = $1,%who = $2,%why = $3- }
   else { var %where,%who = $1,%why = $2- }
   if (%who == $null) _qhelp /black $1-
- 
+
   if (@* iswm %who) { set -u %.who %who | _dialog -ma blackedit blackedit | return }
- 
+
   var %dialog = $iif($1- == %who,1,0)
- 
+
   %who = $_nc(%who)
   var %addr = $_ppmask(%who,$_stmask(3,%where),1)
   if (%addr == $null) {
-dispa Looking up address of $:t(%who) $+ ... $+ ...
+    dispa Looking up address of $:t(%who) $+ ... $+ ...
     _notconnected
-_Q.userhost black $+ %where $+ &n!&a $+ $iif(%why != $null,$_s2p(%why)) dispa $+ User $+ $:t(%who) $+ notfound-cannotblacklist %who
+    _Q.userhost black $+ %where $+ &n!&a $+ $iif(%why != $null,$_s2p(%why)) dispa $+ User $+ $:t(%who) $+ notfound-cannotblacklist %who
     halt
   }
- 
+
   ; dialog
   if (%dialog) { set -u %.who %who | set -u %.addr %addr | _dialog -ma blackedit blackedit | return }
- 
+
   var %file = $_cfg(userinfo.ini)
   if (%where == -r) {
     if ($window(@Blacklist)) {
       %num = 7 | :loop1 | if ($line(@Blacklist,%num)) { if ($gettok($ifmatch,2,9) == %addr) dline @Blacklist %num | else inc %num | goto loop1 }
     }
     else {
-if ($istok($level(%addr),=black,44)) dispa Removing $:s(%addr) from blacklist.
-else dispa $:s(%addr) is not in blacklist.
+      if ($istok($level(%addr),=black,44)) dispa Removing $:s(%addr) from blacklist.
+      else dispa $:s(%addr) is not in blacklist.
     }
     .ruser black %addr
     if ($level(%addr) == $dlevel) .ruser %addr
@@ -422,7 +422,7 @@ else dispa $:s(%addr) is not in blacklist.
     if (%where == $null) %where = $readini(%file,n,%addr,chan)
     if (%where == *) var %where
     if ($window(@Blacklist)) {
-%line = $iif(%nick == $null,-,%nick) $+ 	 $+ %addr $+ 	 $+ ( $+ $iif(%where == $null,all,%where) $+ ) $+ 	 $+ %why
+      %line = $iif(%nick == $null,-,%nick) $+ 	 $+ %addr $+ 	 $+ ( $+ $iif(%where == $null,all,%where) $+ ) $+ 	 $+ %why
       %num = 7 | :loop2
       if ($line(@Blacklist,%num)) {
         if ($gettok($ifmatch,2,9) == %addr) _ridline @Blacklist %num %line
@@ -432,9 +432,9 @@ else dispa $:s(%addr) is not in blacklist.
     }
     else {
       if (%nick) %line = $:t(%nick) ( $+ $:s(%addr) $+ ) | else %line = $:s(%addr)
-if (%where == $null) %line2 = $:s(all channels) | else %line2 = $:s(%where)
-var %whyshow = $iif(%why == $null,none,$:s(%why))
-dispa $iif($istok($level(%addr),=black,44),Modifying blacklist entry- %line in %line2 $chr(40) $+ reason- %whyshow $+ $chr(41),Adding blacklist entry- %line in %line2 $chr(40) $+ reason- %whyshow $+ $chr(41))
+      if (%where == $null) %line2 = $:s(all channels) | else %line2 = $:s(%where)
+      var %whyshow = $iif(%why == $null,none,$:s(%why))
+      dispa $iif($istok($level(%addr),=black,44),Modifying blacklist entry- %line in %line2 $chr(40) $+ reason- %whyshow $+ $chr(41),Adding blacklist entry- %line in %line2 $chr(40) $+ reason- %whyshow $+ $chr(41))
     }
     if ($level(%addr) == $dlevel) .auser -a $dlevel %addr
     .auser -a black %addr
@@ -451,7 +451,7 @@ dispa $iif($istok($level(%addr),=black,44),Modifying blacklist entry- %line in %
       ; No need to check for connection status or on channel, as we check for isop/ishop
       if ((($me isop $chan(%num)) || ($me ishop $chan(%num))) && ($ialchan(%addr,$chan(%num),0))) {
         if ((%where == $null) || ($istok(%where,$chan(%num),44))) {
-disprc $chan(%num) Blacklisted $:s(%addr) $+ - Kickbanning $+ ...
+          disprc $chan(%num) Blacklisted $:s(%addr) $+ - Kickbanning $+ ...
           %line = $_msg(black)
           if (&reason !isin %line) %line = %line &reason&
           set -u %&reason& %why
@@ -466,7 +466,7 @@ disprc $chan(%num) Blacklisted $:s(%addr) $+ - Kickbanning $+ ...
     unset %&reason& %&addr&
   }
 }
- 
+
 ; Reorders userlist so all blacklist-only entries are at the end.
 alias _reorderblack {
   saveini

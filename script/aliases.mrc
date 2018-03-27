@@ -2,9 +2,9 @@
 ; **********************
 ; Unsorted routines
 ; **********************
- 
+
 ;;;###*** Not yet divided ***###;;;
- 
+
 ; Pass one or more file extensions, returns wildcard mask matching all (or *)
 _glurp {
   tokenize 32 $1-
@@ -28,23 +28,23 @@ _glurp {
   if ($remove(%done,?,*) == $null) return *
   return %done
 }
- 
+
 ; Escapes all non-alpha characters
 _escape var %text = $1- | var %junk = $regsub(%text,/(*UTF)([^a-zA-Z0-9 ])/g,\\\1,%text) | return %text
 
 ; Replaces all non-alpha characters
 _escape2 var %text = $1- | var %junk = $regsub(%text,/(*UTF)([^a-zA-Z0-9])/g,_,%text) | return %text
- 
+
 ; Randomer than $r()? returns 1 to n given
 _pprand return $calc(($r(1,$1) + $ticks) % $1 + 1)
- 
+
 ; Used before writing and after reading an INI to allow control codes (same as 3.x formats)
 _writeprep if ($1 == $null) return | return $replace($1-,,$chr(141),,$chr(142),,$chr(143),,$chr(144),,$chr(157))
 _readprep if ($1 == $null) return | return $replace($1-,$chr(141),,$chr(142),,$chr(143),,$chr(144),,$chr(157),)
- 
+
 ; $_colorword(n)
 _colorword return $gettok(White*Black*Blue*Green*Red*Brown*Purple*Orange*Yellow*Lt Green*Cyan*Lt Cyan*Lt Blue*Pink*Grey*Lt Grey,$calc($1 % 16 + 1),42)
- 
+
 ; $_isbot(nick)
 _isbot return $istok($hget(pnp. $+ $cid,-servnick),$1,32)
 ; $_botacc(nick)
@@ -86,11 +86,11 @@ _addbot {
   hadd pnp. $+ $cid -servnick $hget(pnp. $+ $cid,-servnick) $2
   hadd pnp. $+ $cid -servaddr $hget(pnp. $+ $cid,-servaddr) $3
 }
- 
+
 ;
 ; Internal timers
 ;
- 
+
 _tut.on .timer.internal -io 0 10 _internal.timer | .timer.titleupd -io 0 1 _upd.title
 _internal.timer {
   _aa.chk
@@ -100,11 +100,11 @@ _screload {
   ; Skip reload if files don't exist
   if ($exists(script\rawdisp.mrc) == $false) halt
   if ($exists(script\last.mrc) == $false) halt
-disps Script load detected $+ $chr(44) reordering PnP scripts
+  disps Script load detected $+ $chr(44) reordering PnP scripts
   .reload -rs $+ $calc($script(0) + 1) "script\rawdisp.mrc"
   .reload -rs $+ $calc($script(0) + 1) "script\last.mrc"
 }
- 
+
 ;
 ; generic flood prot-
 ; $_genflood(var,on,max,secs)
@@ -121,24 +121,24 @@ _genflood {
   }
   return 0
 }
- 
+
 ;
 ; Basic identifiers
 ;
- 
+
 ; performs (mainly for recursion)
 _recurse $1- | return $result
- 
+
 ; perform without abort (errors will not halt script) although without return value
 _blackbox .timer.blackbox 1 1 _unkludge  $+ $replace($1-,$chr(32),) | .timer.blackbox -e
- 
+
 ; perform using timer, to allow $?/$dialog/$dir; remember to $! identifiers, etc, and that it doesn't halt the script
 _juryrig .timer -mo 1 0 $1-
- 
+
 ; Same as _juryrig but w/o reevaluation
 _juryrig2 .timer -mo 1 0 _unkludge  $+ $replace($1-,$chr(32),)
 _unkludge $replace($right($1-,-1),,$chr(32))
- 
+
 ; Lines up commands, doing max one per second.
 ; First few commands executed much faster
 _linedance {
@@ -160,7 +160,7 @@ _dolinedance {
   }
   else hdel -w pnp.qcommand *. $+ $cid
 }
- 
+
 ; returns same (converts 0/1/blah/$null/$true/$false to 1/0)
 _tf return $iif($1,1,0)
 ; returns opposite
@@ -168,20 +168,20 @@ _not return $iif($1,0,1)
 ; If $1 isin $2, removes it, otherwise adds it. If $1 == $2, returns 0 (zero)
 ; Adds $3- to it no matter what
 _toggle tokenize 32 $1- | if ($1 == $2) return 0 $3- | if ($1 isin $2) return $remove($2,$1) $3- | else return $2 $+ $1 $3-
- 
+
 ;
 ; is... identifiers
 ;
- 
+
 _isaddr if (*!*@* iswm $1) return 1 | return 0
 ; (ALWAYS considers +&#! as chantypes)
 _ischan if ($left($1,1) isin +&! $+ $chantypes) return 1 | return 0
 _ismask if ((* isin $1) || (? isin $1)) return 1 | return 0
- 
+
 ;
 ; Channel identifiers
 ;
- 
+
 ; adds # to channel name(s) if not present
 ; only prefixes alphanumerics to allow for better forward compatibility
 _patch {
@@ -191,11 +191,11 @@ _patch {
   if (%num > 1) { dec %num | goto loop }
   return %ret
 }
- 
+
 ;
 ; Text identifiers
 ;
- 
+
 ; replaces spaces with ctrl+bksp
 _s2p return $replace($1-,$chr(32),)
 ; replaces ctrl+bksp with spaces
@@ -214,11 +214,11 @@ _c2s return $replace($1-,$chr(44),$chr(32))
 _s2c return $replace($1-,$chr(32),$chr(44))
 ; Spaces to comma+space
 _s2cs if ($1 == $null) return | var %s2cs | %s2cs = , $+ $chr(160) | return $_f2s($replace($1-,$chr(32),%s2cs))
- 
+
 ;
 ; Userhost queueing
 ;
- 
+
 ; _Q.userhost command errorcmd nick1 nick2 ...
 ; command is _s2p; any number of nicks can be given (will break up into sets of 5)
 ; command is run for each nick replacing &n with nick &a with address &h with +/- for here/away
@@ -247,46 +247,46 @@ _Q.userhost {
 userhost {
   if ($1) {
     if ($show) {
-disps Looking up address of $:l($1-) $+ ...
+      disps Looking up address of $:l($1-) $+ ...
       _notconnected
-_Q.userhost _showUH&n&a&h&i disps $+ User $+ &n $+ notfound $_c2s($1-)
+      _Q.userhost _showUH&n&a&h&i disps $+ User $+ &n $+ notfound $_c2s($1-)
     }
     else _Q.userhost return return $_c2s($1-)
   }
   else _qhelp /userhost
 }
 _showUH {
-var %away = $iif($3 == +,here,away)
-disps Userhost of $:t($1) - $:s($2) $chr(40) $+ user is %away $+ $chr(41) $iif($4,(IRCop))
+  var %away = $iif($3 == +,here,away)
+  disps Userhost of $:t($1) - $:s($2) $chr(40) $+ user is %away $+ $chr(41) $iif($4,(IRCop))
 }
- 
+
 ; Hostmask lookup
 host {
   if (@ isin $1) {
-if ($2 isnum) disp Hostmask of $:t($gettok($1,1,33)) $chr(40) $+ type $:s($2) $+ $chr(41) is- $:s($_ppmask($1,$_stmask($2)))
-else disp Hostmask of $:t($gettok($1,1,33)) is- $:s($_ppmask($1,$_stmask(3)))
+    if ($2 isnum) disp Hostmask of $:t($gettok($1,1,33)) $chr(40) $+ type $:s($2) $+ $chr(41) is- $:s($_ppmask($1,$_stmask($2)))
+    else disp Hostmask of $:t($gettok($1,1,33)) is- $:s($_ppmask($1,$_stmask(3)))
   }
   elseif ($1) {
     tokenize 32 $_nc($1) $2-
     if ($address($1,5)) _recurse host $address($1,5) $2
     elseif ($2 isnum) {
-disp Looking up address of $:t($1) $+ ...
+      disp Looking up address of $:t($1) $+ ...
       _notconnected
-_Q.userhost host&n!&a $+ $2 disp $+ User $+ $:t($1) $+ notfound $1
+      _Q.userhost host&n!&a $+ $2 disp $+ User $+ $:t($1) $+ notfound $1
     }
     else {
-disp Looking up address of $:t($1) $+ ...
+      disp Looking up address of $:t($1) $+ ...
       _notconnected
-_Q.userhost host&n!&a disp $+ User $+ $:t($1) $+ notfound $1
+      _Q.userhost host&n!&a disp $+ User $+ $:t($1) $+ notfound $1
     }
   }
   else _qhelp /host
 }
- 
+
 ;
 ; File commands
 ;
- 
+
 edit {
   if ($1 isin -n) run notepad $2-
   elseif ($1 isin -w) run wordpad $2-
@@ -302,7 +302,7 @@ viewlog {
   if (=* iswm %log) %log = $right(%log,-1)
   %log = $_renlogfile(%log)
   if ($exists(%log)) run notepad " $+ %log $+ "
-else dispa File ' $+ $:s(%log) $+ ' does not exist!
+  else dispa File ' $+ $:s(%log) $+ ' does not exist!
 }
 dellog {
   var %log = $1
@@ -318,29 +318,29 @@ viewpic {
   if (-* iswm $1) { %flags = $1 | tokenize 32 $2- }
   if ($1 isnum) { %ratio = $calc($1 / 100) | %flags = f $+ %flags | tokenize 32 $2- }
   %file = $1-
- 
+
   if (!$isfile(%file)) {
     ; Determine where to look
     var %dir = $mircdir
     if ($_dlgi(imagedir)) %dir = $ifmatch
     if ($isdir(%file)) %dir = %file
-  
+
     ; Add filemask
     if (*\ !iswm %dir) %dir = %dir $+ \
     %dir = %dir $+ *.bmp;*.png;*.jpg
-  
+
     ; Select file, enable style combo if any
     _ssplay Question
-%file = $$sfile(%dir,Select image)
+    %file = $$sfile(%dir,Select image)
     if ($isfile(%file)) _dlgw imagedir $nofile(%file)
-    
+
     %newfile = 1
   }
- 
+
   ; Error checking
-if (!$isfile(%file)) _error File ' $+ %file $+ ' does not exist!
-if (!$pic(%file).width) _error That is not a valid image file.mIRC only supports valid PNG $+ $chr(44) BMP $+ $chr(44) or JPG files.
- 
+  if (!$isfile(%file)) _error File ' $+ %file $+ ' does not exist!
+  if (!$pic(%file).width) _error That is not a valid image file.mIRC only supports valid PNG $+ $chr(44) BMP $+ $chr(44) or JPG files.
+
   ; max size? top corner?
   window -ndh +L @.targetsize 0 0 $window(-1).w $window(-1).h
   var %targetwidth = $window(@.targetsize).dw
@@ -348,14 +348,14 @@ if (!$pic(%file).width) _error That is not a valid image file.mIRC only support
   var %top = $window(@.targetsize).dy
   var %left = $window(@.targetsize).dx
   window -c @.targetsize
-  
+
   ; Resize as needed (nearest percent)
   if (f !isin %flags) {
     if (%targetwidth < $pic(%file).width) %ratio = $round($calc(%targetwidth / $pic(%file).width),2)
     if (%targetheight < $int($calc($pic(%file).height * %ratio))) %ratio = $round($calc(%targetheight / $pic(%file).height),2)
   }
   var %target = $int($calc($pic(%file).width * %ratio)) $int($calc($pic(%file).height * %ratio))
- 
+
   var %win = @ $+ $replace($nopath(%file),$chr(32),$chr(160))
   hdel pnp calibrate. $+ %win
   if (*w:@* iswm %flags) {
@@ -392,22 +392,22 @@ if (!$pic(%file).width) _error That is not a valid image file.mIRC only support
   titlebar %win $+($chr(91),$calc(%ratio * 100),%,$chr(93)) $pic(%file).width x $pic(%file).height
   hadd pnp picture. $+ %win %file
 }
- 
+
 ; _remove filename
 ; Deletes file and displays note on success or failure
 _remove {
   if ($exists($1-)) {
     .remove -b " $+ $1- $+ "
-if ($exists($1-)) dispa Unable to delete ' $+ $1- $+ '
-else dispa File ' $+ $1- $+ ' has been deleted
+    if ($exists($1-)) dispa Unable to delete ' $+ $1- $+ '
+    else dispa File ' $+ $1- $+ ' has been deleted
   }
-else dispa File ' $+ $1- $+ ' does not exist!
+  else dispa File ' $+ $1- $+ ' does not exist!
 }
- 
+
 ;
 ; Window identifiers
 ;
- 
+
 ; _targ(types) where types is one or more of =?#
 ; returns active window name (minus = for dcc chat) if it is of the proper type else nothing
 _targ {
@@ -430,7 +430,7 @@ _center return $int($calc(($window($iif($3,-1,-3)).w - $1) / 2 + $4)) $int($calc
 _winpos return $int($calc($window(-3).dw * $3 / 100)) $int($calc($window(-3).dh * $1 / 100)) $int($calc($window(-3).dw * (100 - $3 - $4) / 100)) $int($calc($window(-3).dh * (100 - $1 - $2) / 100))
 ; loadbuf using base color and verifying file exists
 _loadbuf if ($exists($2-)) loadbuf -c [ $+ [ $:c1 ] ] $1 " $+ $2- $+ "
- 
+
 ;
 ; F-Key queueing
 ;
@@ -458,18 +458,18 @@ _Q.fkey {
 }
 ; Clears fkey queue
 _Q.fkey.clr alias f7 halt | alias sf7 halt | alias cf7 halt | alias f10 halt | alias sf10 halt | alias cf10 halt
- 
+
 ;
 ; Userlevel/address identifiers
 ;
- 
+
 ; $_level(#channel,levels)
 _level var %level = $chr(44) $+ = $+ $1¬ | if (%level isin $2) return $gettok($mid($2,$calc($pos($2,%level,1) + $len(%level)),$len($2)),1,44) | else return $gettok($2,1,44)
- 
+
 ; $_chanlevel(#channel,levels)
 ; same as $_level except returns null if a channel doesn't have a spec level.
 _chanlevel var %level = $chr(44) $+ = $+ $1¬ | if (%level isin $2) return $gettok($mid($2,$calc($pos($2,%level,1) + $len(%level)),$len($2)),1,44)
- 
+
 ; $_leveledit(#channel,levels[,new]) (leave off new to remove; #channel can be *)
 _leveledit {
   if ($1 == *) return $puttok($2,$iif($3 == $null,$dlevel,$3),1,44)
@@ -481,16 +481,16 @@ _leveledit {
   if ($wildtok($2,%match,1,44)) return $reptok($2,$ifmatch,%replace,1,44)
   return $addtok($2,%replace,44)
 }
- 
+
 ; $_stmask(n[,#chan|*])
 ; standard masks 0-9 converted to A B C format for $_ppmask (or returns A B C if passed ABC)
 ; (uses ban mask settings for channel/global)
 _stmask if ($len($1) > 1) return $left($1,1) $mid($1,2,1) $right($1,1) | else return $iif($1 < 5,0,1) $iif($1 isin 2468,0,$iif($1 isin 05,1,$_getchopt($2,3))) $iif($1 isin 012567,1,$_getchopt($2,4))
- 
+
 ; $_banmask(user[,#chan*])
 ; default ban mask
 _banmask return $_ppmask($1,0,$_getchopt($2,3),$_getchopt($2,4))
- 
+
 ; $_fixmask(addr)
 ; Standardizes to *!*@* format
 _fixmask {
@@ -501,7 +501,7 @@ _fixmask {
   if ((. isin $1) || (: isin $1)) return *!*@ $+ $1
   return $1!*@*
 }
- 
+
 ; $_ppmask(nick/address,A,B,C[,x])
 ; returns formatted user address mask
 ; if nick is given, uses ial. (RETURNS NULL if ial doesn't have user)
@@ -570,19 +570,19 @@ _ppmask² {
   }
   return %nick $+ ! $+ %ident $+ @ $+ %dom
 }
- 
+
 ;
 ; Filename identifiers
 ;
- 
+
 ; $_add.ext(ext,filename)
 ; Adds . and extension to filename if it doesn't already have it
 _add.ext if (. !isin $2-) return $2- $+ . $+ $1 | return $2-
- 
+
 ; $_rel.fn(filename)
 ; If filename is relative to $mircdir, removes $mircdir
 _rel.fn if ($mircdir isin $1-) return $remove($1-,$mircdir) | return $1-
- 
+
 ; $_truename.fn(filename without quotes)
 ; Adds drive and/or mIRC directory to filename if missing
 ; Assumes c:blah is c:\blah
@@ -596,34 +596,34 @@ _truename.fn {
   if (\* iswm $1) return $left($mircdir,2) $+ $1-
   return $mircdir $+ $1-
 }
- 
+
 ; $_cfg(filename)
 ; Returns filename in the config directory of the current user
 _cfg return config\ $+ $hget(pnp,user) $+ \ $+ $1-
- 
+
 ; $_temp(ext)
 ; Returns filename in temp dir, in xxx.ext format
 _temp return script\temp\ $+ $hget(pnp,ext) $+ . $+ $1
- 
+
 ; $_cfgi(item) $_dlgi(item) $_cfgx(sec,item)
 ; Returns item from config.ini of current user
 _cfgi return $readini(config\ $+ $hget(pnp,user) $+ \config.ini,n,cfg,$1)
 _dlgi return $readini(config\ $+ $hget(pnp,user) $+ \config.ini,n,dlg,$1)
 _cfgx return $readini(config\ $+ $hget(pnp,user) $+ \config.ini,n,$1,$2)
- 
+
 ; _cfgw|_dlgw item value _cfgxw sec item value
 ; Writes item to config.ini of current user
 _cfgw if ($2 != $null) writeini config\ $+ $hget(pnp,user) $+ \config.ini cfg $1 $2- | else remini config\ $+ $hget(pnp,user) $+ \config.ini cfg $$1
 _dlgw if ($2 != $null) writeini config\ $+ $hget(pnp,user) $+ \config.ini dlg $1 $2- | else remini config\ $+ $hget(pnp,user) $+ \config.ini dlg $$1
 _cfgxw if ($3 != $null) writeini config\ $+ $hget(pnp,user) $+ \config.ini $1 $2 $3- | else remini config\ $+ $hget(pnp,user) $+ \config.ini $1 $$2
- 
+
 ; $_renlogfile(window)
 ; Returns log file for window (WITH directory)
 _renlogfile {
   if ($window($1).logfile) return $window($1).logfile
   return $logdir $+ $mklogfn($1)
 }
- 
+
 ; $_gen.id(string)
 ; Generates an id containing up to eight uppercase alphas; you need to ensure uniqueness for purpose
 _gen.id {
@@ -636,11 +636,11 @@ _gen.id {
   if (%id == $null) return PNP
   return %id
 }
- 
+
 ;
 ; Sync'd variable settings (reloading and sync'ing)
 ;
- 
+
 _rehash {
   window -hl @.rehash
   loadbuf @.rehash $_cfg(cfgvar.dat)
@@ -665,7 +665,7 @@ _rehash {
 }
 ;;; workaround needed until such time that dde can be set to not reevaluate
 _`set hadd pnp.config $1 $read(config\ $+ $hget(pnp,user) $+ \cfgvar.dat,nts,$1)
- 
+
 ; `lset works like `set but doesn't propogate using DDE
 `lset {
   if ($hget(pnp.config,$1) == $2-) return
@@ -678,12 +678,12 @@ _`set hadd pnp.config $1 $read(config\ $+ $hget(pnp,user) $+ \cfgvar.dat,nts,$1)
     write -s [ $+ [ $1 ] ] config\ $+ $hget(pnp,user) $+ \cfgvar.dat $1-
   }
 }
- 
+
 ;
 ; Dynamic aliases/identifiers- used for colors, markup, display, fkey queue, version number+patches
 ; ($:ver is version with patches/etc, $:bver is base version number)
 ;
- 
+
 ; Returns (network) for cid; if multiple networks have same name returns (network : me); else returns nothing
 :anp {
   var %scon = $scon(0)
@@ -693,12 +693,12 @@ _`set hadd pnp.config $1 $read(config\ $+ $hget(pnp,user) $+ \cfgvar.dat,nts,$1)
   }
   return $:np
 }
- 
+
 ; Display cmds/idents which don't (currently) change dynamitcally
 _alert {
   _title.note $_p2s($upper($1))
-if ($1 == Self-lag) _ssplay SelfLag Alert
-elseif ($1 == Flood) _ssplay ProtectSelf Alert
+  if ($1 == Self-lag) _ssplay SelfLag Alert
+  elseif ($1 == Flood) _ssplay ProtectSelf Alert
   else _ssplay Alert
   set -u %:echo echo $:cerr $iif(@* iswm $active,-mtsi2,-mtai2 $iif($cid != $activecid,$:anp))
   set -u %::text $2-
@@ -716,5 +716,5 @@ elseif ($1 == Flood) _ssplay ProtectSelf Alert
 :mc return  $+ $color($1).dd $+ $2- $+ 
 :bver return 4.22
 :ver return 4.22.7
- 
+
 ; Dynamic 'aliases' will appear in $_cfg(themeals.mrc).

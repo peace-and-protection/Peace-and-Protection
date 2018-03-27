@@ -56,14 +56,14 @@ script\dlgtext.dat
 [theme_dialog:cat_nl]
 [theme_dialog:cat_disp]
 [theme_dialog:cat_linesep]
- 
+
 [theme_dialog:cat_text]
- 
+
 [theme_dialog:cat_font]
 [theme_dialog:cat_bk]
 [theme_dialog:cat_toolbar]
 [theme_dialog:cat_sound]
- 
+
 [theme_dialog:cat_info]
 [theme_dialog:cat_load]
 [theme_dialog:cat_save]
@@ -94,7 +94,7 @@ script\dlgtext.dat
 + [config_dialog:cat_pager]
 + [config_dialog:cat_msgs]
 + [word:other:dlg]
- 
+
 [config_dialog:cat_disp]
 + [config_dialog:cat_nickcol]
 + [word:notify:dlg]
@@ -104,7 +104,7 @@ script\dlgtext.dat
 + [config_dialog:cat_wallop]
 + [config_dialog:cat_whois]
 + [word:other:dlg]
- 
+
 [config_dialog:cat_popup]
 + [word:channel:dlg]
 + [config_dialog:cat_menu]
@@ -112,7 +112,7 @@ script\dlgtext.dat
 + [word:query:dlg]
 + [config_dialog:cat_status]
 + [word:other:dlg]
- 
+
 [config_dialog:cat_chanopt]
 [config_dialog:cat_dcc]
 [config_dialog:cat_fav]

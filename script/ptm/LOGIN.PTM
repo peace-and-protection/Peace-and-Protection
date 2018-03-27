@@ -375,7 +375,7 @@ alias -l _arpinfo {
   if (%send == $3) return $send(%num) ([phrase:dcc_send])
   if (%fserv == $3) return $fserv(%num) ([porttool:fserve])
   if ((%chat) || (%send) || (%get) || (%fserv)) { inc %num | goto loop2 }
-    
+
   ; Check all cid-specific things
   var %scon = $scon(0)
   while (%scon) {
@@ -406,7 +406,7 @@ alias -l _listeninfo {
     if (($sock(*,%num).status == listening) && ($sock(*,%num).type == $1) && ($sock(*,%num).port == $2)) return [porttool:socket] $sock(*,%num)
     dec %num
   }
-  
+
   ; mIRC stuff?
   if ($1 == tcp) {
     if (($2 == 79) && ($_optn(3,29))) return [porttool:finger]
@@ -500,4 +500,3 @@ alias service {
   }
   else dispa [porttool:no_service:service=$;s($1-)]
 }
-

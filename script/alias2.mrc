@@ -2,13 +2,13 @@
 ; **********************
 ; Unsorted routines
 ; **********************
- 
+
 ;;;###*** Not yet divided- interfaces to temporarily load ***###;;;
- 
+
 ; Load and unload temp scripts
 _load if ($script($1.mrc) == $null) .load -rs $+ $calc($script(0) - 2) "script\ $+ $1.mrc" | $2-
 _unload if ($script($1.mrc)) .timer -mio 1 0 .unload -rs " $+ $ifmatch $+ "
- 
+
 bug _load register _bug $1-
 feedback bug 2
 donate _load register _donate $1-
@@ -21,9 +21,9 @@ awaycfg config 2
 msgs config 29
 textopt config 11
 protedit _load protedit _protedit $1-
- 
+
 ;;;###*** Not yet divided ***###;;;
- 
+
 inv invite $1-
 invite {
   if ($2) {
@@ -32,33 +32,33 @@ invite {
   }
   elseif ($active ischan) {
     if ($1) invite $_nc($1) $active
-else invite $_entry(-1,$null,User to invite to $active $+ ?) $active
+    else invite $_entry(-1,$null,User to invite to $active $+ ?) $active
   }
   elseif ($query($active) == $active) {
     if ($1) invite $active $1
-else invite $active $_rentry($chr(35),0,$chan(1),Invite $active to what channel?)
+    else invite $active $_rentry($chr(35),0,$chan(1),Invite $active to what channel?)
   }
   elseif (=* iswm $active) {
     if ($1) invite $right($active,-1) $1
-else invite $right($active,-1) $_rentry($chr(35),0,$chan(1),Invite $right($active,-1) to what channel?)
+    else invite $right($active,-1) $_rentry($chr(35),0,$chan(1),Invite $right($active,-1) to what channel?)
   }
   else _qhelp /invite
 }
- 
+
 who if ($1 != $null) who $1- | else _qhelp /who
- 
+
 myver {
-if ($hget(pnp,addon.ids) == $null) me is using Peace and Protection $:ver by pai
-else me is using Peace and Protection $:ver by pai
-say Peace and Protection homepage- $:www
+  if ($hget(pnp,addon.ids) == $null) me is using Peace and Protection $:ver by pai
+  else me is using Peace and Protection $:ver by pai
+  say Peace and Protection homepage- $:www
 }
 p&p myver
 pnp myver
- 
+
 ;
 ; Recent list trackers (not actively kept sync'd with other mircs)
 ;
- 
+
 ; _recent type max# token value
 ; only first token using 'token' ascii as sep is compared in determining dupes. (0 works for 'all')
 _recent {
@@ -74,7 +74,7 @@ _recent {
   if ((%num <= $2) && (%num <= $line(@.recent,0))) goto loop
   savebuf 1- $+ $2 @.recent %file
   window -c @.recent
-%= [ $+ [ $1.clr ] ] = Clear this list
+  %= [ $+ [ $1.clr ] ] = Clear this list
 }
 ; _recclr type
 _recclr unset %= $+ $1.* | _broadcastp unset % $+ = $+ $1.* | .remove $_cfg($1.rct)
@@ -94,22 +94,22 @@ _rechash2 {
   %= [ $+ [ $replace($nopath($1-),.rct,.) ] $+ [ $line(@.recent,0) ] ] = $line(@.recent,$line(@.recent,0))
   dline @.recent $line(@.recent,0)
   if ($line(@.recent,1)) goto loopN
-%= [ $+ [ $gettok($nopath($1-),1,46) ] $+ [ .clr ] ] = Clear this list
+  %= [ $+ [ $gettok($nopath($1-),1,46) ] $+ [ .clr ] ] = Clear this list
 }
 ; Finds all %=*.clr and sets to new theme
 _rechash3 {
   var %num = $var(%=*.clr,0)
   while (%num) {
-set $var(%=*.clr,%num) Clear this list
+    set $var(%=*.clr,%num) Clear this list
     dec %num
   }
 }
- 
- 
+
+
 ;
 ; Another 'recent lists' type that merely stores in a file, not in vars
 ;
- 
+
 ; _recent2 type max# value
 _recent2 {
   if ($3 == $null) return
@@ -124,22 +124,22 @@ _recent2 {
   savebuf 1- $+ $2 @.recent %file
   window -c @.recent
 }
- 
+
 ;
 ; Server list (status window) update
 ;
- 
+
 serverlist {
   var %num,%old,%tok,%bit,%curr,%sini,%groups,%group,%curr,%prog,%ln,%line,%desc,%serv,%port,%win
- 
-if (($1 == off) || ($1 == off)) { _cfgxw serverlist on 0 | disps Serverlist disabled. }
-elseif (($1 == on) || ($1 == on)) {
+
+  if (($1 == off) || ($1 == off)) { _cfgxw serverlist on 0 | disps Serverlist disabled. }
+  elseif (($1 == on) || ($1 == on)) {
     _cfgxw serverlist on 1
     if ($2) _cfgxw serverlist groups $_c2s($2-)
-if ($_cfgx(serverlist,groups) != $null) disps Serverlist enabled. $chr(40) $+ $ifmatch $+ $chr(41)
+    if ($_cfgx(serverlist,groups) != $null) disps Serverlist enabled. $chr(40) $+ $ifmatch $+ $chr(41)
     else {
-var %groups = empty
-disps Serverlist enabled. $chr(40) $+ %groups $+ $chr(41)
+      var %groups = empty
+      disps Serverlist enabled. $chr(40) $+ %groups $+ $chr(41)
     }
   }
   elseif ($1) {
@@ -152,13 +152,13 @@ disps Serverlist enabled. $chr(40) $+ %groups $+ $chr(41)
     elseif (-* iswm %tok) { %bit = - | %tok = $right(%tok,-1) }
     if (%tok) {
       if (%bit == +) {
-if ($istok(%old,%tok,32)) disps $:s(%tok) is already in serverlist
-else disps Adding $:s(%tok) to serverlist
+        if ($istok(%old,%tok,32)) disps $:s(%tok) is already in serverlist
+        else disps Adding $:s(%tok) to serverlist
         %old = $addtok(%old,%tok,32)
       }
       else {
-if ($istok(%old,%tok,32)) disps Removing $:s(%tok) from serverlist
-else disps $:s(%tok) is not in serverlist
+        if ($istok(%old,%tok,32)) disps Removing $:s(%tok) from serverlist
+        else disps $:s(%tok) is not in serverlist
         %old = $remtok(%old,%tok,1,32)
       }
     }
@@ -166,24 +166,24 @@ else disps $:s(%tok) is not in serverlist
     _cfgxw serverlist groups %old
   }
   elseif ($_cfgx(serverlist,on)) {
-if ($_cfgx(serverlist,groups) != $null) disps Serverlist enabled. $chr(40) $+ $ifmatch $+ $chr(41)
+    if ($_cfgx(serverlist,groups) != $null) disps Serverlist enabled. $chr(40) $+ $ifmatch $+ $chr(41)
     else {
-var %groups = empty
-disps Serverlist enabled. $chr(40) $+ %groups $+ $chr(41)
+      var %groups = empty
+      disps Serverlist enabled. $chr(40) $+ %groups $+ $chr(41)
     }
   }
-else disps Serverlist disabled.
- 
+  else disps Serverlist disabled.
+
   %sini = $readini($mircini,n,files,servers)
   if (%sini == $null) %sini = servers.ini
-if ($exists(%sini) == $false) { if ($show) _error Cannot find servers.iniCannot update serverlist without a servers file | return }
+  if ($exists(%sini) == $false) { if ($show) _error Cannot find servers.iniCannot update serverlist without a servers file | return }
   %curr = $file(%sini).mtime $_cfgx(serverlist,on) $_cfgx(serverlist,groups)
-if (($exists($_cfg(servers.mrc))) && (%curr == $_cfgx(serverlist,last))) { disps Serverlist is up-to-date. | return }
+  if (($exists($_cfg(servers.mrc))) && (%curr == $_cfgx(serverlist,last))) { disps Serverlist is up-to-date. | return }
   _cfgxw serverlist last %curr
-disps Refreshing serverlist popups...
- 
+  disps Refreshing serverlist popups...
+
   window -hl @.servlist
- 
+
   aline @.servlist ; #= P&P -rs 0
   aline @.servlist ; @======================================:
   aline @.servlist ; $chr(124)  Peace and Protection                $chr(124)
@@ -192,24 +192,24 @@ disps Refreshing serverlist popups...
   if (1 != $_cfgx(serverlist,on)) goto sloff
   aline @.servlist menu status $chr(123)
   aline @.servlist -
- 
+
   %groups = $_cfgx(serverlist,groups)
- 
+
   if (%groups == $null) goto none
- 
+
   if ($exists(%sini) == $false) goto none
- 
-_progress.1 Refreshing serverlist popups...
+
+  _progress.1 Refreshing serverlist popups...
   %prog = $numtok(%groups,32) + 1
   %curr = 0
- 
+
   ; Open a window per group
   window -hl @.prescan
   %num = 1
   :loop0
   %group = $gettok(%groups,%num,32)
   if (%group) {
-_progress.2 $int($calc(%curr / %prog * 100)) Scanning %group
+    _progress.2 $int($calc(%curr / %prog * 100)) Scanning %group
     inc %curr
     window -hsl @.sl@ $+ %group
     clear @.prescan
@@ -230,14 +230,14 @@ _progress.2 $int($calc(%curr / %prog * 100)) Scanning %group
     inc %num | goto loop0
   }
   window -c @.prescan
- 
+
   ; Copy servers to file
-_progress.2 $int($calc(%curr / %prog * 100)) Saving to popups
+  _progress.2 $int($calc(%curr / %prog * 100)) Saving to popups
   %num = 1
   :loop3
   %group = $gettok(%groups,%num,32)
   if (%group) {
-var %groupcheck = $!iif(($hget(pnp. $!+ $!cid,net) != Offline) && ($hget(pnp. $!+ $!cid,net) != %group $+ ) && ($server($server).group != %group $+ ),-m)
+    var %groupcheck = $!iif(($hget(pnp. $!+ $!cid,net) != Offline) && ($hget(pnp. $!+ $!cid,net) != %group $+ ) && ($server($server).group != %group $+ ),-m)
     %win = @.sl@ $+ %group
     if ($line(%win,0) == 0) goto next3
     aline @.servlist %group
@@ -274,9 +274,9 @@ var %groupcheck = $!iif(($hget(pnp. $!+ $!cid,net) != Offline) && ($hget(pnp. $!
     window -c %win
     inc %num | goto loop3
   }
- 
-_progress.2 100 Done!
- 
+
+  _progress.2 100 Done!
+
   ; Load script file
   :none
   aline @.servlist -
@@ -284,12 +284,12 @@ _progress.2 100 Done!
   :sloff
   savebuf @.servlist $_cfg(servers.mrc)
   window -c @.servlist
- 
+
   _broadcastp if ($!script(servers.mrc)) .unload -rs " $!+ $!script(servers.mrc) $!+ " $chr(124) .load -rs2 $_cfg(servers.mrc)
   if ($script(servers.mrc)) .unload -rs " $+ $script(servers.mrc) $+ "
   .load -rs2 $_cfg(servers.mrc)
 }
- 
+
 ;
 ; drag/drop support
 ; $1 = normal/shift (n/s) $2 = target $3- = file

@@ -3,7 +3,7 @@
 ; Peace and Protection
 ; Userlist support, editing, etc.
 ; ########################################
- 
+
 ;
 ; Popup preliminary
 ;
@@ -12,26 +12,26 @@ alias _addrpop {
   elseif (($query($active)) && ($query($active).address != $active)) set -u %.targaddr $active $+ ! $+ $ifmatch
   else unset %.targaddr
 }
- 
+
 ; Finds first matching user in the userlist, if any
 ; $_fuser(fulladdress) / $_fuser2(maddress) finds iswm both ways
 alias _fuser var %num = 1 | :loop | if ($ulist(*,%num)) { if ($ifmatch iswm $1) return $ifmatch | inc %num | goto loop }
 alias _fuser2 var %num = 1 | :loop | if ($ulist(*,%num)) { if ($ifmatch iswm $1) return $ifmatch | if ($1 iswm $ulist(*,%num)) return $ulist(*,%num) | inc %num | goto loop }
- 
+
 ;
 ; Userlist
 ;
- 
+
 ; /user [-v] address[,addr...]
 ; /user -r address[,addr...] [#chan]
 ; /user address[,addr...] [#chan|*] [-r|lvl] [x|-|+|%|@ [pw|?|??|!]] [=nick] [<lvl] [>lvl] [[nn]]
- 
+
 ; address can be a nick, fulladdress, mask, etc.
- 
+
 ; No options- Views/edits userlist entry
 ;   -r to remove entry, or with #chan to remove that channel
 ;   -v to view entry (text)
- 
+
 ; Manual editing- (options in any order, even repeated)
 ;   #chan allows channel-specific levels
 ;   lvl is numeric level, or -r to remove that channel
@@ -40,20 +40,20 @@ alias _fuser2 var %num = 1 | :loop | if ($ulist(*,%num)) { if ($ifmatch iswm $1)
 ;   nick allow modification of AKA
 ;   can use >lvl to manually add a custom named level, and <lvl to remove
 ;   ^k removes or adds nicklist color level =colorXX
- 
+
 alias user {
   if ($1 == $null) _qhelp /user
- 
+
   var %flag,%mask,%rest,%stuff,%ule-mask,%ule-raw,%ule-nick,%num,%chan,%newlvl,%tok,%pw
- 
+
   if (-* iswm $1) { %flag = $1 | %mask = $_nc($gettok($2,1,44)) | %rest = $gettok($2,2-,44) | %stuff = $3- }
   else { %flag = - | %mask = $_nc($gettok($1,1,44)) | %rest = $gettok($1,2-,44) | %stuff = $2- }
- 
+
   %ule-mask = $_ppmask(%mask,$_stmask(3),1)
   if (%ule-mask == $null) {
-dispa Looking up address of $:t(%mask) $+ ...
+    dispa Looking up address of $:t(%mask) $+ ...
     _notconnected
-_Q.userhost user $+ %flag $+ &n!&a, $+ %rest $+  $+ $iif(%stuff,$_s2p(%stuff)) dispaUser $+ $:t(%mask) $+ notfound. %mask
+    _Q.userhost user $+ %flag $+ &n!&a, $+ %rest $+  $+ $iif(%stuff,$_s2p(%stuff)) dispaUser $+ $:t(%mask) $+ notfound. %mask
     halt
   }
   %ule-raw = $level(%ule-mask)
@@ -62,10 +62,10 @@ _Q.userhost user $+ %flag $+ &n!&a, $+ %rest $+  $+ $iif(%stuff,$_s2p(%stuff)
     if ((* !isin %mask) && (! !isin %mask) && (@ !isin %mask) && (. !isin %mask)) %ule-nick = %mask
     if ((! isin %mask) && (* !isin $gettok(%mask,1,33))) %ule-nick = $gettok(%mask,1,33)
   }
- 
+
   if (%flag == -v) {
     _info /user -v
-dispr @Info User level $+ $chr(40) $+ s $+ $chr(41) for $:t(%ule-mask) $iif(%ule-nick,a.k.a. $:s(%ule-nick)) -
+    dispr @Info User level $+ $chr(40) $+ s $+ $chr(41) for $:t(%ule-mask) $iif(%ule-nick,a.k.a. $:s(%ule-nick)) -
     %num = $numtok(%ule-raw,44)
     :view
     if ($_namedul($gettok(%ule-raw,%num,44),%ule-mask)) dispr @Info   - $ifmatch
@@ -75,11 +75,11 @@ dispr @Info User level $+ $chr(40) $+ s $+ $chr(41) for $:t(%ule-mask) $iif(%ule
   }
   if (%flag == -r) {
     _info /user -r
-if (%ule-raw == $dlevel) { .ruser %ule-mask | dispr @Info $:t(%ule-mask) is not in your userlist }
+    if (%ule-raw == $dlevel) { .ruser %ule-mask | dispr @Info $:t(%ule-mask) is not in your userlist }
     elseif (%stuff) {
       %chan = $gettok(%stuff,1,32)
-if (($left(%chan,1) !isin & $+ $remove($chantypes,+)) && (%chan != *)) dispr @Info $:t(%chan) is not a channel $chr(40) $+ cannot be removed from a user $+ $chr(41)
-elseif ((%chan != *) && (,= $+ %chan $+ ¬ !isin %ule-raw)) disptc @Info %chan $:t(%ule-mask) is not in channel userlist
+      if (($left(%chan,1) !isin & $+ $remove($chantypes,+)) && (%chan != *)) dispr @Info $:t(%chan) is not a channel $chr(40) $+ cannot be removed from a user $+ $chr(41)
+      elseif ((%chan != *) && (,= $+ %chan $+ ¬ !isin %ule-raw)) disptc @Info %chan $:t(%ule-mask) is not in channel userlist
       else {
         remini $_cfg(userinfo.ini) %ule-mask %chan
         %ule-raw = $_leveledit(%chan,%ule-raw)
@@ -89,13 +89,13 @@ elseif ((%chan != *) && (,= $+ %chan $+ ¬ !isin %ule-raw)) disptc @Info %chan $
           .ruser %ule-mask
         }
         else .auser %ule-raw %ule-mask
-disptc @Info %chan Removed $:t(%ule-mask) from channel userlist
+        disptc @Info %chan Removed $:t(%ule-mask) from channel userlist
       }
     }
     else {
       remini $_cfg(userinfo.ini) %ule-mask
       .ruser %ule-mask
-dispr @Info Removed user $:t(%ule-mask) from userlist
+      dispr @Info Removed user $:t(%ule-mask) from userlist
     }
     scon -at1 _nickcol.updatemask %ule-mask 1
     if (%rest) _juryrig2 user -r %rest %stuff
@@ -103,7 +103,7 @@ dispr @Info Removed user $:t(%ule-mask) from userlist
   }
   if (%stuff) {
     _info /user
-dispr @Info Editing user $:t(%ule-mask) $iif(%ule-nick,a.k.a. $:s(%ule-nick)) -
+    dispr @Info Editing user $:t(%ule-mask) $iif(%ule-nick,a.k.a. $:s(%ule-nick)) -
     %chan = *
     %newlvl = $_level(*,%ule-raw)
     if (%rest) _juryrig2 user %rest %stuff
@@ -127,14 +127,14 @@ dispr @Info Editing user $:t(%ule-mask) $iif(%ule-nick,a.k.a. $:s(%ule-nick)) -
       }
       %pw = $readini($_cfg(userinfo.ini),n,%ule-mask,%chan)
       if (%tok isin x-) var %pw
-elseif (%pw == ?) %pw = (password not set)
-elseif (%pw == $null) %pw = (auto $+ $chr(44) without password)
-else %pw = (password set)
-dispr @Info   - $iif(%chan == *,Default,$:s(%chan)) Status - $gettok(Cleared $chr(40) $+ no op/voice/deop $+ $chr(41)*Auto-deop*Voiced*Halfops*Ops,$pos(x-+%@,%tok),42) %pw
+      elseif (%pw == ?) %pw = (password not set)
+      elseif (%pw == $null) %pw = (auto $+ $chr(44) without password)
+      else %pw = (password set)
+      dispr @Info   - $iif(%chan == *,Default,$:s(%chan)) Status - $gettok(Cleared $chr(40) $+ no op/voice/deop $+ $chr(41)*Auto-deop*Voiced*Halfops*Ops,$pos(x-+%@,%tok),42) %pw
     }
     elseif (%tok == -r) {
       remini $_cfg(userinfo.ini) %ule-mask %chan
-dispr @Info   - $iif(%chan == *,Default,$:s(%chan)) Level and flags cleared
+      dispr @Info   - $iif(%chan == *,Default,$:s(%chan)) Level and flags cleared
       var %newlvl
     }
     elseif ($left(%tok,1) isin & $+ $remove($chantypes,+)) {
@@ -149,39 +149,39 @@ dispr @Info   - $iif(%chan == *,Default,$:s(%chan)) Level and flags cleared
     }
     elseif (=* iswm %tok) {
       if (%tok == =) {
-dispr @Info   - Stored nickname cleared
+        dispr @Info   - Stored nickname cleared
         var %ule-nick
         remini $_cfg(userinfo.ini) %ule-mask nick
       }
       else {
-dispr @Info   - Nickname stored for mask is now $:t($right(%tok,-1))
+        dispr @Info   - Nickname stored for mask is now $:t($right(%tok,-1))
         %ule-nick = $right(%tok,-1)
       }
     }
     elseif (%tok isnum) {
       %newlvl = %tok $+ $remove(%newlvl,$calc(%newlvl))
-dispr @Info   - $iif(%chan == *,Default,$:s(%chan)) Level is now $:t(%tok)
+      dispr @Info   - $iif(%chan == *,Default,$:s(%chan)) Level is now $:t(%tok)
     }
     elseif (>* iswm %tok) {
       %tok = $right(%tok,-1)
       if (=* !iswm %tok) %tok = = $+ %tok
       %ule-raw = $addtok(%ule-raw,%tok,44)
-dispr @Info   - Added custom level $:t(%tok)
+      dispr @Info   - Added custom level $:t(%tok)
     }
     elseif (<* iswm %tok) {
       %tok = $right(%tok,-1)
       if (=* !iswm %tok) %tok = = $+ %tok
       %ule-raw = $remtok(%ule-raw,%tok,44)
-dispr @Info   - Removed custom level $:t(%tok)
+      dispr @Info   - Removed custom level $:t(%tok)
     }
     elseif (* iswm %tok) {
       if ($wildtok(%ule-raw,=color*,1,44)) %ule-raw = $remtok(%ule-raw,$ifmatch,1,44)
-if ( == %tok) dispr @Info   - Removed nicklist color
+      if ( == %tok) dispr @Info   - Removed nicklist color
       else {
         if ($remove(%tok,) isnum 0-99) {
           var %color = $ifmatch
           %ule-raw = $addtok(%ule-raw,=color $+ $_cprep(%color),44)
-dispr @Info   - Modified nicklist color to %tok $+ $_colorword(%color)
+          dispr @Info   - Modified nicklist color to %tok $+ $_colorword(%color)
         }
       }
     }
@@ -210,30 +210,30 @@ alias _namedul {
   var %text,%num = $calc(%lvl)
   if (%num == 1) var %num
   else {
-if (%num < 25) %text = (no special level)
-elseif (%num < 50) %text = (exempt from clones/strict topics/modes)
-elseif (%num < 60) %text = (safe from protections)
-elseif (%num < 75) %text = (protected friend)
-elseif (%num < 175) %text = (protected with revenge)
-else %text = (master- 'ctcp do' access)
+    if (%num < 25) %text = (no special level)
+    elseif (%num < 50) %text = (exempt from clones/strict topics/modes)
+    elseif (%num < 60) %text = (safe from protections)
+    elseif (%num < 75) %text = (protected friend)
+    elseif (%num < 175) %text = (protected with revenge)
+    else %text = (master- 'ctcp do' access)
     %num = $:t(%num)
   }
   var %spec,%pw = $readini($_cfg(userinfo.ini),n,$2,%chan)
-if ($right($1,1) == -) %spec = $:b(Auto-deop) $+ $iif(%num,$chr(44))
-elseif (*+ iswm $1) %spec = $:b(Voiced) ( $+ $iif(%pw == ?,Password not set,$iif(%pw,Password set,Auto $+ $chr(44) without password)) $+ ) $+ $iif(%num,$chr(44))
-elseif (*% iswm $1) %spec = $:b(Halfops) ( $+ $iif(%pw == ?,Password not set,$iif(%pw,Password set,Auto $+ $chr(44) without password)) $+ ) $+ $iif(%num,$chr(44))
-elseif (*@ iswm $1) %spec = $:b(Ops) ( $+ $iif(%pw == ?,Password not set,$iif(%pw,Password set,Auto $+ $chr(44) without password)) $+ ) $+ $iif(%num,$chr(44))
-elseif (%text == $null) %spec = None
-return $iif(%chan == *,Default,$:s(%chan)) level - %spec %num %text
+  if ($right($1,1) == -) %spec = $:b(Auto-deop) $+ $iif(%num,$chr(44))
+  elseif (*+ iswm $1) %spec = $:b(Voiced) ( $+ $iif(%pw == ?,Password not set,$iif(%pw,Password set,Auto $+ $chr(44) without password)) $+ ) $+ $iif(%num,$chr(44))
+  elseif (*% iswm $1) %spec = $:b(Halfops) ( $+ $iif(%pw == ?,Password not set,$iif(%pw,Password set,Auto $+ $chr(44) without password)) $+ ) $+ $iif(%num,$chr(44))
+  elseif (*@ iswm $1) %spec = $:b(Ops) ( $+ $iif(%pw == ?,Password not set,$iif(%pw,Password set,Auto $+ $chr(44) without password)) $+ ) $+ $iif(%num,$chr(44))
+  elseif (%text == $null) %spec = None
+  return $iif(%chan == *,Default,$:s(%chan)) level - %spec %num %text
 }
- 
+
 ;
 ; Userlist editor
 ;
- 
+
 ;;; import/export?
 ;;; last seen times?
- 
+
 ; /userlist [channel|*|+]
 ; Shows all, just a channel, or just 'global'
 ; + means 'refresh' (if open)
@@ -241,7 +241,7 @@ alias userlist useredit $1
 alias useredit {
   if ($1 == +) {
     if ($window(@Userlist) == $null) return
-if ($gettok($window(@Userlist).title,1-2,32) == (default only)) userlist *
+    if ($gettok($window(@Userlist).title,1-2,32) == (default only)) userlist *
     elseif ($gettok($window(@Userlist).title,1,32) != -) userlist $right($left($ifmatch,-1),-1)
     elseif ($window(@Userlist).title) userlist
     return
@@ -270,10 +270,10 @@ if ($gettok($window(@Userlist).title,1-2,32) == (default only)) userlist *
     if (($1) && ($1 != %chan)) goto lvlnext
     %lvlnum = $calc(%bit)
     if (%lvlnum < 2) %lvlnum =  
-if ($right(%bit,1) == -) %spec = Auto-deop
-elseif (*+ iswm %bit) %spec = Voiced $iif($readini(%file,n,%who,%chan),(w/pw),(auto))
-elseif (*% iswm %bit) %spec = Halfops $iif($readini(%file,n,%who,%chan),(w/pw),(auto))
-elseif (*@ iswm %bit) %spec = Ops $iif($readini(%file,n,%who,%chan),(w/pw),(auto))
+    if ($right(%bit,1) == -) %spec = Auto-deop
+    elseif (*+ iswm %bit) %spec = Voiced $iif($readini(%file,n,%who,%chan),(w/pw),(auto))
+    elseif (*% iswm %bit) %spec = Halfops $iif($readini(%file,n,%who,%chan),(w/pw),(auto))
+    elseif (*@ iswm %bit) %spec = Ops $iif($readini(%file,n,%who,%chan),(w/pw),(auto))
     else %spec =  
     if (%chan == *) var %chan | else %chan = ( $+ %chan $+ )
     aline %color @Userlist %nick $+ 	 $+ %who $+ 	 $+ %lvlnum $+ 	 $+ %spec $+ 	 $+ %chan
@@ -283,15 +283,15 @@ elseif (*@ iswm %bit) %spec = Ops $iif($readini(%file,n,%who,%chan),(w/pw),(auto
   if (%num > 1) { dec %num | goto loop }
   :done
   %num = $line(@Userlist,0)
-iline @Userlist 1 Double-click to edit a user
-iline @Userlist 2 Select user $+ $chr(40) $+ s $+ $chr(41) and right-click for options
+  iline @Userlist 1 Double-click to edit a user
+  iline @Userlist 2 Select user $+ $chr(40) $+ s $+ $chr(41) and right-click for options
   iline @Userlist 3  
-iline @Userlist 4 Nickname	Address	Level	Status	Channel
+  iline @Userlist 4 Nickname	Address	Level	Status	Channel
   iline @Userlist 5  
   window -b @Userlist
-if ($1 == *) titlebar @Userlist (default only) - %num users
-elseif ($1) titlebar @Userlist ( $+ $1 $+ ) - %num users
-else titlebar @Userlist - %num users
+  if ($1 == *) titlebar @Userlist (default only) - %num users
+  elseif ($1) titlebar @Userlist ( $+ $1 $+ ) - %num users
+  else titlebar @Userlist - %num users
 }
 alias -l _useredit {
   var %total,%num,%line,%chan,%mask
@@ -328,7 +328,7 @@ alias -l _useredit {
     goto loop
   }
   if ($1 == e) { set -u %.selchan %chan | user %total }
-if ($1 == r) { %num = $line(@Userlist,0) - 5 | titlebar @Userlist $gettok($window(@Userlist).title,1- $+ $calc($numtok($window(@Userlist).title,32) - 2),32) %num users }
+  if ($1 == r) { %num = $line(@Userlist,0) - 5 | titlebar @Userlist $gettok($window(@Userlist).title,1- $+ $calc($numtok($window(@Userlist).title,32) - 2),32) %num users }
 }
 alias -l _userfind {
   sline -r @Userlist
@@ -340,56 +340,56 @@ alias -l _userfind {
     dec %num | goto loop
   }
 }
- 
+
 menu @Userlist {
   dclick:if ($sline($active,1).ln > 5) _useredit e
-Add user...:user $_entry(-1,$null,Nickname or usermask to add?)
-$iif($sline($active,1).ln > 5,Remove):_useredit r
+  Add user...:user $_entry(-1,$null,Nickname or usermask to add?)
+  $iif($sline($active,1).ln > 5,Remove):_useredit r
   -
-$iif($sline($active,1).ln > 5,Edit user...):_useredit e
+  $iif($sline($active,1).ln > 5,Edit user...):_useredit e
   -
-$iif($sline($active,1).ln > 5,Level)
-.1	None:_useredit = 1
-.25	Clone exempt:_useredit = 25
-.50	Safe from protections:_useredit = 50
-.60	Protected friend:_useredit = 60
-.75	Protected with revenge:_useredit = 75
+  $iif($sline($active,1).ln > 5,Level)
+  .1	None:_useredit = 1
+  .25	Clone exempt:_useredit = 25
+  .50	Safe from protections:_useredit = 50
+  .60	Protected friend:_useredit = 60
+  .75	Protected with revenge:_useredit = 75
   .-
-.	Custom...:_useredit = $_entry(-2,$null,Numeric userlevel?)
-$iif($sline($active,1).ln > 5,Status)
-.@	Auto-op:_useredit @ @ ! Ops (auto)
-.@	Ops with pw:_useredit @ @ ?? Ops (w/pw)
+  .	Custom...:_useredit = $_entry(-2,$null,Numeric userlevel?)
+  $iif($sline($active,1).ln > 5,Status)
+  .@	Auto-op:_useredit @ @ ! Ops (auto)
+  .@	Ops with pw:_useredit @ @ ?? Ops (w/pw)
   .-
-.% $+ 	Auto-halfop:_useredit @ % ! Halfops (auto)
-.% $+ 	Halfop with pw:_useredit @ % ?? Halfops (w/pw)
+  .% $+ 	Auto-halfop:_useredit @ % ! Halfops (auto)
+  .% $+ 	Halfop with pw:_useredit @ % ?? Halfops (w/pw)
   .-
-.+	Auto-voice:_useredit @ + ! Voiced (auto)
-.+	Voice with pw:_useredit @ + ?? Voiced (w/pw)
+  .+	Auto-voice:_useredit @ + ! Voiced (auto)
+  .+	Voice with pw:_useredit @ + ?? Voiced (w/pw)
   .-
-.	None:_useredit @ x !  
-.	Auto-deop:_useredit @ - ! Auto-deop
-Color
-.None:_useredit 
+  .	None:_useredit @ x !  
+  .	Auto-deop:_useredit @ - ! Auto-deop
+  Color
+  .None:_useredit 
   .-
-.Black	1:_useredit  01
-.Blue	2:_useredit  02
-.Green	3:_useredit  03
-.Red	4:_useredit  04
-.Brown	5:_useredit  05
-.Purple	6:_useredit  06
-.Orange	7:_useredit  07
-.Yellow	8:_useredit  08
-.Lt Green	9:_useredit  09
-.Cyan	10:_useredit  10
-.Lt Cyan	11:_useredit  11
-.Lt Blue	12:_useredit  12
-.Pink	13:_useredit  13
-.Grey	14:_useredit  14
-.Lt Grey	15:_useredit  15
-.White	16:_useredit  16
+  .Black	1:_useredit  01
+  .Blue	2:_useredit  02
+  .Green	3:_useredit  03
+  .Red	4:_useredit  04
+  .Brown	5:_useredit  05
+  .Purple	6:_useredit  06
+  .Orange	7:_useredit  07
+  .Yellow	8:_useredit  08
+  .Lt Green	9:_useredit  09
+  .Cyan	10:_useredit  10
+  .Lt Cyan	11:_useredit  11
+  .Lt Blue	12:_useredit  12
+  .Pink	13:_useredit  13
+  .Grey	14:_useredit  14
+  .Lt Grey	15:_useredit  15
+  .White	16:_useredit  16
   -
-View
-.All:userlist
+  View
+  .All:userlist
   .-
   .$chan(1):userlist $chan(1)
   .$chan(2):userlist $chan(2)
@@ -397,64 +397,64 @@ View
   .$chan(4):userlist $chan(4)
   .$chan(5):userlist $chan(5)
   .-
-.One channel...:userlist $_entry(-1,$null,Show users for what channel?)
-.Default levels:userlist *
-Find
-.Nickname...:_userfind 1 $_entry(-1,$null,Enter nickname to find $chr(40) $+ wildcards OK $+ $chr(41))
-.Address...:_userfind 2 $_entry(-1,$null,Enter address to find $chr(40) $+ wildcards OK $+ $chr(41))
+  .One channel...:userlist $_entry(-1,$null,Show users for what channel?)
+  .Default levels:userlist *
+  Find
+  .Nickname...:_userfind 1 $_entry(-1,$null,Enter nickname to find $chr(40) $+ wildcards OK $+ $chr(41))
+  .Address...:_userfind 2 $_entry(-1,$null,Enter address to find $chr(40) $+ wildcards OK $+ $chr(41))
   .-
-.Level above...:_userfind 3 >= $_entry(-2,$null,Find levels above or equal to...?)
-.Level below...:_userfind 3 <= $_entry(-2,$null,Find levels below or equal to...?)
-.Level equal...:_userfind 3 == $_entry(-2,$null,Find level exactly equal to...?)
+  .Level above...:_userfind 3 >= $_entry(-2,$null,Find levels above or equal to...?)
+  .Level below...:_userfind 3 <= $_entry(-2,$null,Find levels below or equal to...?)
+  .Level equal...:_userfind 3 == $_entry(-2,$null,Find level exactly equal to...?)
 }
- 
+
 dialog useredit {
-title "Add / Modify User"
+  title "Add / Modify User"
   icon script\pnp.ico
   option dbu
   size -1 -1 190 142
- 
-text "&Nickname:", 201, 3 7 30 10, right
+
+  text "&Nickname:", 201, 3 7 30 10, right
   edit "", 1, 35 5 50 11, autohs
-text "(for reference only)", 202, 87 7 60 8
- 
+  text "(for reference only)", 202, 87 7 60 8
+
   icon 80, 151 6 8 8
-text "(nicklist color)", 81, 162 4 23 15, center
- 
-text "&Usermask:", 203, 3 18 30 10, right
+  text "(nicklist color)", 81, 162 4 23 15, center
+
+  text "&Usermask:", 203, 3 18 30 10, right
   combo 2, 35 16 125 65, drop sort edit
- 
-text "&Editing", 205, 5 36 22 10
+
+  text "&Editing", 205, 5 36 22 10
   combo 71, 28 34 65 65, drop sort
-text "Level:", 206, 95 36 33 10
- 
-button "&Add...", 56, 128 35 25 10
-button "&Del", 57, 158 35 25 10
- 
-box "level:", 207, 5 49 95 67
- 
-radio "1 - &None", 101, 10 59 85 8, group
-radio "25 - &Clone exempt", 125, 10 67 85 8
-radio "50 - &Safe from protections", 150, 10 75 85 8
-radio "60 - &Protected friend", 160, 10 83 85 8
-radio "75 - &Protected with revenge", 175, 10 91 85 8
-radio "&Custom:", 100, 10 103 40 8
+  text "Level:", 206, 95 36 33 10
+
+  button "&Add...", 56, 128 35 25 10
+  button "&Del", 57, 158 35 25 10
+
+  box "level:", 207, 5 49 95 67
+
+  radio "1 - &None", 101, 10 59 85 8, group
+  radio "25 - &Clone exempt", 125, 10 67 85 8
+  radio "50 - &Safe from protections", 150, 10 75 85 8
+  radio "60 - &Protected friend", 160, 10 83 85 8
+  radio "75 - &Protected with revenge", 175, 10 91 85 8
+  radio "&Custom:", 100, 10 103 40 8
   edit "100", 61, 50 101 20 11
- 
-box "Op status:", 40, 110 49 75 67
- 
-check "&Auto-deop", 21, 115 59 65 8, group
-check "&Voiced", 22, 115 67 65 8
-check "&Halfops", 23, 115 75 65 8
-check "&Ops", 24, 115 83 65 8
-check "&Password required:", 31, 115 93 65 8
+
+  box "Op status:", 40, 110 49 75 67
+
+  check "&Auto-deop", 21, 115 59 65 8, group
+  check "&Voiced", 22, 115 67 65 8
+  check "&Halfops", 23, 115 75 65 8
+  check "&Ops", 24, 115 83 65 8
+  check "&Password required:", 31, 115 93 65 8
   edit "", 32, 122 101 57 11, autohs pass
- 
-button "OK", 52, 5 125 40 12, OK
-button "Cancel", 53, 51 125 40 12, cancel
-button "&Remove", 54, 98 125 40 12
-button "&Help", 55, 144 125 40 12, disable
- 
+
+  button "OK", 52, 5 125 40 12, OK
+  button "Cancel", 53, 51 125 40 12, cancel
+  button "&Remove", 54, 98 125 40 12
+  button "&Help", 55, 144 125 40 12, disable
+
   edit "", 210, 1 1 1 1, hide autohs
   edit "", 211, 1 1 1 1, hide autohs
   list 212, 1 1 1 1, hide
@@ -470,7 +470,7 @@ on *:DIALOG:useredit:init:*:{
   if (%.ule-mask != %.mask) _ddaddm $dname 2 %.mask 3 4 010 2 011
   if (%.ule-nick) did -a $dname 1 $ifmatch
   elseif ((* !isin %.mask) && (! !isin %.mask) && (@ !isin %.mask) && (. !isin %.mask)) did -a $dname 1 %.mask
-did -ac $dname 71 ( $+ Default $+ )
+  did -ac $dname 71 ( $+ Default $+ )
   did -a $dname 210 %.ule-raw
   if (%.ule-raw == $dlevel) did -b $dname 54
   else did -a $dname 211 %.ule-mask
@@ -502,7 +502,7 @@ on *:DIALOG:useredit:sclick:54:{
 }
 on *:DIALOG:useredit:sclick:53:_cs-fin $dname | userlist +
 on *:DIALOG:useredit:sclick:52:{
-if ($did(2) == $null) _error You must specify a usermask to add a user.
+  if ($did(2) == $null) _error You must specify a usermask to add a user.
   _uesave
   var %line,%file = $_cfg(userinfo.ini),%num = $did(212).lines
   if ($did(211)) {
@@ -529,8 +529,8 @@ if ($did(2) == $null) _error You must specify a usermask to add a user.
   else userlist +
 }
 on *:DIALOG:useredit:sclick:56:{
-var %newchan = $_entry(-1,$comchan($did(useredit,1),1),New channel to add userlevel for?)
-if ((!$_ischan(%newchan)) || ($chr(44) isin %newchan)) _error That is not a valid channel name.
+  var %newchan = $_entry(-1,$comchan($did(useredit,1),1),New channel to add userlevel for?)
+  if ((!$_ischan(%newchan)) || ($chr(44) isin %newchan)) _error That is not a valid channel name.
   _uesave
   if ($_finddid(useredit,71,%newchan)) {
     did -c useredit 71 $ifmatch
@@ -614,11 +614,11 @@ alias -l _uefreshen {
     else { did -eu useredit 31 | did -br useredit 32 }
   }
 }
- 
+
 ;
 ; Userlist CTCP commands
 ;
- 
+
 ; OPME|HOPME|VOICEME #chan [pw]
 ctcp &*:OPME:?:_doopc *@ *@ *@ o OP op $2-
 ctcp &*:HOPME:?:_doopc *% *@ *@ h HOP halfop $2-
@@ -631,13 +631,13 @@ alias -l _doopc {
   var %sublvl = $_level($7,%level)
   hinc -u30 pnp.flood. $+ $cid opme. $+ $site
   if ($hget(pnp.flood. $+ $cid,opme. $+ $site) > 3) {
-_linedance _qnotice $nick Too many requests- Ignoring CTCPs for 30 seconds.
+    _linedance _qnotice $nick Too many requests- Ignoring CTCPs for 30 seconds.
     hinc -u30 pnp.flood. $+ $cid ignore.ctcp. $+ $site
-%error = too many requests
+    %error = too many requests
   }
   elseif (!$_ischan($7)) {
-_linedance _qnotice $nick Incorrect syntax-  $+ $5 $+ ME #chan [password]
-%error = invalid syntax
+    _linedance _qnotice $nick Incorrect syntax-  $+ $5 $+ ME #chan [password]
+    %error = invalid syntax
     %chan = ?????
   }
   elseif (($1 iswm %sublvl) || ($2 iswm %sublvl) || ($3 iswm %sublvl)) {
@@ -646,29 +646,29 @@ _linedance _qnotice $nick Incorrect syntax-  $+ $5 $+ ME #chan [password]
     else %scan = *
     var %thepw = $readini($_cfg(userinfo.ini),n,$maddress,%scan)
     if (%thepw == ?) {
-var %cmd = PASS [#chan] new
-_linedance _qnotice $nick Password not set yet- Please use %cmd to set one.
-%error = password not yet set
+      var %cmd = PASS [#chan] new
+      _linedance _qnotice $nick Password not set yet- Please use %cmd to set one.
+      %error = password not yet set
     }
     elseif ((%thepw == $null) || (%thepw == %pw)) {
       if (($me isop $7) || (($me ishop $7) && ($3 == v))) { _init.mass $7 4 | _add.mass $7 + $4 $nick }
       else {
-_linedance _qnotice $nick I cannot $_p2s($6) you in $7 $+ - I am not opped.
-%error = you are not opped
+        _linedance _qnotice $nick I cannot $_p2s($6) you in $7 $+ - I am not opped.
+        %error = you are not opped
       }
     }
     else {
-_linedance _qnotice $nick Password incorrect- Ignoring CTCPs for 30 seconds.
+      _linedance _qnotice $nick Password incorrect- Ignoring CTCPs for 30 seconds.
       hinc -u30 pnp.flood. $+ $cid ignore.ctcp. $+ $site
-%error = incorrect password
+      %error = incorrect password
     }
   }
   else {
-_linedance _qnotice $nick You don't have access in $7
-%error = no access for channel
+    _linedance _qnotice $nick You don't have access in $7
+    %error = no access for channel
   }
-if (%error) disptc -s %chan $5 $+ ME request from $:t($nick) failed $chr(40) $+ %error $+ $chr(41)
-else disptc -s $7 $:t($nick) requested $5 $+ ME $chr(40) $+ granted $+ $chr(41)
+  if (%error) disptc -s %chan $5 $+ ME request from $:t($nick) failed $chr(40) $+ %error $+ $chr(41)
+  else disptc -s $7 $:t($nick) requested $5 $+ ME $chr(40) $+ granted $+ $chr(41)
   halt
 }
 ; HELP
@@ -677,27 +677,27 @@ ctcp &*:HELP:?:{
   if ((%op == 0) && (%hop == 0) && (%voc == 0)) return
   hinc -u20 pnp.flood. $+ $cid opme. $+ $site
   if ($hget(pnp.flood. $+ $cid,opme. $+ $site) > 2) {
-_linedance _qnotice $nick Too many requests- Ignoring CTCPs for 30 seconds.
+    _linedance _qnotice $nick Too many requests- Ignoring CTCPs for 30 seconds.
     hinc -u30 pnp.flood. $+ $cid ignore.ctcp. $+ $site
-var %error = too many requests
-disps HELP request from $:t($nick) failed $chr(40) $+ %error $+ $chr(41)
+    var %error = too many requests
+    disps HELP request from $:t($nick) failed $chr(40) $+ %error $+ $chr(41)
   }
   else {
     if (%op) {
-var %cmd = OPME #chan [password]
-_linedance _qnotice $nick %cmd to request ops.
+      var %cmd = OPME #chan [password]
+      _linedance _qnotice $nick %cmd to request ops.
     }
     if (%hop) {
-var %cmd = HOPME #chan [password]
-_linedance _qnotice $nick %cmd to request ops.
+      var %cmd = HOPME #chan [password]
+      _linedance _qnotice $nick %cmd to request ops.
     }
     if (%voc) {
-var %cmd = VOICEME #chan [password]
-_linedance _qnotice $nick %cmd to request voice.
+      var %cmd = VOICEME #chan [password]
+      _linedance _qnotice $nick %cmd to request voice.
     }
-var %cmd = PASS [#chan] [old] new
-_linedance _qnotice $nick %cmd to change your password.
-disps $:t($nick) requested HELP $chr(40) $+ granted $+ $chr(41)
+    var %cmd = PASS [#chan] [old] new
+    _linedance _qnotice $nick %cmd to change your password.
+    disps $:t($nick) requested HELP $chr(40) $+ granted $+ $chr(41)
   }
   halt
 }
@@ -707,14 +707,14 @@ ctcp &*:PASS:?:{
   if (($wildtok(%level,*@,0,44) == 0) && ($wildtok(%level,*%,0,44) == 0) && ($wildtok(%level,*+,0,44) == 0)) return
   hinc -u30 pnp.flood. $+ $cid opme. $+ $site
   if ($hget(pnp.flood. $+ $cid,opme. $+ $site) > 3) {
-_linedance _qnotice $nick Too many requests- Ignoring CTCPs for 30 seconds.
+    _linedance _qnotice $nick Too many requests- Ignoring CTCPs for 30 seconds.
     hinc -u30 pnp.flood. $+ $cid ignore.ctcp. $+ $site
-%error = too many requests
+    %error = too many requests
     %chan = *
   }
   elseif ($2 == $null) {
-_linedance _qnotice $nick Incorrect syntax- PASS [#chan] [old] new
-%error = invalid syntax
+    _linedance _qnotice $nick Incorrect syntax- PASS [#chan] [old] new
+    %error = invalid syntax
     %chan = *
   }
   else {
@@ -723,12 +723,12 @@ _linedance _qnotice $nick Incorrect syntax- PASS [#chan] [old] new
     if (%new == $null) { %new = %old | %old = ? }
     else %old = $hash(%old,32)
     if (($left(%new,1) !isletter) && ($left(%new,1) !isnum)) {
-_linedance _qnotice $nick Invalid password- must start with a letter or number.
-%error = invalid password
+      _linedance _qnotice $nick Invalid password- must start with a letter or number.
+      %error = invalid password
     }
     elseif ($len(%new) < 5) {
-_linedance _qnotice $nick Invalid password- must be at least five characters.
-%error = password too short
+      _linedance _qnotice $nick Invalid password- must be at least five characters.
+      %error = password too short
     }
     else {
       var %num = $numtok(%level,44),%changes = 0
@@ -743,31 +743,31 @@ _linedance _qnotice $nick Invalid password- must be at least five characters.
           inc %changes
         }
         elseif ((%subc == %chan) && (%chan != *)) {
-_linedance _qnotice $nick Password incorrect- Ignoring CTCPs for 30 seconds.
+          _linedance _qnotice $nick Password incorrect- Ignoring CTCPs for 30 seconds.
           hinc -u30 pnp.flood. $+ $cid ignore.ctcp. $+ $site
-%error = incorrect password
+          %error = incorrect password
         }
       }
       if (%num > 1) { dec %num | goto loop }
       if (%chan != *) {
-if (%changes) _linedance _qnotice $nick Password changed to ' $+  $+ %new $+  $+ '
+        if (%changes) _linedance _qnotice $nick Password changed to ' $+  $+ %new $+  $+ '
         elseif (%error == $null) {
-_linedance _qnotice $nick You don't have access in %chan
-%error = no access for channel
+          _linedance _qnotice $nick You don't have access in %chan
+          %error = no access for channel
         }
       }
       else {
-if (%changes) _linedance _qnotice $nick Password changed to ' $+  $+ %new $+  $+ ' ( $+ %changes change $+ $chr(40) $+ s $+ $chr(41) $+ )
+        if (%changes) _linedance _qnotice $nick Password changed to ' $+  $+ %new $+  $+ ' ( $+ %changes change $+ $chr(40) $+ s $+ $chr(41) $+ )
         else {
-_linedance _qnotice $nick Password incorrect- Ignoring CTCPs for 30 seconds.
+          _linedance _qnotice $nick Password incorrect- Ignoring CTCPs for 30 seconds.
           hinc -u30 pnp.flood. $+ $cid ignore.ctcp. $+ $site
-%error = incorrect password
+          %error = incorrect password
         }
       }
     }
   }
   if (%chan == *) %chan = ?????
-if (%error) disptc -s %chan PASS request from $:t($nick) failed $chr(40) $+ %error $+ $chr(41)
-else disptc -s %chan $:t($nick) requested PASS change $chr(40) $+ %changes change $+ $chr(40) $+ s $+ $chr(41) granted $+ $chr(41)
+  if (%error) disptc -s %chan PASS request from $:t($nick) failed $chr(40) $+ %error $+ $chr(41)
+  else disptc -s %chan $:t($nick) requested PASS change $chr(40) $+ %changes change $+ $chr(40) $+ s $+ $chr(41) granted $+ $chr(41)
   halt
 }

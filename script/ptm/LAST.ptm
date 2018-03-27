@@ -1338,7 +1338,7 @@ menu status {
   .-
   .%=stats.clr:_recclr stats
   .[popups_status:stats_other]...:stats
-    -
+  -
   $iif(($mid($hget(pnp.config,popups.5),10,1) != 0) || ($mouse.key & 2),[popups:window])
   .[popups:hide]:hide $active
   .-

@@ -11,11 +11,11 @@ dialog pnp.firsttime {
   icon script\pnp.ico
   option dbu
   size -1 -1 200 150
- 
+
   button "[bug_dialog:next] >>", 905, 155 131 40 12, default group
   button "[dialog:cancel]", 906, 5 131 40 12, cancel
   button "<< [bug_dialog:back]", 907, 110 131 40 12, disable
- 
+
   ; Whether a section has been loaded yet
   list 902, 1 1 1 1, hide
 
@@ -24,7 +24,7 @@ dialog pnp.firsttime {
 
   ; Intro tab
   tab "", 1, -25 -25 1 1, disable hide
- 
+
   ; Hidden tabs to select areas
   tab "", 2, -25 -25 1 1, disable hide
   tab "", 3, -25 -25 1 1, disable hide
@@ -36,7 +36,7 @@ dialog pnp.firsttime {
 
   ; Applying tab
   tab "", 9, -25 -25 1 1, disable hide
-  
+
   ; Intro
   text "[first_dialog:welcome]", 50, 5 10 190 8, hide tab 1
   text "[first_dialog:info]", 51, 5 30 190 40, hide tab 1
@@ -61,7 +61,7 @@ dialog pnp.firsttime {
   text "[first_dialog:lag_info]", 581, 5 75 190 15, tab 3
   check "&[first_dialog:lag_enable]", 582, 5 95 190 8, tab 3
   text "[bug_dialog:continue]", 583, 5 115 190 8, tab 3
-    
+
   ; Misc
   text "[first_dialog:opt_info]", 129, 5 10 190 8, tab 4
   check "&[config_dialog:auto_set] 30 [config_dialog:min_idle]", 131, 5 35 190 8, tab 4
@@ -126,17 +126,17 @@ dialog pnp.firsttime {
   text "[first_dialog:done1]", 420, 5 10 190 8, tab 8
   text "[first_dialog:done2]", 421, 5 30 190 40, tab 8
   text "[first_dialog:done3]", 422, 5 115 190 8, tab 8
-  
+
   text "", 423, 5 65 190 8, center tab 9
 }
- 
+
 ; /_firsttime
 ; Open firsttime config dialog
 alias _firsttime {
   set -u %.section $1
   _dialog -am pnp.firsttime pnp.firsttime
 }
- 
+
 ; Dialog init
 on *:DIALOG:pnp.firsttime:init:*:{
   ; (mark all sections as un-viewed)
@@ -145,7 +145,7 @@ on *:DIALOG:pnp.firsttime:init:*:{
     did -a $dname 902 0
     dec %num
   }
-  
+
   ; Translation init
   if ($readini(script\transup.ini,n,translation,enabled) == no) did -a $dname 527 0
   else {
@@ -171,12 +171,12 @@ on *:DIALOG:pnp.firsttime:init:*:{
     page.show 1
   }
 }
- 
+
 ; Select next section
 on *:DIALOG:pnp.firsttime:sclick:905:{
   var %old = $did(903) + 1
   if (($did(527) < 2) && (%old == 2)) %old = 3
-  
+
   ; Apply translation?
   if (($did(527) > 1) && (%old == 3) && ($did(528) != $did(525).seltext)) {
     ; Translate! First find file.
@@ -197,12 +197,12 @@ on *:DIALOG:pnp.firsttime:sclick:905:{
       did -h $dname 514,525,526
       did -b $dname 905,906,907
       did -v $dname 529
-      
+
       .timer -mio 1 0 translate -f %file
       halt
     }
   }
-  
+
   if (%old <= 8) page.show %old
   else {
     ; Done- apply
@@ -223,7 +223,7 @@ on *:DIALOG:pnp.firsttime:sclick:905:{
     _unload firstime
   }
 }
- 
+
 on *:SIGNAL:PNP.TRANSLATE:{
   if ($dialog(pnp.firsttime)) {
     dialog -x pnp.firsttime
@@ -243,37 +243,37 @@ on *:DIALOG:pnp.firsttime:sclick:906:{
   dialog -x pnp.firsttime
   _unload firstime
 }
- 
+
 ; If tabs are 'clicked', undo any changes
 on *:DIALOG:pnp.firsttime:sclick:1,2,3,4,5,6,7,8,9:{
   did -f pnp.firsttime 905
   did -c pnp.firsttime $did(903)
 }
- 
+
 ; /page.show n
 ; Show a page of the dialog
 alias -l page.show {
   ; (do nothing if same page as before)
   if ($did(903) == $1) return
- 
+
   ; If area hasn't been visited yet, we must prep it
   if ($did(902,$1) == 0) {
     ; Mark as visited and initialize
     did -o pnp.firsttime 902 $1 1
     page.init $1
   }
-  
+
   ; Next/prev
   did $iif($1 == 1,-b,-e) pnp.firsttime 907
   did -ra pnp.firsttime 905 $iif($1 == 8,[word:done],[bug_dialog:next:notdlg] >>)
- 
+
   ; Remember what page we did last, show tab, move focus to OK, set default to OK
   did -o pnp.firsttime 903 1 $1
   did -c pnp.firsttime $1
   did -f pnp.firsttime 905
   did -t pnp.firsttime 905
 }
- 
+
 ; /page.init n
 ; Prepare a page of the dialog from our configuration and/or prep any combos, lists, etc.
 ; Will not be called more than once for a page, so you can assume everything is blank/unchecked at this point
@@ -284,7 +284,7 @@ alias -l page.init {
   :1
   did -v $dname 50,51,52
   return
-  
+
   ; Select language
   :2
   ; Old language    
@@ -312,7 +312,7 @@ alias -l page.init {
     did -ucv $dname 664
     did -h $dname 564
   }
-  
+
   %prot = $hget(pnp.config,cflags)
   var %def = 4 0 +im 0 0 2000 8 10 10 4 20 5 15 90 30 0 250 10 0 1 1 0 0 0 0 0 0 1 4 15 6 8 1 3 1 2 2 2 0 1 1 2 1 1 1 0 0 0 0 0 0 0 0 1 1 1 5 15 0 20 8 10 5 0 15 4 7 60 1 0 1 1 1 1 5 300 0 0 0 0 1
   var %off = 0 0 +im 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 1 0 0 0 0 1 3 1 2 2 2 0 1 1 2 1 1 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 20 8 10 5 0 15 4 7 60 1 0 1 1 1 0 ? ? 0 0 0 0 1
@@ -325,7 +325,7 @@ alias -l page.init {
 
   if (($_cfgi(sptime) isnum) && ($_cfgi(sptime) > 0)) did -c $dname 582
   return
-  
+
   ; Misc configuration
   :4
   if ($hget(pnp.config,autoaway)) did -c $dname 131
@@ -432,20 +432,20 @@ alias -l pft.font {
     did -r pnp.firsttime 246
   }
 }
- 
+
 ; /page.apply n
 ; Save a page of the dialog to configuration
 alias -l page.apply {
   goto $1
- 
+
   ; Intro
   :1
   return
-  
+
   ; Select language
   :2
   return
-  
+
   ; Protection configuration
   :3
   var %prot
@@ -480,7 +480,7 @@ alias -l page.apply {
   }
   else _cfgw sptime 0
   return
-  
+
   ; Misc configuration
   :4
   `set autoaway $did(131).state

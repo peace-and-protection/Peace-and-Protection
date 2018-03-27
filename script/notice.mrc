@@ -3,16 +3,16 @@
 ; Peace and Protection
 ; Notice and mass-message routines
 ; ########################################
- 
+
 ;
 ; Notices windows
 ;
 on *:INPUT:@Events*:_getcc | if (($left($1,1) != %.cmdchar) || (?me iswm $1) || ($mouse.key & 2)) { onotice $mid($target,$calc($pos($target,-,1) + 1)) $1- | halt }
 on *:INPUT:@Notices*:_getcc | if ($left($1,1) == %.cmdchar) { .timer -mo 1 0 editbox -p $active $iif($istok(n msg notice onotice ohnotice ovnotice omsg,$right($1,-1),32),$1-2,$1) | if (?notice iswm $1) { ntc $2- | halt } }
 menu @Notices {
-Text options...:textopt
+  Text options...:textopt
 }
- 
+
 ;
 ; Recent notices (includes onotice support) also notice flood support
 ;
@@ -24,15 +24,15 @@ on ^*:NOTICE:*:*:{
       if ($_genflood(notice.mass,$hget(pnp.config,xnotice.cfg))) {
         hadd -u60 pnp.flood. $+ $cid noticehalt.mass 1
         hadd -u60 pnp.flood. $+ $cid noticemass 1
-var %site = (all)
-_alert Flood Notice flood detected- Further notices from %site won't be shown
+        var %site = (all)
+        _alert Flood Notice flood detected- Further notices from %site won't be shown
         halt
       }
     }
     if ($_genflood(notice. $+ $site,$hget(pnp.config,xnotice.cfg))) {
       hadd -u60 pnp.flood. $+ $cid noticehalt. $+ $site 1
       hadd -u60 pnp.flood. $+ $cid noticemass 1
-_alert Flood Notice flood detected- Further notices from $site won't be shown
+      _alert Flood Notice flood detected- Further notices from $site won't be shown
       halt
     }
   }
@@ -40,7 +40,7 @@ _alert Flood Notice flood detected- Further notices from $site won't be shown
   if (((@* iswm $target) && (@%* !iswm $target) && (@+* !iswm $target)) || (%.opnotice)) _recseen 10 notice $right($target,-1) +
   else _recseen 10 notice $nick
 }
- 
+
 ;
 ; Notice msg formatting
 ;
@@ -61,11 +61,11 @@ alias _pvmsg {
   if (&msg& !isin %msg) %msg = %msg &msg&
   return $msg.compile(%msg,&nick&,$2,&targets&,$3,&msg&,$_naction($4-))
 }
- 
+
 ;
 ; Mass notices (op/etc)
 ;
- 
+
 ; Used to send a notice, shows to @Notices/@Events-* if active, else channel window
 ; _show.send.notice #chan target text
 alias -l _show.send.notice {
@@ -77,13 +77,13 @@ alias -l _show.send.notice {
   set -u %:echo echo $color(own) $iif((@Notices* iswm $active) || (@Events* iswm $active),-qati2,-qti2 $1)
   theme.text NoticeSelfChan c
 }
- 
+
 alias o onotice $1-
 alias wall onotice $1-
 alias onotice {
   if ($1 == $null) _qhelp /onotice | _simsplit mn /onotice $1- | if (%.msg.mn == $null) _qhelp /onotice $1-
-if ($len(%.msg.mn) > 300) _error Please use a smaller message.You must enter a message under 300 characters for mass notices.
-if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot send mass notices to channels you are not currently in.
+  if ($len(%.msg.mn) > 300) _error Please use a smaller message.You must enter a message under 300 characters for mass notices.
+  if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot send mass notices to channels you are not currently in.
   var %sendto,%target = @ $+ %.chan.mn,%send = $_mnmsg(onotice,%.chan.mn,%.msg.mn)
   _show.send.notice %.chan.mn @ $+ %.chan.mn %send
   if ((@ isin $hget(pnp. $+ $cid,-feat)) && (($me isop %.chan.mn) || (o !isin $hget(pnp. $+ $cid,-feat)))) { _qnotice %target %send | return }
@@ -95,12 +95,12 @@ if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot 
   if (%num > 1) { dec %num | goto loop }
   if (%sendto) _qnotice $_s2c(%sendto) %send
 }
- 
+
 alias oh ohnotice $1-
 alias ohnotice {
   if ($1 == $null) _qhelp /ohnotice | _simsplit mn /ohnotice $1- | if (%.msg.mn == $null) _qhelp /ohnotice $1-
-if ($len(%.msg.mn) > 300) _error Please use a smaller message.You must enter a message under 300 characters for mass notices.
-if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot send mass notices to channels you are not currently in.
+  if ($len(%.msg.mn) > 300) _error Please use a smaller message.You must enter a message under 300 characters for mass notices.
+  if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot send mass notices to channels you are not currently in.
   var %num,%sendto,%target = @% $+ %.chan.mn,%send = $_mnmsg(ohnotice,%.chan.mn,%.msg.mn)
   _show.send.notice %.chan.mn @% $+ %.chan.mn %send
   if ((+ isin $hget(pnp. $+ $cid,-feat)) && (($me ishop %.chan.mn) || ($me isop %.chan.mn) || (o !isin $hget(pnp. $+ $cid,-feat)))) { _qnotice %target %send | return }
@@ -123,12 +123,12 @@ if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot 
   :done
   if (%sendto) _qnotice $_s2c(%sendto) %send
 }
- 
+
 alias ov ovnotice $1-
 alias ovnotice {
   if ($1 == $null) _qhelp /ovnotice | _simsplit mn /ovnotice $1- | if (%.msg.mn == $null) _qhelp /ovnotice $1-
-if ($len(%.msg.mn) > 300) _error Please use a smaller message.You must enter a message under 300 characters for mass notices.
-if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot send mass notices to channels you are not currently in.
+  if ($len(%.msg.mn) > 300) _error Please use a smaller message.You must enter a message under 300 characters for mass notices.
+  if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot send mass notices to channels you are not currently in.
   var %num,%sendto,%target = @+ $+ %.chan.mn,%send = $_mnmsg(ovnotice,%.chan.mn,%.msg.mn)
   _show.send.notice %.chan.mn @+ $+ %.chan.mn %send
   if ((+ isin $hget(pnp. $+ $cid,-feat)) && (($me isvoice %.chan.mn) || ($me ishop %.chan.mn) || ($me isop %.chan.mn) || (o !isin $hget(pnp. $+ $cid,-feat)))) { _qnotice %target %send | return }
@@ -151,14 +151,14 @@ if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot 
   :done
   if (%sendto) _qnotice $_s2c(%sendto) %send
 }
- 
+
 ; (no ops OR hops)
 alias rnotice peon $1-
 alias nnotice peon $1-
 alias peon {
   if ($1 == $null) _qhelp /peon | _simsplit mn /peon $1- | if (%.msg.mn == $null) _qhelp /peon $1-
-if ($len(%.msg.mn) > 300) _error Please use a smaller message.You must enter a message under 300 characters for mass notices.
-if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot send mass notices to channels you are not currently in.
+  if ($len(%.msg.mn) > 300) _error Please use a smaller message.You must enter a message under 300 characters for mass notices.
+  if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot send mass notices to channels you are not currently in.
   var %sendto,%send = $_mnmsg(peon,%.chan.mn,%.msg.mn)
   _show.send.notice %.chan.mn nonop/ $+ %.chan.mn %send
   var %num = $nick(%.chan.mn,0,a,oh)
@@ -169,11 +169,11 @@ if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot 
   if (%num > 1) { dec %num | goto loop }
   if (%sendto) _qnotice $_s2c(%sendto) %send
 }
- 
+
 alias allbut {
   if ($2 == $null) _qhelp /allbut | _split mn /allbut $1-
-if ($len(%.msg.mn) > 300) _error Please use a smaller message.You must enter a message under 300 characters for mass notices.
-if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot send mass notices to channels you are not currently in.
+  if ($len(%.msg.mn) > 300) _error Please use a smaller message.You must enter a message under 300 characters for mass notices.
+  if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot send mass notices to channels you are not currently in.
   var %sendto,%chan = %.chan.mn,%msg = %.msg.mn,%target = $_nccs(44,%chan,%.targ.mn),%send = $_abmsg(allbut,%chan,%target,%msg),%ctarget = - $+ %target
   _show.send.notice %chan %chan %send
   var %num = $nick(%chan,0)
@@ -184,11 +184,11 @@ if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot 
   if (%num > 1) { dec %num | goto loop }
   if (%sendto) _qnotice $_s2c(%sendto) %send
 }
- 
+
 alias fnotice {
   if ($2 == $null) _qhelp /fnotice | _split mn /fnotice $1-
-if ($len(%.msg.mn) > 300) _error Please use a smaller message.You must enter a message under 300 characters for mass notices.
-if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot send mass notices to channels you are not currently in.
+  if ($len(%.msg.mn) > 300) _error Please use a smaller message.You must enter a message under 300 characters for mass notices.
+  if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot send mass notices to channels you are not currently in.
   _show.send.notice %.chan.mn %.targ.mn %.msg.mn
   var %sendto,%num = $ialchan(%.targ.mn,%.chan.mn,0)
   if (%num < 1) return
@@ -198,7 +198,7 @@ if ($me !ison %.chan.mn) _error Please specify a channel you are in.You cannot 
   if (%num > 1) { dec %num | goto loop }
   if (%sendto) _qnotice $_s2c(%sendto) %.msg.mn
 }
- 
+
 alias n ntc $1-
 alias ntc {
   if ($show == $false) { _qnotice $1- | return }
@@ -212,7 +212,7 @@ alias ntc {
   else var %msg = $_pvmsg(pnotice,%sendto,%sendto,$2-)
   notice %sendto %msg
 }
- 
+
 ;
 ; All channel/etc messages
 ;
@@ -263,12 +263,12 @@ alias _domm {
   }
   if (%sendto) %how $_s2c(%sendto) $3-
 }
- 
+
 ;
 ; Tracks idleness of queries/chans for /acme/acmsg
 ; (purposely allows all cmdline activity to reset idle)
 ;
- 
+
 on *:TEXT:*:?:hadd -u120 pnp. $+ $cid -queryni. $+ $nick 1
 on *:ACTION:*:?:hadd -u120 pnp. $+ $cid -queryni. $+ $nick 1
 on *:INPUT:?:hadd -u120 pnp. $+ $cid -queryni. $+ $target 1

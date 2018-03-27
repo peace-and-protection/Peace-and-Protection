@@ -57,7 +57,7 @@ alias _run.notify {
   set -u %::away $iif($3 == -,G,H)
   if (%show == ext) set -u %::address $2
   theme.text Notify p
-  
+
   if ($_cfgi(notify.beep $+ %match)) { beep 1 1 | flash [word:notify]- $1 $gettok(([misc:notify_verified:lower]) ([misc:notify_wrong:lower]),$findtok(match fail,%match,1,32),32) }
   _recseen 10 user $1
   if (%note != $null) %note = ( $+ %note $+ )
@@ -91,7 +91,7 @@ on ^*:UNOTIFY:{
   set -u %::nick %nick
   if (%show == ext) set -u %::address %addr
   theme.text UNotify p
-  
+
   _recseen 10 user %nick +
   _away.logit @ 8 $cid ([word:notify]) ««« %nick [theme:left_irc] ( $+ $_dur(%time) $+ ) $iif(%match == match,- [misc:notify_match],$iif(%match == fail,- [misc:notify_fail]))
   _ssplay $iif(%match == fail,UNotifyFail,UNotify)

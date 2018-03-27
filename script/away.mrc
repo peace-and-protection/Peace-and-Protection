@@ -750,8 +750,8 @@ on *:GETFAIL:*:if ($hget(pnp. $+ $cid,away)) _awaylog @ 11 0 === Failed to recei
 on *:SENDFAIL:*:if ($hget(pnp. $+ $cid,away)) _awaylog @ 11 0 === Failed to send $filename to $nick
 
 alias _doahl { 
-    if (($3 isnum) && ($len($4) < 1)) { return } 
-    if ($highlight($3-)) {
+  if (($3 isnum) && ($len($4) < 1)) { return } 
+  if ($highlight($3-)) {
     var %word
     %word = [ [ $ifmatch ] ]
     _awaylog + $1 $cid ( $+ $chan $+ ) $_p2s($2) $replace($3-,%word,$:b(%word))

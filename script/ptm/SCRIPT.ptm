@@ -448,7 +448,7 @@ dialog ignore {
   button "&[ignore_dialog:ignore]", 201, 5 120 40 12, OK default result
   button "[dialog:cancel]", 202, 55 120 40 12, cancel
   button "&[dialog:help]", 203, 105 120 40 12, disable
-  
+
   edit $cid, 300, 1 1 1 1, hide autohs
 }
 on *:DIALOG:ignore:init:*:{
@@ -702,7 +702,7 @@ alias -l _fin.signon {
   if ($hget(pnp. $+ $cid,net) == internet) hadd pnp. $+ $cid net $iif(*.oz.org iswm $server,OzORG,$_cap1st($gettok($server,$count($server,.),46)))
   ; Always override with favorites network setting
   if ($_favfindnet($server)) hadd pnp. $+ $cid net $ifmatch
-  
+
   ; Verify network has only alphanumerics
   hadd pnp. $+ $cid net $_escape2($hget(pnp. $+ $cid,net))
 
@@ -762,7 +762,7 @@ alias msg.compile {
   }
 
   var %pos = 1
-  
+
   ; find next instance of a &var&, $ident( ), or special character needing escaping
   while ($regex(msgc,$mid($1,%pos),/(&[-_.a-zA-Z0-9\[\]]+&|\$[-_.a-zA-Z0-9\x3A]+\([^\ $+ $chr(41) $+ ]*\)|[%#{|}\[\]$])/)) {
     var %found = $regml(msgc,1)
@@ -826,13 +826,13 @@ alias msg.compile {
     ; Next position
     %pos = %foundpos + %foundlen
   }
-  
+
   ; Append any remaining portion
   if (%pos <= $len($1)) {
     if (($mid($1,%pos,1) == $chr(32)) || (%new == $null)) %new = %new $mid($1,%pos)
     else %new = %new $!+ $mid($1,%pos)
   }
-  
+
   ; Return result- recursed?
   if ($prop == recurse) return %new
   set -n %new [ [ %new ] ]

@@ -121,7 +121,7 @@ alias xw {
   elseif (($2 == MODINFO) && ($numtok(%param,32) isnum 1-2)) {
     if ($istok(MATCH ACCESS AUTOOP AUTOMODE PASSWORD,$gettok(%param,1,32),32)) {
       if ($gettok(%param,2,32)) %who = $_ncc($ifmatch,%chan)
-       else %who = $_entry(-1,$null,[xw:modify_prompt] $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),[xw:enter_usernick],[xw:enter_nickaddr]))
+      else %who = $_entry(-1,$null,[xw:modify_prompt] $+ $iif(u isin $hget(pnp. $+ $cid,-servopt),[xw:enter_usernick],[xw:enter_nickaddr]))
       %send = msgxw %xw MODINFO %chan $upper($gettok(%param,1,32)) %who
       goto $gettok(%param,1,32)
 

@@ -107,7 +107,7 @@ alias away {
     %awmode = +
     %reason = $1-
   }
-  
+
   ; Individual settings
   var %pager = $_convpager(%awmode,$_cfgi(away.pager))
   var %log = $_convmode(%awmode,l,$_cfgi(away.log))
@@ -115,7 +115,7 @@ alias away {
   var %beep = $_convmode(%awmode,b,$_cfgi(away.beepoff))
   var %snd = $_convmode(%awmode,s,$_cfgi(away.sndoff))
   var %oneserver = $_convmode(%awmode,o,$_not($_cfgi(away.allconnect)))
-  
+
   ; popup to change pager, log, quiet, oneserver, and reason?
   if ((%reason == $null) || (+a isin %awmode)) {
     set -u1 %.pager %pager
@@ -132,7 +132,7 @@ alias away {
     unset %.pager %.log %.quiet %.oneserver
   }
   %awmode = $remove(%awmode,+q,-q) $+ $iif(%quiet,+q,-q)
-  
+
   ; Stuff global to all connections- logging, pager, ebeeps, sound, dqwindow
   hadd pnp logging %log
   if (%log) .enable #awaylog
@@ -162,16 +162,16 @@ alias away {
   ; Count the number we set and/or change on
   var %cid = $cid,%scon = $scon(0),%setaway = 0,%changedaway = 0,%closedquery = 0,%deopped = 0,%awayon
   if (!%oneserver) %cid = $scon(%scon)
-  
+
   ; (so it's the same for all servers)
   var %ctime = $ctime
-  
+
   :doconnection
   var %nonick = 0,%away,%net = $hget(pnp. $+ %cid,net)
   scid %cid
   if (%net == [word:offline]) %net = ([word:offline:lower])
   %awayon = %awayon $+ , %net
-  
+
   ; Already away?
   %old = $hget(pnp. $+ %cid,away)
   if (%old) {
@@ -326,7 +326,7 @@ alias back {
     %fakeback = 1
     var %note
   }
-  
+
   ; Ask if we should return quietly?
   if (q !isin %mode) {
     var %ask
@@ -345,7 +345,7 @@ alias back {
       %mode = %mode $+ $iif($_yesno(1,[away:verify_quiet]),+q,-q)
     }
   }
-  
+
   ; Check if we will be back on all servers after this
   var %backall = 1
   if (%oneserver) {
@@ -355,7 +355,7 @@ alias back {
       dec %scon
     }
   }
-    
+
   ; Some global stuff- pager, ebeeps, sound, dqwindow (only if back on all)
   if (%backall) {
     hadd pnp pager $_convpager(%mode,$_cfgi(back.pager))
@@ -363,16 +363,16 @@ alias back {
     if ($gettok(%away,1,32)) .ebeeps on
     if ($gettok(%away,2,32)) .sound on
   }
-  
+
   ; Do each connection, or just the current one
   ; Count the number we set back on
   var %cid = $cid,%scon = $scon(0),%backon,%longestgone = 0,%allreasons
   if (!%oneserver) %cid = $scon(%scon)
-  
+
   :doconnection
   var %net = $hget(pnp. $+ %cid,net),%back = $hget(pnp. $+ %cid,away),%gone
   scid %cid
-  
+
   ; Were we away? (or faking it)
   if ((%back) || (%fakeback)) {
     if (%fakeback) {
@@ -383,11 +383,11 @@ alias back {
       if ($calc($ctime - $gettok(%back,2,32)) > %longestgone) %longestgone = $ifmatch
       %gone = $_dur($calc($ctime - $gettok(%back,2,32)))
     }
-    
+
     ; Try to track a single reason that we were away
     if (!%allreasons) %allreasons = $gettok(%back,4-,32)
     elseif (%allreasons != $gettok(%back,4-,32)) %allreasons = [away:various_reasons:lower]
-  
+
     if (%net == [word:offline]) %net = ([word:offline:lower])
     %backon = %backon $+ , %net
 
@@ -529,7 +529,7 @@ alias pager {
   }
   if (v* iswm $1) {
     if ($hget(pnp,totalpages) == 0) _error [error:pager_no_pages]
-    
+
     var %curr,%num,%page,%where,%nick,%offs,%msg,%ln,%logged,%win,%bit,%cid
 
     if (($2 isnum) && (($2 >= 1) && ($2 <= $hget(pnp,totalpages)))) %curr = $2
@@ -597,7 +597,7 @@ alias pager {
       did -o pager 3 1 $iif(%msg == $null,([phrase:not_given:lower]),%msg)
       did -o pager 197 1 %cid
       did -o pager 199 1 $gettok(%page,5,32)
-      
+
       scid %cid
       if (($hget(pnp. $+ %cid,away)) && ($hget(pnp,clear.pager))) || ((!$hget(pnp. $+ %cid,away)) && (!$hget(pnp,clear.pager))) %logged = 0
       elseif (=* iswm %where) { %win = chat %nick | %logged = $calc($line(%win,0) - 3) }
@@ -630,7 +630,7 @@ alias pager {
 
       window -c @.loghide
       scid -r
-      
+
       if ($hget(pnp,clear.pager)) dialog -t pager [word:pager] ([away:page_viewlog:lower])
 
       dialog -v pager

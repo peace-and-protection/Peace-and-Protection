@@ -179,7 +179,7 @@ alias rr {
           ; (so we don't show it again)
           var %rero. [ $+ [ $replace($gettok(%data,1-2,32),$chr(32),.) ] ]
           %rero. [ $+ [ $replace($gettok(%data,1-2,32),$chr(32),.) ] ] = 1
-          
+
         }
         else {
           disp @Info   - $rr.pretty($gettok(%item,2,46),$mid(%item,$calc(1 + $pos(%item,.,2)))) -> [reroute:reroute] -> $rr.pretty($gettok(%data,1-2,32))
@@ -192,7 +192,7 @@ alias rr {
 
   if (e isin %opt) var %error = _error
   else var %error = dispa
-  
+
   ; Separate src/target into con and window, convert networks/cons to cids
   var %srccon = $cid
   var %targcon = $cid

@@ -200,7 +200,7 @@ alias fontfix {
     %flags = $remove(%flags,b) $+ $iif($window(@.fontgrab).fontbold,b)
     window -c @.fontgrab
   }
-  
+
   var %error,%num,%data,%font2
   %font2 = $gettok(%font,2-,32) $+ , $+ $calc($iif(b isin %flags,700,400) + $gettok(%font,1,32))
 

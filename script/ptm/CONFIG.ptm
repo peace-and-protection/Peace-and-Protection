@@ -11,23 +11,23 @@ dialog pnp.config {
   icon script\pnp.ico
   option dbu
   size -1 -1 250 175
- 
+
   ; List of sections
   list 901, 5 5 58 164, size
- 
+
   ; Whether a section has been loaded yet
   list 902, 1 1 1 1, hide
- 
+
   ; Last section selected
   edit "", 903, 1 1 1 1, autohs hide
-  
+
   button "[dialog:ok]", 905, 106 156 30 12, default group
   button "[dialog:cancel]", 906, 141 156 30 12, cancel
   button "&[dialog:help]", 907, 176 156 30 12, disable
- 
+
   ; Blank tab
   tab "", 1, -25 -25 1 1, disable hide
- 
+
   ; Hidden tabs to select areas
   tab "", 2, -25 -25 1 1, disable hide
   tab "", 3, -25 -25 1 1, disable hide
@@ -56,7 +56,7 @@ dialog pnp.config {
   tab "", 31, -25 -25 1 1, disable hide
   tab "", 32, -25 -25 1 1, disable hide
   tab "", 33, -25 -25 1 1, disable hide
-  
+
   ; Away - Pager/Log [70-99]
   box "[word:pager:dlg]", 70, 125 10 45 50, tab 2
   box "[config_dialog:awaylog]", 71, 175 10 65 50, tab 2
@@ -77,7 +77,7 @@ dialog pnp.config {
   check "&[config_dialog:clear_log]", 86, 75 120 170 8, tab 2
   check "&[config_dialog:close_queries]", 87, 75 129 170 8, tab 2
   check "&[config_dialog:permanent_log]", 88, 75 138 170 8, tab 2
- 
+
   ; Away - Message [100-129]
   box "[config_dialog:when_setaway]:", 100, 70 3 170 68, tab 3
   radio "&[config_dialog:away_act]", 101, 75 12 60 8, group tab 3
@@ -100,7 +100,7 @@ dialog pnp.config {
   edit "", 118, 84 113 122 11, autohs tab 3
   check "&[config_dialog:remind_chan]:", 119, 75 126 160 8, tab 3
   edit "", 120, 84 136 122 11, autohs tab 3
- 
+
   ; Away - Other [130-149]
   box "[phrase:autoaway:dlg]", 130, 70 15 170 50, tab 4
   check "&[config_dialog:auto_set]", 131, 75 25 77 8, tab 4
@@ -116,7 +116,7 @@ dialog pnp.config {
   check "&[config_dialog:away_beep]", 140, 75 117 160 8, tab 4
   check "&[config_dialog:away_deop]", 141, 75 126 160 8, tab 4
   check "&[config_dialog:away_dq]", 142, 75 135  160 8, tab 4
- 
+
   ; Display - Nick colors [150-159]
   check "&[config_dialog:color_nicklist]", 150, 75 25 170 8, tab 7
   check "&[config_dialog:color_chantext]", 151, 75 38 170 8, tab 7
@@ -125,7 +125,7 @@ dialog pnp.config {
   text "[dialog:seconds]", 154, 180 52 70 8, tab 7
   text "[config_dialog:color_note]", 155, 84 75 160 8, tab 7
   button "&[config_dialog:edit_theme]", 156, 84 87 50 12, tab 7
-  
+
   ; Display - Notify [160-189]
   box "[config_dialog:notify_form]", 160, 125 37 55 80, tab 8
   box "[config_dialog:unnotify_form]", 161, 185 37 55 80, tab 8
@@ -146,7 +146,7 @@ dialog pnp.config {
   combo 176, 130 121 80 50, drop tab 8
   check "&[config_dialog:unnotify_part]", 177, 130 133 115 8, tab 8
   check "&[config_dialog:notify_fkey]", 178, 130 142 115 8, tab 8
- 
+
   ; Display - Ping [190-209]
   text "&[config_dialog:chan_ping]:", 190, 70 35 72 8, right tab 9
   combo 191, 145 33 80 50, drop tab 9
@@ -157,7 +157,7 @@ dialog pnp.config {
   check "&[config_dialog:window_front:window=@Ping]", 196, 75 95 160 8, tab 9
   check "&[config_dialog:retain_reply]", 197, 75 105 160 8, tab 9
   check "&[config_dialog:ping_codes]", 198, 75 115 160 8, tab 9
-  
+
   ; Display - Server notices [210-229]
   text "[config_dialog:snotice_note]", 210, 70 5 170 24, tab 10
   check "&[config_dialog:snotice_on]", 213, 74 26 210 8, tab 10
@@ -266,7 +266,7 @@ dialog pnp.config {
   button "&[config_dialog:load_def]", 346, 85 112 60 12, tab 18
   button "&[config_dialog:condensed]", 347, 155 112 60 12, tab 18
   text "[config_dialog:popups_tip]", 348, 85 132 140 24, tab 18
-  
+
   ; Popups - Nicklist [350-369]
   box "[config_dialog:show_popup]:", 369, 80 15 150 74, tab 19
   check "&[popups_nick:quick_kick:dlg]", 350, 85 25 70 10, tab 19
@@ -302,7 +302,7 @@ dialog pnp.config {
   button "&[config_dialog:load_def]", 386, 85 112 60 12, tab 20
   button "&[config_dialog:condensed]", 387, 155 112 60 12, tab 20
   text "[config_dialog:popups_tip]", 388, 85 132 140 24, tab 20
-  
+
   ; Popups - Status [390-409]
   box "[config_dialog:show_popup]:", 409, 80 15 150 74, tab 21
   check "&[popups_status:list_chan:dlg]", 390, 85 25 70 10, tab 21
@@ -380,7 +380,7 @@ dialog pnp.config {
   text "&[config_dialog:dcc_auth]:", 49, 75 127 55 8, tab 25
   combo 58, 135 125 45 50, drop tab 25
   combo 59, 195 125 45 50, drop tab 25
- 
+
   ; Favorites [460-489,510-519]
   text "&[config_dialog:fav_select]...", 460, 70 5 85 8, tab 26
   combo 470, 70 15 60 48, size edit tab 26
@@ -414,7 +414,7 @@ dialog pnp.config {
   check "&[config_dialog:fav_join]", 485, 70 135 63 8, tab 26
   edit "", 510, 135 134 20 11, autohs tab 26
   check "&[config_dialog:fav_connect]", 486, 160 135 85 8, tab 26
-  
+
   ; Flashing [490-509]
   text "[config_dialog:flash_note]", 507, 70 12 170 30, tab 27
   box "[config_dialog:when_here]:", 490, 125 35 55 50, tab 27
@@ -446,7 +446,7 @@ dialog pnp.config {
   text "[config_dialog:lang_note]", 524, 70 56 170 41, tab 28
   list 525, 70 97 135 50, sort tab 28
   button "&[dialog:select]", 526, 210 97 30 12, tab 28
-  
+
   ; Messages [540-559]
   text "&[dialog:editing]", 541, 70 8 20 8, tab 29
   combo 542, 93 6 50 85, drop sort tab 29
@@ -465,7 +465,7 @@ dialog pnp.config {
   text "", 549, 70 136 95 8, tab 29
   edit "", 550, 165 134 20 11, autohs tab 29
   edit "", 551, 188 134 20 11, autohs tab 29
-  
+
   ; Protection [560-599]
   check "&[config_dialog:ver_reply]", 560, 70 5 175 8, tab 30
   check "&[config_dialog:ctcp_reply]-", 561, 70 14 175 8, tab 30
@@ -497,7 +497,7 @@ dialog pnp.config {
   text "[config_dialog:self_lag_and]", 587, 172 136 25 8, tab 30
   edit "", 588, 198 134 20 11, autohs tab 30
   text "[dialog:seconds]", 589, 220 136 30 8, tab 30
-  
+
   ; Serverlist [600-619]
   text "[config_dialog:serverlist_note1]", 604, 70 5 170 24, tab 31
   check "&[config_dialog:serverlist_enable]:", 600, 70 30 170 8, tab 31
@@ -508,7 +508,7 @@ dialog pnp.config {
   button "&[config_dialog:refresh]", 606, 190 129 50 12, tab 31
   edit "", 607, 1 1 1 1, hide
   text "[config_dialog:serverlist_refresh]", 608, 70 129 120 16, hide tab 31
-  
+
   ; Titlebar [620-649]
   check "&[config_dialog:update_title]:", 638, 70 10 120 8, tab 32
   box "[config_dialog:when_here]:", 620, 70 25 80 94, tab 32
@@ -530,7 +530,7 @@ dialog pnp.config {
   check "&[config_dialog:title_time]", 636, 165 95 70 10, tab 32
   check "&[titlebar:idle:dlg]", 637, 165 105 70 10, tab 32
   text "[config_dialog:idle_note]", 639, 70 130 170 8, tab 32
-  
+
   ; Other [650-679]
   text "&[config_dialog:nick_comp]:", 650, 70 15 100 8, right tab 33
   edit "", 651, 172 13 30 11, autohs tab 33
@@ -550,7 +550,7 @@ dialog pnp.config {
   radio "&F10", 665, 130 129 50 8, tab 33
   radio "&[word:any:dlg]", 666, 180 129 55 8, tab 33
 }
- 
+
 ; /_config [#]
 ; Open configuration dialog
 alias _config {
@@ -558,7 +558,7 @@ alias _config {
   if ($1 == $null) set -u %.section $_dlgi(cfg)
   _dialog -md pnp.config pnp.config
 }
- 
+
 ; Dialog init
 on *:DIALOG:pnp.config:init:*:{
   ; prep combos/lists
@@ -572,17 +572,17 @@ on *:DIALOG:pnp.config:init:*:{
 
   ; Used for preview of msgs
   window -fhnp +d @.msgprev 0 0 340 22
- 
+
   ;  show first or selected section of dialog
   if ((%.section !isnum) || ($gettok($did(901,%.section),1,32) == $null) || ($findtok(1 6 16,%.section,32))) %.section = 2
   did -c $dname 901 %.section
   page.show %.section
   ;!! Need a timer for this at this time
   .timer -mio 1 0 did -c pnp.config %.section $chr(124) did -f pnp.config 901
- 
+
   unset %.section
 }
- 
+
 ; Select new section, unless a 'blank' section was selected
 ; Selecting the top item of a group (Away, Display, Popups) will select the
 ; first item of the group
@@ -594,7 +594,7 @@ on *:DIALOG:pnp.config:sclick:901:{
   }
   else page.show $did(901).sel
 }
- 
+
 ; Close dialog
 on *:DIALOG:pnp.config:sclick:905:{
   ; Apply all modified pages
@@ -603,7 +603,7 @@ on *:DIALOG:pnp.config:sclick:905:{
     if ($did(902,%num) == 1) page.apply %num
     dec %num
   }
- 
+
   ; Cleanup
   _dlgw cfg $did(903)
   window -c @.msgprev
@@ -623,30 +623,30 @@ on *:DIALOG:pnp.config:sclick:906:{
   .timer.msgview.fix off
   _unload config
 }
- 
+
 ; If tabs are 'clicked', undo any changes
 on *:DIALOG:pnp.config:sclick:1,2,3,4,7,8,9,10,11,12,13,14,17,18,19,20,21,22,24,25,26,27,28,29,30,31,32,33:{
   did -f pnp.config 901
   did -c pnp.config $did(903)
 }
- 
+
 ; Handle various dynamic parts of the dialog- disable/enable on clicks, etc.
 on *:DIALOG:pnp.config:*:*:{
   var %ranges = * 70-99 100-129 130-149 * * 150-159 160-189 190-209 210-229 230-249 250-269 270-289 290-309 * * 310-329 330-349 350-369 370-389 390-409 410-429 * 430-459 40-69 460-489 490-519 520-539 540-559 560-599 600-619 620-649 650-679
-  
+
   ; Current range being shown
   var %shown = $gettok(%ranges,$did(901).sel,32)
-  
+
   ; If an item in that range was modified, call page.mod
   if ($did isnum %shown) page.mod $did(901).sel
 }
- 
+
 ; /page.show n
 ; Show a page of the dialog
 alias -l page.show {
   ; (do nothing if same page as before)
   if ($did(903) == $1) return
- 
+
   ; If area hasn't been visited yet, we must prep it
   if ($did(902,$1) == 0) {
     ; Mark as visited and initialize
@@ -654,7 +654,7 @@ alias -l page.show {
     page.init $1
     page.mod $1 1
   }
- 
+
   ; Fixes windows bug with showing && in tabbed dialogs
   if ($1 == 4) did -ro pnp.config 138 1 [config_dialog:away_nick_note:me=&&me&&:notdlg]
   if ($1 == 29) {
@@ -662,20 +662,20 @@ alias -l page.show {
     var %right = &&]&&
     did -ro pnp.config 549 1 & $+ [config_dialog:brackets:left=%left:right=%right:notdlg]:
   }
- 
+
   ; Remember what page we did last, show tab, move focus back to list, set default to O
   did -o pnp.config 903 1 $1
   did -c pnp.config $1
   did -f pnp.config 901
   did -t pnp.config 905
 }
- 
+
 ; /page.init n
 ; Prepare a page of the dialog from our configuration and/or prep any combos, lists, etc.
 ; Will not be called more than once for a page, so you can assume everything is blank/unchecked at this point
 alias -l page.init {
   goto $1
- 
+
   ; Away - Pager/Log
   :2
   did -a $dname 75,76,77 [word:on]
@@ -700,7 +700,7 @@ alias -l page.init {
   if ($_cfgi(away.closeq)) did -c $dname 87
   if ($hget(pnp.config,awaylog.perm)) did -c $dname 88
   return
-  
+
   ; Away - Message
   :3
   if ($_cfgi(away.act)) did -c $dname 101
@@ -722,7 +722,7 @@ alias -l page.init {
   if ($hget(pnp.config,awaywords.limit)) did -c $dname 119
   if ($hget(pnp.config,awaywords.chans)) did -a $dname 120 $ifmatch
   return
-  
+
   ; Away - Other
   :4
   if ($hget(pnp.config,autoaway)) did -c $dname 131
@@ -739,7 +739,7 @@ alias -l page.init {
   if ($_cfgi(away.dq)) did -c $dname 142
   if ($_cfgi(away.allconnect)) did -c $dname 143
   return
-  
+
   ; Display - Nick colors
   :7
   if ($_cfgi(nickcol)) did -c $dname 150
@@ -747,7 +747,7 @@ alias -l page.init {
   if ($hget(pnp.config,lagtime) isnum) did -a $dname 153 $ifmatch
   else did -a $dname 20
   return
-  
+
   ; Display - Notify
   :8
   var %did = 165
@@ -769,7 +769,7 @@ alias -l page.init {
   if ($_cfgi(unotify.part)) did -c $dname 177
   if ($hget(pnp.config,show.fkeys)) did -c $dname 178
   return
-  
+
   ; Display - Ping
   :9
   loadbuf -otpingwin1 $dname 191 "script\dlgtext.dat"
@@ -781,7 +781,7 @@ alias -l page.init {
   if ($hget(pnp.config,ping.retain)) did -c $dname 197
   if ($hget(pnp.config,show.pingcode)) did -c $dname 198
   return
-  
+
   ; Display - Server notices
   :10
   loadbuf -otsnotice $dname 223 "script\dlgtext.dat"
@@ -796,7 +796,7 @@ alias -l page.init {
     inc %ln
   }
   return
-  
+
   ; Display - Text
   :11
   if ($hget(pnp.config,copy.query)) did -c $dname 231
@@ -809,7 +809,7 @@ alias -l page.init {
   else did -c $dname 241
 
   return
-  
+
   ; Display - Wallops
   :12
   loadbuf -otwallop $dname 263 "script\dlgtext.dat"
@@ -824,7 +824,7 @@ alias -l page.init {
     inc %ln
   }
   return
-  
+
   ; Display - Whois replies
   :13
   loadbuf -otwhoiswin $dname 271 "script\dlgtext.dat"
@@ -837,7 +837,7 @@ alias -l page.init {
   if ($hget(pnp.config,whois.shared)) did -c $dname 278
   did -c $dname $calc(280 + $findtok(off hide,$hget(pnp.config,whois.nick),32))
   return
-  
+
   ; Display - Other
   :14
   loadbuf -otnames $dname 291 "script\dlgtext.dat"
@@ -864,7 +864,7 @@ alias -l page.init {
   if ($_cfgi(motd.win) == @MOTD) did -c $dname 299
   if (!$_cfgi(hidesplash)) did -c $dname 300
   return
-  
+
   ; Popups - Channel
   :17
   var %pos = 1,%data = $hget(pnp.config,popups.3)
@@ -877,7 +877,7 @@ alias -l page.init {
     if ($hget(pnp.config,popups.hideop)) did -c $dname 321,362
   }
   return
-  
+
   ; Popups - Menubar
   :18
   var %pos = 1,%data = $hget(pnp.config,popups.1)
@@ -886,7 +886,7 @@ alias -l page.init {
     inc %pos
   }
   return
-  
+
   ; Popups - Nicklist
   :19
   var %pos = 1,%data = $hget(pnp.config,popups.4)
@@ -899,7 +899,7 @@ alias -l page.init {
     if ($hget(pnp.config,popups.hideop)) did -c $dname 321,362
   }
   return
-  
+
   ; Popups - Query
   :20
   var %pos = 1,%data = $hget(pnp.config,popups.2)
@@ -908,7 +908,7 @@ alias -l page.init {
     inc %pos
   }
   return
-  
+
   ; Popups - Status
   :21
   var %pos = 1,%data = $hget(pnp.config,popups.5)
@@ -917,7 +917,7 @@ alias -l page.init {
     inc %pos
   }
   return
-  
+
   ; Popups - @Windows
   :22
   var %pos = 1,%data = $hget(pnp.config,popups.6)
@@ -926,7 +926,7 @@ alias -l page.init {
     inc %pos
   }
   return
-  
+
   ; Channel options
   :24
   loadbuf -ottempban $dname 433 "script\dlgtext.dat"
@@ -942,7 +942,7 @@ alias -l page.init {
     dec %ch
   }
   return
-  
+
   ; DCC accept
   :25
   var %did = 50,%opt = $hget(pnp.config,dcc.opt)
@@ -952,7 +952,7 @@ alias -l page.init {
     inc %did
   }
   return
-  
+
   ; Favorites
   :26
   var %ini = $_cfg(config.ini)
@@ -989,7 +989,7 @@ alias -l page.init {
   did -i $dname 488 1 -
   did -i $dname 489 1 $iif($gettok($readini(%ini,n,favopt,all),1,32),1 0 - - -,0 0 - - -)
   return
-  
+
   ; Flashing
   :27
   var %opt = $hget(pnp.config,flash.opt),%pos = 1
@@ -1008,7 +1008,7 @@ alias -l page.init {
   }
   else did -a $dname 505 10
   return
-  
+
   ; Language
   :28
   if ($readini(script\transup.ini,n,translation,enabled) == no) {
@@ -1030,7 +1030,7 @@ alias -l page.init {
   }
   window -c @.trans
   return
-  
+
   ; Messages
   :29
   window -nhl @.msgs
@@ -1054,7 +1054,7 @@ alias -l page.init {
   if ($hget(pnp.config,bracket.left)) did -a $dname 550 $ifmatch
   if ($hget(pnp.config,bracket.right)) did -a $dname 551 $ifmatch
   return
-  
+
   ; Protection
   :30
   var %prot = $hget(pnp.config,myflood.prot)
@@ -1097,7 +1097,7 @@ alias -l page.init {
     did -ra $dname 588 60
   }
   return
-  
+
   ; Serverlist
   :31
   if ($_cfgx(serverlist,on)) did -c $dname 600
@@ -1107,7 +1107,7 @@ alias -l page.init {
     inc %ln
   }
   return
-  
+
   ; Titlebar
   :32
   if ($hget(pnp.config,title.bar)) did -c $dname 638
@@ -1120,7 +1120,7 @@ alias -l page.init {
     inc %pos
   }
   return
-  
+
   ; Other
   :33
   if ($hget(pnp.config,nc.char)) did -a $dname 651 $ifmatch
@@ -1137,14 +1137,14 @@ alias -l page.init {
   else did -c $dname 665
   return
 }
- 
+
 ; /page.apply n
 ; Save a page of the dialog to configuration
 alias -l page.apply {
   ; Save current options?
   if ($istok(24 26 29,$1,32)) page.mod $1 0 1
   goto $1
- 
+
   ; Away - Pager/Log
   :2
   _cfgw away.pager $gettok(1 0 quiet,$did(75).sel,32)
@@ -1161,7 +1161,7 @@ alias -l page.apply {
   _cfgw away.closeq $did(87).state
   `set awaylog.perm $did(88).state
   return
-  
+
   ; Away - Message
   :3
   _cfgw away.act $did(101).state
@@ -1180,7 +1180,7 @@ alias -l page.apply {
   `set awaywords.limit $did(119).state
   `set awaywords.chans $gettok($replace($did(120),$chr(32),$chr(44)),1-,44)
   return
-  
+
   ; Away - Other
   :4
   `set autoaway $did(131).state
@@ -1195,7 +1195,7 @@ alias -l page.apply {
   _cfgw away.dq $did(142).state
   _cfgw away.allconnect $did(143).state
   return
-  
+
   ; Display - Nick colors
   :7
   _cfgw nickcol $did(150).state
@@ -1204,7 +1204,7 @@ alias -l page.apply {
   _upd.texts
   .nickcol
   return
-  
+
   ; Display - Notify
   :8
   _cfgw notify.match $gettok(show ext hide,$did(165).sel,32)
@@ -1220,7 +1220,7 @@ alias -l page.apply {
   _cfgw unotify.part $did(177).state
   `set show.fkeys $did(178).state
   return
-  
+
   ; Display - Ping
   :9
   `set ping.bulk $gettok(-ai2 -si2 @Ping * none,$did(191).sel,32)
@@ -1229,7 +1229,7 @@ alias -l page.apply {
   `set ping.retain $did(197).state
   `set show.pingcode $did(198).state
   return
-  
+
   ; Display - Server notices
   :10
   `set snotice.on $did(213).state
@@ -1246,7 +1246,7 @@ alias -l page.apply {
   `set snotice.f a
   `set snotice.f %filter
   return
-  
+
   ; Display - Text
   :11
   `set copy.query $did(231).state
@@ -1256,7 +1256,7 @@ alias -l page.apply {
   `set serv.notice $iif($did(242).state,1,$iif($did(243).state,2,0))
   _upd.texts
   return
-  
+
   ; Display - Wallops
   :12
   `set wallop.on $did(253).state
@@ -1273,7 +1273,7 @@ alias -l page.apply {
   `set wallop.f a
   `set wallop.f %filter
   return
-  
+
   ; Display - Whois replies
   :13
   `set whois.win $gettok(-ai2 -si2 @Whois *,$did(271).sel,32)
@@ -1284,7 +1284,7 @@ alias -l page.apply {
   `set whois.shared $did(278).state
   `set whois.nick $iif($did(280).state,on,$iif($did(281).state,off,hide))
   return
-  
+
   ; Display - Other
   :14
   _cfgw show.names $calc($did(291).sel - 1)
@@ -1298,7 +1298,7 @@ alias -l page.apply {
   ; (update disp alias- eroute may have changed)
   theme.alias pnp.theme pnp.events
   return
-  
+
   ; Popups - Channel
   :17
   var %pos = 1,%data
@@ -1309,7 +1309,7 @@ alias -l page.apply {
   `set popups.3 %data
   `set popups.hideop $did(321).state
   return
-  
+
   ; Popups - Menubar
   :18
   var %pos = 1,%data
@@ -1319,7 +1319,7 @@ alias -l page.apply {
   }
   `set popups.1 %data
   return
-  
+
   ; Popups - Nicklist
   :19
   var %pos = 1,%data
@@ -1330,7 +1330,7 @@ alias -l page.apply {
   `set popups.4 %data
   `set popups.hideop $did(362).state
   return
-  
+
   ; Popups - Query
   :20
   var %pos = 1,%data
@@ -1340,7 +1340,7 @@ alias -l page.apply {
   }
   `set popups.2 %data
   return
-  
+
   ; Popups - Status
   :21
   var %pos = 1,%data
@@ -1350,7 +1350,7 @@ alias -l page.apply {
   }
   `set popups.5 %data
   return
-  
+
   ; Popups - @Windows
   :22
   var %pos = 1,%data
@@ -1360,7 +1360,7 @@ alias -l page.apply {
   }
   `set popups.6 %data
   return
-  
+
   ; Channel options
   :24
   var %ln = $did(453).lines
@@ -1379,7 +1379,7 @@ alias -l page.apply {
     dec %num
   }
   return
-  
+
   ; DCC accept
   :25
   var %opt,%did = 50
@@ -1389,7 +1389,7 @@ alias -l page.apply {
   }
   `set dcc.opt %opt
   return
-  
+
   ; Favorites
   :26
   ; (delete items no longer used)
@@ -1434,7 +1434,7 @@ alias -l page.apply {
     dec %ln
   }
   return
-  
+
   ; Flashing
   :27
   var %opt,%pos = 495
@@ -1448,7 +1448,7 @@ alias -l page.apply {
   if (($did(504).state) && ($did(505) isnum)) _cfgw flash.away $ifmatch
   else _cfgw flash.away 0
   return
-  
+
   ; Language
   :28
   if ($readini(script\transup.ini,n,translation,enabled) == no) return
@@ -1474,7 +1474,7 @@ alias -l page.apply {
     if ($_okcancel(3,[misc:translation_warn])) .timer -mio 1 0 translate -n $+ %flags %file
   }
   return
-  
+
   ; Messages
   :29
   window -nhl @.msgs
@@ -1488,7 +1488,7 @@ alias -l page.apply {
   `set bracket.left $did(550)
   `set bracket.right $did(551)
   return
-  
+
   ; Protection
   :30
   var %prot = 0
@@ -1506,7 +1506,7 @@ alias -l page.apply {
   _cfgw spwarn1 $iif(($did(585).state) && ($did(586) isnum),$did(586),0)
   _cfgw spwarn2 $iif(($did(585).state) && ($did(588) isnum),$did(588),0)
   return
-  
+
   ; Serverlist
   :31
   _cfgxw serverlist on $did(600).state
@@ -1519,7 +1519,7 @@ alias -l page.apply {
   if ($did(607)) _cfgxw serverlist last
   .timer -mio 1 0 .serverlist
   return
-  
+
   ; Titlebar
   :32
   `set title.bar $did(638).state
@@ -1539,7 +1539,7 @@ alias -l page.apply {
     dec %scon
   }
   return
-  
+
   ; Other
   :33
   `set nc.char $did(651)
@@ -1561,13 +1561,13 @@ alias -l page.apply {
 ; [y] is true if being called manually from page.apply telling us to save any final changes.
 alias -l page.mod {
   goto $1
- 
+
   ; Away - Pager/Log
   :2
   did $iif($did(81).state,-e,-b) $dname 82
   did $iif($did(83).state,-e,-b) $dname 84
   return
-  
+
   ; Away - Message
   :3
   did $iif($did(104).state,-e,-b) $dname 106,108
@@ -1578,29 +1578,29 @@ alias -l page.mod {
   did $iif($did(117).state,-e,-b) $dname 118
   did $iif(($did(119).state) && ($did(119).enabled),-e,-b) $dname 120
   return
-  
+
   ; Away - Other
   :4
   did $iif($did(131).state,-e,-b) $dname 133,134,135
   did $iif($did(136).state,-e,-b) $dname 137
   return
-  
+
   ; Display - Nick colors
   :7
   if (($devent == sclick) && ($did == 156)) ncedit
   return
-  
+
   ; Display - Notify
   :8
   did $iif($did(176,1).sel != 4,-e,-b) $dname 165,166,167,168,169,170,172,173,174,177,178
   return
-  
+
   ; Display - Ping
   :9
   did $iif(($did(191,1).sel == 3) && (!$did(196).state),-e,-b) $dname 195
   did $iif(($did(191,1).sel == 3) && (!$did(195).state),-e,-b) $dname 196
   return
-  
+
   ; Display - Server notices
   :10
   ; Move?
@@ -1630,12 +1630,12 @@ alias -l page.mod {
   did $iif(($did(216,0).sel) && ($did(216).enabled),-e,-b) $dname 220
   did $iif(($did(218,0).sel) && ($did(218).enabled),-e,-b) $dname 221
   return
-  
+
   ; Display - Text
   :11
   if (($devent == sclick) && ($did == 244)) textsch
   return
-  
+
   ; Display - Wallops
   :12
   ; Move?
@@ -1665,13 +1665,13 @@ alias -l page.mod {
   did $iif(($did(256,0).sel) && ($did(256).enabled),-e,-b) $dname 260
   did $iif(($did(258,0).sel) && ($did(258).enabled),-e,-b) $dname 261
   return
-  
+
   ; Display - Whois replies
   :13
   did $iif(($did(271,1).sel == 3) && (!$did(275).state),-e,-b) $dname 274
   did $iif(($did(271,1).sel == 3) && (!$did(274).state),-e,-b) $dname 275
   return
-  
+
   ; Display - Other
   :14
   if ($devent == sclick) {
@@ -1679,7 +1679,7 @@ alias -l page.mod {
     if ($did == 297) .timer -mio 1 0 did -o $dname 297 0 $gettok(ddd doo mmm yyyy*mmm d $+ $chr(44) yyyy*mm/dd/yy*dd/mm/yy*mm/dd/yyyy*dd/mm/yyyy,$did(297).sel,42)
   }
   return
-  
+
   ; Popups - Channel
   :17
   did $iif($did(321).state,-c,-u) $dname 362
@@ -1708,7 +1708,7 @@ alias -l page.mod {
     }
   }
   return
-  
+
   ; Popups - Nicklist
   :19
   did $iif($did(362).state,-c,-u) $dname 321
@@ -1723,7 +1723,7 @@ alias -l page.mod {
     }
   }
   return
-  
+
   ; Popups - Query
   :20
   var %load
@@ -1737,7 +1737,7 @@ alias -l page.mod {
     }
   }
   return
-  
+
   ; Popups - Status
   :21
   var %load
@@ -1751,7 +1751,7 @@ alias -l page.mod {
     }
   }
   return
-  
+
   ; Popups - @Windows
   :22
   var %load
@@ -1765,7 +1765,7 @@ alias -l page.mod {
     }
   }
   return
-  
+
   ; Channel options
   :24
   ; Save current options?
@@ -1834,11 +1834,11 @@ alias -l page.mod {
   did $iif($left($did(453).seltext,1) == $chr(40),-b,-e) $dname 456
   did $iif($did(448).state,-e,-b) $dname 449,450,451
   return
-  
+
   ; DCC accept
   :25
   return
-  
+
   ; Favorites
   :26
   ; Add chans/servers
@@ -1979,7 +1979,7 @@ alias -l page.mod {
     if ($did == 480) did -t $dname 481
   }
   return
-  
+
   ; Flashing
   :27
   did $iif($did(501).state,-e,-b) $dname 502
@@ -1994,7 +1994,7 @@ alias -l page.mod {
   }
   did $iif($did(525,0).sel == 0,-b,-e) $dname 526
   return
-  
+
   ; Messages
   :29
   ; Save changes to currently selected message? (if showing a new set or new selected msg)
@@ -2078,7 +2078,7 @@ alias -l page.mod {
     .timer.config.msgpreview -mio 1 $iif($devent == edit,1500,500) msgprev.update
   }
   return
-  
+
   ; Protection
   :30
   if (($devent == sclick) && ($did == 562)) ctcpedit
@@ -2089,7 +2089,7 @@ alias -l page.mod {
   did $iif($did(582).state,-e,-b) $dname 583
   did $iif($did(585).state,-e,-b) $dname 586,588
   return
-  
+
   ; Serverlist
   :31
   did $iif($did(600).state,-e,-b) $dname 601
@@ -2113,12 +2113,12 @@ alias -l page.mod {
   did $iif(($_scandid($dname,601,$gettok($did(601),1,32))) && ($did(601) != $null) && ($did(600).state),-e,-b) $dname 603
   did $iif((!$did(607)) && ($did(600).state),-e,-b) $dname 606
   return
-  
+
   ; Titlebar
   :32
   did $iif($did(638).state,-e,-b) $dname 621,622,623,624,625,626,627,628,630,631,632,633,634,635,636,637
   return
-  
+
   ; Other
   :33
   did $iif(($did(655).state) || ($did(651) != $null) || ($did(653) != $null),-e,-b) $dname 654

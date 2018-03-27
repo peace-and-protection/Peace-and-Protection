@@ -4,7 +4,7 @@ addons\lastseen.ppa
 ; Peace and Protection
 ; Last seen (standard addon)
 ; ########################################
- 
+
 #.ppa.info off
 [addon]
 name=[lastseen:name:dlg]
@@ -57,7 +57,7 @@ alias -l _updseen {
   }
   if ($timer(.cacheseen. $+ $1) == $null) .timer.cacheseen. $+ $1 -io 1 15 _saveseen $1
 }
- 
+
 ; Adds last seen data
 ; /_addlseen network nick fulladdress channel
 alias -l _addlseen {
@@ -92,7 +92,7 @@ alias -l _saveseenall {
   }
 }
 on *:EXIT:{ _saveseenall }
- 
+
 ; Record data on user quit, kick, part, nick
 on !*:PART:#:if ($_isseenchan($chan)) _addlseen $hget(pnp. $+ $cid,net) $nick $fulladdress $chan
 on !*:KICK:#:if ($_isseenchan($chan)) if ($address($knick,5)) _addlseen $hget(pnp. $+ $cid,net) $knick $ifmatch $chan
@@ -105,7 +105,7 @@ alias -l _dobulkls {
     inc %num
   }
 }
- 
+
 ; Record data on our disconnect, kick, or part
 on *:DISCONNECT:if ($hget(pnp. $+ $cid,net) != [word:offline]) _updseen $hget(pnp. $+ $cid,net) *
 on me:*:PART:#:if ($_isseenchan($chan)) _updseen $hget(pnp. $+ $cid,net) $chan
@@ -139,7 +139,7 @@ alias -l _prepseen {
   }
 }
 on *:CONNECT:_prepseen $hget(pnp. $+ $cid,net)
- 
+
 ; Find appropriate data given a nick|ident and return it
 ; Assumes CID of network is current; else pass param 5 as true to skip searching current chans/etc.
 ; $_findseen(net,nick|ident,opt,opt[,skipsearch])
@@ -188,16 +188,16 @@ alias -l _readseen {
   if ($numtok(%found,32) < 4) return $iif($4,[public_lastseen:online_chan:nick=%nick:chan=$gettok(%found,3,32)],[public_lastseen:online:nick=%nick])
   return $iif($4,[public_lastseen:offline_chan:nick=%nick:duration=$_dur($calc($ctime - $gettok(%found,3,32))):chan=$gettok(%found,4,32)],[public_lastseen:offline:nick=%nick:duration=$_dur($calc($ctime - $gettok(%found,3,32)))])
 }
- 
+
 dialog lastseen {
   title "[lastseen_dialog:title]"
   icon script\pnp.ico
   option dbu
   size -1 -1 145 140
-   
+
   check "&[lastseen_dialog:only_on]:", 1, 5 5 138 8
   edit "", 10, 15 15 125 11, autohs
-   
+
   check "&[lastseen_dialog:respond_ctcp]", 2, 5 31 138 8
   check "&[lastseen_dialog:respond_trigger]", 3, 5 41 138 8
   check "&[lastseen_dialog:respond_private]", 11, 5 51 138 8
@@ -205,11 +205,11 @@ dialog lastseen {
   check "&[lastseen_dialog:allow_userid]", 9, 5 71 138 8
   check "&[lastseen_dialog:include_addr]", 5, 5 81 138 8
   check "&[lastseen_dialog:include_chan]", 6, 5 91 138 8
-   
+
   check "&[lastseen_dialog:clean]", 7, 5 106 75 8
   edit "", 8, 81 105 20 11
   text "[lastseen_dialog:on_startup]", 20, 102 107 43 8
-   
+
   button "[dialog:ok]", 201, 15 122 40 12, OK default
   button "[dialog:cancel]", 203, 90 122 40 12, cancel
 }
@@ -239,7 +239,7 @@ on *:DIALOG:lastseen:sclick:201:{
   `set lastseen.opt %opt $or($did(9).state,$calc(2 * $did(11).state)) $iif($did(10),$_s2c($did(10)))
 }
 alias lastseen _dialog -am lastseen lastseen
- 
+
 on *:LOAD:{
   ; PnP check
   if (!$_ispnp) {
@@ -270,7 +270,7 @@ alias -l _isanyseen {
   }
   return %found
 }
- 
+
 alias _lastseenunload {
   if ($_isanyseen) {
     if ($_yesno(1,[lastseen:confirm_clear])) {
@@ -281,14 +281,14 @@ alias _lastseenunload {
   ; Flush seen data
   _saveseenall
 }
- 
+
 ; Returns if we're collecting data on a channel
 alias -l _isseenchan {
   if ($gettok($hget(pnp.config,lastseen.opt),1,32) == 0) return 1
   if ($istok($gettok($hget(pnp.config,lastseen.opt),10,32),$1,44)) return 1
   return 0
 }
- 
+
 ; Responses
 ; Uses current network
 ; $_seenresp(ctcp/msg)
@@ -316,7 +316,7 @@ on *:TEXT:!seen &:*:{
     if ($result) _linedance msg $iif(($target ischan) && ($and($gettok($hget(pnp.config,lastseen.opt),9,32),2) == 0),$chan,$nick) $_stripout($result)
   }
 }
- 
+
 ; Self-requested info
 alias seen {
   if ($1 == $null) _qhelp $_s2f(/seen +[quick:p_nickuserid:s2p] -[word:network:lower:s2p] ![quick:seen])
@@ -346,7 +346,7 @@ alias sayseen {
   _notconnected /sayseen
   say $_stripout($_readseen($hget(pnp. $+ $cid,net),$1,$gettok($hget(pnp.config,lastseen.opt),5,32),$gettok($hget(pnp.config,lastseen.opt),6,32),$gettok($hget(pnp.config,lastseen.opt),9,32)))
 }
- 
+
 ; Clean out lastseen database by age or channel, or all
 ; Affects all networks if not specified
 ; /clrseen [#chan|days] [network] (either order)
@@ -381,7 +381,7 @@ alias clrseen {
     %allnet = 1
     %allnetpos = $hget(0)
   }
-  
+
   if ($show) _progress.1 [lastseen:cleaning]...
 
   ; If doing all nets, pick another net
@@ -393,9 +393,9 @@ alias clrseen {
     }
     dec %allnetpos
   }
-  
+
   if ((%allnet) && (!%allnetpos)) goto done
-  
+
   if (%chan) {
     while ($hmatch(pnp.lastseen. $+ %net,& & %chan).data) {
       hdel pnp.lastseen. $+ %net $ifmatch
@@ -439,7 +439,7 @@ alias clrseen {
 }
 alias _doclrseen if ($gettok($hget(pnp.config,lastseen.opt),7,32)) .clrseen $gettok($hget(pnp.config,lastseen.opt),8,32)
 on *:START:_startup.add _doclrseen [lastseen:cleaning]...
- 
+
 ; popups
 menu menubar {
   $_popssep

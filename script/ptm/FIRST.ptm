@@ -146,7 +146,7 @@ alias _startup.perform {
       hdec pnp.startup tail
     }
   }
-  
+
   ; Splash
   if ($readini(config\ $+ $hget(pnp,user) $+ \config.ini,n,cfg,hidesplash)) window -c @Startup
   elseif (!$window(@Startup)) {
@@ -161,7 +161,7 @@ alias _startup.perform {
     }
     else drawrect -rf @Startup $rgb(face) 1 0 0 250 350
   }
-  
+
   :loop
   hinc pnp.startup tail
 
@@ -257,7 +257,7 @@ alias _st.error if (!$hget(pnp.startup,firsttime)) { hinc pnp.startup errors | e
 alias -l _dirhash {
   ; Verify certain dirs
   mkdir SCRIPT\TEMP | mkdir CONFIG | mkdir THEMES
-  
+
   ; Detect profile (user)
   if ($mircdirconfig\ isin $mircini) var %user = $gettok($mircini,$calc($numtok($mircini,92) - 1),92)
   else var %user = $readini(config\profiles.ini,n,startup,main)
@@ -268,7 +268,7 @@ alias -l _dirhash {
     _st.error [startup:file_missing:file=profiles.ini]...
     writeini config\profiles.ini startup ask 0
   }
-  
+
   ; Verify profiles.ini contains ptr to valid user
   if (($null == $readini(config\profiles.ini,n,startup,main)) || (%user == $null)) {
     if ($finddir(config\,*,1)) {
@@ -336,7 +336,7 @@ alias _ck.script {
   if ($exists(script\imprt320.mrc)) { .unload -rs script\imprt320.mrc | .remove script\imprt320.mrc }
   if ($exists(addons\sound2.mrc)) { .unload -rs addons\sound2.mrc | .remove addons\sound2.mrc }
   if ($exists(script\config2.mrc)) { .unload -rs script\config2.mrc | .remove script\config2.mrc }
-  
+
   ; Old popup files
   var %file = config\ $+ $hget(pnp,user) $+ \popups.ini
   if ($exists(script\status.mrc)) {
@@ -376,13 +376,13 @@ alias _ck.script {
     .remove script\menu.mrc
     .remove script\ptm\menu.ptm
   }
-  
+
   ; 'your' popups- create?
   if ($!isfile(%file)) {
     .writeini %file bpopup n0 PnP
     .flushini %file
   }
-  
+
   ; Verify loaded popups first time
   if ($hget(pnp.startup,firsttime)) {
     .load -ps %file
@@ -504,7 +504,7 @@ alias _ck.addon {
           }
           inc %scrn
         }
-        
+
         ; At this point, unless a file was missing, addon is definately loaded
         if (!%error) {
           %loadednow = $addtok(%loadednow,%id,32)
@@ -512,7 +512,7 @@ alias _ck.addon {
 
           ; 3.20?
           if (($readini(%ppa,n,addon,ppver) isnum) && ($readini(%ppa,n,addon,ppver) < 4.00)) %load320 = 1
-        
+
           ; Check non-script files
           %scrn = 1
           while ($readini(%ppa,n,other,%scrn)) {
@@ -640,7 +640,7 @@ alias _dde.init {
     _stecho [startup:start:user=$hget(pnp,user)]
     return
   }
- 
+
   .enable #pnpdde
   ; Only one copy should do this at a time
   if ($lof(script\temp\semaphor.) > 0) {
@@ -808,7 +808,7 @@ alias _update.new.connects {
   }
   scid -r
 }
- 
+
 on *:CLOSE:*:{
   if ($target == Status Window) {
     ; Closed connection
@@ -875,7 +875,7 @@ alias _mischash {
 alias _pnp.upgrade {
   ; Last version that was run is stored as a profile-specific item
   var %lastver = $_cfgi(last.ver)
-  
+
   ; Most update items here are OLD- from before we stored the last version number
   ; Therefore we need to verify these upgrades on a one-by-one basis
   if (!%lastver) {
@@ -884,14 +884,14 @@ alias _pnp.upgrade {
     ; An old beta had addons / serverlist in profiles.ini and not per-profile
     remini config\profiles.ini addons
     remini config\profiles.ini serverlist
-    
+
     ; Redo addon popups if they're being stored in script dir
     if (script\ isin $script(adpopups.mrc)) _apopups
     if ($exists(script\adpopups.mrc)) {
       .unload -rs script\adpopups.mrc
       .remove script\adpopups.mrc
     }
-    
+
     ; Same with serverlist (already updated from earlier)
     if ($exists(script\servers.mrc)) {
       .unload -rs script\servers.mrc
@@ -928,13 +928,13 @@ alias _pnp.upgrade {
       _fixsini mp3 msg %soundini
       _fixsini mp3 msgdesc %soundini
     }
-    
+
     if ($exists($_cfg(sound.ini))) remini $_cfg(sound.ini) *
 
     if ($isfile($_cfg(pw.ini))) {
       ; Remove !all from old nickserv addons storage
       filter -ffxc $_cfg(pw.ini) $_cfg(pw.ini) !all=*
-    
+
       ; Changes to nsforce/csforce sections
       window -hnl @.force
       if ($ini($_cfg(pw.ini),nsforce)) {
@@ -963,7 +963,7 @@ alias _pnp.upgrade {
         }
       }
       window -c @.force
-      
+
       ; Changes to xw section
       if ($ini($_cfg(pw.ini),xw)) {
         window -hnl @.xw
@@ -1070,7 +1070,7 @@ alias _pnp.upgrade {
     if ($len($hget(pnp.config,sound.grab)) == 5) {
       hadd pnp.config sound.grab $hget(pnp.config,sound.grab) $+ 1
     }
-    
+
     ; Combine all nc.ask settings into one
     if ($_cfgi(nc.ask) == $null) {
       if (($_cfgi(nc.askchan)) || ($_cfgi(nc.askcmd)) || ($_cfgi(nc.askin))) {
@@ -1083,7 +1083,7 @@ alias _pnp.upgrade {
       _cfgw nc.askcmd
       _cfgw nc.askin
     }
-    
+
     ; New bits on personal prot setting- 8 and 16 for reply to version/other ctcps
     `set myflood.prot $calc($hget(pnp.config,myflood.prot) % 8 + 24)
 
@@ -1098,7 +1098,7 @@ alias _pnp.upgrade {
       }
       dec %num
     }
-    
+
     ; Recent topics/kicks should have &chan&, not &channel&
     var %file = $_cfg(topic.lis)
     if ($isfile(%file)) {
@@ -1124,7 +1124,7 @@ alias _pnp.upgrade {
       savebuf @.recent %file
       window -c @.recent
     }
-    
+
     ; Generate chopt vars
     if ($hget(pnp.config,chopt) == $null) {
       var %chopts = $iif($_cfgi(tempban.time) isnum,$ifmatch,300) $iif($_cfgi(tempban.type) isnum,$ifmatch,1)
@@ -1162,7 +1162,7 @@ alias _pnp.upgrade {
         dec %num
       }
     }
-    
+
     ; New favorites sections
     if ($readini($_cfg(config.ini),n,favopt,all) == $null) {
       var %ini = $_cfg(config.ini)
@@ -1202,7 +1202,7 @@ alias _pnp.upgrade {
     _cfgw tempban.time
     _cfgw tempban.type
     _cfgw check.ops
-    
+
     ; Update to new theme format
     ; First, create file if non-exist
     if (!$isfile($_cfg(theme.mtp))) {
@@ -1220,7 +1220,7 @@ alias _pnp.upgrade {
     }
 
     if ($isfile($_cfg(text.dat))) .remove " $+ $_cfg(text.dat) $+ "
-    
+
     ; Load in settings from display.dat if stil present
     if ($isfile($_cfg(display.dat))) {
       var %file = " $+ $_cfg(theme.mtp) $+ "
@@ -1299,7 +1299,7 @@ alias _pnp.upgrade {
       if ($isfile($_cfg(theme.ct1))) .remove " $+ $_cfg(theme.ct1) $+ "
       if ($isfile($_cfg(theme.ct2))) .remove " $+ $_cfg(theme.ct2) $+ "
     }
-    
+
     ; Load nick color settings from current
     if ($hget(pnp.config,nickcol) == 16) {
       var %tok = 1,%n1,%n2,%n3
@@ -1319,14 +1319,14 @@ alias _pnp.upgrade {
       if ($isfile($_cfg(theme.ct1))) .remove " $+ $_cfg(theme.ct1) $+ "
       if ($isfile($_cfg(theme.ct2))) .remove " $+ $_cfg(theme.ct2) $+ "
     }
-    
+
     ; Delete some outdated files (that aren't scripts- those must be deleted in another section)
     if ($exists(script\spliterr.dat)) { .remove script\spliterr.dat }
     if ($exists(script\scheme.dat)) { .remove script\scheme.dat }
     if ($exists(script\blanktxs.dat)) { .remove script\blanktxs.dat }
     if ($exists(addons\genre.txt)) { .remove addons\genre.txt }
     if ($exists(script\pp400title-b.bmp)) { .remove script\pp400title-b.bmp }
-    
+
     ; Old themes
     if ($exists(schemes\blank.txs)) { .remove schemes\blank.txs }
     if ($exists(schemes\eleet.txs)) { .remove schemes\eleet.txs }
@@ -1342,7 +1342,7 @@ alias _pnp.upgrade {
   if (%lastver < 4.21) {
     ; Var no longer used
     `set nickcol
-    
+
     ; Correct problems in favorites- space-delimited, not comma-delimited
     var %ini = $_cfg(config.ini)
     var %ln = $ini(%ini,fav,0)
@@ -1357,7 +1357,7 @@ alias _pnp.upgrade {
       _cfgxw favserv %item $replace($_cfgx(favserv,%item),$chr(44),$chr(32))
       dec %ln
     }
-    
+
     ; Correct $chr(1) in msgs
     if ($isfile($_cfg(msgs.dat))) {
       window -hln @.msgs
@@ -1370,7 +1370,7 @@ alias _pnp.upgrade {
       savebuf @.msgs " $+ $_cfg(msgs.dat) $+ "
       window -c @.msgs
     }
-    
+
     ; Remove SCHEMES dir if empty
     if (($isdir(SCHEMES)) && ($findfile(SCHEMES\,*,1) == $null)) .rmdir SCHEMES
 
@@ -1389,7 +1389,7 @@ alias _pnp.upgrade {
       window -c @.actions
     }
   }
-  
+
   if (%lastver < 4.22) {
     ; Fixes to nsforce/csforce sections
     window -hnl @.force
@@ -1415,13 +1415,13 @@ alias _pnp.upgrade {
       }
     }
     window -c @.force
-    
+
     ; Remove translation data from profiles.ini
     remini config\profiles.ini translation
-    
+
     ; Raw-route
     `set rawroute -si2
-    
+
     ; Adjust lagbar position
     if ($_cfgx(extras,lagpos)) {
       var %pos = $ifmatch
@@ -1430,7 +1430,7 @@ alias _pnp.upgrade {
         _cfgxw extras lagpos %pos
       }
     }
-    
+
     ; Note in status about /wizard
     writeini config\profiles.ini startup saywizard 1
   }

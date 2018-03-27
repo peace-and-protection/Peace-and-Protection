@@ -91,7 +91,7 @@ dialog spamblock {
   check "... [spam_dialog:unless_op]", 76, 25 113 180 8, tab 3
   check "... [spam_dialog:except_chan]:", 77, 25 122 180 8, tab 3
   edit "", 78, 34 131 171 11, tab 3
-  
+
   text "[spam_dialog:block_unknown]:", 10, 10 22 195 8, tab 4
   check "[spam_dialog:queries]", 11, 15 32 55 8, tab 4
   check "[spam_dialog:notices]", 12, 70 32 45 8, tab 4
@@ -99,7 +99,7 @@ dialog spamblock {
   check "[word:files:dlg]", 14, 160 32 35 8, tab 4
   check "[spam_dialog:send_msg]:", 15, 15 41 190 8, tab 4
   edit "", 16, 24 50 181 11, tab 4
-  
+
   text "[spam_dialog:chan_block]:", 17, 10 67 195 8, tab 4
   check "[spam_dialog:queries]", 18, 15 75 55 8, tab 4
   check "[spam_dialog:notices]", 19, 70 75 45 8, tab 4
@@ -128,7 +128,7 @@ on *:DIALOG:spamblock:init:*:{
   if (%opt == $null) %opt = 279
   if (%optjp == $null) %optjp = 351
   if (%optchan == $null) %optchan = 0
-  
+
   if (%opt & 1) did -c $dname 41
   if (%opt & 2) did -c $dname 42
   if (%opt & 4) did -c $dname 43
@@ -139,7 +139,7 @@ on *:DIALOG:spamblock:init:*:{
   if ($hget(pnp.config,spamblock.words) != $null) did -a $dname 52 $ifmatch
   if (%opt & 16) did -c $dname 53
   if (%opt & 32) did -c $dname 54
-  
+
   if (%optjp & 1) did -c $dname 62
   if (%optjp & 2) did -c $dname 63
   if (%optjp & 4) did -c $dname 64
@@ -232,7 +232,7 @@ on *:DIALOG:spamblock:sclick:201:{
   else `set spamblock.join 10
   if (($did(74) isnum) && ($did(74) > 0)) `set spamblock.userjoin $ifmatch
   else `set spamblock.join 10
-  
+
   ; Predetermine which spamwords are 0 normal, 1 symbol-based, 2 attribute-based, or 3 both
   var %sw,%pos = 1
   var %total = $numtok($did(52),44)
@@ -245,7 +245,7 @@ on *:DIALOG:spamblock:sclick:201:{
     inc %pos
   }
   `set spamblock.wordtypes %sw
-  
+
   ; Predetermine channel op flags
   var %flags = -+%@
   if (%optchan & 16) %flags = $remove(%flags,-)

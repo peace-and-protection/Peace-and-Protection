@@ -3,7 +3,7 @@
 ; Peace and Protection
 ; Notify routines and scripts
 ; ########################################
- 
+
 ;
 ; Notify
 ;
@@ -48,19 +48,19 @@ alias _run.notify {
   if ($hget(pnp.config,notify.win) == none) return
   var %show = $_cfgi(notify. $+ %match)
   if (%show == hide) return
- 
+
   set -u %:echo echo $color(notify) -mt $+ $hget(pnp.config,notify.win) $iif((a isin $hget(pnp.config,notify.win)) && ($cid != $activecid),$:anp)
-set -u %:comments $iif(%match == match,- address verified,$iif(%match == fail,- address check failed))
+  set -u %:comments $iif(%match == match,- address verified,$iif(%match == fail,- address check failed))
   set -u %::text %note
   set -u %::nick $1
   set -u %::away $iif($3 == -,G,H)
   if (%show == ext) set -u %::address $2
   theme.text Notify p
-  
-if ($_cfgi(notify.beep $+ %match)) { beep 1 1 | flash Notify- $1 $gettok((verified) (wrong address),$findtok(match fail,%match,1,32),32) }
+
+  if ($_cfgi(notify.beep $+ %match)) { beep 1 1 | flash Notify- $1 $gettok((verified) (wrong address),$findtok(match fail,%match,1,32),32) }
   _recseen 10 user $1
   if (%note != $null) %note = ( $+ %note $+ )
-_away.logit @ 8 $cid (Notify) »»» $1 is on IRC $+ $iif(%match == match,- address verified,$iif(%match == fail,- address check failed)) %note $iif($3 == -,(away),(here))
+  _away.logit @ 8 $cid (Notify) »»» $1 is on IRC $+ $iif(%match == match,- address verified,$iif(%match == fail,- address check failed)) %note $iif($3 == -,(away),(here))
   ; don't play notify sound if playing song or playing that sound already
   if ($notify($1).sound) {
     if (($ifmatch !isin $inwave.fname) && (!$inmidi) && (!$insong)) .splay " $+ $notify($1).sound $+ "
@@ -83,24 +83,24 @@ on ^*:UNOTIFY:{
   if ($hget(pnp.config,notify.win) == none) return
   var %show = $_cfgi(unotify. $+ %match)
   if (%show == hide) halt
- 
+
   set -u %:echo echo $iif($_cfgi(unotify.part),$color(quit),$color(notify)) -t $+ $hget(pnp.config,notify.win) $iif((a isin $hget(pnp.config,notify.win)) && ($cid != $activecid),$:anp)
-set -u %:comments $iif(%match == match,- address verified,$iif(%match == fail,- address check failed))
+  set -u %:comments $iif(%match == match,- address verified,$iif(%match == fail,- address check failed))
   set -u %::text $_dur(%time)
   set -u %::nick %nick
   if (%show == ext) set -u %::address %addr
   theme.text UNotify p
-  
+
   _recseen 10 user %nick +
-_away.logit @ 8 $cid (Notify) ««« %nick left IRC ( $+ $_dur(%time) $+ ) $iif(%match == match,- address verified,$iif(%match == fail,- address check failed))
+  _away.logit @ 8 $cid (Notify) ««« %nick left IRC ( $+ $_dur(%time) $+ ) $iif(%match == match,- address verified,$iif(%match == fail,- address check failed))
   _ssplay $iif(%match == fail,UNotifyFail,UNotify)
   halt
 }
- 
+
 ; Notify theming defaults
 alias _pnptheme.notify {
-var %away = $iif(%::away == G,$:b(Away))
-var %show = $:b(%::nick) is on IRC $+ %:comments
+  var %away = $iif(%::away == G,$:b(Away))
+  var %show = $:b(%::nick) is on IRC $+ %:comments
   if (%::address) %show = %show $:b($chr(40)) $+ %::address $+ $:b($chr(41))
   if (%away) {
     if (%::address) %show = %show - %away
@@ -111,20 +111,20 @@ var %show = $:b(%::nick) is on IRC $+ %:comments
     else %show = %show %::parentext
   }
   if ($hget(pnp.config,show.fkeys)) {
-if ((%::address) || (%away) || (%::parentext)) %show = %show - CtrlF1 whois; ShiftF1 query
-else %show = %show $+ - CtrlF1 whois; ShiftF1 query
+    if ((%::address) || (%away) || (%::parentext)) %show = %show - CtrlF1 whois; ShiftF1 query
+    else %show = %show $+ - CtrlF1 whois; ShiftF1 query
   }
   %:echo $str(»,$len($strip($:*))) %show
 }
 alias _pnptheme.unotify {
-%:echo $str(«,$len($strip($:*))) $:b(%::nick) left IRC $+ %:comments $iif(%::address,$:b($chr(40)) $+ %::address $+ $:b($chr(41)) -) ( $+ was on %::text $+ ) $iif($hget(pnp.config,show.fkeys),- CtrlF1 whowas)
+  %:echo $str(«,$len($strip($:*))) $:b(%::nick) left IRC $+ %:comments $iif(%::address,$:b($chr(40)) $+ %::address $+ $:b($chr(41)) -) ( $+ was on %::text $+ ) $iif($hget(pnp.config,show.fkeys),- CtrlF1 whowas)
 }
- 
- 
+
+
 ;
 ; Notify
 ;
- 
+
 ; /notif [-r] nick [more nicks]
 ; Adds/Edits notify list entry(s)
 alias notif {
@@ -145,33 +145,33 @@ alias notif {
   }
 }
 dialog addnotif {
-title "Notify"
+  title "Notify"
   icon script\pnp.ico
   option dbu
   size -1 -1 115 130
- 
-text "&Adding:", 201, 2 4 23 10
+
+  text "&Adding:", 201, 2 4 23 10
   edit "", 1, 26 2 50 11, autohs
-text "(notify list)", 202, 78 4 35 10
- 
-radio "&on all networks", 2, 11 15 100 8
-radio "&only on", 3, 11 25 30 8
+  text "(notify list)", 202, 78 4 35 10
+
+  radio "&on all networks", 2, 11 15 100 8
+  radio "&only on", 3, 11 25 30 8
   edit "", 4, 42 23 44 11, autohs
-text "network", 203, 88 25 25 10
- 
-text "&Mask to match address against:", 204, 2 45 105 10
- 
+  text "network", 203, 88 25 25 10
+
+  text "&Mask to match address against:", 204, 2 45 105 10
+
   combo 5, 11 55 100 50, drop edit
-check "&Whois user on notify", 6, 11 67 100 8
- 
-text "&User note:", 205, 2 85 105 10
- 
+  check "&Whois user on notify", 6, 11 67 100 8
+
+  text "&User note:", 205, 2 85 105 10
+
   edit "", 7, 10 94 101 11, autohs
- 
-button "OK", 101, 2 115 35 12, OK default
-button "Cancel", 102, 40 115 35 12, cancel
-button "&Remove", 103, 77 115 35 12
- 
+
+  button "OK", 101, 2 115 35 12, OK default
+  button "Cancel", 102, 40 115 35 12, cancel
+  button "&Remove", 103, 77 115 35 12
+
   edit "", 241, 1 1 1 1, hide autohs
   edit "", 242, 1 1 1 1, hide autohs result
 }
@@ -182,18 +182,18 @@ on *:DIALOG:addnotif:init:*:{
   elseif (($query(%nick).address != $null) && ($query(%nick).address != %nick)) %addr = %nick $+ ! $+ $ifmatch
   elseif (%nick) %addr = *! $+ %nick $+ @*
   did -a $dname 1 %nick
- 
+
   ; Saves original nick and any extra params
   did -a $dname 241 %nick
   did -a $dname 242 $gettok(%.param,2-,32)
   unset %.param
- 
+
   if ($hget(pnp. $+ $cid,net)) did -a $dname 4 $ifmatch
- 
+
   if ($notify(%nick)) {
-did -a $dname 201 Editing:
+    did -a $dname 201 Editing:
     if ($notify(%nick).whois) did -c $dname 6
- 
+
     %note = $notify(%nick).note
     %mask = $gettok(%note,1,32)
     if ((* isin %mask) || (@ isin %mask) || ($left(%mask,1) == $)) {
@@ -204,9 +204,9 @@ did -a $dname 201 Editing:
         %mask = $right($gettok(%mask,1,36),-1)
       }
     }
- 
+
     did -a $dname 7 %note
- 
+
     if (%net) {
       did -o $dname 4 1 %net
       did -c $dname 3
@@ -221,10 +221,10 @@ did -a $dname 201 Editing:
     did -c $dname 2
   }
   did -f $dname $iif(%nick,5,1)
- 
+
   if (%mask) did -ca $dname 5 %mask
   else did -ca $dname 5 None
- 
+
   if (* isin %addr) { if (%addr != %mask) did -a $dname 5 %addr }
   elseif (%addr) _ddaddm $dname 5 %addr 002 022 030 011
 }

@@ -3,7 +3,7 @@
 ; Peace and Protection
 ; Protection system (channel)
 ; ########################################
- 
+
 ; $_floodc(inc,MAX,SEC,chan,var name) (any num words, will be dotted automatically)
 ; returns totalcount if flood hit (doesn't reset counter)
 ; > 800 line is a failsafe for if length gets too long, it merges the initial 3 entries
@@ -19,36 +19,36 @@ alias _floodc {
   hadd -u $+ $3 %hash %var $4 $5
   if ($calc($5) >= $2) return $ifmatch
 }
- 
+
 ; _floodr chan varname (any num words)
 ; resets a flood counter
 alias _floodr hdel $+(pnp.flood.,$cid,.,$1) $replace($2-,$chr(32),.)
- 
+
 ; Word/chan list editing
 alias _wcled {
   set -u %.var $1 | set -u %.chan $2 | set -u %.type $3-
   _dialog -am protlist protlist
 }
 dialog protlist {
-title "Channel Protection"
+  title "Channel Protection"
   icon script\pnp.ico
   option dbu
   size -1 -1 142 117
- 
+
   text "", 1, 2 2 125 10
- 
+
   list 2, 2 12 100 75
   list 3, 2 12 100 75, hide disable
- 
-button "&Edit...", 4, 105 12 35 12, default
-button "&Add...", 5, 105 28 35 12
-button "&Del", 6, 105 44 35 12
- 
-check "&Use global default list", 9, 5 89 100 10
- 
-button "OK", 10, 2 102 35 12, OK
-button "Cancel", 11, 67 102 35 12, cancel
- 
+
+  button "&Edit...", 4, 105 12 35 12, default
+  button "&Add...", 5, 105 28 35 12
+  button "&Del", 6, 105 44 35 12
+
+  check "&Use global default list", 9, 5 89 100 10
+
+  button "OK", 10, 2 102 35 12, OK
+  button "Cancel", 11, 67 102 35 12, cancel
+
   edit "", 12, 1 1 1 1, hide autohs
 }
 on *:DIALOG:protlist:sclick:10:{
@@ -64,7 +64,7 @@ on *:DIALOG:protlist:sclick:10:{
 }
 on *:DIALOG:protlist:init:*:{
   did -a protlist 12 %.var %.chan %.type
-did -a protlist 1 %.type $+ $chr(40) $+ s $+ $chr(41) to scan for $+ :
+  did -a protlist 1 %.type $+ $chr(40) $+ s $+ $chr(41) to scan for $+ :
   if (%.chan == *) { 
     _loadpl %.var * 2
     did -cb protlist 9
@@ -96,26 +96,26 @@ on *:DIALOG:protlist:sclick:6:if ($did(protlist,2).sel isnum) did -d protlist 2 
 alias -l _pled {
   if ($1 == e) {
     var %edit = $$did(protlist,2,$did(protlist,2).sel)
-did -oc protlist 2 $did(protlist,2).sel $_entry(0,%edit,$gettok($did(protlist,12),3-,32) to scan for?Wildcards are allowed- * will match 'anything'.)
+    did -oc protlist 2 $did(protlist,2).sel $_entry(0,%edit,$gettok($did(protlist,12),3-,32) to scan for?Wildcards are allowed- * will match 'anything'.)
   }
-else did -ac protlist 2 $_entry(0,$null,$gettok($did(protlist,12),3-,32) to scan for?Wildcards are allowed- * will match 'anything'.)
+  else did -ac protlist 2 $_entry(0,$null,$gettok($did(protlist,12),3-,32) to scan for?Wildcards are allowed- * will match 'anything'.)
 }
- 
+
 ; Add channel
 dialog paddchan {
-title "Add Channel"
+  title "Add Channel"
   icon script\pnp.ico
   option dbu
   size -1 -1 105 77
- 
-text "&Base new channel off of settings for:", 1, 2 2 125 10
- 
+
+  text "&Base new channel off of settings for:", 1, 2 2 125 10
+
   list 2, 2 12 100 50
- 
+
   text "", 3, 1 1 1 1, hide autohs result
- 
-button "OK", 10, 7 60 35 12, OK default
-button "Cancel", 11, 62 60 35 12, cancel
+
+  button "OK", 10, 7 60 35 12, OK default
+  button "Cancel", 11, 62 60 35 12, cancel
 }
 on *:DIALOG:paddchan:init:*:{
   var %num = 1
@@ -127,11 +127,11 @@ on *:DIALOG:paddchan:init:*:{
 }
 on *:DIALOG:paddchan:dclick:2:dialog -k paddchan
 on *:DIALOG:paddchan:sclick:10:did -a paddchan 3 $did(2,$did(2).sel)
- 
+
 ;
 ; Track channels we are 'opped' in
 ;
- 
+
 ; Updates text/ctcp/other protected channels
 ; Pass chan $1 cid $2 to exclude a specific channel
 alias _upd.prot {
@@ -176,14 +176,14 @@ alias _upd.prot {
     if (%<protect.ctcp == %all) %<protect.ctcp = $chr(35)
   }
 }
- 
+
 on me:*:PART:#:_upd.prot $chan $cid
 raw 366:*:_upd.prot
- 
+
 ;
 ; Track protection flags (cflags*) and channel options (chopt*)
 ;
- 
+
 ; $_getcflag(#chan,pos) #chan of * for global
 alias _getcflag {
   if ($hget(pnp.config,cflags. $+ $1) != $null) if ($gettok($ifmatch,$2,32) != ?) return $ifmatch
@@ -193,7 +193,7 @@ alias _getcflag {
 alias _setcflag {
   if ($1 == *) var %old = $hget(pnp.config,cflags) | else var %old = $hget(pnp.config,cflags. $+ $1)
   if (%old == $null) %old = $_p2s($str(?,80))
- 
+
   %old = $puttok(%old,$3,$2,32)
   if ($remove(%old,?) == $null) var %old
   if ($1 == *) `set cflags %old | else `set cflags. $+ $1 %old
@@ -201,7 +201,7 @@ alias _setcflag {
 }
 ; _clrcflag #chan
 alias _clrcflag `set cflags. $+ $1
- 
+
 ; $_getchopt(#chan,pos) #chan of * for global
 alias _getchopt {
   if ($hget(pnp.config,chopt. $+ $1) != $null) return $gettok($ifmatch,$2,32)
@@ -211,17 +211,17 @@ alias _getchopt {
 alias _setchopt {
   if ($1 == *) var %old = $hget(pnp.config,chopt) | else var %old = $hget(pnp.config,chopt. $+ $1)
   if (%old == $null) %old = $hget(pnp.config,chopt)
- 
+
   %old = $puttok(%old,$3,$2,32)
   if (($1 != *) && (%old == $hget(pnp.config,chopt))) `set chopt. $+ $1
   elseif ($1 == *) `set chopt %old
   else `set chopt. $+ $1 %old
 }
- 
+
 ;
 ; Generic code
 ;
- 
+
 ; 'protect' user due to op/voice/level/chan/type
 ; Returns 1 if we are not protecting $chan (for this type)
 ; Returns 1 if over 8 sec lag
@@ -268,7 +268,7 @@ alias -l _protectnc {
   }
   return 0
 }
- 
+
 ; $_action(type,n,chan)
 alias -l _action {
   var %file = $_cfg(actions.dat)
@@ -276,7 +276,7 @@ alias -l _action {
   if ($read(%file,tns,$1 $+ 1 $+ $3) != $null) return
   return $read(%file,tns,$1 $+ $2 $+ *)
 }
- 
+
 ; _punish type $chan target &nick& $site &addr& &fulladdr& &A& &B& [x]
 ; uses current CID
 ; target is used as how to track and punish user- either NICK or WILDSITE
@@ -315,7 +315,7 @@ alias -l _punish {
     $msg.compile(%do,&chan&,$2,&target&,$3,&nick&,$4,&site&,$5,&addr&,$6,&fulladdr&,$7,&A&,$_p2s($8),&B&,$_p2s($9))
     ; show?
     if (($_getchopt($2,6)) && ((%cmd != warn-self) && (warn* !iswm %do))) {
-disprc $2 Punishing $:t($3) $chr(40) $+ $6 $+ $chr(41) $replace($read(script\punish.dat,tsn,$1),&A&,$_p2s($8),&B&,$_p2s($9)) - Offense %actnum $chr(40) $+ $remove($gettok(%do,1,32),.) $+ $chr(41)
+      disprc $2 Punishing $:t($3) $chr(40) $+ $6 $+ $chr(41) $replace($read(script\punish.dat,tsn,$1),&A&,$_p2s($8),&B&,$_p2s($9)) - Offense %actnum $chr(40) $+ $remove($gettok(%do,1,32),.) $+ $chr(41)
     }
     _ssplay ProtectChan
     _recseen 10 offend $+ $2 $7 $1 $8 $9
@@ -324,7 +324,7 @@ disprc $2 Punishing $:t($3) $chr(40) $+ $6 $+ $chr(41) $replace($read(script\pun
   }
   return 0
 }
- 
+
 ; _protwarnmsg s|w|n|k|c code
 ; s = warning display local
 ; z = warning display local (bold/color already applied)
@@ -334,14 +334,14 @@ disprc $2 Punishing $:t($3) $chr(40) $+ $6 $+ $chr(41) $replace($read(script\pun
 ; c = nothing
 alias _protwarnmsg {
   goto $1
-:z | return $:t(&nick&) triggered protection- $read(script\punish.dat,tsn,$2) (F8 to punish)
-:s | return $!:t(&nick&) triggered protection- $read(script\punish.dat,tsn,$2) (F8 to punish)
-:w | return &nick& triggered protection- $read(script\punish.dat,tsn,$2)
-:n | return Warning: Protection on &chan& triggered- $read(script\punish2.dat,tsn,$2)
+  :z | return $:t(&nick&) triggered protection- $read(script\punish.dat,tsn,$2) (F8 to punish)
+  :s | return $!:t(&nick&) triggered protection- $read(script\punish.dat,tsn,$2) (F8 to punish)
+  :w | return &nick& triggered protection- $read(script\punish.dat,tsn,$2)
+  :n | return Warning: Protection on &chan& triggered- $read(script\punish2.dat,tsn,$2)
   :k | return $read(script\punish2.dat,tsn,$2)
   :c | return
 }
- 
+
 ; standard protection; assumes $3 (max) is above 0 (x is true to skip waits between punishments- see _punish)
 ;  _lamercheck type inc max secs nick/wildsite chan [x]
 ; $_lamercheck(type,inc,max,secs,nick/wildsite,chan[,x])
@@ -362,16 +362,16 @@ alias -l _lamerchecknn {
     if ($result) { _floodr $6 fld $1 $5 | if ($result > 1) return 1 }
   }
 }
- 
+
 ;
 ; CTCP protections
 ;
- 
+
 ctcp *:DCC:%<protect.ctcp:{
   _ccprot 41
   if ($_getcflag($chan,74)) {
     if (%.dcc.invalid) _punish invdcc $chan $nick $nick $site $address $fulladdress $2 $_s2p(%.dcc.invalid)
-elseif ($istok(ACCEPT RESUME,$2,32)) _punish invdcc $chan $nick $nick $site $address $fulladdress $2 DCCACCEPT/RESUMEtoachannel
+    elseif ($istok(ACCEPT RESUME,$2,32)) _punish invdcc $chan $nick $nick $site $address $fulladdress $2 DCCACCEPT/RESUMEtoachannel
   }
 }
 ctcp *:PING:%<protect.ctcp:_ccprot $iif($len($1-) < 26,33,34)
@@ -391,17 +391,17 @@ ctcp *:*:%<protect.ctcp:if ($findtok(ECHO TIME VERSION USERINFO CLIENTINFO SOUND
 alias -l _ccprot {
   _recseen 10 offend $+ $chan $fulladdress ctcp x x
   if ($_protect(ctcp)) $$$
- 
+
   var %pts = 1
   if ($_getcflag($chan,28)) {
     %pts = $_getcflag($chan,$1)
     if (%pts < 1) return
   }
- 
+
   if ($_getcflag($chan,29) > 0) {
     if ($_lamercheck(ctcp,%pts,$ifmatch,$_getcflag($chan,30),$wildsite,$chan,x)) $$$
   }
- 
+
   if ($_getcflag($chan,31) > 0) {
     if ($_floodc(%pts,$ifmatch,$_getcflag($chan,32),$chan,fld.ctcp)) {
       _punish allc $chan $wildsite $nick $site $address $fulladdress $_getcflag($chan,31) $_getcflag($chan,32)
@@ -409,33 +409,33 @@ alias -l _ccprot {
     }
   }
 }
- 
+
 ;
 ; Text protections
 ;
- 
+
 on *:NOTICE:*:%<protect.text:{
   if ($target !ischan) return
   if ($_protect(text)) return
- 
+
   if ($_getcflag($chan,12) > 0) if ($_lamercheck(notice,1,$ifmatch,$_getcflag($chan,13),$nick,$chan)) return
- 
+
   _txprot $1-
 }
- 
+
 on *:TEXT:*:%<protect.text:if ($_protect(text)) return | _txprot $1-
 on *:ACTION:*:%<protect.text:if ($_protect(text)) return | _txprot $1-
 alias -l _txprot {
   if ($_getcflag($chan,8) > 0) if ($_lamercheck(scroll,1,$ifmatch,$_getcflag($chan,9),$nick,$chan)) return
   if ($_getcflag($chan,6) > 0) if ($_lamercheck(text,$len($1-),$ifmatch,$_getcflag($chan,7),$nick,$chan)) return
- 
+
   if ($_getcflag($chan,10) > 0) {
     if ($hget($+(pnp.flood.,$cid,.,$chan),last. $+ $nick) == $strip($1-)) { if ($_lamercheck(repeat,1,$_getcflag($chan,10),$_getcflag($chan,11),$nick,$chan)) return }
     else hadd -u $+ $calc($_getcflag($chan,11) + 1) $+(pnp.flood.,$cid,.,$chan) last. $+ $nick $strip($1-)
   }
   if ($_getcflag($chan,19) > 0) if ($calc($stripped + $count($1-,,,,)) > $ifmatch) { _punish attrab $chan $nick $nick $site $address $fulladdress $ifmatch $_getcflag($chan,19) | if ($result > 1) return }
   if ($_getcflag($chan,17) > 0) if ($_lamercheck(attrfl,$calc($stripped + $count($1-,,,,)),$ifmatch,$_getcflag($chan,18),$nick,$chan)) return
- 
+
   if ($_getcflag($chan,14) > 0) {
     var %letter = $calc($len($1-) - $len($remove($1-,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z)))
     if (%letter >= $_getcflag($chan,15)) {
@@ -443,7 +443,7 @@ alias -l _txprot {
       if ($calc(%cap / %letter * 100) >= $_getcflag($chan,14)) _punish caps $chan $nick $nick $site $address $fulladdress $int($ifmatch) $_getcflag($chan,14)
     }
   }
- 
+
   if ($_getcflag($chan,24)) _wordkick 1 , $1- ,
   if ($_getcflag($chan,25)) _wordkick 2 , $1- ,
 }
@@ -466,7 +466,7 @@ alias -l _wordkick {
     }
   }
 }
- 
+
 on !*:NICK:{
   var %chan,%fulladdress = $newnick $+ ! $+ $address,%num = $comchan($newnick,0)
   while (%num) {
@@ -481,12 +481,12 @@ on !*:NICK:{
     dec %num
   }
 }
- 
+
 on !*:TOPIC:%<protect.text:{
   if ($_protect(text,1)) return
   if ($_getcflag($chan,20) > 0) if ($_getcflag($chan,8) > 0) _lamercheck scroll $_getcflag($chan,20) $ifmatch $_getcflag($chan,9) $nick $chan
 }
- 
+
 on !*:QUIT:{
   ; clean punishment waits when a user quits
   var %chan,%hash,%split,%num = $comchan($nick,0)
@@ -515,7 +515,7 @@ alias -l _runblack {
   var %file = $_cfg(userinfo.ini),%chan = $readini(%file,n,$2,chan)
   if ((%chan == $null) || ($istok(%chan,$1,44))) {
     set -u %.punishwait 1
-disprc $1 $:s($2) is blacklisted- Kickbanning...
+    disprc $1 $:s($2) is blacklisted- Kickbanning...
     var %msg = $_msg(black)
     if (&reason& !isin %msg) %msg = %msg &reason&
     set -u %&reason& $_readprep($readini(%file,n,$2,note))
@@ -560,7 +560,7 @@ on !*:JOIN:#:{
     if ($_getcflag($chan,61) > %req) %req = $ifmatch
     if ($_getcflag($chan,62) < %req) %req = $ifmatch
     if ($_floodc(1,%req,$_getcflag($chan,63),$chan,fld.massjoin)) {
-disprc $chan Mass join detected $chr(40) $+ $:s($ifmatch) joins $+ $chr(41) Temp. setting mode...
+      disprc $chan Mass join detected $chr(40) $+ $:s($ifmatch) joins $+ $chr(41) Temp. setting mode...
       _floodr $chan fld.massjoin
       tempmode 60 $chan $_p2s($_getcflag($chan,3))
     }
@@ -588,11 +588,11 @@ alias _ircopchk {
   if ($3) {
     if ($4 == 0) return
     ; (not translated as that matches what most servers will be sending)
-disprc $1 Warning: $:t($2) is an IRCop
+    disprc $1 Warning: $:t($2) is an IRCop
   }
   else {
     if ($hget(pnp.twhois. $+ $cid,operline) == $null) return
-disprc $1 Warning: $:t($2) $hget(pnp.twhois. $+ $cid,operline)
+    disprc $1 Warning: $:t($2) $hget(pnp.twhois. $+ $cid,operline)
   }
   var %num = $comchan($2,0)
   while (%num >= 1) {
@@ -624,9 +624,9 @@ on *:BAN:%<protect.misc:{
   var %skipen
   if (($banmask iswm $hget(pnp. $+ $cid,-myself)) && ($_getcflag($chan,45))) {
     _ssplay BanSelf
-if ($nick == $me) { disprc $chan You banned yourself.. removing ban. | .mode $chan -b $banmask }
+    if ($nick == $me) { disprc $chan You banned yourself.. removing ban. | .mode $chan -b $banmask }
     else {
-disprc $chan You were banned by $:t($nick) - attempting to unban
+      disprc $chan You were banned by $:t($nick) - attempting to unban
       unban $chan $banmask
       if ($_protect(misc,1)) return
       _punish banyou $chan $nick $nick $site $address $fulladdress $banmask $hget(pnp. $+ $cid,-myself)
@@ -703,7 +703,7 @@ disprc $chan You were banned by $:t($nick) - attempting to unban
 on *:BAN:#:{
   if (($_getchopt($chan,10)) && (%.ban.count)) show.banned $chan %.ban.count %.ban.who
 }
- 
+
 on !*:MODE:%<protect.misc:{
   if ($_protect(misc,1)) return
   var %modes = $_fixmode($1)
@@ -726,7 +726,7 @@ on !*:MODE:%<protect.misc:{
     _punish model $chan $nick $nick $site $address $fulladdress $1 $_s2p($1-)
   }
 }
- 
+
 on *:KICK:#:{
   if ($knick == $me) _upd.prot $chan $cid
   else {
@@ -843,7 +843,7 @@ on *:HELP:#:{
     }
   }
 }
- 
+
 ;
 ; show users banned
 ; $1 = chan $2 = count $3- = users, if <11
@@ -853,21 +853,21 @@ alias -l show.banned {
   ; Don't show banned users if ONLY you were banned
   if ($3- != $me) {
     if ($3) {
-if ($2 > 1) disprc $1 Banned- $:l($3-) ( $+ $2 users)
-else disprc $1 Banned- $:l($3-)
+      if ($2 > 1) disprc $1 Banned- $:l($3-) ( $+ $2 users)
+      else disprc $1 Banned- $:l($3-)
     }
-else disprc $1 Banned- $:t($2) users
+    else disprc $1 Banned- $:t($2) users
   }
   if ($banmask iswm $hget(pnp. $+ $cid,-myself)) {
     _ssplay BanSelf
-disprc $1 You were banned by $:t($nick)
+    disprc $1 You were banned by $:t($nick)
   }
 }
- 
+
 ;
 ; Protect aliases
 ;
- 
+
 ; Returns modes that you should set that aren't already set
 ; $_setmode(currmodes,toset)
 alias _setmode {
@@ -883,7 +883,7 @@ alias _setmode {
   }
   return %final
 }
- 
+
 ; /tempmode n chan modes
 alias tempmode {
   var %todo = $_setmode($chan($2).mode,$3)
@@ -908,7 +908,7 @@ alias warn-msg {
 alias warn-chan _linedance notice $1 $3-
 alias warn-self disprc $1 $3-
 alias warn-ops _linedance onotice $1 $3-
- 
+
 ;
 ; Quick toggles
 ;
@@ -918,10 +918,10 @@ alias warn-ops _linedance onotice $1 $3-
 alias prot chopt $1-
 alias chopt {
   var %name,%flag,%bit,%work,%chan,%todo,%num = 1
-if (($left($1,1) isin $remove(& $+ $chantypes,+,-)) || ($1 == *)) { %chan = $1 | %todo = $2- } | elseif (#) { %chan = # | %todo = $1- } | else _error You must use /chopt in a channel $+ $chr(40) $+ or specify a target channel $+ $chr(41)
+  if (($left($1,1) isin $remove(& $+ $chantypes,+,-)) || ($1 == *)) { %chan = $1 | %todo = $2- } | elseif (#) { %chan = # | %todo = $1- } | else _error You must use /chopt in a channel $+ $chr(40) $+ or specify a target channel $+ $chr(41)
   if (%todo == $null) {
-dispa Syntax: /chopt [#channel] [+|-]option ...
-dispa Options: ircop, text, ctcp, misc, all, op, hop, voc, enforce, selfban, whois, whoisaway, whoischan, whoisop, checkop, protnote, showclone, showban, kickdelay
+    dispa Syntax: /chopt [#channel] [+|-]option ...
+    dispa Options: ircop, text, ctcp, misc, all, op, hop, voc, enforce, selfban, whois, whoisaway, whoischan, whoisop, checkop, protnote, showclone, showban, kickdelay
     return
   }
   :loop
@@ -930,24 +930,24 @@ dispa Options: ircop, text, ctcp, misc, all, op, hop, voc, enforce, selfban, who
   else %bit = 0
   if (%work == $null) return
   if ($findtok(text ctcp misc op hop voc enforce selfban,%work,1,32)) {
-%name = $gettok(Text protections are <onoff>CTCP protections are <onoff>Other protections are <onoff>Ops immunity is <onoff>Halfops immunity is <onoff>Voiced user immunity is <onoff>Ban enforcement is <onoff>Personal ban protection is <onoff>,$ifmatch,127)
+    %name = $gettok(Text protections are <onoff>CTCP protections are <onoff>Other protections are <onoff>Ops immunity is <onoff>Halfops immunity is <onoff>Voiced user immunity is <onoff>Ban enforcement is <onoff>Personal ban protection is <onoff>,$ifmatch,127)
     %flag = $gettok(71 72 73 69 80 70 23 45,$ifmatch,32)
     if (%bit == *) _setcflag %chan %flag $iif($_getcflag(%chan,%flag),0,1)
     elseif (%bit == +) _setcflag %chan %flag 1
     elseif (%bit == -) _setcflag %chan %flag 0
     elseif ((%bit == ?) && (%chan != *)) _setcflag %chan %flag ?
-dispa $replace(%name,<onoff>,$:s($_tf2o($_getcflag(%chan,%flag)))) ( $+ for %chan $+ )
+    dispa $replace(%name,<onoff>,$:s($_tf2o($_getcflag(%chan,%flag)))) ( $+ for %chan $+ )
   }
   elseif ($findtok(ircop whois whoisaway whoischan whoisop checkop protnote showclone kickdelay showban,%work,1,32)) {
-%name = $gettok(IRCop check on join is <onoff>Whois on join is <onoff>Don't whois on join if away is <onoff>Show whois on join in channel is <onoff>Only whois on join if opped is <onoff>Check op status before performing op commands is <onoff>Display note when channel protection triggers is <onoff>Show clones on join is <onoff>Delay between multiple kicks is <onoff>Show banned usres on ban is <onoff>,$ifmatch,127)
+    %name = $gettok(IRCop check on join is <onoff>Whois on join is <onoff>Don't whois on join if away is <onoff>Show whois on join in channel is <onoff>Only whois on join if opped is <onoff>Check op status before performing op commands is <onoff>Display note when channel protection triggers is <onoff>Show clones on join is <onoff>Delay between multiple kicks is <onoff>Show banned usres on ban is <onoff>,$ifmatch,127)
     %flag = $gettok(9 11 13 14 12 5 6 7 8 10,$ifmatch,32)
     if (%bit == *) _setchopt %chan %flag $iif($_getchopt(%chan,%flag),0,1)
     elseif (%bit == +) _setchopt %chan %flag 1
     elseif (%bit == -) _setchopt %chan %flag 0
     elseif ((%bit == ?) && (%chan != *)) _setchopt %chan %flag $_getchopt(*,%flag)
-dispa $replace(%name,<onoff>,$:s($_tf2o($_getchopt(%chan,%flag)))) ( $+ for %chan $+ )
+    dispa $replace(%name,<onoff>,$:s($_tf2o($_getchopt(%chan,%flag)))) ( $+ for %chan $+ )
   }
   elseif (%work == all) %todo = %todo %bit $+ text %bit $+ ctcp %bit $+ misc
-else dispa Unknown option ' $+ %work $+ '
+  else dispa Unknown option ' $+ %work $+ '
   inc %num | goto loop
 }
