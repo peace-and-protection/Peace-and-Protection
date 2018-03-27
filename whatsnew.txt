@@ -3,6 +3,15 @@ Complete details on everything added here.
 
 As of Sunday October 21 2012, the support channel #peace&protection has moved to EFnet.
 
+*** 4.22.8 changes ***
+* BugFix *** Server does not recognize YOU command in favorite.mrc/.ptm
+* BugFix Erroneous 'else' in newtheme.mrc/.ptm
+* Change values for tab spaces (position) in custom windows
+* Restore pai's old code in alias1.mrc/.ptm
+* Restore pai's old code in last.mrc/.ptm
+* BugFix for RAW 265 and 266 - Filling %::users and %::value for theming purposes in rawdisp.mrc/.ptm
+* Remove .PIF files in /addons (leftovers from Windows 9.x days)
+
 *** 4.22.7 changes ***
 
 * BugFix $calc(script(0) - 2) -> $calc($script(0) - 2) in first.mrc/.ptm

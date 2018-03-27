@@ -715,6 +715,6 @@ _alert {
 }
 :mc return  $+ $color($1).dd $+ $2- $+ 
 :bver return 4.22
-:ver return 4.22.7
+:ver return 4.22.8
 
 ; Dynamic 'aliases' will appear in $_cfg(themeals.mrc).
