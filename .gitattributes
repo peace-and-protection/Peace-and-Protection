@@ -38,3 +38,4 @@
 .gitignore export-ignore
 .mailmap export-ignore
 README.md export-ignore
+Makefile export-ignore
