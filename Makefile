@@ -12,4 +12,4 @@ release:
 	git archive --format=zip -o pnp-$(VERSION).zip HEAD
 
 diff:
-	git diff-tree -r --no-commit-id --name-only HEAD $(LATEST_TAG)|xargs zip fix-$(VERSION).zip -q -
+	git diff-tree -r --no-commit-id --name-only --diff-filter=ACMRT HEAD $(LATEST_TAG)|grep -v "`cat .diff-exclude`"|xargs zip -q fix-$(VERSION).zip 

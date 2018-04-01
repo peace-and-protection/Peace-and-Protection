@@ -1,0 +1,6 @@
+.diff-exclude
+.gitattributes
+.gitignore
+.mailmap
+Makefile
+*.md
