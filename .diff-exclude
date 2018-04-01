@@ -3,4 +3,4 @@
 .gitignore
 .mailmap
 Makefile
-*.md
+README.md
