@@ -9,10 +9,10 @@ See the end of this file for known issues with PnP and specific software,
 OSes, or scripts.
 
 Q; Where should I send bug reports?
-A; Use our forum on www.kristshell.net/pnp/ 
-   or open an issue on https://github.com/solbu/Peace-and-Protection/issues
+A; Use our forum at: https://www.kristshell.net/pnp/forum/ 
+   or open an issue at: https://github.com/solbu/Peace-and-Protection/issues
 
-Q: The command "/load -rs script\first.mrc" say that the file
+Q: The command "/load -rs script\first.mrc" says that the file
    does not exist. Now what?
 A: From v6.3 and onwards, mIRC changed the way it installs itself on a system.
    mIRC v6.3 and later now install it self into
@@ -41,7 +41,7 @@ A; PnP 4.0x currently has no help. At all. (except these TXT files)
 
 Q; What is the latest version of PnP? When will you update?
 A; The latest version of PnP will always be announced on the front
-   page of www.kristshell.net/pnp/.
+   page of https://www.kristshell.net/pnp/.
 
 Q; How can I import settings?
 A; 4.0x doesn't have the ability to import PnP 3.20 settings.

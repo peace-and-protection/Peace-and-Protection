@@ -69,9 +69,10 @@ ever-present bug fixes.
 
 --- WHAT'S COMING? ---
 
-So far the only translation available is Turkish. If you are fluent
-in a language other than English and wish to help translate, please  
-see Script\Trans\English.ini for details on translating PnP.
+So far the only translation files available are Turkish, Dutch and 
+English. If you are fluent in a language other than these and wish
+to help translate, please see Script\Trans\English.ini for details on 
+translating PnP.
 
 --- IF THIS IS A NEW INSTALLATION ---
 
