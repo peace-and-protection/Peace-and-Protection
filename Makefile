@@ -12,5 +12,5 @@ release:
 	git archive --format=zip -o pnp-$(VERSION).zip HEAD
 
 diff:
-	git diff-tree -r --no-commit-id --name-only --diff-filter=ACMRT HEAD $(LATEST_TAG)|grep -v "`cat .diff-exclude`"|xargs zip -q fix-$(VERSION).zip
-	git diff-tree -r --no-commit-id --name-only --diff-filter=ACMRT HEAD v4.22.3|grep -v "`cat .diff-exclude`"|xargs zip -q fix.zip
+	git diff-tree -r --no-commit-id --name-only --diff-filter=ACMRT HEAD $(LATEST_TAG)|grep -v "`cat .diff-exclude`"|xargs zip -FSq fix-$(VERSION).zip
+	git diff-tree -r --no-commit-id --name-only --diff-filter=ACMRT HEAD v4.22.3|grep -v "`cat .diff-exclude`"|xargs zip -FSq fix.zip
