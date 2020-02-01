@@ -563,7 +563,7 @@ alias _ck.addon {
 
   ; 3.20 compat?
   if (%load320) {
-    if ($script(addon320.mrc) == $null) .reload -rs $calc($script(0) - 2) script\addon320.mrc
+    if ($script(addon320.mrc) == $null) .reload -rs $+ $calc($script(0) - 2) script\addon320.mrc
     _startup.add _pnp320compat Configuring PnP 3.xx compatibility
   }
   elseif ($script(addon320.mrc)) {
