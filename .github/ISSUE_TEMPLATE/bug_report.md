@@ -2,7 +2,7 @@
 name: Bug report
 about: Create a bug report
 title: ''
-labels: 'Status: Pending, Type: Bug'
+labels: 'Status: In Progress, Type: Bug'
 assignees: acvxqs, craze
 ---
 
