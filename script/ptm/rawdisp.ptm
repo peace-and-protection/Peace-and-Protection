@@ -1651,7 +1651,7 @@ alias -l _in.whois {
 
 ; Also catches all (incl 307) while in the middle of a whois, unless prev halted
 raw *:*:{
-  if ($numeric !isnum) return
+  if (($numeric !isnum) || ($numeric == 0)) return
   if ($halted) return
 
   ; In a whois?
