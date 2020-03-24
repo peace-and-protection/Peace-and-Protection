@@ -1,6 +1,6 @@
 
-PnP 4.22.8
-mIRC 7.46
+PnP 4.22.9
+mIRC 7.61
 
 
 This script *requires* and is designed for mIRC v7.46 or later, not included.
