@@ -16,8 +16,8 @@
 ; First time loading- don't show things as errors
 on *:LOAD:{
   ; Version check
-  if ($version < 7.61) {
-    echo 4 -sti2 Peace and Protection requires mIRC 7.61 or later to run! (you are using $version $+ )
+  if ($version < $:minmircver) {
+    echo 4 -sti2 Peace and Protection requires mIRC $:minmircver or later to run! (you are using $version $+ )
     .timer -mio 1 0 .unload -rs " $+ $script $+ "
     halt
   }
@@ -42,8 +42,8 @@ on *:START:{
   hadd pnp.startup firsttime %firsttimelocal
 
   ; Version check
-  if ($version < 7.61) {
-    echo 4 -sti2 Peace and Protection requires mIRC 7.61 or later to run! (you are using $version $+ )
+  if ($version < $:minmircver) {
+    echo 4 -sti2 Peace and Protection requires mIRC $:minmircver or later to run! (you are using $version $+ )
     halt
   }
 
