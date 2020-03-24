@@ -4,10 +4,12 @@ Complete details on everything added here.
 As of Sunday October 21 2012, the support channel #peace&protection has moved to EFnet.
 
 *** 4.22.9 changes ***
+
 * BugFix mIRC sets $numeric == 0 for non-numeric raws causing PnP to display no/strange output (for example on raw AWAY:*:{})
 * BugFix PnP fails to reload script\addon320.mrc if it's needed but not loaded
 
 *** 4.22.8 changes ***
+
 * BugFix *** Server does not recognize YOU command in favorite.mrc/.ptm
 * BugFix Erroneous 'else' in newtheme.mrc/.ptm
 * Change values for tab spaces (position) in custom windows
