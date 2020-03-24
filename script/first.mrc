@@ -17,7 +17,7 @@
 on *:LOAD:{
   ; Version check
   if ($version < 7.61) {
-    echo 4 -sti2 Peace and Protection requires mIRC 7.46 or later to run! (you are using $version $+ )
+    echo 4 -sti2 Peace and Protection requires mIRC 7.61 or later to run! (you are using $version $+ )
     .timer -mio 1 0 .unload -rs " $+ $script $+ "
     halt
   }
@@ -43,7 +43,7 @@ on *:START:{
 
   ; Version check
   if ($version < 7.61) {
-    echo 4 -sti2 Peace and Protection requires mIRC 7.46 or later to run! (you are using $version $+ )
+    echo 4 -sti2 Peace and Protection requires mIRC 7.61 or later to run! (you are using $version $+ )
     halt
   }
 
