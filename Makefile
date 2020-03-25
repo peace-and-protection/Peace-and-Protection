@@ -8,6 +8,8 @@
 LATEST_TAG=$(shell git describe --tags --abbrev=0)
 VERSION=$(shell awk 'NR==2' pp-readme.txt |dos2unix|cut -f2 -d ' ')
 
+all: release diff
+
 release:
 	git archive --format=zip -o pnp-$(VERSION).zip HEAD
 
