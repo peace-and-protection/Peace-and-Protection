@@ -3,10 +3,10 @@ PnP 4.22.9
 mIRC 7.61
 
 
-This script *requires* and is designed for mIRC v7.46 or later, not included.
+This script *requires* and is designed for mIRC v7.61 or later, not included.
 Using an earlier version of mIRC will not work. Please see:
 
-http://www.kristshell.net/pnp/ 
+https://www.kristshell.net/pnp/
 or
 https://github.com/solbu/Peace-and-Protection
 
@@ -31,7 +31,7 @@ for just a glimpse of the many features available... or just run it
 with the default configuration and learn as you go.
 
 Have a bug report, problem, or feedback? Our forum is:
-http://www.kristshell.net/pnp/forum/
+https://www.kristshell.net/pnp/forum/
 Also, issues can be raised over at:
 https://github.com/solbu/Peace-and-Protection/issues
 
