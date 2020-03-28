@@ -2,7 +2,7 @@
 # it is tested to make it work on GNU/Linux for generating releases.
 # It needs the «dos2unix» and «awk» commands installed.
 #
-# To create a release, use «make release && make diff» BEFORE tagging the release, or the diff will not be created properly.
+# To create a release, use «make» BEFORE tagging the release, or the diff will not be created properly.
 
 
 LATEST_TAG=$(shell git describe --tags --abbrev=0)
