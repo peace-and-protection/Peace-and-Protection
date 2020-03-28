@@ -1,8 +1,8 @@
-[![Wiki](https://img.shields.io/badge/Link-Wiki-blue.svg)](https://github.com/solbu/Peace-and-Protection/wiki)
-[![Themes](https://img.shields.io/badge/Link-Themes-blue.svg)](https://github.com/solbu/Peace-and-Protection/tree/themes)
-[![English](https://img.shields.io/badge/Language-English-green.svg)](https://github.com/solbu/Peace-and-Protection/blob/master/script/trans/english.ini)
-[![Turkish](https://img.shields.io/badge/Language-T%C3%BCrk%C3%A7e-green.svg)](https://github.com/solbu/Peace-and-Protection/blob/master/script/trans/turkish.ini)
-[![Dutch](https://img.shields.io/badge/Language-Nederlands-green.svg)](https://github.com/solbu/Peace-and-Protection/blob/master/script/trans/nederlands.ini)
+[![Wiki](https://img.shields.io/badge/Link-Wiki-blue.svg)](https://github.com/peace-and-protection/Peace-and-Protection/wiki)
+[![Themes](https://img.shields.io/badge/Link-Themes-blue.svg)](https://github.com/peace-and-protection/Peace-and-Protection/tree/themes)
+[![English](https://img.shields.io/badge/Language-English-green.svg)](https://github.com/peace-and-protection/Peace-and-Protection/blob/master/script/trans/english.ini)
+[![Turkish](https://img.shields.io/badge/Language-T%C3%BCrk%C3%A7e-green.svg)](https://github.com/peace-and-protection/Peace-and-Protection/blob/master/script/trans/turkish.ini)
+[![Dutch](https://img.shields.io/badge/Language-Nederlands-green.svg)](https://github.com/peace-and-protection/Peace-and-Protection/blob/master/script/trans/nederlands.ini)
 
 ### What is PnP?
 Peace and Protection (PnP) is a collection of scripts that enhances mIRC, a popular windows IRC client. PnP allows the user to set options by means of dialog boxes and popups. PnP also comes with various addons and a slew of custom commands. It has everything a beginner, advanced or expert mIRC user needs.
@@ -10,7 +10,7 @@ Peace and Protection (PnP) is a collection of scripts that enhances mIRC, a popu
 This script is coded by pai. She left the scene many years ago never to return. PnP is part of her legacy.
 
 ### Installing PnP
-[Follow these steps](https://github.com/solbu/Peace-and-Protection/wiki/Installation).
+[Follow these steps](https://github.com/peace-and-protection/Peace-and-Protection/wiki/Installation).
 
 ### Improvements
 * PnP 4.22 is vulnerable to remote code execution. (flash alias) This has been fixed.
@@ -18,7 +18,7 @@ This script is coded by pai. She left the scene many years ago never to return. 
 * Many smaller bugs have been found and fixed.
 
 ### Languages
-Pai left instructions how to translate PnP. Have a look at the comments in this file: [script\trans\english.ini](https://github.com/solbu/Peace-and-Protection/blob/master/script/trans/english.ini) Please [email us](mailto:pnp@login.kristshell.net) your translation file!
+Pai left instructions how to translate PnP. Have a look at the comments in this file: [script\trans\english.ini](https://github.com/peace-and-protection/Peace-and-Protection/blob/master/script/trans/english.ini) Please [email us](mailto:pnp@login.kristshell.net) your translation file!
 
 Currently PnP has translation support for the following languages:
 * English
@@ -32,5 +32,5 @@ Pai had to change priorities and most likely will not continue working on PnP. B
 We will attempt to fix the bugs that come along and try to make it work, but there will be no new features. If we add something or make a new feature it will be released as separate downloadable addons, but it will not be shipped with the main script archive.
 
 ### More information
-Check out the [wiki](https://github.com/solbu/Peace-and-Protection/wiki) or the [themes repository](https://github.com/solbu/Peace-and-Protection/tree/themes).
+Check out the [wiki](https://github.com/peace-and-protection/Peace-and-Protection/wiki) or the [themes repository](https://github.com/solbu/Peace-and-Protection/tree/themes).
 

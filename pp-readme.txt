@@ -8,7 +8,7 @@ Using an earlier version of mIRC will not work. Please see:
 
 https://www.kristshell.net/pnp/
 or
-https://github.com/solbu/Peace-and-Protection
+https://github.com/peace-and-protection/Peace-and-Protection
 
 for updates and other PnP-related information.
 
@@ -33,7 +33,7 @@ with the default configuration and learn as you go.
 Have a bug report, problem, or feedback? Our forum is:
 https://www.kristshell.net/pnp/forum/
 Also, issues can be raised over at:
-https://github.com/solbu/Peace-and-Protection/issues
+https://github.com/peace-and-protection/Peace-and-Protection/issues
 
 --- WHAT'S NEW? ---
 
