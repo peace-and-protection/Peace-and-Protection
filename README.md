@@ -32,5 +32,5 @@ Pai had to change priorities and most likely will not continue working on PnP. B
 We will attempt to fix the bugs that come along and try to make it work, but there will be no new features. If we add something or make a new feature it will be released as separate downloadable addons, but it will not be shipped with the main script archive.
 
 ### More information
-Check out the [wiki](https://github.com/peace-and-protection/Peace-and-Protection/wiki) or the [themes repository](https://github.com/solbu/Peace-and-Protection/tree/themes).
+Check out the [wiki](https://github.com/peace-and-protection/Peace-and-Protection/wiki) or the [themes repository](https://github.com/peace-and-protection/Peace-and-Protection/tree/themes).
 
