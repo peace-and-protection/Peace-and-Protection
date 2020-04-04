@@ -2,8 +2,8 @@
 name: Bug report
 about: Create a bug report
 title: ''
-labels: 'Status: In Progress, Type: Bug'
-assignees: acvxqs, craze
+labels: 'Status: Pending, Type: Bug'
+assignees: acvxqs
 ---
 
 **Describe the bug**
