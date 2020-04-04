@@ -3,7 +3,7 @@ name: Bug report
 about: Create a bug report
 title: ''
 labels: 'Status: Pending, Type: Bug'
-assignees: acvxqs
+assignees:
 ---
 
 **Describe the bug**
