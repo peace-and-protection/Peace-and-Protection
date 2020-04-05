@@ -2127,3 +2127,4 @@ menu query {
   $iif(($mid($hget(pnp.config,popups.2),7,1) != 0) || ($mouse.key & 2),$iif($level(%.targaddr) > 1,$style(1)) Userlist...):user $1
   $iif(($mid($hget(pnp.config,popups.2),8,1) != 0) || ($mouse.key & 2),$iif($remove($active,=) isnotify,$style(1)) Notify...):notif $1
 }
+alias :minmircver return 7.61
