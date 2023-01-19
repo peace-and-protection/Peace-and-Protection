@@ -1012,7 +1012,7 @@ alias -l page.init {
   ; Language
   :28
   if ($readini(script\transup.ini,n,translation,enabled) == no) {
-    did -ra $dname 524 This installation of PnP does not currently support translation. You may download a version that supports translation at www.kristshell.net/pnp/.
+    did -ra $dname 524 This installation of PnP does not currently support translation. You may download a version that supports translation at pnp.kristshell.net/.
     did -b $dname 520,521,522,523,527,528,525,526
   }
   if ($readini(script\transup.ini,n,translation,language)) did -a $dname 521 $ifmatch

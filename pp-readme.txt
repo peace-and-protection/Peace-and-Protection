@@ -6,7 +6,7 @@ mIRC 7.61
 This script *requires* and is designed for mIRC v7.61 or later, not included.
 Using an earlier version of mIRC will not work. Please see:
 
-https://www.kristshell.net/pnp/
+https://pnp.kristshell.net/
 or
 https://github.com/peace-and-protection/Peace-and-Protection
 
@@ -31,7 +31,7 @@ for just a glimpse of the many features available... or just run it
 with the default configuration and learn as you go.
 
 Have a bug report, problem, or feedback? Our forum is:
-https://www.kristshell.net/pnp/forum/
+https://pnp.kristshell.net/forum/
 Also, issues can be raised over at:
 https://github.com/peace-and-protection/Peace-and-Protection/issues
 

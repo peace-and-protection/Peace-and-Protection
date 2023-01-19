@@ -11,7 +11,7 @@ group=Core
 popup=Spam Blocker
 author=pai
 version=1.00
-url=http://www.kristshell.net/pnp/
+url=https://pnp.kristshell.net/
 email=pnp@login.kristshell.net
 id=ppspambl
 ppver=4.22
@@ -28,7 +28,7 @@ on *:LOAD:{
   ; PnP check
   if (!$_ispnp) {
     echo 4 -ati2 *** This addon requires Peace and Protection by pai to use.
-    echo 4 -ati2 *** You can download Peace and Protection at http://www.kristshell.net/pnp/
+    echo 4 -ati2 *** You can download Peace and Protection at https://pnp.kristshell.net/
     .timer -mio 1 0 .unload -rs " $+ $script $+ "
     halt
   }
