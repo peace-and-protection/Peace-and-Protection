@@ -512,11 +512,11 @@ dialog rrset {
   combo 2, 60 4 100 92, drop edit
   list 30, 1 1 1 1, hide
   ;text "", 3, 6 23 53 9
-  combo 4, 60 20 100 92, drop sort
+  combo 4, 60 20 100 92, drop
   text "&[reroute_dialog:to]:", 5, 4 39 53 9, right
   combo 6, 60 36 100 92, drop edit sort
   ;text "", 7, 6 23 53 9
-  combo 8, 60 52 100 92, drop sort
+  combo 8, 60 52 100 92, drop
 
   check "&[reroute_dialog:link]", 10, 6 74 153 9
 
