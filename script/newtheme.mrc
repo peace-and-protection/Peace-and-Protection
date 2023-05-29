@@ -3549,14 +3549,15 @@ alias -l font.mts {
 ; $font.exists(font)
 ; Returns 1/0 depending on whether font exists
 ; Don't call with "blah bold" or anything like that!
-alias -l font.exists {
-  var %chr = 32
-  while (%chr < 127) {
-    if (($width($chr(%chr),$1-,100) != $width($chr(%chr),$1- bold,100)) || ($height($chr(%chr),$1-,100) != $height($chr(%chr),$1- bold,100))) return 1
-    inc %chr
-  }
-  return 0
-}
+alias -l font.exists if ($font($1-)) return 1 | return 0
+;alias -l font.exists {
+;  var %chr = 32
+;  while (%chr < 127) {
+;    if (($width($chr(%chr),$1-,100) != $width($chr(%chr),$1- bold,100)) || ($height($chr(%chr),$1-,100) != $height($chr(%chr),$1- bold,100))) return 1
+;    inc %chr
+;  }
+;  return 0
+;}
 
 ; $theme.ff(theme, file)
 ; Pass path of theme and filename
