@@ -851,7 +851,7 @@ alias -l page.themeload {
 on *:DIALOG:pnp.mts:sclick:508:{
   if ($gettok($did(508),-1,32) == >>) {
     did -ra pnp.mts 508 Preview <<
-    dialog -ls pnp.mts 427 207
+    dialog -ls pnp.mts -1 -1 427 207
   }
   else {
     did -ra pnp.mts 508 Preview >>
