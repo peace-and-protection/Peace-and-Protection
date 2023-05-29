@@ -183,7 +183,7 @@ alias aidle {
 alias -l _doidle {
   if ($_cfgi(antiidle)) {
     scid -at1 resetidle
-    scid -at1 .msg $!me antiidle
+    scid -at1 _privmsg $!me antiidle
     .timer.antiidle 1 $r(25,75) _doidle
   }
 }
