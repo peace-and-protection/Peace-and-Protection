@@ -49,25 +49,25 @@ alias -l _unwarpnick return $replace($1,~,[,+,])
 dialog nickserv {
   title "[nickserv_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 150 145
+  option map
+  size -1 -1 200 178
 
-  text "&[nickserv_dialog:prompt]:", 1, 5 7 64 10, right
-  combo 2, 70 5 75 50, drop sort
+  text "&[nickserv_dialog:prompt]:", 1, 6 8 85 12, right
+  combo 2, 93 6 100 61, drop sort
 
-  box "", 3, 5 20 140 65
-  list 4, 10 29 95 55, sort
-  button "&[dialog:add]...", 11, 110 30 27 12
-  button "&[dialog:edit]...", 12, 110 47 27 12, disable
-  button "&[dialog:remove]", 13, 110 64 27 12, disable
+  box "", 3, 6 24 187 79
+  list 4, 13 35 126 67, sort
+  button "&[dialog:add]...", 11, 146 36 36 14
+  button "&[dialog:edit]...", 12, 146 57 36 14, disable
+  button "&[dialog:remove]", 13, 146 78 36 14, disable
 
-  check "&[nickserv_dialog:auto_add]", 21, 10 101 150 8
-  check "&[nickserv_dialog:auto_ghost]", 22, 10 111 65 8, disable
-  check "&[nickserv_dialog:auto_recover]", 23, 75 111 65 8, disable
+  check "&[nickserv_dialog:auto_add]", 21, 13 124 200 9
+  check "&[nickserv_dialog:auto_ghost]", 22, 13 136 86 9, disable
+  check "&[nickserv_dialog:auto_recover]", 23, 100 136 86 9, disable
 
-  button "[dialog:close]", 100, 7 125 40 12, cancel default
-  button "&[nickserv_dialog:remove_all]", 50, 52 125 40 12
-  button "&[nickserv_dialog:login_all]...", 80, 97 125 42 12
+  button "[dialog:close]", 100, 9 153 53 14, cancel default
+  button "&[nickserv_dialog:remove_all]", 50, 69 153 53 14
+  button "&[nickserv_dialog:login_all]...", 80, 129 153 56 14
 }
 on *:DIALOG:nickserv:init:*:{
   if ($hget(pnp.config,ns.autoupdate)) did -c $dname 21
@@ -123,18 +123,18 @@ alias -l _nsrem {
 dialog nsadd {
   title "[nsadd_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 95 72
+  option map
+  size -1 -1 126 88
 
-  text "&[word:network:dlg]:", 1, 5 7 34 10, right
-  combo 11, 40 5 49 50, drop edit sort
-  text "&[word:nickname:dlg]:", 2, 5 20 34 10, right
-  edit "", 12, 40 18 50 11, autohs
-  text "&[word:password:dlg]:", 3, 5 33 34 10, right
-  edit "", 13, 40 31 50 11, autohs pass
+  text "&[word:network:dlg]:", 1, 6 8 45 12, right
+  combo 11, 53 6 65 61, drop edit sort
+  text "&[word:nickname:dlg]:", 2, 6 24 45 12, right
+  edit "", 12, 53 22 66 13, autohs
+  text "&[word:password:dlg]:", 3, 6 40 45 12, right
+  edit "", 13, 53 38 66 13, autohs pass
 
-  button "[dialog:ok]", 100, 5 52 35 12, OK default
-  button "[dialog:cancel]", 101, 55 52 35 12, cancel
+  button "[dialog:ok]", 100, 6 63 46 14, OK default
+  button "[dialog:cancel]", 101, 73 63 46 14, cancel
 }
 on *:DIALOG:nsadd:init:*:{
   var %nets = $readini($_cfg(pw.ini),n,ns,nets),%num,%net
@@ -162,18 +162,18 @@ on *:DIALOG:nsadd:sclick:100:{
 dialog nsway {
   title "[nsaccess_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 125 77
+  option map
+  size -1 -1 167 94
 
-  text "", 1, 5 5 90 20
-  radio "&[nsaccess_dialog:option_msg]", 2, 10 22 115 11
-  radio "&[nsaccess_dialog:option_cmd]", 3, 10 34 115 11
-  radio "&[nsaccess_dialog:option_secure]", 4, 10 45 115 11
+  text "", 1, 6 6 120 24
+  radio "&[nsaccess_dialog:option_msg]", 2, 13 27 153 13
+  radio "&[nsaccess_dialog:option_cmd]", 3, 13 41 153 13
+  radio "&[nsaccess_dialog:option_secure]", 4, 13 55 153 13
 
   edit "", 50, 1 1 1 1, autohs hide result
 
-  button "[dialog:ok]", 100, 5 61 40 12, ok default
-  button "[dialog:cancel]", 101, 80 61 40 12, cancel
+  button "[dialog:ok]", 100, 6 74 53 14, ok default
+  button "[dialog:cancel]", 101, 106 74 53 14, cancel
 }
 on *:DIALOG:nsway:init:*:{
   did -c $dname 2
@@ -583,3 +583,4 @@ menu status {
   .-
   .[popups_status:ns_info]...:ns info
 }
+

@@ -401,35 +401,35 @@ alias -l _clean.dcc {
 dialog dccqcfg {
   title "[dccq_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 150 166
+  option map
+  size -1 -1 200 203
 
-  text "[dccq_dialog:instructions]", 1, 2 2 145 15
-  box "[dccq_dialog:max_send]:", 2, 2 20 145 35
-  text "&[dccq_dialog:per_user]:", 3, 5 31 39 8, right
-  edit "", 5, 45 29 25 11
-  text "&[dccq_dialog:total]:", 4, 72 31 42 8, right
-  edit "", 6, 115 29 25 11
-  check "&[dccq_dialog:hide_sends]", 7, 35 42 105 8
-  check "&[dccq_dialog:queue_on]", 8, 7 60 140 8
-  box "[dccq_dialog:max_queue]:", 9, 2 71 145 35
-  text "&[dccq_dialog:per_user]:", 10, 5 82 39 8, right
-  edit "", 12, 45 80 25 11
-  text "&[dccq_dialog:total]:", 11, 72 82 42 8, right
-  edit "", 13, 115 80 25 11
-  check "&[dccq_dialog:hide_queue]", 14, 35 93 105 8
-  box "[dccq_dialog:queue_clean]:", 15, 2 110 145 35
-  text "[dccq_dialog:when_user]:", 16, 5 120 33 8, right
-  text "[dccq_dialog:when_you]:", 17, 5 131 33 8, right
-  check "&[theme:quit_short]", 20, 40 120 30 8
-  check "&[theme:part_short]", 18, 70 120 30 8
-  check "&[dccq_dialog:user_kick]", 19, 100 120 45 8
-  check "&[dccq_dialog:you_leave]", 21, 40 131 60 8
-  check "&[dccq_dialog:you_quit]", 22, 100 131 45 8
+  text "[dccq_dialog:instructions]", 1, 2 2 193 18
+  box "[dccq_dialog:max_send]:", 2, 2 24 193 42
+  text "&[dccq_dialog:per_user]:", 3, 6 38 52 9, right
+  edit "", 5, 60 35 33 13
+  text "&[dccq_dialog:total]:", 4, 96 38 56 9, right
+  edit "", 6, 153 35 33 13
+  check "&[dccq_dialog:hide_sends]", 7, 46 51 140 9
+  check "&[dccq_dialog:queue_on]", 8, 9 73 187 9
+  box "[dccq_dialog:max_queue]:", 9, 2 87 193 42
+  text "&[dccq_dialog:per_user]:", 10, 6 100 52 9, right
+  edit "", 12, 60 98 33 13
+  text "&[dccq_dialog:total]:", 11, 96 100 56 9, right
+  edit "", 13, 153 98 33 13
+  check "&[dccq_dialog:hide_queue]", 14, 46 114 140 9
+  box "[dccq_dialog:queue_clean]:", 15, 2 135 193 42
+  text "[dccq_dialog:when_user]:", 16, 6 147 44 9, right
+  text "[dccq_dialog:when_you]:", 17, 6 160 44 9, right
+  check "&[theme:quit_short]", 20, 53 147 40 9
+  check "&[theme:part_short]", 18, 93 147 40 9
+  check "&[dccq_dialog:user_kick]", 19, 133 147 60 9
+  check "&[dccq_dialog:you_leave]", 21, 53 160 80 9
+  check "&[dccq_dialog:you_quit]", 22, 133 160 60 9
 
-  button "[dialog:ok]", 101, 10 150 35 12, ok default
-  button "[dialog:cancel]", 102, 57 150 35 12, cancel
-  button "&[dialog:help]", 103, 105 150 35 12, disable
+  button "[dialog:ok]", 101, 13 184 46 14, ok default
+  button "[dialog:cancel]", 102, 76 184 46 14, cancel
+  button "&[dialog:help]", 103, 140 184 46 14, disable
 }
 on *:DIALOG:dccqcfg:init:*:{
   did -a $dname 5 $_cfgi(dccmaxsendone)
@@ -514,3 +514,4 @@ alias rec {
 ; Above /dcc alias tracks why a DCC chat is opened
 ; This tracks why a DCC chat is opened if DCCSERVER
 on *:DCCSERVER:Chat:if ($creq == ignore) hdel pnp chat.open. $+ $nick | else hadd pnp chat.open. $+ $nick $creq server
+

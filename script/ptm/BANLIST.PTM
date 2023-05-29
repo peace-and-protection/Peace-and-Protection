@@ -285,28 +285,28 @@ menu @Blacklist {
 dialog blackedit {
   title "[blacklist_dialog:blacklist]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 150 130
+  option map
+  size -1 -1 200 159
 
-  box "[blacklist_dialog:header]:", 101, 5 5 140 39
-  text "&[word:nickname:dlg]:", 106, 8 17 25 10, right
-  edit "", 1, 35 15 50 11
-  text "([user_dialog:nickname_note:lower])", 107, 87 17 50 10
-  text "&[word:usermask:dlg]:", 108, 8 29 25 10, right
-  combo 2, 35 27 105 60, edit drop
+  box "[blacklist_dialog:header]:", 101, 6 6 187 47
+  text "&[word:nickname:dlg]:", 106, 10 20 33 12, right
+  edit "", 1, 46 18 66 13
+  text "([user_dialog:nickname_note:lower])", 107, 116 20 66 12
+  text "&[word:usermask:dlg]:", 108, 10 35 33 12, right
+  combo 2, 46 33 140 73, edit drop
 
-  box "[blacklist_dialog:where]:", 102, 5 46 140 43
-  radio "&[phrase:all_channels:dlg]", 5, 10 56 130 8
-  radio "&[blacklist_dialog:only_in]:", 6, 10 66 35 8
-  edit "", 7, 45 65 90 11, disable
-  text "([blacklist_dialog:multiple_ok:lower])", 103, 47 78 94 10
+  box "[blacklist_dialog:where]:", 102, 6 56 187 52
+  radio "&[phrase:all_channels:dlg]", 5, 13 68 173 9
+  radio "&[blacklist_dialog:only_in]:", 6, 13 81 46 9
+  edit "", 7, 60 79 120 13, disable
+  text "([blacklist_dialog:multiple_ok:lower])", 103, 62 95 125 12
 
-  text "&[word:reason:dlg]:", 104, 8 95 25 10, right
-  combo 8, 35 93 105 70, edit drop
+  text "&[word:reason:dlg]:", 104, 10 116 33 12, right
+  combo 8, 46 114 140 85, edit drop
 
-  button "&[blacklist_dialog:blacklist]", 201, 5 112 40 12, default
-  button "[dialog:cancel]", 202, 55 112 40 12, cancel
-  button "&[dialog:remove]", 203, 105 112 40 12, disable
+  button "&[blacklist_dialog:blacklist]", 201, 6 137 53 14, default
+  button "[dialog:cancel]", 202, 73 137 53 14, cancel
+  button "&[dialog:remove]", 203, 140 137 53 14, disable
 
   edit "", 241, 1 1 1 1, hide autohs
   edit "", 242, 1 1 1 1, hide autohs result
@@ -488,3 +488,4 @@ alias _reorderblack {
     window -c @.userlist
   }
 }
+

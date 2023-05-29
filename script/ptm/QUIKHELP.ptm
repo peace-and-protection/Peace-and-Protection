@@ -65,3 +65,4 @@ script\quikhelp.dat
 /serverlist ++/- +[quick:p_networks:s2p] * ![quick:serverlist]
 /invite +[quick:p_nickchanboth:s2p] * ![quick:invite]
 /addon +[quick:p_action:s2p] +[quick:p_file:s2p] * ![quick:addon]
+

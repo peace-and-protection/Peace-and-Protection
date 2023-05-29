@@ -43,50 +43,50 @@ alias route set -u %.chan $1 | _dialog -am evroute evroute
 dialog evroute {
   title "[eroute_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 173 111
+  option map
+  size -1 -1 231 136
 
-  text "&[eroute_dialog:prompt]:", 1, 2 5 50 8
-  combo 9, 47 3 115 50, drop edit sort
+  text "&[eroute_dialog:prompt]:", 1, 2 6 66 9
+  combo 9, 62 3 153 61, drop edit sort
 
-  text "&[theme:join_short]:", 2, 4 19 25 10
-  radio "[eroute_dialog:set_mirc]", 11, 30 19 40 8, group
-  radio "[config_dialog:notice_events]", 12, 72 19 50 8
-  radio "[eroute_dialog:set_hide]", 13, 122 19 50 8
+  text "&[theme:join_short]:", 2, 5 23 33 12
+  radio "[eroute_dialog:set_mirc]", 11, 40 23 53 9, group
+  radio "[config_dialog:notice_events]", 12, 96 23 66 9
+  radio "[eroute_dialog:set_hide]", 13, 162 23 66 9
 
-  text "&[theme:part_short]:", 3, 4 29 25 10
-  radio "[eroute_dialog:set_mirc]", 21, 30 29 40 8, group
-  radio "[config_dialog:notice_events]", 22, 72 29 50 8
-  radio "[eroute_dialog:set_hide]", 23, 122 29 50 8
+  text "&[theme:part_short]:", 3, 5 35 33 12
+  radio "[eroute_dialog:set_mirc]", 21, 40 35 53 9, group
+  radio "[config_dialog:notice_events]", 22, 96 35 66 9
+  radio "[eroute_dialog:set_hide]", 23, 162 35 66 9
 
-  text "&[theme:quit_short]:", 4, 4 39 25 10
-  radio "[eroute_dialog:set_mirc]", 31, 30 39 40 8, group
-  radio "[config_dialog:notice_events]", 32, 72 39 50 8
-  radio "[eroute_dialog:set_hide]", 33, 122 39 50 8
+  text "&[theme:quit_short]:", 4, 5 47 33 12
+  radio "[eroute_dialog:set_mirc]", 31, 40 47 53 9, group
+  radio "[config_dialog:notice_events]", 32, 96 47 66 9
+  radio "[eroute_dialog:set_hide]", 33, 162 47 66 9
 
-  text "&[eroute_dialog:kicks]:", 5, 4 49 25 10
-  radio "[eroute_dialog:set_mirc]", 41, 30 49 40 8, group
-  radio "[config_dialog:notice_events]", 42, 72 49 50 8
-  radio "[eroute_dialog:set_hide]", 43, 122 49 50 8
+  text "&[eroute_dialog:kicks]:", 5, 5 60 33 12
+  radio "[eroute_dialog:set_mirc]", 41, 40 60 53 9, group
+  radio "[config_dialog:notice_events]", 42, 96 60 66 9
+  radio "[eroute_dialog:set_hide]", 43, 162 60 66 9
 
-  text "&[eroute_dialog:modes]:", 6, 4 59 25 10
-  radio "[eroute_dialog:set_mirc]", 51, 30 59 40 8, group
-  radio "[config_dialog:notice_events]", 52, 72 59 50 8
-  radio "[eroute_dialog:set_hide]", 53, 122 59 50 8
+  text "&[eroute_dialog:modes]:", 6, 5 72 33 12
+  radio "[eroute_dialog:set_mirc]", 51, 40 72 53 9, group
+  radio "[config_dialog:notice_events]", 52, 96 72 66 9
+  radio "[eroute_dialog:set_hide]", 53, 162 72 66 9
 
-  text "&[eroute_dialog:topics]:", 7, 4 69 25 10
-  radio "[eroute_dialog:set_mirc]", 61, 30 69 40 8, group
-  radio "[config_dialog:notice_events]", 62, 72 69 50 8
-  radio "[eroute_dialog:set_hide]", 63, 122 69 50 8
+  text "&[eroute_dialog:topics]:", 7, 5 84 33 12
+  radio "[eroute_dialog:set_mirc]", 61, 40 84 53 9, group
+  radio "[config_dialog:notice_events]", 62, 96 84 66 9
+  radio "[eroute_dialog:set_hide]", 63, 162 84 66 9
 
-  text "&[eroute_dialog:nicks]:", 8, 4 79 25 10
-  radio "[eroute_dialog:set_mirc]", 71, 30 79 40 8, group
-  radio "[config_dialog:notice_events]", 72, 72 79 50 8
-  radio "[eroute_dialog:set_hide]", 73, 122 79 50 8
+  text "&[eroute_dialog:nicks]:", 8, 5 97 33 12
+  radio "[eroute_dialog:set_mirc]", 71, 40 97 53 9, group
+  radio "[config_dialog:notice_events]", 72, 96 97 66 9
+  radio "[eroute_dialog:set_hide]", 73, 162 97 66 9
 
-  button "[dialog:close]", 101, 7 94 40 12, cancel default
-  button "&[dialog:reset]", 102, 66 94 40 12
-  button "&[dialog:help]", 103, 126 94 40 12, disable
+  button "[dialog:close]", 101, 9 115 53 14, cancel default
+  button "&[dialog:reset]", 102, 88 115 53 14
+  button "&[dialog:help]", 103, 168 115 53 14, disable
 }
 on *:DIALOG:evroute:*:9:_evswitchto
 alias -l _evconv if ($_ischan($1-)) return . $+ $1 | return
@@ -167,17 +167,17 @@ on *:DIALOG:evroute:sclick:*:{
 dialog fontfix {
   title "[fontfix_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 135 87
-  text "[fontfix_dialog:instructions]", 1, 5 7 135 30
-  check "&[fontfix_dialog:channels]", 10, 5 35 60 8
-  check "&[fontfix_dialog:queries]", 11, 5 45 60 8
-  check "&[fontfix_dialog:files]", 12, 5 55 60 8
-  check "&[fontfix_dialog:notify]", 13, 67 35 60 8
-  check "&[fontfix_dialog:other]", 14, 67 45 60 8
-  check "&[fontfix_dialog:pnp]", 15, 67 55 60 8
-  button "&[fontfix_dialog:update]", 101, 15 70 40 12, OK default
-  button "[dialog:cancel]", 102, 77 70 40 12, cancel
+  option map
+  size -1 -1 180 106
+  text "[fontfix_dialog:instructions]", 1, 6 8 180 36
+  check "&[fontfix_dialog:channels]", 10, 6 42 80 9
+  check "&[fontfix_dialog:queries]", 11, 6 55 80 9
+  check "&[fontfix_dialog:files]", 12, 6 67 80 9
+  check "&[fontfix_dialog:notify]", 13, 89 42 80 9
+  check "&[fontfix_dialog:other]", 14, 89 55 80 9
+  check "&[fontfix_dialog:pnp]", 15, 89 67 80 9
+  button "&[fontfix_dialog:update]", 101, 20 85 53 14, OK default
+  button "[dialog:cancel]", 102, 102 85 53 14, cancel
   edit "", 200, 1 1 1 1, autohs hide result
 }
 on *:DIALOG:fontfix:init:*:did -c $dname 10,11,12,13,14,15
@@ -279,3 +279,4 @@ alias fontfix {
   flushini " $+ $mircini $+ "
   if (%error) _error [word:warning]- [error:fontfix_dccs]
 }
+

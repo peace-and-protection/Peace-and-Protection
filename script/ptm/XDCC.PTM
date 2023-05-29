@@ -73,33 +73,33 @@ on *:LOAD:{
 dialog xdcc {
   title "[xdcc_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 200 135
+  option map
+  size -1 -1 267 165
 
-  box "&[xdcc_dialog:select]...", 1, 4 4 90 105
-  list 2, 9 14 80 75, extsel
+  box "&[xdcc_dialog:select]...", 1, 5 4 120 128
+  list 2, 12 17 106 92, extsel
 
-  button "&[dialog:add]...", 3, 9 93 24 10
-  button "&[dialog:copy]", 4, 36 93 24 10, disable
-  button "&[dialog:remove]", 5, 64 93 25 10, disable
+  button "&[dialog:add]...", 3, 12 114 32 12
+  button "&[dialog:copy]", 4, 48 114 32 12, disable
+  button "&[dialog:remove]", 5, 85 114 33 12, disable
 
-  box "... &[xdcc_dialog:then_edit]", 21, 99 4 90 105
-  list 6, 104 14 80 35, extsel disable
+  box "... &[xdcc_dialog:then_edit]", 21, 132 4 120 128
+  list 6, 138 17 106 42, extsel disable
 
-  button "&[dialog:add]...", 7, 104 47 24 10, disable
-  button "&[dialog:edit]...", 8, 131 47 24 10, disable
-  button "&[dialog:remove]", 9, 159 47 25 10, disable
+  button "&[dialog:add]...", 7, 138 57 32 12, disable
+  button "&[dialog:edit]...", 8, 175 57 32 12, disable
+  button "&[dialog:remove]", 9, 212 57 33 12, disable
 
-  text "&[xdcc_dialog:desc]:", 26, 103 69 75 8
-  edit "", 10, 103 77 80 11, autohs disable
+  text "&[xdcc_dialog:desc]:", 26, 137 84 100 9
+  edit "", 10, 137 94 106 13, autohs disable
 
-  text "[xdcc_dialog:total]:", 28, 103 95 45 8
-  text "-", 29, 148 95 15 8
-  button "&[dialog:reset]", 11, 163 93 20 10, disable
+  text "[xdcc_dialog:total]:", 28, 137 116 60 9
+  text "-", 29, 197 116 20 9
+  button "&[dialog:reset]", 11, 217 114 26 12, disable
 
   edit "", 200, 1 1 1 1, hide autohs
 
-  button "[word:done:dlg]", 100, 9 116 40 12, OK default
+  button "[word:done:dlg]", 100, 12 142 53 14, OK default
 }
 on *:DIALOG:xdcc:init:*:{
   did -o $dname 10 1 ([xdcc_dialog:none:lower])
@@ -252,27 +252,27 @@ alias -l _xdccsave {
 dialog xdcccfg {
   title "[xdccopt_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 150 157
+  option map
+  size -1 -1 200 192
 
-  check "&[xdccopt_dialog:enable]:", 1, 5 5 62 8
-  text "&[xdccopt_dialog:presets]:", 11, 69 6 20 8
-  combo 12, 90 4 50 50, drop
-  box "", 2, 5 15 140 117
-  text "&[xdccopt_dialog:first_line]", 3, 10 25 125 8
-  edit "", 4, 10 34 130 11, autohs
-  text "&[xdccopt_dialog:packet_line]", 5, 10 47 125 8
-  edit "", 6, 10 56 130 11, autohs
-  text "&[xdccopt_dialog:last_line]", 7, 10 70 125 8
-  edit "", 8, 10 79 130 11, autohs
-  text "&[xdccopt_dialog:single_line]", 9, 10 92 125 8
-  edit "", 10, 10 101 130 11, autohs
-  text "&[xdccopt_dialog:show]:", 13, 10 117 60 8
-  combo 14, 70 115 70 50, drop
+  check "&[xdccopt_dialog:enable]:", 1, 6 6 82 9
+  text "&[xdccopt_dialog:presets]:", 11, 92 7 26 9
+  combo 12, 120 4 66 61, drop
+  box "", 2, 6 18 187 143
+  text "&[xdccopt_dialog:first_line]", 3, 13 30 167 9
+  edit "", 4, 13 41 173 13, autohs
+  text "&[xdccopt_dialog:packet_line]", 5, 13 57 167 9
+  edit "", 6, 13 68 173 13, autohs
+  text "&[xdccopt_dialog:last_line]", 7, 13 85 167 9
+  edit "", 8, 13 97 173 13, autohs
+  text "&[xdccopt_dialog:single_line]", 9, 13 113 167 9
+  edit "", 10, 13 124 173 13, autohs
+  text "&[xdccopt_dialog:show]:", 13, 13 143 80 9
+  combo 14, 93 141 93 61, drop
 
-  button "[dialog:ok]", 100, 5 139 40 12, OK default
-  button "[dialog:cancel]", 101, 55 139 40 12, cancel
-  button "&[dialog:help]", 102, 105 139 40 12, disable
+  button "[dialog:ok]", 100, 6 170 53 14, OK default
+  button "[dialog:cancel]", 101, 73 170 53 14, cancel
+  button "&[dialog:help]", 102, 140 170 53 14, disable
 }
 on *:DIALOG:xdcccfg:init:*:{
   loadbuf -otxdcctarg $dname 14 " $+ $scriptdirxdcc.ppa"
@@ -485,3 +485,4 @@ alias xdcc {
     dispa [xdcc:help6:cmd=$;s(%cmd)]
   }
 }
+

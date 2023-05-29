@@ -135,3 +135,4 @@ RAW.491 <pre> [theme:cant_be_ircop] ("<text>")
 RAW.501 <pre> [theme:unknown_usermode]
 RAW.502 <pre> [theme:cant_change_usermode]
 RAW.511 <pre> [theme:list_full:type=<c2>SILENCE:address=<c2><value>]
+

@@ -50,73 +50,73 @@ on *:LOAD:{
 dialog spamblock {
   title "[spamblock:name:dlg]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 215 170
+  option map
+  size -1 -1 287 208
 
-  tab "[word:options:dlg]", 1, 5 2 205 148
+  tab "[word:options:dlg]", 1, 6 2 273 181
   tab "[spam_dialog:spam]", 2
   tab "[theme:join_short:dlg] / [theme:part_short:dlg]", 3
   tab "[word:other:dlg]", 4
 
-  text "[spam_dialog:opt_note]", 40, 10 42 195 24, tab 1
-  check "[spam_dialog:opt_userlist]", 41, 15 60 195 8, tab 1
-  check "[spam_dialog:opt_notify]", 42, 15 70 195 8, tab 1
-  check "[spam_dialog:opt_display]", 43, 15 80 195 8, tab 1
-  check "[spam_dialog:chan_only]:", 44, 15 90 190 8, tab 1
-  edit "", 45, 24 100 181 11, tab 1
+  text "[spam_dialog:opt_note]", 40, 13 51 260 29, tab 1
+  check "[spam_dialog:opt_userlist]", 41, 20 73 260 9, tab 1
+  check "[spam_dialog:opt_notify]", 42, 20 85 260 9, tab 1
+  check "[spam_dialog:opt_display]", 43, 20 98 260 9, tab 1
+  check "[spam_dialog:chan_only]:", 44, 20 110 253 9, tab 1
+  edit "", 45, 32 122 241 13, tab 1
 
-  text "[spam_dialog:spam_note]", 50, 10 32 195 8, tab 2
-  check "[spam_dialog:block_ad]", 53, 15 47 190 8, tab 2
-  check "... [spam_dialog:block_chan]", 54, 15 57 190 8, tab 2
-  check "[spam_dialog:block_word]:", 51, 15 67 190 8, tab 2
-  edit "", 52, 24 77 181 11, tab 2
-  text "[spam_dialog:block_note]", 55, 10 95 190 24, tab 2
+  text "[spam_dialog:spam_note]", 50, 13 39 260 9, tab 2
+  check "[spam_dialog:block_ad]", 53, 20 57 253 9, tab 2
+  check "... [spam_dialog:block_chan]", 54, 20 70 253 9, tab 2
+  check "[spam_dialog:block_word]:", 51, 20 82 253 9, tab 2
+  edit "", 52, 32 94 241 13, tab 2
+  text "[spam_dialog:block_note]", 55, 13 116 253 29, tab 2
 
-  text "[spam_dialog:join_note]", 60, 10 22 195 19, tab 3
-  text "[spam_dialog:join_prompt]:", 61, 10 43 195 8, tab 3
-  check "[spam_dialog:queries]", 62, 15 53 55 8, tab 3
-  check "[spam_dialog:notices]", 63, 70 53 45 8, tab 3
-  check "[spam_dialog:invites]", 64, 115 53 45 8, tab 3
-  check "[word:files:dlg]", 65, 160 53 35 8, tab 3
-  check "[spam_dialog:you_join]", 66, 15 69 100 8, tab 3
-  edit "", 67, 115 68 20 11, tab 3
-  text "[dialog:seconds]", 68, 138 70 30 8, tab 3
-  check "... [spam_dialog:block_outside]", 69, 25 80 180 8, tab 3
-  check "[spam_dialog:you_part]", 70, 15 91 100 8, tab 3
-  edit "", 71, 115 90 20 11, tab 3
-  text "[dialog:seconds]", 72, 138 92 30 8, tab 3
-  check "[spam_dialog:user_join]", 73, 15 102 100 8, tab 3
-  edit "", 74, 115 101 20 11, tab 3
-  text "[dialog:seconds]", 75, 138 103 30 8, tab 3
-  check "... [spam_dialog:unless_op]", 76, 25 113 180 8, tab 3
-  check "... [spam_dialog:except_chan]:", 77, 25 122 180 8, tab 3
-  edit "", 78, 34 131 171 11, tab 3
+  text "[spam_dialog:join_note]", 60, 13 27 260 23, tab 3
+  text "[spam_dialog:join_prompt]:", 61, 13 52 260 9, tab 3
+  check "[spam_dialog:queries]", 62, 20 65 73 9, tab 3
+  check "[spam_dialog:notices]", 63, 93 65 60 9, tab 3
+  check "[spam_dialog:invites]", 64, 153 65 60 9, tab 3
+  check "[word:files:dlg]", 65, 213 65 46 9, tab 3
+  check "[spam_dialog:you_join]", 66, 20 84 133 9, tab 3
+  edit "", 67, 153 83 26 13, tab 3
+  text "[dialog:seconds]", 68, 184 85 40 9, tab 3
+  check "... [spam_dialog:block_outside]", 69, 33 98 240 9, tab 3
+  check "[spam_dialog:you_part]", 70, 20 111 133 9, tab 3
+  edit "", 71, 153 110 26 13, tab 3
+  text "[dialog:seconds]", 72, 184 113 40 9, tab 3
+  check "[spam_dialog:user_join]", 73, 20 125 133 9, tab 3
+  edit "", 74, 153 124 26 13, tab 3
+  text "[dialog:seconds]", 75, 184 126 40 9, tab 3
+  check "... [spam_dialog:unless_op]", 76, 33 138 240 9, tab 3
+  check "... [spam_dialog:except_chan]:", 77, 33 149 240 9, tab 3
+  edit "", 78, 45 160 228 13, tab 3
 
-  text "[spam_dialog:block_unknown]:", 10, 10 22 195 8, tab 4
-  check "[spam_dialog:queries]", 11, 15 32 55 8, tab 4
-  check "[spam_dialog:notices]", 12, 70 32 45 8, tab 4
-  check "[spam_dialog:invites]", 13, 115 32 45 8, tab 4
-  check "[word:files:dlg]", 14, 160 32 35 8, tab 4
-  check "[spam_dialog:send_msg]:", 15, 15 41 190 8, tab 4
-  edit "", 16, 24 50 181 11, tab 4
+  text "[spam_dialog:block_unknown]:", 10, 13 27 260 9, tab 4
+  check "[spam_dialog:queries]", 11, 20 39 73 9, tab 4
+  check "[spam_dialog:notices]", 12, 93 39 60 9, tab 4
+  check "[spam_dialog:invites]", 13, 153 39 60 9, tab 4
+  check "[word:files:dlg]", 14, 213 39 46 9, tab 4
+  check "[spam_dialog:send_msg]:", 15, 20 50 253 9, tab 4
+  edit "", 16, 32 61 241 13, tab 4
 
-  text "[spam_dialog:chan_block]:", 17, 10 67 195 8, tab 4
-  check "[spam_dialog:queries]", 18, 15 75 55 8, tab 4
-  check "[spam_dialog:notices]", 19, 70 75 45 8, tab 4
-  check "[spam_dialog:invites]", 20, 115 75 45 8, tab 4
-  check "[word:files:dlg]", 21, 160 75 35 8, tab 4
-  text "[spam_dialog:from]:", 22, 10 84 195 8, tab 4
-  check "[spam_dialog:mode_norm]", 23, 15 92 55 8, tab 4
-  check "[userlist:mode_voice]", 24, 70 92 45 8, tab 4
-  check "[userlist:mode_hop]", 25, 115 92 45 8, tab 4
-  check "[userlist:mode_op]", 26, 160 92 35 8, tab 4
-  check "[spam_dialog:chan_only]:", 27, 15 101 190 8, tab 4
-  edit "", 28, 24 110 181 11, tab 4
-  check "[spam_dialog:send_msg]:", 29, 15 122 190 8, tab 4
-  edit "", 30, 24 131 181 11, tab 4
+  text "[spam_dialog:chan_block]:", 17, 13 82 260 9, tab 4
+  check "[spam_dialog:queries]", 18, 20 92 73 9, tab 4
+  check "[spam_dialog:notices]", 19, 93 92 60 9, tab 4
+  check "[spam_dialog:invites]", 20, 153 92 60 9, tab 4
+  check "[word:files:dlg]", 21, 213 92 46 9, tab 4
+  text "[spam_dialog:from]:", 22, 13 103 260 9, tab 4
+  check "[spam_dialog:mode_norm]", 23, 20 113 73 9, tab 4
+  check "[userlist:mode_voice]", 24, 93 113 60 9, tab 4
+  check "[userlist:mode_hop]", 25, 153 113 60 9, tab 4
+  check "[userlist:mode_op]", 26, 213 113 46 9, tab 4
+  check "[spam_dialog:chan_only]:", 27, 20 124 253 9, tab 4
+  edit "", 28, 32 135 241 13, tab 4
+  check "[spam_dialog:send_msg]:", 29, 20 149 253 9, tab 4
+  edit "", 30, 32 160 241 13, tab 4
 
-  button "[dialog:ok]", 201, 125 155 40 12, OK default
-  button "[dialog:cancel]", 202, 170 155 40 12, cancel
+  button "[dialog:ok]", 201, 167 190 53 14, OK default
+  button "[dialog:cancel]", 202, 227 190 53 14, cancel
 }
 alias spam _dialog -am spamblock spamblock
 
@@ -489,3 +489,4 @@ on *:OP:#:{ hdel pnp.spam. $+ $cid $opnick }
 on *:SERVEROP:#:{ hdel pnp.spam. $+ $cid $opnick }
 on *:HELP:#:{ hdel pnp.spam. $+ $cid $hnick }
 on *:NICK:{ if ($hget(pnp.spam. $+ $cid,$nick)) hdel pnp.spam. $+ $cid $nick }
+

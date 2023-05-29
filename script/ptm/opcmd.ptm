@@ -280,21 +280,21 @@ alias tempban {
 dialog tempban {
   title "[tempban_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 175 60
+  option map
+  size -1 -1 233 73
 
-  text "&[tempban_dialog:reason]", 203, 7 5 165 10
-  combo 1, 5 15 165 80, drop result edit
+  text "&[tempban_dialog:reason]", 203, 9 6 220 12
+  combo 1, 6 18 220 98, drop result edit
 
-  text "&[tempban_dialog:tempban_for]:", 2, 7 30 35 10, right
-  edit "", 3, 44 28 20 11
-  text "[dialog:seconds:lower]", 4, 65 30 100 10
+  text "&[tempban_dialog:tempban_for]:", 2, 9 36 46 12, right
+  edit "", 3, 58 34 26 13
+  text "[dialog:seconds:lower]", 4, 86 36 133 12
   ; (time multiplier- 1 or 60)
   edit "1", 50, 1 1 1 1, hide autohs
 
-  button "[dialog:ok]", 101, 15 43 40 12, OK default
-  button "[dialog:cancel]", 102, 70 43 40 12, cancel
-  button "&[phrase:clear:dlg]", 103, 135 44 35 10, disable
+  button "[dialog:ok]", 101, 20 52 53 14, OK default
+  button "[dialog:cancel]", 102, 93 52 53 14, cancel
+  button "&[phrase:clear:dlg]", 103, 180 54 46 12, disable
 }
 on *:DIALOG:tempban:init:*:{
   did -a $dname 3 $calc(%.time)
@@ -761,33 +761,33 @@ alias strict {
 dialog strictm {
   title "[strict_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 225 125
+  option map
+  size -1 -1 300 153
 
-  text "&[strict_dialog:view_for]:", 1, 3 5 65 10, right
-  combo 2, 70 3 90 50, drop sort
-  button "&[dialog:add]...", 3, 162 3 25 10
-  button "&[dialog:remove]", 4, 190 3 30 10
+  text "&[strict_dialog:view_for]:", 1, 4 6 86 12, right
+  combo 2, 93 3 120 61, drop sort
+  button "&[dialog:add]...", 3, 216 3 33 12
+  button "&[dialog:remove]", 4, 253 3 40 12
 
-  box "[strict_dialog:modes]:", 5, 5 20 215 49
-  text "&[strict_dialog:always_enforced]:", 6, 10 29 66 10, right
-  text "&[strict_dialog:set_on_op]:", 7, 10 42 66 10, right
-  text "&[strict_dialog:set_if_none]:", 8, 10 55 66 10, right
-  edit "", 9, 77 27 60 11, autohs
-  edit "", 10, 77 40 60 11, autohs
-  edit "", 11, 77 53 60 11, autohs
-  button "[strict_dialog:current]", 109, 150 28 55 10, disable
-  button "[strict_dialog:current]", 110, 150 41 55 10, disable
-  button "[strict_dialog:current]", 111, 150 54 55 10, disable
+  box "[strict_dialog:modes]:", 5, 6 24 287 60
+  text "&[strict_dialog:always_enforced]:", 6, 13 35 88 12, right
+  text "&[strict_dialog:set_on_op]:", 7, 13 51 88 12, right
+  text "&[strict_dialog:set_if_none]:", 8, 13 67 88 12, right
+  edit "", 9, 102 33 80 13, autohs
+  edit "", 10, 102 49 80 13, autohs
+  edit "", 11, 102 65 80 13, autohs
+  button "[strict_dialog:current]", 109, 200 34 73 12, disable
+  button "[strict_dialog:current]", 110, 200 50 73 12, disable
+  button "[strict_dialog:current]", 111, 200 66 73 12, disable
 
-  box "&[strict_dialog:topics]:", 12, 5 75 215 24
-  combo 13, 10 83 66 50, drop
-  combo 14, 77 83 137 50, drop edit
+  box "&[strict_dialog:topics]:", 12, 6 92 287 29
+  combo 13, 13 101 88 61, drop
+  combo 14, 102 101 183 61, drop edit
 
   edit "", 15, 1 1 1 1, hide autohs
 
-  button "[dialog:close]", 100, 130 107 40 12, ok default
-  button "&[dialog:help]", 101, 175 107 40 12, disable
+  button "[dialog:close]", 100, 173 131 53 14, ok default
+  button "&[dialog:help]", 101, 233 131 53 14, disable
 }
 on *:DIALOG:strictm:init:*:{
   did -ac $dname 2 ( $+ [strict_dialog:all_other_chan:notdlg] $+ )
@@ -948,26 +948,26 @@ alias -l _rosel {
 dialog recond {
   title "[f8_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 240 141
+  option map
+  size -1 -1 320 173
 
-  box "", 1, 5 5 170 45
-  list 2, 10 15 160 35
+  box "", 1, 6 6 227 55
+  list 2, 13 18 213 42
 
-  box "&[f8_dialog:kick_reason]:", 3, 5 55 170 27
-  combo 4, 10 65 159 75, drop edit
+  box "&[f8_dialog:kick_reason]:", 3, 6 67 227 33
+  combo 4, 13 79 212 92, drop edit
 
-  box "[f8_dialog:action]:", 5, 5 86 170 49
-  button "&[f8_dialog:kick]", 6, 10 97 25 12, default
-  check "&[f8_dialog:clones]", 9, 40 99 129 8
-  button "&[f8_dialog:ban]:", 7, 10 115 25 12
-  combo 8, 40 116 129 75, drop edit
+  box "[f8_dialog:action]:", 5, 6 105 227 60
+  button "&[f8_dialog:kick]", 6, 13 119 33 14, default
+  check "&[f8_dialog:clones]", 9, 53 121 172 9
+  button "&[f8_dialog:ban]:", 7, 13 141 33 14
+  combo 8, 53 142 172 92, drop edit
 
-  text "[f8_dialog:instruction1]", 201, 180 15 55 50
-  text "[f8_dialog:instruction2]", 202, 180 65 55 24
-  text "[f8_dialog:instruction3]", 203, 180 95 55 35
+  text "[f8_dialog:instruction1]", 201, 240 18 73 61
+  text "[f8_dialog:instruction2]", 202, 240 79 73 29
+  text "[f8_dialog:instruction3]", 203, 240 116 73 42
 
-  button "[dialog:cancel]", 101, 207 122 25 12, cancel
+  button "[dialog:cancel]", 101, 276 149 33 14, cancel
 
   edit "", 20, 1 1 1 1, hide autohs
   list 21, 1 1 1 1, hide
@@ -992,3 +992,4 @@ on *:DIALOG:recond:sclick:6:_cidexists $did(22) | scid $did(22) | $iif($did(9).s
 on *:DIALOG:recond:sclick:7:if ($did(8) == $null) _error [error:no_banmask_selected] | _cidexists $did(22) | scid $did(22) | kb $did(20) $did(8) $did(4) | dialog -x $dname
 on *:DIALOG:recond:sclick:8:did -t $dname 7
 on *:DIALOG:recond:edit:8:did -t $dname 7
+

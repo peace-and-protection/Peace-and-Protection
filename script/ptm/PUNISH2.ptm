@@ -23,3 +23,4 @@ banyou [public_prot:ban_you:address=&A&:dlg]
 model [public_prot:takeover:mode=&B&:dlg]
 tover [public_prot:takeover:mode=&B&:dlg]
 spam [spamblock:prot_spam]
+

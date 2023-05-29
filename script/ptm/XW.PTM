@@ -468,23 +468,23 @@ on *:NOTICE:Password changed!:?:if (($_isbot($nick)) && ($hget(pnp. $+ $cid,-xwa
 dialog xwacc {
   title "[xwacc_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 170 135
-  box "", 1, 2 4 165 110
-  text "&[xwacc_dialog:mask]:", 2, 5 17 56 8, right
-  edit "*", 3, 62 15 100 11, autohs
-  text "&[xwacc_dialog:min_level]:", 4, 5 29 56 8, right
-  edit "", 5, 62 27 100 11
-  text "&[xwacc_dialog:max_level]:", 6, 5 41 56 8, right
-  edit "", 7, 62 39 100 11
-  check "&[xwacc_dialog:auto_op]", 8, 10 55 150 8
-  check "&[xwacc_dialog:auto_voice]", 9, 10 64 150 8
-  check "&[xwacc_dialog:no_auto_mode]", 10, 10 73 150 8
-  check "&[xwacc_dialog:last_mod]...", 11, 10 88 150 8
-  text "...&[xwacc_dialog:mod_by_user]:", 12, 5 99 99 8, right
-  edit "", 13, 105 97 57 11, autohs
-  button "[dialog:ok]", 101, 15 120 60 12, OK default
-  button "[dialog:cancel]", 102, 92 120 60 12, cancel
+  option map
+  size -1 -1 227 165
+  box "", 1, 2 4 220 135
+  text "&[xwacc_dialog:mask]:", 2, 6 20 74 9, right
+  edit "*", 3, 82 18 133 13, autohs
+  text "&[xwacc_dialog:min_level]:", 4, 6 35 74 9, right
+  edit "", 5, 82 33 133 13
+  text "&[xwacc_dialog:max_level]:", 6, 6 50 74 9, right
+  edit "", 7, 82 47 133 13
+  check "&[xwacc_dialog:auto_op]", 8, 13 67 200 9
+  check "&[xwacc_dialog:auto_voice]", 9, 13 78 200 9
+  check "&[xwacc_dialog:no_auto_mode]", 10, 13 89 200 9
+  check "&[xwacc_dialog:last_mod]...", 11, 13 108 200 9
+  text "...&[xwacc_dialog:mod_by_user]:", 12, 6 121 132 9, right
+  edit "", 13, 140 119 76 13, autohs
+  button "[dialog:ok]", 101, 20 147 80 14, OK default
+  button "[dialog:cancel]", 102, 122 147 80 14, cancel
   edit "", 200, 1 1 1 1, hide result autohs
 }
 on *:DIALOG:xwacc:init:*:{
@@ -507,23 +507,23 @@ on *:DIALOG:xwacc:sclick:101:if (($did(13)) && (* !isin $did(13))) did -a $dname
 dialog xwban {
   title "[xwban_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 170 115
-  box "", 1, 2 4 165 91
-  text "&[xwban_dialog:ban_who]:", 2, 5 17 59 8, right
-  combo 3, 65 15 99 60, edit drop
-  text "&[xwban_dialog:reason]:", 4, 5 28 59 8, right
-  combo 5, 65 26 99 60, edit drop
-  text "&[xwban_dialog:hours]:", 6, 5 39 59 8, right
-  edit "336", 7, 65 37 20 11, autohs
-  text "[xwban_dialog:hour_note]", 8, 87 39 70 8
-  radio "&[xwban_dialog:level_20]", 9, 25 53 120 8
-  radio "&[xwban_dialog:level_75]", 10, 25 62 120 8
-  radio "&[xwban_dialog:level_100]", 11, 25 71 120 8
-  radio "&[dialog:custom]:", 12, 25 80 50 8
-  edit "200", 13, 76 79 20 11, disable autohs
-  button "[dialog:ok]", 101, 15 100 60 12, OK default
-  button "[dialog:cancel]", 102, 92 100 60 12, cancel
+  option map
+  size -1 -1 227 141
+  box "", 1, 2 4 220 111
+  text "&[xwban_dialog:ban_who]:", 2, 6 20 78 9, right
+  combo 3, 86 18 132 73, edit drop
+  text "&[xwban_dialog:reason]:", 4, 6 34 78 9, right
+  combo 5, 86 31 132 73, edit drop
+  text "&[xwban_dialog:hours]:", 6, 6 47 78 9, right
+  edit "336", 7, 86 45 26 13, autohs
+  text "[xwban_dialog:hour_note]", 8, 116 47 93 9
+  radio "&[xwban_dialog:level_20]", 9, 33 65 160 9
+  radio "&[xwban_dialog:level_75]", 10, 33 76 160 9
+  radio "&[xwban_dialog:level_100]", 11, 33 87 160 9
+  radio "&[dialog:custom]:", 12, 33 98 66 9
+  edit "200", 13, 101 97 26 13, disable autohs
+  button "[dialog:ok]", 101, 20 122 80 14, OK default
+  button "[dialog:cancel]", 102, 122 122 80 14, cancel
   edit "", 200, 1 1 1 1, hide autohs result
 }
 on *:DIALOG:xwban:init:*:{
@@ -560,27 +560,27 @@ on *:DIALOG:xwban:sclick:*:if ($did isnum 9-11) did -b $dname 13 | elseif ($did 
 dialog xwuser {
   title "[xwuser_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 170 157
-  box "", 1, 2 4 165 50
-  text "&[word:nickname:dlg]:", 2, 5 17 39 8, right
-  edit "", 3, 45 15 120 11, autohs
-  text "&[word:usermask:dlg]:", 4, 5 29 39 8, right
-  combo 5, 45 27 119 75, drop edit
-  text "&[word:level:dlg]:", 6, 5 41 39 8, right
-  combo 7, 45 39 60 75, drop edit
-  box "[word:password:dlg]:", 21, 2 57 165 52
-  text "[xwuser_dialog:password_note]", 20, 10 67 150 15
-  text "&[word:password:dlg]:", 8, 5 85 39 8, right
-  edit "", 9, 45 83 61 11, pass autohs
-  text "&[dialog:confirm]:", 10, 5 96 39 8, right
-  edit "", 11, 45 95 61 11, pass autohs
-  box "[xwuser_dialog:auto_mode]:", 12, 2 113 165 22
-  radio "&[word:default:dlg]", 13, 15 123 45 8
-  radio "&[xw:mode_op]", 14, 62 123 45 8
-  radio "&[word:none:dlg]", 15, 109 123 45 8
-  button "[dialog:ok]", 101, 15 141 60 12, OK default
-  button "[dialog:cancel]", 102, 92 141 60 12, cancel
+  option map
+  size -1 -1 227 192
+  box "", 1, 2 4 220 61
+  text "&[word:nickname:dlg]:", 2, 6 20 52 9, right
+  edit "", 3, 60 18 160 13, autohs
+  text "&[word:usermask:dlg]:", 4, 6 35 52 9, right
+  combo 5, 60 33 158 92, drop edit
+  text "&[word:level:dlg]:", 6, 6 50 52 9, right
+  combo 7, 60 47 80 92, drop edit
+  box "[word:password:dlg]:", 21, 2 70 220 63
+  text "[xwuser_dialog:password_note]", 20, 13 82 200 18
+  text "&[word:password:dlg]:", 8, 6 104 52 9, right
+  edit "", 9, 60 101 81 13, pass autohs
+  text "&[dialog:confirm]:", 10, 6 117 52 9, right
+  edit "", 11, 60 116 81 13, pass autohs
+  box "[xwuser_dialog:auto_mode]:", 12, 2 138 220 27
+  radio "&[word:default:dlg]", 13, 20 151 60 9
+  radio "&[xw:mode_op]", 14, 82 151 60 9
+  radio "&[word:none:dlg]", 15, 145 151 60 9
+  button "[dialog:ok]", 101, 20 173 80 14, OK default
+  button "[dialog:cancel]", 102, 122 173 80 14, cancel
   edit %.xw, 200, 1 1 1 1, hide autohs
   edit %.xw.chan, 201, 1 1 1 1, hide autohs
   edit $cid, 202, 1 1 1 1, hide autohs
@@ -625,21 +625,21 @@ alias _xwuser {
 dialog xwuser2 {
   title "[xwuser_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 170 109
-  box "", 1, 2 4 165 58
-  text "&[xwuser_dialog:username]:", 2, 5 17 39 8, right
-  edit "", 3, 45 15 120 11, autohs
-  text "[xwuser_dialog:username_note]", 4, 46 28 118 16
-  text "&[word:level:dlg]:", 6, 5 48 39 8, right
-  combo 7, 45 46 60 75, drop edit
-  box "[xwuser_dialog:auto_mode]:", 12, 2 65 165 22
-  radio "&[word:default:dlg]", 13, 15 74 35 8
-  radio "&[xw:mode_op]", 14, 51 74 35 8
-  radio "&[xw:mode_voice]", 15, 87 74 35 8
-  radio "&[word:none:dlg]", 16, 123 74 35 8
-  button "[dialog:ok]", 101, 15 92 60 12, OK default
-  button "[dialog:cancel]", 102, 92 92 60 12, cancel
+  option map
+  size -1 -1 227 133
+  box "", 1, 2 4 220 71
+  text "&[xwuser_dialog:username]:", 2, 6 20 52 9, right
+  edit "", 3, 60 18 160 13, autohs
+  text "[xwuser_dialog:username_note]", 4, 61 34 157 19
+  text "&[word:level:dlg]:", 6, 6 58 52 9, right
+  combo 7, 60 56 80 92, drop edit
+  box "[xwuser_dialog:auto_mode]:", 12, 2 79 220 27
+  radio "&[word:default:dlg]", 13, 20 90 46 9
+  radio "&[xw:mode_op]", 14, 68 90 46 9
+  radio "&[xw:mode_voice]", 15, 116 90 46 9
+  radio "&[word:none:dlg]", 16, 164 90 46 9
+  button "[dialog:ok]", 101, 20 113 80 14, OK default
+  button "[dialog:cancel]", 102, 122 113 80 14, cancel
   edit %.xw, 200, 1 1 1 1, hide autohs
   edit %.xw.chan, 201, 1 1 1 1, hide autohs
   edit $cid, 202, 1 1 1 1, hide autohs
@@ -1158,35 +1158,35 @@ on ^*:NOTICE:& & last seen*:?:_isxwc | did -i xwcfg 4 1 Founder: $1- | halt
 dialog xwcfg {
   title "[xwcfg_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 180 168
+  option map
+  size -1 -1 240 206
   edit "", 100, 1 1 1 1, hide
   edit $cid, 103, 1 1 1 1, hide
-  text "", 1, 5 5 50 8
-  edit "", 2, 55 3 100 11, autohs read
-  box "[word:info:dlg]:", 3, 2 15 175 45
-  edit "", 4, 7 24 165 30, vsbar read multi
-  box "[word:options:dlg]:", 14, 2 62 175 86
-  text "&[xwcfg_dialog:desc]:", 15, 7 72 25 8, right
-  edit "", 16, 33 70 140 11, autohs
-  text "&[xwcfg_dialog:url]:", 17, 7 83 25 8, right
-  edit "", 18, 33 81 140 11, autohs
-  text "&[xwcfg_dialog:keywords]:", 31, 7 94 25 8, right
-  edit "", 32, 33 92 140 11, autohs
-  text "&[xwcfg_dialog:deoppro]:", 19, 7 105 36 8, right
-  edit "", 20, 45 103 12 11
-  text "&[xwcfg_dialog:nickpro]:", 21, 65 105 36 8, right
-  edit "", 22, 103 103 12 11
-  text "&[xwcfg_dialog:floodpro]:", 23, 123 105 36 8, right
-  edit "", 24, 161 103 12 11
-  check "", 25, 7 116 67 8
-  check "&[xwcfg_dialog:oponly]", 26, 7 136 67 8
-  check "&[xwcfg_dialog:strictop]", 27, 7 126 67 8
-  check "&[xwcfg_dialog:autoop]", 28, 75 116 100 8
-  check "", 29, 75 126 100 8
-  check "&[xwcfg_dialog:autotopic]", 30, 75 136 100 8
-  button "[dialog:ok]", 101, 15 152 60 12, OK default
-  button "[dialog:cancel]", 102, 92 152 60 12, cancel
+  text "", 1, 6 6 66 9
+  edit "", 2, 73 3 133 13, autohs read
+  box "[word:info:dlg]:", 3, 2 18 233 55
+  edit "", 4, 9 29 220 36, vsbar read multi
+  box "[word:options:dlg]:", 14, 2 76 233 105
+  text "&[xwcfg_dialog:desc]:", 15, 9 88 33 9, right
+  edit "", 16, 44 85 187 13, autohs
+  text "&[xwcfg_dialog:url]:", 17, 9 101 33 9, right
+  edit "", 18, 44 99 187 13, autohs
+  text "&[xwcfg_dialog:keywords]:", 31, 9 115 33 9, right
+  edit "", 32, 44 113 187 13, autohs
+  text "&[xwcfg_dialog:deoppro]:", 19, 9 128 48 9, right
+  edit "", 20, 60 126 16 13
+  text "&[xwcfg_dialog:nickpro]:", 21, 86 128 48 9, right
+  edit "", 22, 137 126 16 13
+  text "&[xwcfg_dialog:floodpro]:", 23, 164 128 48 9, right
+  edit "", 24, 215 126 16 13
+  check "", 25, 9 142 89 9
+  check "&[xwcfg_dialog:oponly]", 26, 9 167 89 9
+  check "&[xwcfg_dialog:strictop]", 27, 9 154 89 9
+  check "&[xwcfg_dialog:autoop]", 28, 100 142 133 9
+  check "", 29, 100 154 133 9
+  check "&[xwcfg_dialog:autotopic]", 30, 100 167 133 9
+  button "[dialog:ok]", 101, 20 186 80 14, OK default
+  button "[dialog:cancel]", 102, 122 186 80 14, cancel
 }
 on *:DIALOG:xwcfg:init:*:{
   did -a $dname 100 $hget(pnp.xwconfig,bot)
@@ -1253,3 +1253,4 @@ on *:DIALOG:xwcfg:sclick:101:{
 on *:DIALOG:xwcfg:sclick:102:hfree pnp.xwconfig
 on *:DISCONNECT:if ($dialog(xwcfg)) did -b xwcfg 101
 alias _cleanxwc if ($hget(pnp.xwconfig)) hfree pnp.xwconfig
+

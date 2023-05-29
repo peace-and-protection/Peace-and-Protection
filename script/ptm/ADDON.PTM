@@ -394,24 +394,24 @@ alias _apopups {
 dialog addons {
   title "[addons_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 200 182
+  option map
+  size -1 -1 267 223
 
-  box "[addons_dialog:installed]", 11, 5 5 190 75
-  list 1, 10 15 115 70, sort
-  button "&[addons_dialog:info]...", 101, 130 15 60 12, default
-  button "&[addons_dialog:uninstall]", 102, 130 31 60 12
-  button "&[dialog:config]...", 103, 130 47 60 12
-  button "&[addons_dialog:help]...", 104, 130 63 60 12
+  box "[addons_dialog:installed]", 11, 6 6 253 92
+  list 1, 13 18 153 85, sort
+  button "&[addons_dialog:info]...", 101, 173 18 80 14, default
+  button "&[addons_dialog:uninstall]", 102, 173 38 80 14
+  button "&[dialog:config]...", 103, 173 57 80 14
+  button "&[addons_dialog:help]...", 104, 173 77 80 14
 
-  box "[addons_dialog:uninstalled]", 12, 5 85 190 75
-  list 2, 10 95 115 70, sort
-  button "&[addons_dialog:info]...", 201, 130 95 60 12
-  button "&[addons_dialog:install]", 205, 130 111 60 12
-  button "&[addons_dialog:delete]...", 206, 130 127 60 12
+  box "[addons_dialog:uninstalled]", 12, 6 104 253 92
+  list 2, 13 116 153 85, sort
+  button "&[addons_dialog:info]...", 201, 173 116 80 14
+  button "&[addons_dialog:install]", 205, 173 136 80 14
+  button "&[addons_dialog:delete]...", 206, 173 156 80 14
 
-  button "&[dialog:close]", 21, 55 165 40 12, cancel
-  button "&[dialog:help]", 22, 105 165 40 12, disable
+  button "&[dialog:close]", 21, 73 202 53 14, cancel
+  button "&[dialog:help]", 22, 140 202 53 14, disable
 }
 on *:DIALOG:addons:sclick:1:did -t $dname 101 | did -u $dname 2
 on *:DIALOG:addons:sclick:2:did -t $dname 201 | did -u $dname 1
@@ -471,28 +471,28 @@ alias _addon.names {
 dialog addoninfo {
   title "[addons_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 200 170
+  option map
+  size -1 -1 267 208
 
-  text "[word:addon:dlg]:", 2, 2 5 40 8, right
-  text "", 12, 45 5 150 8
-  text "[word:version:dlg]:", 3, 2 13 40 8, right
-  text "", 13, 45 13 150 8
-  text "[phrase:for_pnp:dlg]:", 4, 2 21 40 8, right
-  text "", 14, 45 21 150 8
-  text "[word:author:dlg]:", 5, 2 29 40 8, right
-  text "", 15, 45 29 150 8
-  text "[word:email:dlg]:", 6, 2 37 40 8, right
-  link "", 16, 45 37 150 8
-  text "[word:homepage:dlg]:", 7, 2 45 40 8, right
-  link "", 17, 45 45 150 8
-  text "[word:info:dlg]:", 8, 2 55 40 8, right
-  edit "", 18, 45 53 150 50, multi read return vsbar
-  text "[phrase:addon_files:dlg]:", 9, 2 106 40 8, right
-  text "[addon:double_click_view:dlg]", 10, 2 117 40 24, right disable
-  list 19, 45 105 150 50
+  text "[word:addon:dlg]:", 2, 2 6 53 9, right
+  text "", 12, 60 6 200 9
+  text "[word:version:dlg]:", 3, 2 15 53 9, right
+  text "", 13, 60 15 200 9
+  text "[phrase:for_pnp:dlg]:", 4, 2 25 53 9, right
+  text "", 14, 60 25 200 9
+  text "[word:author:dlg]:", 5, 2 35 53 9, right
+  text "", 15, 60 35 200 9
+  text "[word:email:dlg]:", 6, 2 45 53 9, right
+  link "", 16, 60 45 200 9
+  text "[word:homepage:dlg]:", 7, 2 55 53 9, right
+  link "", 17, 60 55 200 9
+  text "[word:info:dlg]:", 8, 2 67 53 9, right
+  edit "", 18, 60 65 200 61, multi read return vsbar
+  text "[phrase:addon_files:dlg]:", 9, 2 130 53 9, right
+  text "[addon:double_click_view:dlg]", 10, 2 143 53 29, right disable
+  list 19, 60 128 200 61
 
-  button "[dialog:close]", 1, 45 153 50 12, cancel default
+  button "[dialog:close]", 1, 60 187 66 14, cancel default
 }
 on *:DIALOG:addoninfo:init:*:{
   var %load = name version ppver author email url
@@ -536,3 +536,4 @@ on *:DIALOG:addoninfo:init:*:{
 on *:DIALOG:addoninfo:sclick:16:mailto $did(16)
 on *:DIALOG:addoninfo:sclick:17:http $did(17)
 on *:DIALOG:addoninfo:dclick:19:edit $did(19).seltext
+

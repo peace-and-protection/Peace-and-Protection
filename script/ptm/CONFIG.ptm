@@ -9,11 +9,11 @@ script\config.mrc
 dialog pnp.config {
   title "[config_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 250 175
+  option map
+  size -1 -1 334 214
 
   ; List of sections
-  list 901, 5 5 58 164, size
+  list 901, 6 6 77 201, size
 
   ; Whether a section has been loaded yet
   list 902, 1 1 1 1, hide
@@ -21,9 +21,9 @@ dialog pnp.config {
   ; Last section selected
   edit "", 903, 1 1 1 1, autohs hide
 
-  button "[dialog:ok]", 905, 106 156 30 12, default group
-  button "[dialog:cancel]", 906, 141 156 30 12, cancel
-  button "&[dialog:help]", 907, 176 156 30 12, disable
+  button "[dialog:ok]", 905, 141 191 40 14, default group
+  button "[dialog:cancel]", 906, 188 191 40 14, cancel
+  button "&[dialog:help]", 907, 235 191 40 14, disable
 
   ; Blank tab
   tab "", 1, -25 -25 1 1, disable hide
@@ -58,497 +58,497 @@ dialog pnp.config {
   tab "", 33, -25 -25 1 1, disable hide
 
   ; Away - Pager/Log [70-99]
-  box "[word:pager:dlg]", 70, 125 10 45 50, tab 2
-  box "[config_dialog:awaylog]", 71, 175 10 65 50, tab 2
-  text "&[config_dialog:when_away]:", 72, 70 22 50 8, right tab 2
-  combo 75, 130 20 35 50, drop tab 2
-  text "&[config_dialog:when_auto]:", 73, 70 34 50 8, right tab 2
-  combo 76, 130 32 35 50, drop tab 2
-  text "&[config_dialog:when_here] :", 74, 70 46 50 8, right tab 2
-  combo 77, 130 44 35 50, drop tab 2
-  check "&[word:on:dlg] ([word:away:lower:dlg])", 78, 180 22 55 8, tab 2
-  check "&[word:on:dlg] ([phrase:autoaway:lower:dlg])", 79, 180 34 55 8, tab 2
-  box "[config_dialog:what_log]:", 80, 70 66 170 38, tab 2
-  check "&[config_dialog:log_priv]", 81, 75 77 72 8, tab 2
-  combo 82, 150 75 85 50, drop tab 2
-  check "&[config_dialog:log_event]:", 83, 75 90 72 8, tab 2
-  combo 84, 150 88 85 50, drop tab 2
-  check "&[config_dialog:classic_pager]", 85, 75 111 170 8, tab 2
-  check "&[config_dialog:clear_log]", 86, 75 120 170 8, tab 2
-  check "&[config_dialog:close_queries]", 87, 75 129 170 8, tab 2
-  check "&[config_dialog:permanent_log]", 88, 75 138 170 8, tab 2
+  box "[word:pager:dlg]", 70, 167 12 60 61, tab 2
+  box "[config_dialog:awaylog]", 71, 233 12 86 61, tab 2
+  text "&[config_dialog:when_away]:", 72, 93 27 66 9, right tab 2
+  combo 75, 173 24 46 61, drop tab 2
+  text "&[config_dialog:when_auto]:", 73, 93 41 66 9, right tab 2
+  combo 76, 173 39 46 61, drop tab 2
+  text "&[config_dialog:when_here] :", 74, 93 56 66 9, right tab 2
+  combo 77, 173 54 46 61, drop tab 2
+  check "&[word:on:dlg] ([word:away:lower:dlg])", 78, 240 27 73 9, tab 2
+  check "&[word:on:dlg] ([phrase:autoaway:lower:dlg])", 79, 240 41 73 9, tab 2
+  box "[config_dialog:what_log]:", 80, 93 81 227 46, tab 2
+  check "&[config_dialog:log_priv]", 81, 100 94 96 9, tab 2
+  combo 82, 200 92 113 61, drop tab 2
+  check "&[config_dialog:log_event]:", 83, 100 110 96 9, tab 2
+  combo 84, 200 108 113 61, drop tab 2
+  check "&[config_dialog:classic_pager]", 85, 100 136 227 9, tab 2
+  check "&[config_dialog:clear_log]", 86, 100 147 227 9, tab 2
+  check "&[config_dialog:close_queries]", 87, 100 158 227 9, tab 2
+  check "&[config_dialog:permanent_log]", 88, 100 169 227 9, tab 2
 
   ; Away - Message [100-129]
-  box "[config_dialog:when_setaway]:", 100, 70 3 170 68, tab 3
-  radio "&[config_dialog:away_act]", 101, 75 12 60 8, group tab 3
-  radio "&[config_dialog:away_msg]", 102, 75 21 60 8, tab 3
-  text "[config_dialog:to_all]", 103, 138 17 27 8, tab 3
-  check "&[config_dialog:to_chan]", 104, 178 12 60 8, tab 3
-  check "&[config_dialog:to_priv]", 105, 178 21 60 8, tab 3
-  check "&[config_dialog:ignore_chan]:", 106, 75 35 71 8, tab 3
-  edit "", 107, 146 34 87 11, autohs tab 3
-  check "&[config_dialog:ignore_idle]", 108, 75 46 100 8, tab 3
-  text "[dialog:minutes]", 109, 192 47 45 8, tab 3
-  edit "", 110, 175 45 15 11, autohs tab 3
-  check "&[config_dialog:away_repeat]", 111, 75 57 71 8, tab 3
-  text "[dialog:minutes]", 112, 163 58 65 8, tab 3
-  edit "", 113, 146 56 15 11, autohs tab 3
-  box "[config_dialog:away_remind]:", 114, 70 76 170 75, tab 3
-  check "&[config_dialog:remind_priv]", 115, 75 85 160 8, tab 3
-  check "&[config_dialog:remind_hl]", 116, 75 94 160 8, tab 3
-  check "&[config_dialog:remind_word]", 117, 75 103 160 8, tab 3
-  edit "", 118, 84 113 122 11, autohs tab 3
-  check "&[config_dialog:remind_chan]:", 119, 75 126 160 8, tab 3
-  edit "", 120, 84 136 122 11, autohs tab 3
+  box "[config_dialog:when_setaway]:", 100, 93 3 227 83, tab 3
+  radio "&[config_dialog:away_act]", 101, 100 14 80 9, group tab 3
+  radio "&[config_dialog:away_msg]", 102, 100 25 80 9, tab 3
+  text "[config_dialog:to_all]", 103, 184 20 36 9, tab 3
+  check "&[config_dialog:to_chan]", 104, 237 14 80 9, tab 3
+  check "&[config_dialog:to_priv]", 105, 237 25 80 9, tab 3
+  check "&[config_dialog:ignore_chan]:", 106, 100 42 94 9, tab 3
+  edit "", 107, 195 41 116 13, autohs tab 3
+  check "&[config_dialog:ignore_idle]", 108, 100 56 133 9, tab 3
+  text "[dialog:minutes]", 109, 256 57 60 9, tab 3
+  edit "", 110, 233 55 20 13, autohs tab 3
+  check "&[config_dialog:away_repeat]", 111, 100 70 94 9, tab 3
+  text "[dialog:minutes]", 112, 217 71 86 9, tab 3
+  edit "", 113, 195 68 20 13, autohs tab 3
+  box "[config_dialog:away_remind]:", 114, 93 93 227 92, tab 3
+  check "&[config_dialog:remind_priv]", 115, 100 104 213 9, tab 3
+  check "&[config_dialog:remind_hl]", 116, 100 115 213 9, tab 3
+  check "&[config_dialog:remind_word]", 117, 100 126 213 9, tab 3
+  edit "", 118, 112 138 162 13, autohs tab 3
+  check "&[config_dialog:remind_chan]:", 119, 100 154 213 9, tab 3
+  edit "", 120, 112 167 162 13, autohs tab 3
 
   ; Away - Other [130-149]
-  box "[phrase:autoaway:dlg]", 130, 70 15 170 50, tab 4
-  check "&[config_dialog:auto_set]", 131, 75 25 77 8, tab 4
-  text "[config_dialog:min_idle]", 132, 172 26 70 8, tab 4
-  edit "", 133, 153 24 15 11, autohs tab 4
-  check "&[config_dialog:warn_auto]", 134, 75 38 160 8, tab 4
-  check "&[config_dialog:auto_quiet]", 135, 75 51 160 8, tab 4
-  check "&[config_dialog:away_nick]:", 136, 75 75 69 8, tab 4
-  edit "", 137, 146 74 50 11, autohs tab 4
-  text "", 138, 84 86 90 8, tab 4
-  check "&[config_dialog:away_all]", 143, 75 99 160 8, tab 4
-  check "&[config_dialog:away_sound]", 139, 75 108 160 8, tab 4
-  check "&[config_dialog:away_beep]", 140, 75 117 160 8, tab 4
-  check "&[config_dialog:away_deop]", 141, 75 126 160 8, tab 4
+  box "[phrase:autoaway:dlg]", 130, 93 18 227 61, tab 4
+  check "&[config_dialog:auto_set]", 131, 100 30 102 9, tab 4
+  text "[config_dialog:min_idle]", 132, 229 31 93 9, tab 4
+  edit "", 133, 204 29 20 13, autohs tab 4
+  check "&[config_dialog:warn_auto]", 134, 100 46 213 9, tab 4
+  check "&[config_dialog:auto_quiet]", 135, 100 62 213 9, tab 4
+  check "&[config_dialog:away_nick]:", 136, 100 92 92 9, tab 4
+  edit "", 137, 195 90 66 13, autohs tab 4
+  text "", 138, 112 105 120 9, tab 4
+  check "&[config_dialog:away_all]", 143, 100 121 213 9, tab 4
+  check "&[config_dialog:away_sound]", 139, 100 132 213 9, tab 4
+  check "&[config_dialog:away_beep]", 140, 100 143 213 9, tab 4
+  check "&[config_dialog:away_deop]", 141, 100 154 213 9, tab 4
   check "&[config_dialog:away_dq]", 142, 75 135  160 8, tab 4
 
   ; Display - Nick colors [150-159]
-  check "&[config_dialog:color_nicklist]", 150, 75 25 170 8, tab 7
-  check "&[config_dialog:color_chantext]", 151, 75 38 170 8, tab 7
-  text "&[config_dialog:color_lag]", 152, 84 52 77 8, tab 7
-  edit "", 153, 162 50 15 11, autohs tab 7
-  text "[dialog:seconds]", 154, 180 52 70 8, tab 7
-  text "[config_dialog:color_note]", 155, 84 75 160 8, tab 7
-  button "&[config_dialog:edit_theme]", 156, 84 87 50 12, tab 7
+  check "&[config_dialog:color_nicklist]", 150, 100 30 227 9, tab 7
+  check "&[config_dialog:color_chantext]", 151, 100 46 227 9, tab 7
+  text "&[config_dialog:color_lag]", 152, 112 63 102 9, tab 7
+  edit "", 153, 216 61 20 13, autohs tab 7
+  text "[dialog:seconds]", 154, 240 63 93 9, tab 7
+  text "[config_dialog:color_note]", 155, 112 92 213 9, tab 7
+  button "&[config_dialog:edit_theme]", 156, 112 106 66 14, tab 7
 
   ; Display - Notify [160-189]
-  box "[config_dialog:notify_form]", 160, 125 37 55 80, tab 8
-  box "[config_dialog:unnotify_form]", 161, 185 37 55 80, tab 8
-  text "&[config_dialog:addr_match]:", 162, 65 49 57 8, right tab 8
-  combo 165, 130 47 45 50, drop tab 8
-  combo 169, 190 70 45 50, drop tab 8
-  check "&[config_dialog:beep_flash]", 172, 130 59 45 8, tab 8
-  text "&[config_dialog:addr_fail]:", 163, 65 72 57 8, right tab 8
-  combo 166, 130 70 45 50, drop tab 8
-  combo 168, 190 47 45 50, drop tab 8
-  check "&[config_dialog:beep_flash]", 173, 130 82 45 8, tab 8
-  text "&[config_dialog:addr_none]:", 164, 65 95 57 8, right tab 8
-  combo 167, 130 93 45 50, drop tab 8
-  combo 170, 190 93 45 50, drop tab 8
-  check "&[config_dialog:beep_flash]", 174, 130 105 45 8, tab 8
-  text "[config_dialog:notify_note]", 171, 70 5 170 32, tab 8
-  text "&[config_dialog:notify_show]:", 175, 65 123 57 8, right tab 8
-  combo 176, 130 121 80 50, drop tab 8
-  check "&[config_dialog:unnotify_part]", 177, 130 133 115 8, tab 8
-  check "&[config_dialog:notify_fkey]", 178, 130 142 115 8, tab 8
+  box "[config_dialog:notify_form]", 160, 167 45 73 98, tab 8
+  box "[config_dialog:unnotify_form]", 161, 247 45 73 98, tab 8
+  text "&[config_dialog:addr_match]:", 162, 86 60 76 9, right tab 8
+  combo 165, 173 57 60 61, drop tab 8
+  combo 169, 253 85 60 61, drop tab 8
+  check "&[config_dialog:beep_flash]", 172, 173 72 60 9, tab 8
+  text "&[config_dialog:addr_fail]:", 163, 86 88 76 9, right tab 8
+  combo 166, 173 85 60 61, drop tab 8
+  combo 168, 253 57 60 61, drop tab 8
+  check "&[config_dialog:beep_flash]", 173, 173 100 60 9, tab 8
+  text "&[config_dialog:addr_none]:", 164, 86 116 76 9, right tab 8
+  combo 167, 173 114 60 61, drop tab 8
+  combo 170, 253 114 60 61, drop tab 8
+  check "&[config_dialog:beep_flash]", 174, 173 128 60 9, tab 8
+  text "[config_dialog:notify_note]", 171, 93 6 227 39, tab 8
+  text "&[config_dialog:notify_show]:", 175, 86 151 76 9, right tab 8
+  combo 176, 173 148 106 61, drop tab 8
+  check "&[config_dialog:unnotify_part]", 177, 173 163 153 9, tab 8
+  check "&[config_dialog:notify_fkey]", 178, 173 174 153 9, tab 8
 
   ; Display - Ping [190-209]
-  text "&[config_dialog:chan_ping]:", 190, 70 35 72 8, right tab 9
-  combo 191, 145 33 80 50, drop tab 9
-  text "&[config_dialog:user_ping]:", 192, 70 48 72 8, right tab 9
-  combo 193, 145 46 80 50, drop tab 9
-  box "[word:options:dlg]:", 194, 70 75 170 54, tab 9
-  check "&[config_dialog:min_window:window=@Ping]", 195, 75 85 160 8, tab 9
-  check "&[config_dialog:window_front:window=@Ping]", 196, 75 95 160 8, tab 9
-  check "&[config_dialog:retain_reply]", 197, 75 105 160 8, tab 9
-  check "&[config_dialog:ping_codes]", 198, 75 115 160 8, tab 9
+  text "&[config_dialog:chan_ping]:", 190, 93 42 96 9, right tab 9
+  combo 191, 193 40 106 61, drop tab 9
+  text "&[config_dialog:user_ping]:", 192, 93 58 96 9, right tab 9
+  combo 193, 193 56 106 61, drop tab 9
+  box "[word:options:dlg]:", 194, 93 92 227 66, tab 9
+  check "&[config_dialog:min_window:window=@Ping]", 195, 100 104 213 9, tab 9
+  check "&[config_dialog:window_front:window=@Ping]", 196, 100 116 213 9, tab 9
+  check "&[config_dialog:retain_reply]", 197, 100 128 213 9, tab 9
+  check "&[config_dialog:ping_codes]", 198, 100 141 213 9, tab 9
 
   ; Display - Server notices [210-229]
-  text "[config_dialog:snotice_note]", 210, 70 5 170 24, tab 10
-  check "&[config_dialog:snotice_on]", 213, 74 26 210 8, tab 10
-  box "&[config_dialog:snotice_show]:", 214, 70 37 170 56, tab 10
-  list 216, 75 45 160 35, extsel sort tab 10
+  text "[config_dialog:snotice_note]", 210, 93 6 227 29, tab 10
+  check "&[config_dialog:snotice_on]", 213, 98 31 280 9, tab 10
+  box "&[config_dialog:snotice_show]:", 214, 93 45 227 68, tab 10
+  list 216, 100 55 213 42, extsel sort tab 10
   list 217, 1 1 1 1, hide
-  button "&[dialog:hide]", 220, 205 77 30 11, tab 10
-  box "&[config_dialog:snotice_hide]:", 215, 70 96 170 56, tab 10
-  list 218, 75 104 160 35, extsel sort tab 10
+  button "&[dialog:hide]", 220, 273 94 40 13, tab 10
+  box "&[config_dialog:snotice_hide]:", 215, 93 117 227 68, tab 10
+  list 218, 100 127 213 42, extsel sort tab 10
   list 219, 1 1 1 1, hide
-  button "&[dialog:show]", 221, 205 136 30 11, tab 10
-  text "&[config_dialog:show_to]:", 222, 73 79 36 8, right tab 10
-  combo 223, 110 77 90 50, drop tab 10
+  button "&[dialog:show]", 221, 273 167 40 13, tab 10
+  text "&[config_dialog:show_to]:", 222, 97 97 48 9, right tab 10
+  combo 223, 146 94 120 61, drop tab 10
 
   ; Display - Text [230-249]
-  check "&[config_dialog:copy_priv]", 231, 72 15 173 8, tab 11
-  check "&[config_dialog:pnp_theme]", 230, 72 25 173 8, tab 11
-  button "&[config_dialog:edit_theme]", 244, 81 37 50 12, tab 11
-  box "[config_dialog:notices]:", 232, 74 57 80 40, tab 11
-  radio "&[word:normal:dlg]", 233, 84 67 65 8, group tab 11 
-  radio "&[config_dialog:notice_win]", 234, 84 76 65 8, tab 11
-  radio "&[phrase:status:dlg]", 235, 84 85 65 8, tab 11
-  box "[config_dialog:opnotices]:", 236, 159 57 80 40, tab 11
-  radio "&[word:normal:dlg]", 237, 169 67 65 8, group tab 11 
-  radio "&[config_dialog:notice_win]", 238, 169 76 65 8, tab 11
-  radio "&[config_dialog:notice_events]", 239, 169 85 65 8, tab 11
-  box "[config_dialog:servicenotices]:", 240, 74 102 80 40, tab 11
-  radio "&[word:normal:dlg]", 241, 84 112 65 8, group tab 11 
-  radio "&[config_dialog:notice_win]", 242, 84 121 65 8, tab 11
-  radio "&[phrase:status:dlg]", 243, 84 130 65 8, tab 11
+  check "&[config_dialog:copy_priv]", 231, 96 18 231 9, tab 11
+  check "&[config_dialog:pnp_theme]", 230, 96 30 231 9, tab 11
+  button "&[config_dialog:edit_theme]", 244, 108 45 66 14, tab 11
+  box "[config_dialog:notices]:", 232, 98 70 106 49, tab 11
+  radio "&[word:normal:dlg]", 233, 112 82 86 9, group tab 11 
+  radio "&[config_dialog:notice_win]", 234, 112 93 86 9, tab 11
+  radio "&[phrase:status:dlg]", 235, 112 104 86 9, tab 11
+  box "[config_dialog:opnotices]:", 236, 212 70 106 49, tab 11
+  radio "&[word:normal:dlg]", 237, 225 82 86 9, group tab 11 
+  radio "&[config_dialog:notice_win]", 238, 225 93 86 9, tab 11
+  radio "&[config_dialog:notice_events]", 239, 225 104 86 9, tab 11
+  box "[config_dialog:servicenotices]:", 240, 98 125 106 49, tab 11
+  radio "&[word:normal:dlg]", 241, 112 137 86 9, group tab 11 
+  radio "&[config_dialog:notice_win]", 242, 112 148 86 9, tab 11
+  radio "&[phrase:status:dlg]", 243, 112 159 86 9, tab 11
 
   ; Display - Wallops [250-269]
-  text "[config_dialog:wallop_note]", 250, 70 5 170 24, tab 12
-  check "&[config_dialog:wallop_on]", 253, 74 26 210 8, tab 12
-  box "&[config_dialog:wallop_show]:", 254, 70 37 170 56, tab 12
-  list 256, 75 45 160 35, extsel sort tab 12
+  text "[config_dialog:wallop_note]", 250, 93 6 227 29, tab 12
+  check "&[config_dialog:wallop_on]", 253, 98 31 280 9, tab 12
+  box "&[config_dialog:wallop_show]:", 254, 93 45 227 68, tab 12
+  list 256, 100 55 213 42, extsel sort tab 12
   list 257, 1 1 1 1, hide
-  button "&[dialog:hide]", 260, 205 77 30 11, tab 12
-  box "&[config_dialog:wallop_hide]:", 255, 70 96 170 56, tab 12
-  list 258, 75 104 160 35, extsel sort tab 12
+  button "&[dialog:hide]", 260, 273 94 40 13, tab 12
+  box "&[config_dialog:wallop_hide]:", 255, 93 117 227 68, tab 12
+  list 258, 100 127 213 42, extsel sort tab 12
   list 259, 1 1 1 1, hide
-  button "&[dialog:show]", 261, 205 136 30 11, tab 12
-  text "&[config_dialog:show_to]:", 262, 73 79 36 8, right tab 12
-  combo 263, 110 77 90 50, drop tab 12
+  button "&[dialog:show]", 261, 273 167 40 13, tab 12
+  text "&[config_dialog:show_to]:", 262, 97 97 48 9, right tab 12
+  combo 263, 146 94 120 61, drop tab 12
 
   ; Display - Whois replies [270-289]
-  text "&[config_dialog:show_whois]:", 270, 70 13 72 8, right tab 13
-  combo 271, 145 11 80 50, drop tab 13
-  box "[word:options:dlg]:", 272, 70 25 170 78, tab 13
-  check "&[config_dialog:show_priv]", 273, 75 35 160 8, tab 13
-  check "&[config_dialog:min_window:window=@Whois]", 274, 75 45 160 8, tab 13
-  check "&[config_dialog:window_front:window=@Whois]", 275, 75 55 160 8, tab 13
-  check "&[config_dialog:retain_reply]", 276, 75 65 160 8, tab 13
-  check "&[config_dialog:ext_serv]", 277, 75 78 160 8, tab 13
-  check "&[config_dialog:shared_bold]", 278, 75 88 160 8, tab 13
-  box "[config_dialog:show_nick]:", 279, 70 106 170 45, tab 13
-  radio "&[config_dialog:on_all]", 280, 75 116 160 8, group tab 13
-  radio "&[config_dialog:on_first]", 281, 75 126 160 8, tab 13
-  radio "&[config_dialog:on_first_lineup]", 282, 75 136 160 8, tab 13
+  text "&[config_dialog:show_whois]:", 270, 93 15 96 9, right tab 13
+  combo 271, 193 13 106 61, drop tab 13
+  box "[word:options:dlg]:", 272, 93 30 227 95, tab 13
+  check "&[config_dialog:show_priv]", 273, 100 42 213 9, tab 13
+  check "&[config_dialog:min_window:window=@Whois]", 274, 100 55 213 9, tab 13
+  check "&[config_dialog:window_front:window=@Whois]", 275, 100 67 213 9, tab 13
+  check "&[config_dialog:retain_reply]", 276, 100 79 213 9, tab 13
+  check "&[config_dialog:ext_serv]", 277, 100 95 213 9, tab 13
+  check "&[config_dialog:shared_bold]", 278, 100 108 213 9, tab 13
+  box "[config_dialog:show_nick]:", 279, 93 130 227 55, tab 13
+  radio "&[config_dialog:on_all]", 280, 100 142 213 9, group tab 13
+  radio "&[config_dialog:on_first]", 281, 100 154 213 9, tab 13
+  radio "&[config_dialog:on_first_lineup]", 282, 100 167 213 9, tab 13
 
   ; Display - Other [290-309]
-  text "&[config_dialog:names_join]:", 290, 70 23 72 8, right tab 14
-  combo 291, 145 21 80 50, drop tab 14
-  text "&[config_dialog:show_motd]:", 292, 70 36 72 8, right tab 14
-  combo 293, 145 34 80 50, drop tab 14
-  text "&[config_dialog:time_form]:", 294, 70 53 72 8, right tab 14
-  combo 295, 145 51 80 50, drop edit tab 14
-  text "&[config_dialog:date_form]:", 296, 70 66 72 8, right tab 14
-  combo 297, 145 64 80 50, drop edit tab 14
-  box "[word:options:dlg]:", 301, 70 85 170 54, tab 14
-  check "&[config_dialog:show_active]", 298, 75 95 160 8, tab 14
-  check "&[config_dialog:raw_active]", 302, 75 105 160 8, tab 14
-  check "&[config_dialog:motd_win]", 299, 75 115 160 8, tab 14
-  check "&[config_dialog:show_splash]", 300, 75 125 160 8, tab 14
+  text "&[config_dialog:names_join]:", 290, 93 28 96 9, right tab 14
+  combo 291, 193 25 106 61, drop tab 14
+  text "&[config_dialog:show_motd]:", 292, 93 44 96 9, right tab 14
+  combo 293, 193 41 106 61, drop tab 14
+  text "&[config_dialog:time_form]:", 294, 93 65 96 9, right tab 14
+  combo 295, 193 62 106 61, drop edit tab 14
+  text "&[config_dialog:date_form]:", 296, 93 81 96 9, right tab 14
+  combo 297, 193 78 106 61, drop edit tab 14
+  box "[word:options:dlg]:", 301, 93 104 227 66, tab 14
+  check "&[config_dialog:show_active]", 298, 100 116 213 9, tab 14
+  check "&[config_dialog:raw_active]", 302, 100 128 213 9, tab 14
+  check "&[config_dialog:motd_win]", 299, 100 141 213 9, tab 14
+  check "&[config_dialog:show_splash]", 300, 100 153 213 9, tab 14
 
   ; Popups - Channel [310-329]
-  box "[config_dialog:show_popup]:", 329, 80 15 150 74, tab 17
-  check "&[popups_chan:topic:dlg]", 310, 85 25 70 10, tab 17
-  check "&[popups_chan:modes:dlg]", 311, 85 35 70 10, tab 17
-  check "&[popups_chan:settings:dlg]", 312, 85 45 70 10, tab 17
-  check "&[popups_chan:view_banlist:dlg]", 313, 85 55 70 10, tab 17
-  check "&[popups_chan:bans:dlg]", 314, 85 65 70 10, tab 17
-  check "&[popups_chan:ping:dlg]", 315, 85 75 70 10, tab 17
-  check "&[popups_chan:scan:dlg]", 316, 155 25 70 10, tab 17
-  check "&[popups_status:favorites:dlg]", 317, 155 35 70 10, tab 17
-  check "&[popups_chan:part:dlg]", 318, 155 45 70 10, tab 17
-  check "&[popups:window:dlg]", 319, 155 55 70 10, tab 17
-  check "&[popups:help:dlg]", 320, 155 65 70 10, disable tab 17
-  check "&[config_dialog:hide_op]", 321, 85 95 160 10, tab 17
-  button "&[config_dialog:load_def]", 326, 85 112 60 12, tab 17
-  button "&[config_dialog:condensed]", 327, 155 112 60 12, tab 17
-  text "[config_dialog:popups_tip]", 328, 85 132 140 24, tab 17
+  box "[config_dialog:show_popup]:", 329, 106 18 200 90, tab 17
+  check "&[popups_chan:topic:dlg]", 310, 113 30 93 12, tab 17
+  check "&[popups_chan:modes:dlg]", 311, 113 42 93 12, tab 17
+  check "&[popups_chan:settings:dlg]", 312, 113 55 93 12, tab 17
+  check "&[popups_chan:view_banlist:dlg]", 313, 113 67 93 12, tab 17
+  check "&[popups_chan:bans:dlg]", 314, 113 79 93 12, tab 17
+  check "&[popups_chan:ping:dlg]", 315, 113 92 93 12, tab 17
+  check "&[popups_chan:scan:dlg]", 316, 207 30 93 12, tab 17
+  check "&[popups_status:favorites:dlg]", 317, 207 42 93 12, tab 17
+  check "&[popups_chan:part:dlg]", 318, 207 55 93 12, tab 17
+  check "&[popups:window:dlg]", 319, 207 67 93 12, tab 17
+  check "&[popups:help:dlg]", 320, 207 79 93 12, disable tab 17
+  check "&[config_dialog:hide_op]", 321, 113 116 213 12, tab 17
+  button "&[config_dialog:load_def]", 326, 113 137 80 14, tab 17
+  button "&[config_dialog:condensed]", 327, 207 137 80 14, tab 17
+  text "[config_dialog:popups_tip]", 328, 113 162 187 29, tab 17
 
   ; Popups - Menubar [330-349]
-  box "[config_dialog:show_popup]:", 349, 80 15 150 74, tab 18
-  check "&[popups_menu:config:dlg]", 330, 85 25 70 10, tab 18
-  check "&[popups_menu:last_whois:dlg]", 331, 85 35 70 10, tab 18
-  check "&[popups_menu:lists:dlg]", 332, 85 45 70 10, tab 18
-  check "&[popups_menu:away:dlg]", 333, 85 55 70 10, tab 18
-  check "&[popups_status:nickname:dlg]", 334, 85 65 70 10, tab 18
-  check "&[popups_status:list_chan:dlg]", 335, 155 25 70 10, tab 18
-  check "&[popups_status:channels:dlg]", 336, 155 35 70 10, tab 18
-  check "&[popups_status:favorites:dlg]", 337, 155 45 70 10, tab 18
-  check "&[popups:addons:dlg]", 338, 155 55 70 10, tab 18
-  check "&[popups:help:dlg]", 339, 155 65 70 10, disable tab 18
-  button "&[config_dialog:load_def]", 346, 85 112 60 12, tab 18
-  button "&[config_dialog:condensed]", 347, 155 112 60 12, tab 18
-  text "[config_dialog:popups_tip]", 348, 85 132 140 24, tab 18
+  box "[config_dialog:show_popup]:", 349, 106 18 200 90, tab 18
+  check "&[popups_menu:config:dlg]", 330, 113 30 93 12, tab 18
+  check "&[popups_menu:last_whois:dlg]", 331, 113 42 93 12, tab 18
+  check "&[popups_menu:lists:dlg]", 332, 113 55 93 12, tab 18
+  check "&[popups_menu:away:dlg]", 333, 113 67 93 12, tab 18
+  check "&[popups_status:nickname:dlg]", 334, 113 79 93 12, tab 18
+  check "&[popups_status:list_chan:dlg]", 335, 207 30 93 12, tab 18
+  check "&[popups_status:channels:dlg]", 336, 207 42 93 12, tab 18
+  check "&[popups_status:favorites:dlg]", 337, 207 55 93 12, tab 18
+  check "&[popups:addons:dlg]", 338, 207 67 93 12, tab 18
+  check "&[popups:help:dlg]", 339, 207 79 93 12, disable tab 18
+  button "&[config_dialog:load_def]", 346, 113 137 80 14, tab 18
+  button "&[config_dialog:condensed]", 347, 207 137 80 14, tab 18
+  text "[config_dialog:popups_tip]", 348, 113 162 187 29, tab 18
 
   ; Popups - Nicklist [350-369]
-  box "[config_dialog:show_popup]:", 369, 80 15 150 74, tab 19
-  check "&[popups_nick:quick_kick:dlg]", 350, 85 25 70 10, tab 19
-  check "&[popups_nick:quick_ban:dlg]", 351, 85 35 70 10, tab 19
-  check "&[popups_nick:kick:dlg]", 352, 85 45 70 10, tab 19
-  check "&[popups_nick:bans:dlg]", 353, 85 55 70 10, tab 19
-  check "&[popups_nick:op:dlg] / [popups_nick:hop:dlg] / [popups_nick:voice:dlg]", 354, 85 65 70 10, tab 19
-  check "&[popups_nick:user_info:dlg]", 355, 85 75 70 10, tab 19
-  check "&[popups_nick:ctcp:dlg]", 356, 155 25 70 10, tab 19
-  check "&[popups_nick:dcc:dlg]", 357, 155 35 70 10, tab 19
-  check "&[popups_nick:query:dlg]", 358, 155 45 70 10, tab 19
-  check "&[popups_nick:lists:dlg]", 359, 155 55 70 10, tab 19
-  check "&[popups_nick:notices:dlg]", 360, 155 65 70 10, tab 19
-  check "&[popups:help:dlg]", 361, 155 75 70 10, disable tab 19
-  check "&[config_dialog:hide_op]", 362, 85 95 160 10, tab 19
-  button "&[config_dialog:load_def]", 366, 85 112 60 12, tab 19
-  button "&[config_dialog:condensed]", 367, 155 112 60 12, tab 19
-  text "[config_dialog:popups_tip]", 368, 85 132 140 24, tab 19
+  box "[config_dialog:show_popup]:", 369, 106 18 200 90, tab 19
+  check "&[popups_nick:quick_kick:dlg]", 350, 113 30 93 12, tab 19
+  check "&[popups_nick:quick_ban:dlg]", 351, 113 42 93 12, tab 19
+  check "&[popups_nick:kick:dlg]", 352, 113 55 93 12, tab 19
+  check "&[popups_nick:bans:dlg]", 353, 113 67 93 12, tab 19
+  check "&[popups_nick:op:dlg] / [popups_nick:hop:dlg] / [popups_nick:voice:dlg]", 354, 113 79 93 12, tab 19
+  check "&[popups_nick:user_info:dlg]", 355, 113 92 93 12, tab 19
+  check "&[popups_nick:ctcp:dlg]", 356, 207 30 93 12, tab 19
+  check "&[popups_nick:dcc:dlg]", 357, 207 42 93 12, tab 19
+  check "&[popups_nick:query:dlg]", 358, 207 55 93 12, tab 19
+  check "&[popups_nick:lists:dlg]", 359, 207 67 93 12, tab 19
+  check "&[popups_nick:notices:dlg]", 360, 207 79 93 12, tab 19
+  check "&[popups:help:dlg]", 361, 207 92 93 12, disable tab 19
+  check "&[config_dialog:hide_op]", 362, 113 116 213 12, tab 19
+  button "&[config_dialog:load_def]", 366, 113 137 80 14, tab 19
+  button "&[config_dialog:condensed]", 367, 207 137 80 14, tab 19
+  text "[config_dialog:popups_tip]", 368, 113 162 187 29, tab 19
 
   ; Popups - Query [370-389]
-  box "[config_dialog:show_popup]:", 389, 80 15 150 74, tab 20
-  check "&[popups_nick:whois:dlg]", 370, 85 25 70 10, tab 20
-  check "&[popups_nick:user_info:dlg]", 371, 85 35 70 10, tab 20
-  check "&[popups_nick:ping:dlg]", 372, 85 45 70 10, tab 20
-  check "&[popups_nick:ctcp:dlg]", 373, 85 55 70 10, tab 20
-  check "&[popups_nick:dcc:dlg]", 374, 85 65 70 10, tab 20
-  check "&[popups_nick:ignore:dlg]", 375, 85 75 70 10, tab 20
-  check "&[popups_nick:userlist:dlg]", 376, 155 25 70 10, tab 20
-  check "&[popups_nick:notify:dlg]", 377, 155 35 70 10, tab 20
-  check "&[popups:window:dlg]", 378, 155 45 70 10, tab 20
-  check "&[popups:close:dlg]", 379, 155 55 70 10, tab 20
-  check "&[popups:help:dlg]", 380, 155 65 70 10, disable tab 20
-  button "&[config_dialog:load_def]", 386, 85 112 60 12, tab 20
-  button "&[config_dialog:condensed]", 387, 155 112 60 12, tab 20
-  text "[config_dialog:popups_tip]", 388, 85 132 140 24, tab 20
+  box "[config_dialog:show_popup]:", 389, 106 18 200 90, tab 20
+  check "&[popups_nick:whois:dlg]", 370, 113 30 93 12, tab 20
+  check "&[popups_nick:user_info:dlg]", 371, 113 42 93 12, tab 20
+  check "&[popups_nick:ping:dlg]", 372, 113 55 93 12, tab 20
+  check "&[popups_nick:ctcp:dlg]", 373, 113 67 93 12, tab 20
+  check "&[popups_nick:dcc:dlg]", 374, 113 79 93 12, tab 20
+  check "&[popups_nick:ignore:dlg]", 375, 113 92 93 12, tab 20
+  check "&[popups_nick:userlist:dlg]", 376, 207 30 93 12, tab 20
+  check "&[popups_nick:notify:dlg]", 377, 207 42 93 12, tab 20
+  check "&[popups:window:dlg]", 378, 207 55 93 12, tab 20
+  check "&[popups:close:dlg]", 379, 207 67 93 12, tab 20
+  check "&[popups:help:dlg]", 380, 207 79 93 12, disable tab 20
+  button "&[config_dialog:load_def]", 386, 113 137 80 14, tab 20
+  button "&[config_dialog:condensed]", 387, 207 137 80 14, tab 20
+  text "[config_dialog:popups_tip]", 388, 113 162 187 29, tab 20
 
   ; Popups - Status [390-409]
-  box "[config_dialog:show_popup]:", 409, 80 15 150 74, tab 21
-  check "&[popups_status:list_chan:dlg]", 390, 85 25 70 10, tab 21
-  check "&[popups_status:channels:dlg]", 391, 85 35 70 10, tab 21
-  check "&[popups_status:favorites:dlg]", 392, 85 45 70 10, tab 21
-  check "&[popups_status:nickname:dlg]", 393, 85 55 70 10, tab 21
-  check "&[popups_status:usermode:dlg]", 394, 85 65 70 10, tab 21
-  check "&[popups_status:quit:dlg]", 395, 85 75 70 10, tab 21
-  check "&[popups_status:server_info:dlg]", 396, 155 25 70 10, tab 21
-  check "&[popups_status:stats:dlg]", 397, 155 35 70 10, tab 21
-  check "&[popups_status:connect:dlg]", 398, 155 45 70 10, tab 21
-  check "&[popups:window:dlg]", 399, 155 55 70 10, tab 21
-  check "&[popups:help:dlg]", 400, 155 65 70 10, disable tab 21
-  button "&[config_dialog:load_def]", 406, 85 112 60 12, tab 21
-  button "&[config_dialog:condensed]", 407, 155 112 60 12, tab 21
-  text "[config_dialog:popups_tip]", 408, 85 132 140 24, tab 21
+  box "[config_dialog:show_popup]:", 409, 106 18 200 90, tab 21
+  check "&[popups_status:list_chan:dlg]", 390, 113 30 93 12, tab 21
+  check "&[popups_status:channels:dlg]", 391, 113 42 93 12, tab 21
+  check "&[popups_status:favorites:dlg]", 392, 113 55 93 12, tab 21
+  check "&[popups_status:nickname:dlg]", 393, 113 67 93 12, tab 21
+  check "&[popups_status:usermode:dlg]", 394, 113 79 93 12, tab 21
+  check "&[popups_status:quit:dlg]", 395, 113 92 93 12, tab 21
+  check "&[popups_status:server_info:dlg]", 396, 207 30 93 12, tab 21
+  check "&[popups_status:stats:dlg]", 397, 207 42 93 12, tab 21
+  check "&[popups_status:connect:dlg]", 398, 207 55 93 12, tab 21
+  check "&[popups:window:dlg]", 399, 207 67 93 12, tab 21
+  check "&[popups:help:dlg]", 400, 207 79 93 12, disable tab 21
+  button "&[config_dialog:load_def]", 406, 113 137 80 14, tab 21
+  button "&[config_dialog:condensed]", 407, 207 137 80 14, tab 21
+  text "[config_dialog:popups_tip]", 408, 113 162 187 29, tab 21
 
   ; Popups - @Windows [410-429]
-  box "[config_dialog:show_popup]:", 429, 80 15 150 74, tab 22
-  check "&[popups:select_all:dlg]", 410, 85 25 70 10, tab 22
-  check "&[popups:copy:dlg]", 411, 85 35 70 10, tab 22
-  check "&[popups:window:dlg]", 412, 85 45 70 10, tab 22
-  check "&[popups:close:dlg]", 413, 85 55 70 10, tab 22
-  check "&[popups:hide:dlg]", 414, 85 65 70 10, tab 22
-  check "&[popups:help:dlg]", 415, 85 75 70 10, disable tab 22
-  button "&[config_dialog:load_def]", 426, 85 112 60 12, tab 22
-  button "&[config_dialog:condensed]", 427, 155 112 60 12, tab 22
-  text "[config_dialog:popups_tip]", 428, 85 132 140 24, tab 22
+  box "[config_dialog:show_popup]:", 429, 106 18 200 90, tab 22
+  check "&[popups:select_all:dlg]", 410, 113 30 93 12, tab 22
+  check "&[popups:copy:dlg]", 411, 113 42 93 12, tab 22
+  check "&[popups:window:dlg]", 412, 113 55 93 12, tab 22
+  check "&[popups:close:dlg]", 413, 113 67 93 12, tab 22
+  check "&[popups:hide:dlg]", 414, 113 79 93 12, tab 22
+  check "&[popups:help:dlg]", 415, 113 92 93 12, disable tab 22
+  button "&[config_dialog:load_def]", 426, 113 137 80 14, tab 22
+  button "&[config_dialog:condensed]", 427, 207 137 80 14, tab 22
+  text "[config_dialog:popups_tip]", 428, 113 162 187 29, tab 22
 
   ; Channel options [430-459]
-  text "&[word:channel:dlg]:", 452, 65 8 36 8, right tab 24
-  combo 453, 102 6 70 50, sort drop tab 24
+  text "&[word:channel:dlg]:", 452, 86 9 48 9, right tab 24
+  combo 453, 136 7 93 61, sort drop tab 24
   list 454, 1 1 1 1, hide
   edit "", 457, 1 1 1 1, hide autohs
-  button "&[dialog:add]...", 455, 176 5 30 12, tab 24
-  button "&[dialog:remove]", 456, 210 5 30 12, tab 24
-  box "&[config_dialog:def_temp]:", 430, 70 23 170 25, tab 24
-  edit "", 431, 75 32 20 11, autohs tab 24
-  text "&[config_dialog:temp_type]:", 432, 97 34 50 8, tab 24
-  combo 433, 147 32 88 70, drop tab 24
-  box "&[config_dialog:def_mask]:", 434, 70 51 170 25, tab 24
-  combo 435, 75 60 38 50, drop tab 24
-  text "@", 436, 115 62 7 8, tab 24
-  combo 437, 124 60 111 60, drop tab 24
-  check "&[config_dialog:check_op]", 442, 70 80 175 8, tab 24
-  check "&[config_dialog:prot_note]", 443, 70 89 175 8, tab 24
-  check "&[config_dialog:show_clone]", 444, 70 98 85 8, tab 24
-  check "&[config_dialog:kick_delay]", 445, 155 98 90 8, tab 24
-  check "&[config_dialog:ircop_check]", 446, 70 107 85 8, tab 24
-  check "&[config_dialog:show_ban]", 447, 155 107 85 8, tab 24
-  check "&[config_dialog:whois_join]...", 448, 70 121 85 8, tab 24
-  check "...&[config_dialog:whois_op]", 449, 155 121 90 8, tab 24
-  check "...&[config_dialog:whois_away]", 450, 155 130 90 8, tab 24
-  check "...&[config_dialog:whois_chan]", 451, 155 139 90 8, tab 24
-  check "&[config_dialog:rejoin_forop]", 458, 70 139 85 8, tab 24
+  button "&[dialog:add]...", 455, 235 6 40 14, tab 24
+  button "&[dialog:remove]", 456, 280 6 40 14, tab 24
+  box "&[config_dialog:def_temp]:", 430, 93 28 227 30, tab 24
+  edit "", 431, 100 39 26 13, autohs tab 24
+  text "&[config_dialog:temp_type]:", 432, 129 41 66 9, tab 24
+  combo 433, 196 39 117 85, drop tab 24
+  box "&[config_dialog:def_mask]:", 434, 93 62 227 30, tab 24
+  combo 435, 100 73 50 61, drop tab 24
+  text "@", 436, 153 76 9 9, tab 24
+  combo 437, 165 73 148 73, drop tab 24
+  check "&[config_dialog:check_op]", 442, 93 98 233 9, tab 24
+  check "&[config_dialog:prot_note]", 443, 93 109 233 9, tab 24
+  check "&[config_dialog:show_clone]", 444, 93 120 113 9, tab 24
+  check "&[config_dialog:kick_delay]", 445, 207 120 120 9, tab 24
+  check "&[config_dialog:ircop_check]", 446, 93 131 113 9, tab 24
+  check "&[config_dialog:show_ban]", 447, 207 131 113 9, tab 24
+  check "&[config_dialog:whois_join]...", 448, 93 148 113 9, tab 24
+  check "...&[config_dialog:whois_op]", 449, 207 148 120 9, tab 24
+  check "...&[config_dialog:whois_away]", 450, 207 159 120 9, tab 24
+  check "...&[config_dialog:whois_chan]", 451, 207 170 120 9, tab 24
+  check "&[config_dialog:rejoin_forop]", 458, 93 170 113 9, tab 24
 
   ; DCC accept [40-69]
-  text "[config_dialog:dcc_note]", 40, 70 12 170 30, tab 25
-  box "[phrase:dcc_chat:dlg]", 41, 130 45 55 100, tab 25
-  box "[phrase:dcc_send:dlg] ([word:file:dlg:lower])", 42, 190 45 55 100, tab 25
-  text "[config_dialog:when_here]:", 43, 70 55 60 8, tab 25
-  text "&[config_dialog:known]:", 44, 75 67 55 8, tab 25
-  combo 50, 135 65 45 50, group drop tab 25
-  combo 51, 195 65 45 50, drop tab 25
-  text "&[config_dialog:unknown]:", 45, 75 79 55 8, tab 25
-  combo 52, 135 77 45 50, drop tab 25
-  combo 53, 195 77 45 50, drop tab 25
-  text "[config_dialog:when_away]:", 46, 70 91 60 8, tab 25
-  text "&[config_dialog:known]:", 47, 75 103 55 8, tab 25
-  combo 54, 135 101 45 50, drop tab 25
-  combo 55, 195 101 45 50, drop tab 25
-  text "&[config_dialog:unknown]:", 48, 75 115 55 8, tab 25
-  combo 56, 135 113 45 50, drop tab 25
-  combo 57, 195 113 45 50, drop tab 25
-  text "&[config_dialog:dcc_auth]:", 49, 75 127 55 8, tab 25
-  combo 58, 135 125 45 50, drop tab 25
-  combo 59, 195 125 45 50, drop tab 25
+  text "[config_dialog:dcc_note]", 40, 93 14 227 36, tab 25
+  box "[phrase:dcc_chat:dlg]", 41, 173 55 73 122, tab 25
+  box "[phrase:dcc_send:dlg] ([word:file:dlg:lower])", 42, 253 55 73 122, tab 25
+  text "[config_dialog:when_here]:", 43, 93 67 80 9, tab 25
+  text "&[config_dialog:known]:", 44, 100 82 73 9, tab 25
+  combo 50, 180 79 60 61, group drop tab 25
+  combo 51, 260 79 60 61, drop tab 25
+  text "&[config_dialog:unknown]:", 45, 100 97 73 9, tab 25
+  combo 52, 180 94 60 61, drop tab 25
+  combo 53, 260 94 60 61, drop tab 25
+  text "[config_dialog:when_away]:", 46, 93 111 80 9, tab 25
+  text "&[config_dialog:known]:", 47, 100 126 73 9, tab 25
+  combo 54, 180 124 60 61, drop tab 25
+  combo 55, 260 124 60 61, drop tab 25
+  text "&[config_dialog:unknown]:", 48, 100 141 73 9, tab 25
+  combo 56, 180 138 60 61, drop tab 25
+  combo 57, 260 138 60 61, drop tab 25
+  text "&[config_dialog:dcc_auth]:", 49, 100 156 73 9, tab 25
+  combo 58, 180 153 60 61, drop tab 25
+  combo 59, 260 153 60 61, drop tab 25
 
   ; Favorites [460-489,510-519]
-  text "&[config_dialog:fav_select]...", 460, 70 5 85 8, tab 26
-  combo 470, 70 15 60 48, size edit tab 26
-  button "&[dialog:add]", 471, 135 15 20 12, tab 26
-  button "&[dialog:del]", 472, 135 30 20 12, tab 26
-  text "...[config_dialog:fav_info]...", 461, 160 5 85 8, tab 26
-  text "&[config_dialog:fav_nickname]:", 462, 158 17 23 8, right tab 26
-  edit "", 463, 182 15 63 11, autohs tab 26
-  text "&[config_dialog:fav_alternate]:", 464, 158 29 23 8, right tab 26
-  edit "", 465, 182 27 63 11, autohs tab 26
-  text "&[word:email:dlg]:", 466, 158 41 23 8, right tab 26
-  edit "", 467, 182 39 63 11, autohs tab 26
-  text "&[config_dialog:fav_realname]:", 468, 158 53 23 8, right tab 26
-  edit "", 469, 182 51 63 11, autohs tab 26
+  text "&[config_dialog:fav_select]...", 460, 93 6 113 9, tab 26
+  combo 470, 93 18 80 58, size edit tab 26
+  button "&[dialog:add]", 471, 180 18 26 14, tab 26
+  button "&[dialog:del]", 472, 180 36 26 14, tab 26
+  text "...[config_dialog:fav_info]...", 461, 213 6 113 9, tab 26
+  text "&[config_dialog:fav_nickname]:", 462, 211 20 30 9, right tab 26
+  edit "", 463, 243 18 84 13, autohs tab 26
+  text "&[config_dialog:fav_alternate]:", 464, 211 35 30 9, right tab 26
+  edit "", 465, 243 33 84 13, autohs tab 26
+  text "&[word:email:dlg]:", 466, 211 50 30 9, right tab 26
+  edit "", 467, 243 47 84 13, autohs tab 26
+  text "&[config_dialog:fav_realname]:", 468, 211 65 30 9, right tab 26
+  edit "", 469, 243 62 84 13, autohs tab 26
   list 487, 1 1 1 1, hide
   list 488, 1 1 1 1, hide
   list 489, 1 1 1 1, hide
   edit "", 512, 1 1 1 1, autohs hide
-  text "&[config_dialog:fav_chan]:", 473, 70 75 85 8, tab 26
-  combo 475, 70 85 60 48, size edit tab 26
-  button "&[dialog:add]", 476, 135 85 20 10, tab 26
-  button "&[dialog:del]", 477, 135 97 20 10, tab 26
-  button "&[dialog:up]", 478, 135 109 20 10, tab 26
-  button "&[dialog:down]", 479, 135 121 20 10, tab 26
-  text "&[config_dialog:fav_server]:", 474, 160 75 85 8, tab 26
-  combo 480, 160 85 60 48, size edit tab 26
-  button "&[dialog:add]", 481, 225 85 20 10, tab 26
-  button "&[dialog:del]", 482, 225 97 20 10, tab 26
-  button "&[dialog:up]", 483, 225 109 20 10, tab 26
-  button "&[dialog:down]", 484, 225 121 20 10, tab 26
-  check "&[config_dialog:fav_join]", 485, 70 135 63 8, tab 26
-  edit "", 510, 135 134 20 11, autohs tab 26
-  check "&[config_dialog:fav_connect]", 486, 160 135 85 8, tab 26
+  text "&[config_dialog:fav_chan]:", 473, 93 92 113 9, tab 26
+  combo 475, 93 104 80 58, size edit tab 26
+  button "&[dialog:add]", 476, 180 104 26 12, tab 26
+  button "&[dialog:del]", 477, 180 119 26 12, tab 26
+  button "&[dialog:up]", 478, 180 133 26 12, tab 26
+  button "&[dialog:down]", 479, 180 148 26 12, tab 26
+  text "&[config_dialog:fav_server]:", 474, 213 92 113 9, tab 26
+  combo 480, 213 104 80 58, size edit tab 26
+  button "&[dialog:add]", 481, 300 104 26 12, tab 26
+  button "&[dialog:del]", 482, 300 119 26 12, tab 26
+  button "&[dialog:up]", 483, 300 133 26 12, tab 26
+  button "&[dialog:down]", 484, 300 148 26 12, tab 26
+  check "&[config_dialog:fav_join]", 485, 93 165 84 9, tab 26
+  edit "", 510, 180 164 26 13, autohs tab 26
+  check "&[config_dialog:fav_connect]", 486, 213 165 113 9, tab 26
 
   ; Flashing [490-509]
-  text "[config_dialog:flash_note]", 507, 70 12 170 30, tab 27
-  box "[config_dialog:when_here]:", 490, 125 35 55 50, tab 27
-  box "[config_dialog:when_away]:", 491, 185 35 55 50, tab 27
-  text "[config_dialog:flash_query]:", 492, 70 47 50 8, right tab 27
-  text "[phrase:private_msg:dlg]:", 493, 70 59 50 8, right tab 27
-  text "[config_dialog:flash_chat]:", 494, 70 71 50 8, right tab 27
-  check "&[config_dialog:flash_here]", 495, 130 47 45 8, tab 27
-  check "&[config_dialog:flash_here]", 497, 130 59 45 8, tab 27
-  check "&[config_dialog:flash_here]", 499, 130 71 45 8, tab 27
-  check "&[config_dialog:flash_away]", 496, 190 47 45 8, tab 27
-  check "&[config_dialog:flash_away]", 498, 190 59 45 8, tab 27
-  check "&[config_dialog:flash_away]", 500, 190 71 45 8, tab 27
-  check "&[config_dialog:limit_flash]", 501, 70 95 48 8, tab 27
-  edit "", 502, 120 94 20 11, autohs tab 27
-  text "[dialog:seconds] ([config_dialog:when_here:lower])", 503, 144 96 101 8, tab 27
-  check "&[config_dialog:limit_flash]", 504, 70 107 48 8, tab 27
-  edit "", 505, 120 106 20 11, autohs tab 27
-  text "[dialog:seconds] ([config_dialog:when_away:lower])", 506, 144 108 101 8, tab 27
+  text "[config_dialog:flash_note]", 507, 93 14 227 36, tab 27
+  box "[config_dialog:when_here]:", 490, 167 42 73 61, tab 27
+  box "[config_dialog:when_away]:", 491, 247 42 73 61, tab 27
+  text "[config_dialog:flash_query]:", 492, 93 57 66 9, right tab 27
+  text "[phrase:private_msg:dlg]:", 493, 93 72 66 9, right tab 27
+  text "[config_dialog:flash_chat]:", 494, 93 87 66 9, right tab 27
+  check "&[config_dialog:flash_here]", 495, 173 57 60 9, tab 27
+  check "&[config_dialog:flash_here]", 497, 173 72 60 9, tab 27
+  check "&[config_dialog:flash_here]", 499, 173 87 60 9, tab 27
+  check "&[config_dialog:flash_away]", 496, 253 57 60 9, tab 27
+  check "&[config_dialog:flash_away]", 498, 253 72 60 9, tab 27
+  check "&[config_dialog:flash_away]", 500, 253 87 60 9, tab 27
+  check "&[config_dialog:limit_flash]", 501, 93 116 64 9, tab 27
+  edit "", 502, 160 115 26 13, autohs tab 27
+  text "[dialog:seconds] ([config_dialog:when_here:lower])", 503, 192 117 134 9, tab 27
+  check "&[config_dialog:limit_flash]", 504, 93 131 64 9, tab 27
+  edit "", 505, 160 130 26 13, autohs tab 27
+  text "[dialog:seconds] ([config_dialog:when_away:lower])", 506, 192 132 134 9, tab 27
 
   ; Language [520-539]
-  text "[config_dialog:curr_lang]:", 520, 70 9 63 8, right tab 28
-  edit "", 521, 135 7 70 11, autohs read tab 28
-  text "[config_dialog:new_lang]:", 522, 70 21 63 8, right tab 28
-  edit "", 523, 135 19 70 11, autohs read tab 28
+  text "[config_dialog:curr_lang]:", 520, 93 11 84 9, right tab 28
+  edit "", 521, 180 8 93 13, autohs read tab 28
+  text "[config_dialog:new_lang]:", 522, 93 25 84 9, right tab 28
+  edit "", 523, 180 23 93 13, autohs read tab 28
   edit "", 529, 1 1 1 1, hide
-  check "&[config_dialog:lower_popup]", 527, 135 31 110 8, tab 28
-  check "&[config_dialog:lower_all]", 528, 135 40 110 8, tab 28
-  text "[config_dialog:lang_note]", 524, 70 56 170 41, tab 28
-  list 525, 70 97 135 50, sort tab 28
-  button "&[dialog:select]", 526, 210 97 30 12, tab 28
+  check "&[config_dialog:lower_popup]", 527, 180 38 146 9, tab 28
+  check "&[config_dialog:lower_all]", 528, 180 49 146 9, tab 28
+  text "[config_dialog:lang_note]", 524, 93 68 227 50, tab 28
+  list 525, 93 119 180 61, sort tab 28
+  button "&[dialog:select]", 526, 280 119 40 14, tab 28
 
   ; Messages [540-559]
-  text "&[dialog:editing]", 541, 70 8 20 8, tab 29
-  combo 542, 93 6 50 85, drop sort tab 29
-  text "[config_dialog:cat_msgs:lower]:", 543, 146 8 44 8, tab 29
-  check "[config_dialog:alt_list]", 555, 190 8 50 8, tab 29
-  list 544, 70 19 170 49, size sort tab 29
+  text "&[dialog:editing]", 541, 93 9 26 9, tab 29
+  combo 542, 124 7 66 104, drop sort tab 29
+  text "[config_dialog:cat_msgs:lower]:", 543, 195 9 58 9, tab 29
+  check "[config_dialog:alt_list]", 555, 253 9 66 9, tab 29
+  list 544, 93 23 227 60, size sort tab 29
   list 552, 1 1 1 1, hide
   list 553, 1 1 1 1, hide
   edit "", 556, 1 1 1 1, autohs hide
   edit "", 557, 1 1 1 1, autohs hide
-  text "", 554, 70 72 170 8, tab 29
-  text "&[config_dialog:msg_prompt]:", 545, 70 82 170 8, tab 29
-  combo 546, 70 92 170 85, edit drop tab 29
-  text "[config_dialog:msg_sample]:", 547, 70 106 170 8, tab 29
-  icon 548, 70 116 170 11, script\pnp.ico, tab 29
-  text "", 549, 70 136 95 8, tab 29
-  edit "", 550, 165 134 20 11, autohs tab 29
-  edit "", 551, 188 134 20 11, autohs tab 29
+  text "", 554, 93 88 227 9, tab 29
+  text "&[config_dialog:msg_prompt]:", 545, 93 100 227 9, tab 29
+  combo 546, 93 113 227 104, edit drop tab 29
+  text "[config_dialog:msg_sample]:", 547, 93 130 227 9, tab 29
+  icon 548, 93 142 227 13, script\pnp.ico, tab 29
+  text "", 549, 93 167 126 9, tab 29
+  edit "", 550, 220 164 26 13, autohs tab 29
+  edit "", 551, 251 164 26 13, autohs tab 29
 
   ; Protection [560-599]
-  check "&[config_dialog:ver_reply]", 560, 70 5 175 8, tab 30
-  check "&[config_dialog:ctcp_reply]-", 561, 70 14 175 8, tab 30
-  button "&[config_dialog:ctcp_edit]", 562, 81 25 50 12, tab 30
-  check "&[config_dialog:dcc_flood]", 563, 70 40 175 8, tab 30
-  check "&[config_dialog:ctcp_flood]", 564, 70 49 175 8, tab 30
-  check "&[config_dialog:rand_nick]", 565, 70 58 175 8, tab 30
-  check "&[config_dialog:verify_invite]", 581, 70 67 175 8, tab 30
-  check "&[config_dialog:dccmsg_flood]:", 566, 70 84 80 8, tab 30
-  edit "", 567, 150 83 20 11, autohs tab 30
-  text "[dialog:lines]", 568, 172 85 25 8, tab 30
-  edit "", 569, 198 83 20 11, autohs tab 30
-  text "[dialog:seconds]", 570, 220 85 30 8, tab 30
-  check "&[config_dialog:query_flood]:", 571, 70 96 80 8, tab 30
-  edit "", 572, 150 95 20 11, autohs tab 30
-  text "[config_dialog:queries]", 573, 172 97 25 8, tab 30
-  edit "", 574, 198 95 20 11, autohs tab 30
-  text "[dialog:seconds]", 575, 220 97 30 8, tab 30
-  check "&[config_dialog:notice_flood]:", 576, 70 108 80 8, tab 30
-  edit "", 577, 150 107 20 11, autohs tab 30
-  text "[dialog:lines]", 578, 172 109 25 8, tab 30
-  edit "", 579, 198 107 20 11, autohs tab 30
-  text "[dialog:seconds]", 580, 220 109 30 8, tab 30
-  check "&[config_dialog:self_lag]", 582, 70 123 80 8, tab 30
-  edit "", 583, 150 122 20 11, autohs tab 30
-  text "[dialog:seconds]", 584, 172 124 60 8, tab 30
-  check "&[config_dialog:self_lag_warn]", 585, 70 135 80 8, tab 30
-  edit "", 586, 150 134 20 11, autohs tab 30
-  text "[config_dialog:self_lag_and]", 587, 172 136 25 8, tab 30
-  edit "", 588, 198 134 20 11, autohs tab 30
-  text "[dialog:seconds]", 589, 220 136 30 8, tab 30
+  check "&[config_dialog:ver_reply]", 560, 93 6 233 9, tab 30
+  check "&[config_dialog:ctcp_reply]-", 561, 93 17 233 9, tab 30
+  button "&[config_dialog:ctcp_edit]", 562, 108 30 66 14, tab 30
+  check "&[config_dialog:dcc_flood]", 563, 93 49 233 9, tab 30
+  check "&[config_dialog:ctcp_flood]", 564, 93 60 233 9, tab 30
+  check "&[config_dialog:rand_nick]", 565, 93 71 233 9, tab 30
+  check "&[config_dialog:verify_invite]", 581, 93 82 233 9, tab 30
+  check "&[config_dialog:dccmsg_flood]:", 566, 93 103 106 9, tab 30
+  edit "", 567, 200 101 26 13, autohs tab 30
+  text "[dialog:lines]", 568, 229 104 33 9, tab 30
+  edit "", 569, 264 101 26 13, autohs tab 30
+  text "[dialog:seconds]", 570, 293 104 40 9, tab 30
+  check "&[config_dialog:query_flood]:", 571, 93 117 106 9, tab 30
+  edit "", 572, 200 116 26 13, autohs tab 30
+  text "[config_dialog:queries]", 573, 229 119 33 9, tab 30
+  edit "", 574, 264 116 26 13, autohs tab 30
+  text "[dialog:seconds]", 575, 293 119 40 9, tab 30
+  check "&[config_dialog:notice_flood]:", 576, 93 132 106 9, tab 30
+  edit "", 577, 200 131 26 13, autohs tab 30
+  text "[dialog:lines]", 578, 229 133 33 9, tab 30
+  edit "", 579, 264 131 26 13, autohs tab 30
+  text "[dialog:seconds]", 580, 293 133 40 9, tab 30
+  check "&[config_dialog:self_lag]", 582, 93 151 106 9, tab 30
+  edit "", 583, 200 149 26 13, autohs tab 30
+  text "[dialog:seconds]", 584, 229 152 80 9, tab 30
+  check "&[config_dialog:self_lag_warn]", 585, 93 165 106 9, tab 30
+  edit "", 586, 200 164 26 13, autohs tab 30
+  text "[config_dialog:self_lag_and]", 587, 229 167 33 9, tab 30
+  edit "", 588, 264 164 26 13, autohs tab 30
+  text "[dialog:seconds]", 589, 293 167 40 9, tab 30
 
   ; Serverlist [600-619]
-  text "[config_dialog:serverlist_note1]", 604, 70 5 170 24, tab 31
-  check "&[config_dialog:serverlist_enable]:", 600, 70 30 170 8, tab 31
-  combo 601, 70 40 135 60, size edit tab 31
-  button "&[dialog:add]", 602, 210 40 30 12, tab 31
-  button "&[dialog:del]", 603, 210 55 30 12, tab 31
-  text "[config_dialog:serverlist_note2]", 605, 70 105 170 24, tab 31
-  button "&[config_dialog:refresh]", 606, 190 129 50 12, tab 31
+  text "[config_dialog:serverlist_note1]", 604, 93 6 227 29, tab 31
+  check "&[config_dialog:serverlist_enable]:", 600, 93 36 227 9, tab 31
+  combo 601, 93 49 180 73, size edit tab 31
+  button "&[dialog:add]", 602, 280 49 40 14, tab 31
+  button "&[dialog:del]", 603, 280 67 40 14, tab 31
+  text "[config_dialog:serverlist_note2]", 605, 93 128 227 29, tab 31
+  button "&[config_dialog:refresh]", 606, 253 158 66 14, tab 31
   edit "", 607, 1 1 1 1, hide
-  text "[config_dialog:serverlist_refresh]", 608, 70 129 120 16, hide tab 31
+  text "[config_dialog:serverlist_refresh]", 608, 93 158 160 19, hide tab 31
 
   ; Titlebar [620-649]
-  check "&[config_dialog:update_title]:", 638, 70 10 120 8, tab 32
-  box "[config_dialog:when_here]:", 620, 70 25 80 94, tab 32
-  check "&[word:network:dlg]", 621, 75 35 70 10, tab 32
-  check "&[word:nickname:dlg]", 622, 75 45 70 10, tab 32
-  check "&[phrase:self_lag:dlg]", 623, 75 55 70 10, tab 32
-  check "&[phrase:active:dlg]", 624, 75 65 70 10, tab 32
-  text "[config_dialog:and_data]", 625, 84 74 61 10, tab 32
-  check "&[word:pager:dlg]", 626, 75 85 70 10, tab 32
-  check "&[config_dialog:title_time]", 627, 75 95 70 10, tab 32
-  check "&[titlebar:idle:dlg]", 628, 75 105 70 10, tab 32
-  box "[config_dialog:when_away]:", 629, 160 25 80 94, tab 32
-  check "&[word:network:dlg]", 630, 165 35 70 10, tab 32
-  check "&[word:nickname:dlg]", 631, 165 45 70 10, tab 32
-  check "&[phrase:self_lag:dlg]", 632, 165 55 70 10, tab 32
-  check "&[config_dialog:title_away]", 633, 165 65 70 10, tab 32
-  check "&[config_dialog:awaylog]", 634, 165 75 70 10, tab 32
-  check "&[word:pager:dlg]", 635, 165 85 70 10, tab 32
-  check "&[config_dialog:title_time]", 636, 165 95 70 10, tab 32
-  check "&[titlebar:idle:dlg]", 637, 165 105 70 10, tab 32
-  text "[config_dialog:idle_note]", 639, 70 130 170 8, tab 32
+  check "&[config_dialog:update_title]:", 638, 93 12 160 9, tab 32
+  box "[config_dialog:when_here]:", 620, 93 30 106 115, tab 32
+  check "&[word:network:dlg]", 621, 100 42 93 12, tab 32
+  check "&[word:nickname:dlg]", 622, 100 55 93 12, tab 32
+  check "&[phrase:self_lag:dlg]", 623, 100 67 93 12, tab 32
+  check "&[phrase:active:dlg]", 624, 100 79 93 12, tab 32
+  text "[config_dialog:and_data]", 625, 112 90 81 12, tab 32
+  check "&[word:pager:dlg]", 626, 100 104 93 12, tab 32
+  check "&[config_dialog:title_time]", 627, 100 116 93 12, tab 32
+  check "&[titlebar:idle:dlg]", 628, 100 128 93 12, tab 32
+  box "[config_dialog:when_away]:", 629, 213 30 106 115, tab 32
+  check "&[word:network:dlg]", 630, 220 42 93 12, tab 32
+  check "&[word:nickname:dlg]", 631, 220 55 93 12, tab 32
+  check "&[phrase:self_lag:dlg]", 632, 220 67 93 12, tab 32
+  check "&[config_dialog:title_away]", 633, 220 79 93 12, tab 32
+  check "&[config_dialog:awaylog]", 634, 220 92 93 12, tab 32
+  check "&[word:pager:dlg]", 635, 220 104 93 12, tab 32
+  check "&[config_dialog:title_time]", 636, 220 116 93 12, tab 32
+  check "&[titlebar:idle:dlg]", 637, 220 128 93 12, tab 32
+  text "[config_dialog:idle_note]", 639, 93 159 227 9, tab 32
 
   ; Other [650-679]
-  text "&[config_dialog:nick_comp]:", 650, 70 15 100 8, right tab 33
-  edit "", 651, 172 13 30 11, autohs tab 33
-  text "&[config_dialog:inline_comp]:", 652, 70 27 100 8, right tab 33
-  edit "", 653, 172 25 30 11, autohs tab 33
-  check "&[config_dialog:ask_comp]", 654, 75 42 170 8, tab 33
-  check "&[config_dialog:cmd_comp]", 655, 75 51 170 8, tab 33
-  check "&[config_dialog:auto_strip]", 656, 75 65 170 8, tab 33
-  box "[config_dialog:use_b]:", 657, 70 79 55 34, tab 33
-  radio "/bac&k", 658, 80 89 40 8, group tab 33
-  radio "/ba&n", 659, 80 99 40 8, tab 33
-  box "[config_dialog:fkeys_recent]", 660, 130 79 115 34, tab 33
-  radio "&[config_dialog:fkeys_cycle]", 661, 140 89 100 8, group tab 33
-  radio "&[config_dialog:fkeys_auto]", 662, 140 99 100 8, tab 33
-  box "[config_dialog:fkeys_use]:", 663, 70 119 175 24, tab 33
-  radio "&F7", 664, 80 129 50 8, group tab 33
-  radio "&F10", 665, 130 129 50 8, tab 33
-  radio "&[word:any:dlg]", 666, 180 129 55 8, tab 33
+  text "&[config_dialog:nick_comp]:", 650, 93 18 133 9, right tab 33
+  edit "", 651, 229 15 40 13, autohs tab 33
+  text "&[config_dialog:inline_comp]:", 652, 93 33 133 9, right tab 33
+  edit "", 653, 229 30 40 13, autohs tab 33
+  check "&[config_dialog:ask_comp]", 654, 100 51 227 9, tab 33
+  check "&[config_dialog:cmd_comp]", 655, 100 62 227 9, tab 33
+  check "&[config_dialog:auto_strip]", 656, 100 79 227 9, tab 33
+  box "[config_dialog:use_b]:", 657, 93 97 73 41, tab 33
+  radio "/bac&k", 658, 106 109 53 9, group tab 33
+  radio "/ba&n", 659, 106 121 53 9, tab 33
+  box "[config_dialog:fkeys_recent]", 660, 173 97 153 41, tab 33
+  radio "&[config_dialog:fkeys_cycle]", 661, 187 109 133 9, group tab 33
+  radio "&[config_dialog:fkeys_auto]", 662, 187 121 133 9, tab 33
+  box "[config_dialog:fkeys_use]:", 663, 93 146 233 29, tab 33
+  radio "&F7", 664, 106 158 66 9, group tab 33
+  radio "&F10", 665, 173 158 66 9, tab 33
+  radio "&[word:any:dlg]", 666, 240 158 73 9, tab 33
 }
 
 ; /_config [#]
@@ -2144,3 +2144,4 @@ alias -l msgprev.update {
   drawsave @.msgprev script\temp\msgprev.bmp
   did -g pnp.config 548 script\temp\msgprev.bmp
 }
+

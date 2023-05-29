@@ -224,14 +224,14 @@ alias -l _plban {
 dialog randsound {
   title "[randsnd_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 200 34
-  text "[randsnd_dialog:head]:", 1, 2 1 197 7
-  text "", 2, 4 10 197 7
-  button "&[spanel_dialog:play]", 3, 6 20 40 12, OK default
-  button "[dialog:cancel]", 4, 56 20 40 12, cancel
-  button "&[randsnd_dialog:pick]", 5, 106 20 40 12
-  check "&[randsnd_dialog:continuous]", 20, 156 21 50 11
+  option map
+  size -1 -1 267 41
+  text "[randsnd_dialog:head]:", 1, 2 1 263 8
+  text "", 2, 5 12 263 8
+  button "&[spanel_dialog:play]", 3, 8 24 53 14, OK default
+  button "[dialog:cancel]", 4, 74 24 53 14, cancel
+  button "&[randsnd_dialog:pick]", 5, 141 24 53 14
+  check "&[randsnd_dialog:continuous]", 20, 208 25 66 13
   edit "", 10, 1 1 1 1, hide result
   edit "", 11, 1 1 1 1, hide
   edit "", 12, 1 1 1 1, hide
@@ -702,13 +702,13 @@ menu @Playlist {
 dialog starg {
   title "[starg_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 70 90
-  text "&[starg_dialog:prompt]:", 1, 1 1 65 10
-  combo 10, 0 12 70 75, drop
+  option map
+  size -1 -1 93 110
+  text "&[starg_dialog:prompt]:", 1, 1 1 86 12
+  combo 10, 0 14 93 92, drop
   list 30, 1 1 1 1, hide
-  list 2, 0 25 70 55
-  button "&[dialog:select]", 3, 10 78 48 10, default OK
+  list 2, 0 30 93 67
+  button "&[dialog:select]", 3, 13 95 64 12, default OK
   edit "", 4, 1 1 1 1, hide result autohs
 }
 on *:DIALOG:starg:init:*:{
@@ -861,17 +861,17 @@ alias scfg _dialog -am stypes stypes
 dialog stypes {
   title "[stype_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 125 89
+  option map
+  size -1 -1 167 109
 
-  text "&[stype_dialog:prompt]", 1, 5 5 110 15
+  text "&[stype_dialog:prompt]", 1, 6 6 146 18
 
-  list 2, 5 22 75 67, sort
+  list 2, 6 27 100 82, sort
 
-  button "&[dialog:config]", 10, 85 23 35 12, default
-  button "&[dialog:add]", 11, 85 39 35 12
-  button "&[dialog:remove]", 12, 85 55 35 12
-  button "[dialog:close]", 13, 85 71 35 12, cancel
+  button "&[dialog:config]", 10, 113 28 46 14, default
+  button "&[dialog:add]", 11, 113 47 46 14
+  button "&[dialog:remove]", 12, 113 67 46 14
+  button "[dialog:close]", 13, 113 87 46 14, cancel
 }
 on *:DIALOG:stypes:init:*:_freshenst $dname 2
 alias -l _freshenst {
@@ -923,18 +923,18 @@ alias -l _stype {
 dialog deftypes {
   title "[stypeadd_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 158 49
+  option map
+  size -1 -1 211 60
 
-  text "[stypeadd_dialog:prompt]:", 201, 7 6 140 10
+  text "[stypeadd_dialog:prompt]:", 201, 9 7 187 12
 
-  button "&[stypeadd_dialog:mp3]", 101, 6 20 32 12
-  button "&[stypeadd_dialog:wav]", 102, 44 20 32 12
-  button "&[stypeadd_dialog:mid]", 103, 82 20 32 12
-  button "&[stypeadd_dialog:wma]", 104, 6 35 32 12
-  button "&[stypeadd_dialog:ogg]", 105, 44 35 32 12
-  button "&[word:other:dlg]", 106, 82 35 32 12, OK
-  button "[dialog:cancel]", 107, 120 35 32 12, cancel
+  button "&[stypeadd_dialog:mp3]", 101, 8 24 42 14
+  button "&[stypeadd_dialog:wav]", 102, 58 24 42 14
+  button "&[stypeadd_dialog:mid]", 103, 109 24 42 14
+  button "&[stypeadd_dialog:wma]", 104, 8 42 42 14
+  button "&[stypeadd_dialog:ogg]", 105, 58 42 42 14
+  button "&[word:other:dlg]", 106, 109 42 42 14, OK
+  button "[dialog:cancel]", 107, 160 42 42 14, cancel
 
   edit "-", 1, 1 1 1 1, result hide
 }
@@ -950,43 +950,43 @@ on *:DIALOG:deftypes:sclick:*:if ($did isnum 101-105) { did -o $dname 1 1 $getto
 dialog scfg {
   title "[scfg_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 215 117
+  option map
+  size -1 -1 287 143
 
-  check "&[word:options:dlg]", 203, 5 5 40 12, push
-  check "&[scfg_dialog:dir]", 204, 50 5 40 12, push
-  check "&[scfg_dialog:player]", 205, 95 5 40 12, push
+  check "&[word:options:dlg]", 203, 6 6 53 14, push
+  check "&[scfg_dialog:dir]", 204, 66 6 53 14, push
+  check "&[scfg_dialog:player]", 205, 126 6 53 14, push
 
-  box "[word:options:dlg]:", 1, 5 22 205 72, hide
-  text "&[scfg_dialog:type]:", 2, 5 32 42 8, right hide
-  edit "", 3, 50 30 95 11, autohs hide result
-  text "&[scfg_dialog:ext]:", 4, 5 44 42 8, right hide
-  edit "", 5, 50 42 95 11, autohs hide
-  text "&[scfg_dialog:action]:", 8, 5 56 42 8, right hide
-  edit "", 9, 50 54 155 11, autohs hide
-  text "&[scfg_dialog:wdesc]:", 10, 5 68 42 8, right hide
-  edit "", 11, 50 66 155 11, autohs hide
-  check "&[scfg_dialog:ask_desc]", 12, 20 80 85 10, hide disable
-  check "&[scfg_dialog:use_id3]", 13, 110 80 100 10, hide
+  box "[word:options:dlg]:", 1, 6 27 273 88, hide
+  text "&[scfg_dialog:type]:", 2, 6 39 56 9, right hide
+  edit "", 3, 66 36 126 13, autohs hide result
+  text "&[scfg_dialog:ext]:", 4, 6 54 56 9, right hide
+  edit "", 5, 66 51 126 13, autohs hide
+  text "&[scfg_dialog:action]:", 8, 6 68 56 9, right hide
+  edit "", 9, 66 66 207 13, autohs hide
+  text "&[scfg_dialog:wdesc]:", 10, 6 83 56 9, right hide
+  edit "", 11, 66 81 207 13, autohs hide
+  check "&[scfg_dialog:ask_desc]", 12, 26 98 113 12, hide disable
+  check "&[scfg_dialog:use_id3]", 13, 146 98 133 12, hide
 
-  box "[scfg_dialog:dir]:", 14, 5 22 205 70, hide
-  list 15, 10 32 155 45, sort hide
-  button "&[dialog:add]", 16, 169 33 35 12, hide
-  button "&[dialog:remove]", 17, 169 53 35 12, hide
-  check "&[scfg_dialog:index]", 18, 15 77 150 10, hide
-  button "&[scfg_dialog:auto_find]...", 19, 169 73 35 12, hide disable
+  box "[scfg_dialog:dir]:", 14, 6 27 273 85, hide
+  list 15, 13 39 207 55, sort hide
+  button "&[dialog:add]", 16, 225 40 46 14, hide
+  button "&[dialog:remove]", 17, 225 65 46 14, hide
+  check "&[scfg_dialog:index]", 18, 20 94 200 12, hide
+  button "&[scfg_dialog:auto_find]...", 19, 225 89 46 14, hide disable
 
-  box "[scfg_dialog:player]:", 20, 5 22 205 74, hide
-  check "&[scfg_dialog:built_in]", 21, 10 31 190 10, hide
-  button "", 22, 10 44 195 12, hide
-  check "&[scfg_dialog:minimize]", 23, 10 59 77 10, hide
-  check "&[scfg_dialog:grab_focus]", 24, 90 59 112 10, hide
-  check "&[scfg_dialog:short_fn]", 25, 10 69 77 10, hide
-  check "&[scfg_dialog:playlist_single]", 26, 90 69 112 10, hide
-  check "&[scfg_dialog:play_sounds]", 29, 90 80 112 10, hide
+  box "[scfg_dialog:player]:", 20, 6 27 273 90, hide
+  check "&[scfg_dialog:built_in]", 21, 13 38 253 12, hide
+  button "", 22, 13 54 260 14, hide
+  check "&[scfg_dialog:minimize]", 23, 13 72 102 12, hide
+  check "&[scfg_dialog:grab_focus]", 24, 120 72 149 12, hide
+  check "&[scfg_dialog:short_fn]", 25, 13 84 102 12, hide
+  check "&[scfg_dialog:playlist_single]", 26, 120 84 149 12, hide
+  check "&[scfg_dialog:play_sounds]", 29, 120 98 149 12, hide
 
-  button "[dialog:ok]", 201, 25 100 40 12, OK default
-  button "[dialog:cancel]", 202, 100 100 40 12, cancel
+  button "[dialog:ok]", 201, 33 122 53 14, OK default
+  button "[dialog:cancel]", 202, 133 122 53 14, cancel
 
   edit "", 100, 1 1 1 1, hide autohs
   edit %.s.type, 101, 1 1 1 1, hide autohs
@@ -1266,11 +1266,11 @@ menu @Queue {
 
 dialog stype {
   title "[scfg_dialog:type]"
-  option dbu
-  size -1 -1 70 77
-  text "&[stypesel_dialog:prompt]:", 1, 1 1 65 10
-  list 2, 0 12 70 55, sort
-  button "&[dialog:select]", 3, 10 65 48 10, default OK
+  option map
+  size -1 -1 93 94
+  text "&[stypesel_dialog:prompt]:", 1, 1 1 86 12
+  list 2, 0 14 93 67, sort
+  button "&[dialog:select]", 3, 13 79 64 12, default OK
   edit "", 4, 1 1 1 1, hide result autohs
 }
 on *:DIALOG:stype:init:*:_freshenst $dname 2
@@ -1558,64 +1558,64 @@ alias sopt _dialog -am sopt sopt
 dialog sopt {
   title "[sopt_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 215 140
+  option map
+  size -1 -1 287 171
 
-  check "&[sopt_dialog:grab]", 203, 5 5 40 12, push
-  check "&[sopt_dialog:leech]", 204, 50 5 40 12, push
-  check "&[sopt_dialog:cmds]", 205, 95 5 40 12, push
-  check "&[word:options:dlg]", 206, 140 5 40 12, push
+  check "&[sopt_dialog:grab]", 203, 6 6 53 14, push
+  check "&[sopt_dialog:leech]", 204, 66 6 53 14, push
+  check "&[sopt_dialog:cmds]", 205, 126 6 53 14, push
+  check "&[word:options:dlg]", 206, 187 6 53 14, push
 
-  box "[sopt_dialog:grab]:", 1, 5 22 205 95, hide
-  check "&[sopt_dialog:grab_enable]", 2, 10 31 195 8, hide
-  radio "&[sopt_dialog:grab_auto]", 3, 20 43 185 8, hide
-  radio "&[sopt_dialog:grab_win]", 4, 20 53 185 8, hide
-  radio "&[sopt_dialog:grab_popup]", 5, 20 63 185 8, hide
-  check "&[sopt_dialog:grab_matching]:", 6, 10 78 72 8, hide
-  edit "", 7, 82 77 60 11, hide
-  check "&[sopt_dialog:grab_chan]:", 8, 10 91 72 8, hide
-  edit "", 9, 82 89 60 11, hide
-  check "&[sopt_dialog:assume_trigger]", 10, 10 104 100 8, hide
-  check "&[sopt_dialog:grab_private]", 11, 115 104 90 8, hide
+  box "[sopt_dialog:grab]:", 1, 6 27 273 116, hide
+  check "&[sopt_dialog:grab_enable]", 2, 13 38 260 9, hide
+  radio "&[sopt_dialog:grab_auto]", 3, 26 52 247 9, hide
+  radio "&[sopt_dialog:grab_win]", 4, 26 65 247 9, hide
+  radio "&[sopt_dialog:grab_popup]", 5, 26 77 247 9, hide
+  check "&[sopt_dialog:grab_matching]:", 6, 13 95 96 9, hide
+  edit "", 7, 109 94 80 13, hide
+  check "&[sopt_dialog:grab_chan]:", 8, 13 111 96 9, hide
+  edit "", 9, 109 109 80 13, hide
+  check "&[sopt_dialog:assume_trigger]", 10, 13 127 133 9, hide
+  check "&[sopt_dialog:grab_private]", 11, 153 127 120 9, hide
 
-  box "[sopt_dialog:leech]:", 12, 5 22 205 95, hide
-  check "&[sopt_dialog:leech_enable]", 13, 10 31 195 8, hide
-  text "&[sopt_dialog:leech_trigger]:", 14, 20 44 75 8, hide
-  edit "", 15, 95 42 47 11, hide
-  text "&[sopt_dialog:leech_last]:", 16, 20 56 75 8, hide
-  edit "", 17, 95 54 47 11, hide
-  check "&[sopt_dialog:leech_match]:", 18, 10 78 72 8, hide
-  edit "", 19, 82 77 60 11, hide
-  check "&[sopt_dialog:leech_chan]:", 20, 10 90 72 8, hide
-  edit "", 21, 82 89 60 11, hide
-  check "&[sopt_dialog:leech_show]", 44, 10 102 195 8, hide
-  button "&[sopt_dialog:queue]...", 22, 147 47 55 12, hide
+  box "[sopt_dialog:leech]:", 12, 6 27 273 116, hide
+  check "&[sopt_dialog:leech_enable]", 13, 13 38 260 9, hide
+  text "&[sopt_dialog:leech_trigger]:", 14, 26 54 100 9, hide
+  edit "", 15, 126 51 62 13, hide
+  text "&[sopt_dialog:leech_last]:", 16, 26 68 100 9, hide
+  edit "", 17, 126 66 62 13, hide
+  check "&[sopt_dialog:leech_match]:", 18, 13 95 96 9, hide
+  edit "", 19, 109 94 80 13, hide
+  check "&[sopt_dialog:leech_chan]:", 20, 13 110 96 9, hide
+  edit "", 21, 109 109 80 13, hide
+  check "&[sopt_dialog:leech_show]", 44, 13 125 260 9, hide
+  button "&[sopt_dialog:queue]...", 22, 196 57 73 14, hide
 
-  box "[sopt_dialog:cmds]:", 23, 5 22 205 95, hide
-  text "[sopt_dialog:cmds_help]", 24, 10 31 190 20, hide
-  text "&[sopt_dialog:cmds_type]:", 25, 10 55 70 8, hide right
-  combo 26, 83 54 59 50, hide drop
-  text "&[sopt_dialog:cmds_find]:", 27, 10 68 70 8, hide right
-  edit "", 28, 82 66 60 11, hide
-  text "&[sopt_dialog:find_max]:", 37, 145 68 35 8, hide
-  edit "", 38, 182 66 20 11, hide
-  text "&[sopt_dialog:cmds_list]:", 29, 10 79 70 8, hide right
-  edit "", 30, 82 77 60 11, hide
-  text "&[sopt_dialog:cmds_cancel]:", 31, 10 90 70 8, hide right
-  edit "", 32, 82 88 60 11, hide
-  text "&[sopt_dialog:cmds_stats]:", 33, 10 101 70 8, hide right
-  edit "", 34, 82 99 60 11, hide
-  button "&[word:default:dlg]", 35, 147 83 55 12, hide
-  button "&[dialog:clear]", 36, 147 98 55 12, hide
+  box "[sopt_dialog:cmds]:", 23, 6 27 273 116, hide
+  text "[sopt_dialog:cmds_help]", 24, 13 38 253 24, hide
+  text "&[sopt_dialog:cmds_type]:", 25, 13 67 93 9, hide right
+  combo 26, 110 66 78 61, hide drop
+  text "&[sopt_dialog:cmds_find]:", 27, 13 83 93 9, hide right
+  edit "", 28, 109 81 80 13, hide
+  text "&[sopt_dialog:find_max]:", 37, 193 83 46 9, hide
+  edit "", 38, 243 81 26 13, hide
+  text "&[sopt_dialog:cmds_list]:", 29, 13 97 93 9, hide right
+  edit "", 30, 109 94 80 13, hide
+  text "&[sopt_dialog:cmds_cancel]:", 31, 13 110 93 9, hide right
+  edit "", 32, 109 108 80 13, hide
+  text "&[sopt_dialog:cmds_stats]:", 33, 13 124 93 9, hide right
+  edit "", 34, 109 121 80 13, hide
+  button "&[word:default:dlg]", 35, 196 101 73 14, hide
+  button "&[dialog:clear]", 36, 196 120 73 14, hide
 
-  box "[word:options:dlg]:", 39, 5 22 205 95, hide
-  text "&[sopt_dialog:playlist_ext]:", 40, 10 78 70 8, hide right
-  edit "", 41, 82 76 60 11, hide
-  check "&[sopt_dialog:no_ctcp]", 42, 25 52 180 10, hide
-  check "&[sopt_dialog:replies_quiet]", 43, 25 40 180 10, hide
+  box "[word:options:dlg]:", 39, 6 27 273 116, hide
+  text "&[sopt_dialog:playlist_ext]:", 40, 13 95 93 9, hide right
+  edit "", 41, 109 93 80 13, hide
+  check "&[sopt_dialog:no_ctcp]", 42, 33 63 240 12, hide
+  check "&[sopt_dialog:replies_quiet]", 43, 33 49 240 12, hide
 
-  button "[dialog:ok]", 201, 25 122 40 12, OK default
-  button "[dialog:cancel]", 202, 100 122 40 12, cancel
+  button "[dialog:ok]", 201, 33 149 53 14, OK default
+  button "[dialog:cancel]", 202, 133 149 53 14, cancel
 
   edit "", 100, 1 1 1 1, hide autohs
 }
@@ -1704,22 +1704,22 @@ alias -l _soptsec {
 dialog sndpanel {
   title "[spanel_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 165 11
-  button "", 1, 1 1 33 9
-  button "&[dialog:select]", 2, 41 1 25 9
-  button "&[spanel_dialog:find]", 3, 68 1 25 9
-  button "&[spanel_dialog:rand]", 4, 95 1 25 9
-  button "&[spanel_dialog:play]", 13, 40 1 25 9, hide
-  button "7[dialog:edit]", 14, 67 1 25 9, hide
-  button "&[spanel_dialog:create]", 15, 95 1 25 9, hide
-  check "&[sound:playlist:dlg]", 5, 122 1 25 9, push
-  check "->", 6, 152 2 10 7, push
-  combo 7, 1 11 147 100, drop sort
-  button "&[spanel_dialog:repeat]", 8, 149 12 15 9
-  check "&[spanel_dialog:queue]", 9, 1 23 44 9
-  check "&[spanel_dialog:cont]", 10, 46 23 54 9
-  button "&[spanel_dialog:play_to]...", 11, 100 23 47 9
+  option map
+  size -1 -1 220 13
+  button "", 1, 1 1 44 11
+  button "&[dialog:select]", 2, 54 1 33 11
+  button "&[spanel_dialog:find]", 3, 90 1 33 11
+  button "&[spanel_dialog:rand]", 4, 126 1 33 11
+  button "&[spanel_dialog:play]", 13, 53 1 33 11, hide
+  button "7[dialog:edit]", 14, 89 1 33 11, hide
+  button "&[spanel_dialog:create]", 15, 126 1 33 11, hide
+  check "&[sound:playlist:dlg]", 5, 162 1 33 11, push
+  check "->", 6, 203 2 13 8, push
+  combo 7, 1 13 196 122, drop sort
+  button "&[spanel_dialog:repeat]", 8, 199 14 20 11
+  check "&[spanel_dialog:queue]", 9, 1 28 58 11
+  check "&[spanel_dialog:cont]", 10, 61 28 72 11
+  button "&[spanel_dialog:play_to]...", 11, 133 28 62 11
   button "", 12, 1 1 1 1, hide cancel
 }
 alias f9 spanel
@@ -1903,3 +1903,4 @@ on *:TEXT:*:*:{
   : reply
   if (%reply) _linedance %usecmd $nick %reply
 }
+

@@ -87,3 +87,4 @@ alias text {
     dispa [theming:themesetting:onoff=%status] - [theming:confignote:cmd=$;b(/theme)]
   }
 }
+

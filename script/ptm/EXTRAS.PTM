@@ -94,31 +94,31 @@ alias ezping {
 dialog ezping {
   title "[ezping_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 160 222
+  option map
+  size -1 -1 213 272
 
-  check "&[ezping_dialog:enable]:", 1, 5 5 75 10
-  box "", 2, 5 15 150 124
-  check "&[ezping_dialog:prompt]:", 3, 10 22 140 10
-  combo 4, 19 35 95 55
-  button "&[dialog:add]", 5, 120 35 27 11, disable
-  button "&[dialog:remove]", 6, 120 48 27 11, disable
-  button "&[dialog:clear]", 7, 120 62 27 11
-  button "&[word:default:dlg]", 8, 120 75 27 11
-  check "&[ezping_dialog:hide_sent]", 9, 10 92 140 10
-  check "&[ezping_dialog:hide_replies]", 10, 10 103 140 10
-  check "&[ezping_dialog:hide_notices]", 11, 10 114 140 10
-  check "&[ezping_dialog:report_manual]", 12, 10 125 140 10
+  check "&[ezping_dialog:enable]:", 1, 6 6 100 12
+  box "", 2, 6 18 200 152
+  check "&[ezping_dialog:prompt]:", 3, 13 27 187 12
+  combo 4, 25 42 126 67
+  button "&[dialog:add]", 5, 160 42 36 13, disable
+  button "&[dialog:remove]", 6, 160 58 36 13, disable
+  button "&[dialog:clear]", 7, 160 76 36 13
+  button "&[word:default:dlg]", 8, 160 92 36 13
+  check "&[ezping_dialog:hide_sent]", 9, 13 113 187 12
+  check "&[ezping_dialog:hide_replies]", 10, 13 126 187 12
+  check "&[ezping_dialog:hide_notices]", 11, 13 140 187 12
+  check "&[ezping_dialog:report_manual]", 12, 13 153 187 12
 
-  box "&[ezping_dialog:notice]:", 13, 5 144 150 50
-  edit "", 14, 10 154 140 17, multi vsbar
-  button "&[word:default:dlg] 1", 15, 10 176 40 12
-  button "&[word:default:dlg] 2", 16, 60 176 40 12
-  button "&[word:default:dlg] 3", 17, 110 176 40 12
+  box "&[ezping_dialog:notice]:", 13, 6 176 200 61
+  edit "", 14, 13 189 187 20, multi vsbar
+  button "&[word:default:dlg] 1", 15, 13 216 53 14
+  button "&[word:default:dlg] 2", 16, 80 216 53 14
+  button "&[word:default:dlg] 3", 17, 146 216 53 14
 
-  button "[dialog:ok]", 100, 10 204 40 12, ok default
-  button "[dialog:cancel]", 101, 60 204 40 12, cancel
-  button "&[dialog:help]", 102, 110 204 40 12, disable
+  button "[dialog:ok]", 100, 13 250 53 14, ok default
+  button "[dialog:cancel]", 101, 80 250 53 14, cancel
+  button "&[dialog:help]", 102, 146 250 53 14, disable
 }
 on *:DIALOG:ezping:init:*:{
   if ($hget(pnp.config,ezping.on)) did -c $dname 1
@@ -1005,21 +1005,21 @@ alias clearstat {
 dialog kickstat {
   title "[kickstat_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 140 91
+  option map
+  size -1 -1 187 111
 
-  radio "&[kickstat_dialog:disable]", 1, 5 5 130 11, group
-  radio "&[kickstat_dialog:enable]", 2, 5 16 130 11
-  radio "&[kickstat_dialog:quiet]", 3, 5 27 130 11
+  radio "&[kickstat_dialog:disable]", 1, 6 6 173 13, group
+  radio "&[kickstat_dialog:enable]", 2, 6 19 173 13
+  radio "&[kickstat_dialog:quiet]", 3, 6 33 173 13
 
-  box "[kickstat_dialog:show_prompt]:", 4, 5 45 75 41, disable
-  text "&[kickstat_dialog:kicks]", 6, 42 57 35 11, disable
-  edit "", 5, 10 55 30 11, disable
-  text "&[kickstat_dialog:bans]", 8, 42 72 35 11, disable
-  edit "", 7, 10 70 30 11, disable
+  box "[kickstat_dialog:show_prompt]:", 4, 6 55 100 50, disable
+  text "&[kickstat_dialog:kicks]", 6, 56 70 46 13, disable
+  edit "", 5, 13 67 40 13, disable
+  text "&[kickstat_dialog:bans]", 8, 56 88 46 13, disable
+  edit "", 7, 13 85 40 13, disable
 
-  button "[dialog:ok]", 100, 90 55 42 12, ok
-  button "[dialog:cancel]", 101, 90 73 42 12, cancel
+  button "[dialog:ok]", 100, 120 67 56 14, ok
+  button "[dialog:cancel]", 101, 120 89 56 14, cancel
 }
 on *:DIALOG:kickstat:init:*:{
   if ($hget(pnp.config,kickstat) == 2) did -cf $dname 3
@@ -1046,3 +1046,4 @@ on *:DIALOG:kickstat:sclick:*:{
     kstat.setup
   }
 }
+

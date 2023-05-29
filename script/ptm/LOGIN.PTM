@@ -189,68 +189,68 @@ alias -l _updnuke {
 dialog nukedet {
   title "[nuke_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 262 115
+  option map
+  size -1 -1 350 141
 
-  box "[nuke_dialog:attacks]:", 1, 5 5 104 86
-  text "[nuke_dialog:packets]", 30, 69 15 30 10
-  text "[nuke_dialog:dest_unreach]:", 2, 10 27 52 10, right
-  edit "", 3, 64 25 30 11, autohs read right
-  text "[nuke_dialog:icmp_ping]:", 4, 10 39 52 10, right
-  edit "", 5, 64 37 30 11, autohs read right
-  text "[nuke_dialog:icmp_reply]:", 6, 10 51 52 10, right
-  edit "", 7, 64 49 30 11, autohs read right
-  text "[nuke_dialog:bad_udp]:", 8, 10 63 52 10, right
-  edit "", 9, 64 61 30 11, autohs read right
-  text "[nuke_dialog:fragment]:", 10, 10 75 52 10, right
-  edit "", 11, 64 73 30 11, autohs read right
+  box "[nuke_dialog:attacks]:", 1, 6 6 138 105
+  text "[nuke_dialog:packets]", 30, 92 18 40 12
+  text "[nuke_dialog:dest_unreach]:", 2, 13 33 69 12, right
+  edit "", 3, 85 30 40 13, autohs read right
+  text "[nuke_dialog:icmp_ping]:", 4, 13 47 69 12, right
+  edit "", 5, 85 45 40 13, autohs read right
+  text "[nuke_dialog:icmp_reply]:", 6, 13 62 69 12, right
+  edit "", 7, 85 60 40 13, autohs read right
+  text "[nuke_dialog:bad_udp]:", 8, 13 77 69 12, right
+  edit "", 9, 85 74 40 13, autohs read right
+  text "[nuke_dialog:fragment]:", 10, 13 92 69 12, right
+  edit "", 11, 85 89 40 13, autohs read right
 
-  text "", 71, 96 27 10 11
-  text "", 72, 96 39 10 11
-  text "", 73, 96 51 10 11
-  text "", 74, 96 63 10 11
-  text "", 75, 96 75 10 11
+  text "", 71, 128 33 13 13
+  text "", 72, 128 47 13 13
+  text "", 73, 128 62 13 13
+  text "", 74, 128 77 13 13
+  text "", 75, 128 92 13 13
 
-  box "[nuke_dialog:stats]:", 12, 114 5 142 86
-  text "[nuke_dialog:in]", 13, 172 15 30 10
-  text "[nuke_dialog:out]", 14, 217 15 30 10
-  text "[nuke_dialog:icmp]:", 15, 119 27 46 10, right
-  edit "", 16, 167 25 30 11, autohs read right
-  edit "", 17, 212 25 30 11, autohs read right
-  text "[nuke_dialog:udp]:", 18, 119 39 46 10, right
-  edit "", 19, 167 37 30 11, autohs read right
-  edit "", 20, 212 37 30 11, autohs read right
-  text "[nuke_dialog:tcp]:", 21, 119 51 46 10, right
-  edit "", 22, 167 49 30 11, autohs read right
-  edit "", 23, 212 49 30 11, autohs read right
-  text "[nuke_dialog:connect]:", 24, 119 63 46 10, right
-  edit "", 25, 167 61 30 11, autohs read right
-  edit "", 26, 212 61 30 11, autohs read right
-  text "[nuke_dialog:total]:", 27, 119 75 46 10, right
-  edit "", 28, 167 73 30 11, autohs read right
-  edit "", 29, 212 73 30 11, autohs read right
+  box "[nuke_dialog:stats]:", 12, 152 6 189 105
+  text "[nuke_dialog:in]", 13, 229 18 40 12
+  text "[nuke_dialog:out]", 14, 289 18 40 12
+  text "[nuke_dialog:icmp]:", 15, 158 33 61 12, right
+  edit "", 16, 223 30 40 13, autohs read right
+  edit "", 17, 283 30 40 13, autohs read right
+  text "[nuke_dialog:udp]:", 18, 158 47 61 12, right
+  edit "", 19, 223 45 40 13, autohs read right
+  edit "", 20, 283 45 40 13, autohs read right
+  text "[nuke_dialog:tcp]:", 21, 158 62 61 12, right
+  edit "", 22, 223 60 40 13, autohs read right
+  edit "", 23, 283 60 40 13, autohs read right
+  text "[nuke_dialog:connect]:", 24, 158 77 61 12, right
+  edit "", 25, 223 74 40 13, autohs read right
+  edit "", 26, 283 74 40 13, autohs read right
+  text "[nuke_dialog:total]:", 27, 158 92 61 12, right
+  edit "", 28, 223 89 40 13, autohs read right
+  edit "", 29, 283 89 40 13, autohs read right
 
-  text "", 76, 199 27 10 11
-  text "", 77, 199 39 10 11
-  text "", 78, 199 51 10 11
-  text "", 79, 199 63 10 11
-  text "", 80, 199 75 10 11
-  text "", 81, 244 27 10 11
-  text "", 82, 244 39 10 11
-  text "", 83, 244 51 10 11
-  text "", 84, 244 63 10 11
-  text "", 85, 244 75 10 11
+  text "", 76, 265 33 13 13
+  text "", 77, 265 47 13 13
+  text "", 78, 265 62 13 13
+  text "", 79, 265 77 13 13
+  text "", 80, 265 92 13 13
+  text "", 81, 325 33 13 13
+  text "", 82, 325 47 13 13
+  text "", 83, 325 62 13 13
+  text "", 84, 325 77 13 13
+  text "", 85, 325 92 13 13
 
-  check "&[nuke_dialog:auto_refresh]:", 50, 59 98 55 11
-  edit "", 51, 114 98 25 11
-  text "[dialog:seconds]", 52, 141 100 37 10
+  check "&[nuke_dialog:auto_refresh]:", 50, 78 120 73 13
+  edit "", 51, 152 120 33 13
+  text "[dialog:seconds]", 52, 188 122 49 12
 
-  check "&[nuke_dialog:on_top]", 53, 183 98 35 11
+  check "&[nuke_dialog:on_top]", 53, 244 120 46 13
 
   edit "", 60, 1 1 1 1, hide autohs
 
-  button "[dialog:close]", 100, 12 97 40 12, cancel default
-  button "&[nuke_dialog:refresh]", 101, 217 97 40 12
+  button "[dialog:close]", 100, 16 119 53 14, cancel default
+  button "&[nuke_dialog:refresh]", 101, 289 119 53 14
 }
 on *:DIALOG:nukedet:sclick:53:dialog $iif($did(53).state,-o,-n) nukedet
 on *:DIALOG:nukedet:sclick:101:{
@@ -423,32 +423,32 @@ alias -l _listeninfo {
 dialog portlisten {
   title "[listen_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 180 135
+  option map
+  size -1 -1 240 165
 
-  box "&[listen_dialog:ports]:", 1, 5 5 75 90
-  list 2, 10 15 65 75
+  box "&[listen_dialog:ports]:", 1, 6 6 100 110
+  list 2, 13 18 86 92
 
-  box "[listen_dialog:prompt]:", 9, 85 5 90 90
+  box "[listen_dialog:prompt]:", 9, 113 6 120 110
 
-  text "&[listen_dialog:protocol]:", 3, 87 28 27 10, right
-  combo 6, 117 26 50 100, drop
-  text "&[word:port:dlg]:", 4, 87 40 27 10, right
-  combo 7, 117 38 50 100, drop edit
-  text "7[listen_dialog:action]:", 5, 87 52 27 10, right
-  combo 8, 117 50 50 100, drop
+  text "&[listen_dialog:protocol]:", 3, 116 34 36 12, right
+  combo 6, 156 31 66 122, drop
+  text "&[word:port:dlg]:", 4, 116 49 36 12, right
+  combo 7, 156 46 66 122, drop edit
+  text "7[listen_dialog:action]:", 5, 116 63 36 12, right
+  combo 8, 156 61 66 122, drop
 
-  button "&[dialog:add]", 10, 90 76 37 12
-  button "&[dialog:remove]", 11, 132 76 37 12
+  button "&[dialog:add]", 10, 120 93 49 14
+  button "&[dialog:remove]", 11, 176 93 49 14
 
   list 12, 1 1 1 1, hide
   list 13, 1 1 1 1, hide
 
-  check "&[listen_dialog:reopen]", 14, 10 101 160 8
+  check "&[listen_dialog:reopen]", 14, 13 124 213 9
 
-  button "[dialog:ok]", 100, 10 115 42 12, ok default
-  button "[dialog:cancel]", 101, 69 115 42 12, cancel
-  button "&[dialog:help]", 102, 128 115 42 12, disable
+  button "[dialog:ok]", 100, 13 141 56 14, ok default
+  button "[dialog:cancel]", 101, 92 141 56 14, cancel
+  button "&[dialog:help]", 102, 171 141 56 14, disable
 }
 on *:DIALOG:portlisten:init:*:{
   did -ac $dname 6 TCP
@@ -500,3 +500,4 @@ alias service {
   }
   else dispa [porttool:no_service:service=$;s($1-)]
 }
+

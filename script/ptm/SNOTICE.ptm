@@ -449,3 +449,4 @@ menu @Wallop {
   $iif(w isincs $usermode,$style(1)) [popups_snotice:w_on]:umode +w
   $iif(w !isincs $usermode,$style(1)) [popups_snotice:w_off]:umode -w
 }
+

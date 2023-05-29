@@ -324,20 +324,20 @@ alias _cs.splice {
 
 dialog csregister {
   title "[chanserv_dialog:title]"
-  option dbu
-  size -1 -1 170 137
-  box "", 1, 2 4 165 30
-  edit "", 3, 7 15 155 11, autohs
-  box "[word:password:dlg]:", 21, 2 37 165 52
-  text "[chanserv_dialog:pw_instruction]", 20, 10 47 150 15
-  text "&[word:password:dlg]:", 8, 5 65 39 8, right
-  edit "", 9, 45 63 61 11, pass autohs
-  text "&[dialog:confirm]:", 10, 5 76 39 8, right
-  edit "", 11, 45 75 61 11, pass autohs
-  box "[chanserv_dialog:auto_head]:", 12, 2 93 165 22
-  check "&[chanserv_dialog:auto_option]", 13, 15 103 150 8
-  button "[dialog:ok]", 101, 15 121 60 12, OK default
-  button "[dialog:cancel]", 102, 92 121 60 12, cancel
+  option map
+  size -1 -1 227 168
+  box "", 1, 2 4 220 36
+  edit "", 3, 9 18 207 13, autohs
+  box "[word:password:dlg]:", 21, 2 45 220 63
+  text "[chanserv_dialog:pw_instruction]", 20, 13 57 200 18
+  text "&[word:password:dlg]:", 8, 6 79 52 9, right
+  edit "", 9, 60 77 81 13, pass autohs
+  text "&[dialog:confirm]:", 10, 6 93 52 9, right
+  edit "", 11, 60 92 81 13, pass autohs
+  box "[chanserv_dialog:auto_head]:", 12, 2 114 220 27
+  check "&[chanserv_dialog:auto_option]", 13, 20 126 200 9
+  button "[dialog:ok]", 101, 20 148 80 14, OK default
+  button "[dialog:cancel]", 102, 122 148 80 14, cancel
   edit %.csr.chan, 201, 1 1 1 1, hide autohs
 }
 on *:DIALOG:csregister:init:*:{
@@ -561,18 +561,18 @@ menu nicklist {
 ;!! add 'advanced' button to specify an actual cmd or address
 dialog csway {
   title "[csaccess_dialog:title]"
-  option dbu
-  size -1 -1 125 77
+  option map
+  size -1 -1 167 94
 
-  text "", 1, 5 5 90 20
-  radio "&[csaccess_dialog:option_msg]", 2, 10 22 115 11
-  radio "&[csaccess_dialog:option_cmd]", 3, 10 34 115 11
-  radio "&[csaccess_dialog:option_secure]", 4, 10 45 115 11
+  text "", 1, 6 6 120 24
+  radio "&[csaccess_dialog:option_msg]", 2, 13 27 153 13
+  radio "&[csaccess_dialog:option_cmd]", 3, 13 41 153 13
+  radio "&[csaccess_dialog:option_secure]", 4, 13 55 153 13
 
   edit "", 50, 1 1 1 1, autohs hide result
 
-  button "[dialog:ok]", 100, 5 61 40 12, ok default
-  button "[dialog:cancel]", 101, 80 61 40 12, cancel
+  button "[dialog:ok]", 100, 6 74 53 14, ok default
+  button "[dialog:cancel]", 101, 106 74 53 14, cancel
 }
 on *:DIALOG:csway:init:*:{
   did -c $dname 2
@@ -580,3 +580,4 @@ on *:DIALOG:csway:init:*:{
   unset %.net
 }
 on *:DIALOG:csway:sclick:100:did -o $dname 50 1 $iif($did(3).state,ChanServ@/chanserv,$iif($did(4).state,ChanServ@services.???,ChanServ))
+

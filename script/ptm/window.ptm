@@ -50,11 +50,11 @@ alias hide {
 dialog howunhide {
   title "[hide_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 125 62
-  text "[hide_dialog:instructions]", 3, 5 5 115 50
-  check "&[dialog:once_only]", 2, 20 30 85 10
-  button "[dialog:ok]", 1, 42 45 40 12, ok default
+  option map
+  size -1 -1 167 76
+  text "[hide_dialog:instructions]", 3, 6 6 153 61
+  check "&[dialog:once_only]", 2, 26 36 113 12
+  button "[dialog:ok]", 1, 56 55 53 14, ok default
   edit "", 4, 1 1 1 1, hide autohs result
 }
 on *:DIALOG:howunhide:sclick:1:did -o $dname 4 1 $did(2).state
@@ -733,3 +733,4 @@ alias -l _picbkmethod {
   var %sel = $$dialog(nickcomp,nickcomp,-4)
   return $gettok(-c -f -n -r -t -p,$findtok(%items,%sel,1,44),32)
 }
+

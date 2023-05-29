@@ -412,49 +412,49 @@ menu @Userlist {
 dialog useredit {
   title "[user_dialog:title]"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 190 142
+  option map
+  size -1 -1 253 174
 
-  text "&[word:nickname:dlg]:", 201, 3 7 30 10, right
-  edit "", 1, 35 5 50 11, autohs
-  text "([user_dialog:nickname_note:lower])", 202, 87 7 60 8
+  text "&[word:nickname:dlg]:", 201, 4 8 40 12, right
+  edit "", 1, 46 6 66 13, autohs
+  text "([user_dialog:nickname_note:lower])", 202, 116 8 80 9
 
-  icon 80, 151 6 8 8
-  text "([user_dialog:color:lower])", 81, 162 4 23 15, center
+  icon 80, 201 7 10 9
+  text "([user_dialog:color:lower])", 81, 216 4 30 18, center
 
-  text "&[user_dialog:usermask]:", 203, 3 18 30 10, right
-  combo 2, 35 16 125 65, drop sort edit
+  text "&[user_dialog:usermask]:", 203, 4 22 40 12, right
+  combo 2, 46 19 167 79, drop sort edit
 
-  text "&[dialog:editing]", 205, 5 36 22 10
-  combo 71, 28 34 65 65, drop sort
-  text "[word:level:dlg]:", 206, 95 36 33 10
+  text "&[dialog:editing]", 205, 6 44 29 12
+  combo 71, 37 41 86 79, drop sort
+  text "[word:level:dlg]:", 206, 126 44 44 12
 
-  button "&[dialog:add]...", 56, 128 35 25 10
-  button "&[dialog:del]", 57, 158 35 25 10
+  button "&[dialog:add]...", 56, 171 42 33 12
+  button "&[dialog:del]", 57, 211 42 33 12
 
-  box "[word:level:dlg:lower]:", 207, 5 49 95 67
+  box "[word:level:dlg:lower]:", 207, 6 60 126 82
 
-  radio "1 - &[word:none:dlg]", 101, 10 59 85 8, group
-  radio "25 - &[user_dialog:exempt]", 125, 10 67 85 8
-  radio "50 - &[userlist:level_safe:dlg]", 150, 10 75 85 8
-  radio "60 - &[userlist:level_protect:dlg]", 160, 10 83 85 8
-  radio "75 - &[userlist:level_revenge:dlg]", 175, 10 91 85 8
-  radio "&[dialog:custom]:", 100, 10 103 40 8
-  edit "100", 61, 50 101 20 11
+  radio "1 - &[word:none:dlg]", 101, 13 72 113 9, group
+  radio "25 - &[user_dialog:exempt]", 125, 13 82 113 9
+  radio "50 - &[userlist:level_safe:dlg]", 150, 13 92 113 9
+  radio "60 - &[userlist:level_protect:dlg]", 160, 13 101 113 9
+  radio "75 - &[userlist:level_revenge:dlg]", 175, 13 111 113 9
+  radio "&[dialog:custom]:", 100, 13 126 53 9
+  edit "100", 61, 66 124 26 13
 
-  box "[user_dialog:status]:", 40, 110 49 75 67
+  box "[user_dialog:status]:", 40, 146 60 100 82
 
-  check "&[userlist:mode_deop:dlg]", 21, 115 59 65 8, group
-  check "&[userlist:mode_voice:dlg]", 22, 115 67 65 8
-  check "&[userlist:mode_hop:dlg]", 23, 115 75 65 8
-  check "&[userlist:mode_op:dlg]", 24, 115 83 65 8
-  check "&[user_dialog:password]:", 31, 115 93 65 8
-  edit "", 32, 122 101 57 11, autohs pass
+  check "&[userlist:mode_deop:dlg]", 21, 153 72 86 9, group
+  check "&[userlist:mode_voice:dlg]", 22, 153 82 86 9
+  check "&[userlist:mode_hop:dlg]", 23, 153 92 86 9
+  check "&[userlist:mode_op:dlg]", 24, 153 101 86 9
+  check "&[user_dialog:password]:", 31, 153 114 86 9
+  edit "", 32, 162 124 76 13, autohs pass
 
-  button "[dialog:ok]", 52, 5 125 40 12, OK
-  button "[dialog:cancel]", 53, 51 125 40 12, cancel
-  button "&[dialog:remove]", 54, 98 125 40 12
-  button "&[dialog:help]", 55, 144 125 40 12, disable
+  button "[dialog:ok]", 52, 6 153 53 14, OK
+  button "[dialog:cancel]", 53, 68 153 53 14, cancel
+  button "&[dialog:remove]", 54, 130 153 53 14
+  button "&[dialog:help]", 55, 192 153 53 14, disable
 
   edit "", 210, 1 1 1 1, hide autohs
   edit "", 211, 1 1 1 1, hide autohs
@@ -772,3 +772,4 @@ ctcp &*:PASS:?:{
   else disptc -s %chan [userlist:opctcp_passchange:nick=$;t($nick):num=%changes]
   halt
 }
+
