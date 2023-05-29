@@ -334,8 +334,8 @@ alias -l sb.do {
       dec %num
     }
     if (%found) %found = ; [protect:fkey:key=F8]
-    if ($1 == i) _Q.fkey 1 $calc($ctime + 120) dispa [spamblock:block_msg]: [spamblock:invite_msg:nick=$nick:chan=$2-]
-    else _Q.fkey 1 $calc($ctime + 120) dispa [spamblock:block_msg]: $iif($1 == c,$chr(40) $+ $chan $+ $chr(41)) $iif($1 isin cq,< $+ $nick $+ >) $iif($1 == n,- $+ $nick $+ $iif($chan,: $+ $chan) $+ -) $iif($1 == f,$nick :) $2-
+    if ($1 == i) _Q.fkey 1 $calc($ctime + 120) dispa [spamblock:block_msg]: [spamblock:invite_msg:nick=$nick:chan=$unsafe($2-)]
+    else _Q.fkey 1 $calc($ctime + 120) dispa [spamblock:block_msg]: $iif($1 == c,$chr(40) $+ $chan $+ $chr(41)) $iif($1 isin cq,< $+ $nick $+ >) $iif($1 == n,- $+ $nick $+ $iif($chan,: $+ $chan) $+ -) $iif($1 == f,$nick :) $unsafe($2-)
     var %type = $gettok([word:query]*[spamblock:notice]*[spamblock:invite]*[word:file]*[spamblock:chantext],$pos(qnifc,$1),42)
     $iif($1 == c,disprc $chan,dispa) $:w([spamblock:block_msg]) $+ : [spamblock:block_info:type=%type:nick=$;t($nick) ( $+ $address $+ ):key=$result] $+ %found
   }

@@ -333,8 +333,8 @@ alias -l sb.do {
       dec %num
     }
     if (%found) %found = ; F8 to punish
-    if ($1 == i) _Q.fkey 1 $calc($ctime + 120) dispa Blocked: $nick invited you to $2-
-    else _Q.fkey 1 $calc($ctime + 120) dispa Blocked: $iif($1 == c,$chr(40) $+ $chan $+ $chr(41)) $iif($1 isin cq,< $+ $nick $+ >) $iif($1 == n,- $+ $nick $+ $iif($chan,: $+ $chan) $+ -) $iif($1 == f,$nick :) $2-
+    if ($1 == i) _Q.fkey 1 $calc($ctime + 120) dispa Blocked: $nick invited you to $unsafe($2-)
+    else _Q.fkey 1 $calc($ctime + 120) dispa Blocked: $iif($1 == c,$chr(40) $+ $chan $+ $chr(41)) $iif($1 isin cq,< $+ $nick $+ >) $iif($1 == n,- $+ $nick $+ $iif($chan,: $+ $chan) $+ -) $iif($1 == f,$nick :) $unsafe($2-)
     var %type = $gettok(Query*Notice*Invite*File*Channel text,$pos(qnifc,$1),42)
     $iif($1 == c,disprc $chan,dispa) $:w(Blocked) $+ : %type from $:t($nick) ( $+ $address $+ ) - $result to view $+ %found
   }
