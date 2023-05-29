@@ -397,7 +397,7 @@ on &^*:TEXT:*:*:{
     if (($hget(pnp.flood. $+ $cid,ezping) > 2) || ($hget(pnp. $+ $cid,-ezping. $+ $nick))) return
     var %num = $numtok($hget(pnp.config,ezping.phrase),44)
     :loop
-    if ($gettok($hget(pnp.config,ezping.phrase),%num,44) isin $1-) {
+    if ($regex($1-,(?:^|\x20+) $+ $gettok($hget(pnp.config,ezping.phrase) $+ (?:$|\x20+),%num,44))) {
       hinc -u16 pnp.flood. $+ $cid ezping
       hadd pnp. $+ $cid -ezping. $+ $nick 1
       _linedance $iif($mid($hget(pnp.config,ezping.opt),2,1),.ping,ping) $nick
