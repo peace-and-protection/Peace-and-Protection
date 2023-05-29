@@ -10,168 +10,168 @@ alias _protedit if ($_ischan($1)) { set -u %.editing $1 | set -u %.create 1 } | 
 dialog chanprot {
   title "Channel Protection"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 250 175
+  option map
+  size -1 -1 334 214
 
   list 250, 1 1 1 1, hide
 
-  box "Channel:", 249, 2 2 245 25
+  box "Channel:", 249, 2 2 327 30
 
-  text "&Edit protection for:", 248, 5 13 52 10, right
+  text "&Edit protection for:", 248, 6 15 69 12, right
 
-  combo 247, 60 11 85 100, drop sort
+  combo 247, 80 13 113 122, drop sort
 
-  button "&Add...", 246, 150 11 45 10
-  button "&Remove...", 245, 200 11 40 10
+  button "&Add...", 246, 200 13 60 12
+  button "&Remove...", 245, 267 13 53 12
 
-  text "&Editing settings for:", 244, 5 34 52 10, right
+  text "&Editing settings for:", 244, 6 41 69 12, right
 
-  combo 243, 60 32 85 100, drop
+  combo 243, 80 39 113 122, drop
 
-  box "", 242, 2 45 245 108
+  box "", 242, 2 55 327 132
 
-  text "User will be punished for:", 33, 7 55 125 8
+  text "User will be punished for:", 33, 9 67 167 9
 
-  text "", 1, 6 67 42 8, right
-  combo 2, 50 65 46 60, drop
-  edit "", 3, 100 65 20 11
-  text "", 4, 121 67 35 8
-  text "", 5, 121 67 70 8
-  edit "", 6, 156 65 17 11
-  text "", 7, 174 67 27 8
-  button "&Actions...", 8, 205 65 37 10
+  text "", 1, 8 82 56 9, right
+  combo 2, 66 79 61 73, drop
+  edit "", 3, 133 79 26 13
+  text "", 4, 161 82 46 9
+  text "", 5, 161 82 93 9
+  edit "", 6, 208 79 22 13
+  text "", 7, 232 82 36 9
+  button "&Actions...", 8, 273 79 49 12
 
-  text "", 9, 6 80 42 8, right
-  combo 10, 50 78 46 60, drop
-  edit "", 11, 100 78 20 11
-  text "", 12, 121 80 35 8
-  text "", 13, 121 80 70 8
-  edit "", 14, 156 78 17 11
-  text "", 15, 174 80 27 8
-  button "&Actions...", 16, 205 78 37 10
+  text "", 9, 8 98 56 9, right
+  combo 10, 66 95 61 73, drop
+  edit "", 11, 133 95 26 13
+  text "", 12, 161 98 46 9
+  text "", 13, 161 98 93 9
+  edit "", 14, 208 95 22 13
+  text "", 15, 232 98 36 9
+  button "&Actions...", 16, 273 95 49 12
 
-  text "", 17, 6 93 42 8, right
-  combo 18, 50 91 46 60, drop
-  edit "", 19, 100 91 20 11
-  text "", 20, 121 93 35 8
-  text "", 21, 121 93 70 8
-  edit "", 22, 156 91 17 11
-  text "", 23, 174 93 27 8
-  button "&Actions...", 24, 205 91 37 10
+  text "", 17, 8 114 56 9, right
+  combo 18, 66 111 61 73, drop
+  edit "", 19, 133 111 26 13
+  text "", 20, 161 114 46 9
+  text "", 21, 161 114 93 9
+  edit "", 22, 208 111 22 13
+  text "", 23, 232 114 36 9
+  button "&Actions...", 24, 273 111 49 12
 
-  text "", 25, 6 106 42 8, right
-  combo 26, 50 104 46 60, drop
-  edit "", 27, 100 104 20 11
-  text "", 28, 121 106 35 8
-  text "", 29, 121 106 70 8
-  edit "", 30, 156 104 17 11
-  text "", 31, 174 106 27 8
-  button "&Actions...", 32, 205 104 37 10
+  text "", 25, 8 130 56 9, right
+  combo 26, 66 127 61 73, drop
+  edit "", 27, 133 127 26 13
+  text "", 28, 161 130 46 9
+  text "", 29, 161 130 93 9
+  edit "", 30, 208 127 22 13
+  text "", 31, 232 130 36 9
+  button "&Actions...", 32, 273 127 49 12
 
-  box "Advanced", 34, 3 82 243 5, hide
-  check "&Enable mass join flood protection: Temporarily set modes", 35, 8 96 142 8, 3state hide
-  edit "", 53, 151 94 20 11, autohs hide
-  text "for:", 54, 172 96 10 8, hide
-  edit "", 36, 7 105 15 11, hide
-  text "percent joins within", 37, 23 107 71 8, hide
-  edit "", 38, 94 105 17 11, hide
-  text "seconds (min.", 39, 113 107 42 8, hide
-  edit "", 40, 155 105 17 11, hide
-  text "joins, max.", 41, 173 107 35 8, hide
-  edit "", 42, 209 105 17 11, hide
-  text "joins)", 43, 227 107 15 8, hide
-  check "&Enable channel limit protection: Maintain channel limit of:", 44, 8 126 150 8, 3state hide
-  edit "", 45, 7 135 15 11, hide
-  text "percent extra, refresh after", 46, 23 137 71 8, hide
-  edit "", 47, 94 135 17 11, hide
-  text "seconds (min.", 48, 113 137 42 8, hide
-  edit "", 49, 155 135 17 11, hide
-  text "extra, max.", 50, 173 137 35 8, hide
-  edit "", 51, 209 135 17 11, hide
-  text "extra)", 52, 227 137 15 8, hide
+  box "Advanced", 34, 4 100 324 6, hide
+  check "&Enable mass join flood protection: Temporarily set modes", 35, 10 117 189 9, 3state hide
+  edit "", 53, 201 115 26 13, autohs hide
+  text "for:", 54, 229 117 13 9, hide
+  edit "", 36, 9 128 20 13, hide
+  text "percent joins within", 37, 30 131 94 9, hide
+  edit "", 38, 125 128 22 13, hide
+  text "seconds (min.", 39, 150 131 56 9, hide
+  edit "", 40, 207 128 22 13, hide
+  text "joins, max.", 41, 231 131 46 9, hide
+  edit "", 42, 279 128 22 13, hide
+  text "joins)", 43, 303 131 20 9, hide
+  check "&Enable channel limit protection: Maintain channel limit of:", 44, 10 154 200 9, 3state hide
+  edit "", 45, 9 165 20 13, hide
+  text "percent extra, refresh after", 46, 30 168 94 9, hide
+  edit "", 47, 125 165 22 13, hide
+  text "seconds (min.", 48, 150 168 56 9, hide
+  edit "", 49, 207 165 22 13, hide
+  text "extra, max.", 50, 231 168 46 9, hide
+  edit "", 51, 279 165 22 13, hide
+  text "extra)", 52, 303 168 20 9, hide
 
-  check "&Detect bans against you", 55, 50 93 67 8, 3state hide
-  check "&Ignore bans of *!*@*", 56, 122 93 65 8, 3state hide
-  check "&Detect clones only if same ident", 57, 50 105 100 8, 3state hide
-  check "&Deop unrecognized users who become opped", 58, 50 117 125 8, 3state hide
-  check "&Deop unrecognized users opped by a server", 59, 50 129 125 8, 3state hide
+  check "&Detect bans against you", 55, 66 114 89 9, 3state hide
+  check "&Ignore bans of *!*@*", 56, 162 114 86 9, 3state hide
+  check "&Detect clones only if same ident", 57, 66 128 133 9, 3state hide
+  check "&Deop unrecognized users who become opped", 58, 66 143 167 9, 3state hide
+  check "&Deop unrecognized users opped by a server", 59, 66 158 167 9, 3state hide
 
   text "r", 60, 1 1 1 1, hide
 
-  check "&One topic equals", 61, 35 119 65 8, 3state hide
-  edit "", 62, 100 117 20 11, hide
-  text "lines", 63, 121 119 50 8, hide
-  check "&Sound requests equal", 64, 35 131 65 8, 3state hide
-  edit "", 65, 100 130 20 11, hide
-  text "lines", 66, 121 132 50 8, hide
+  check "&One topic equals", 61, 46 146 86 9, 3state hide
+  edit "", 62, 133 143 26 13, hide
+  text "lines", 63, 161 146 66 9, hide
+  check "&Sound requests equal", 64, 46 160 86 9, 3state hide
+  edit "", 65, 133 159 26 13, hide
+  text "lines", 66, 161 162 66 9, hide
 
   text "r", 67, 1 1 1 1, hide
 
-  check "&Invalid DCC protection enabled", 68, 50 92 100 8, 3state hide
-  check "&CTCPs will actually be 'counted' as this many CTCPs for flood detection:", 69, 7 108 177 8, 3state hide
-  text "PING:", 70, 17 119 22 8, hide
-  text "ECHO:", 71, 17 130 22 8, hide
-  text "TIME:", 72, 17 141 22 8, hide
-  text "VERSION:", 73, 62 119 35 8, hide
-  text "USERINFO:", 74, 62 130 35 8, hide
-  text "CLIENTINFO:", 75, 62 141 35 8, hide
-  text "SOUND:", 76, 125 119 25 8, hide
-  text "XDCC:", 77, 125 130 25 8, hide
-  text "DCC:", 78, 125 141 25 8, hide
-  text "FINGER:", 79, 177 119 25 8, hide
-  text "Other:", 80, 177 130 25 8, hide
-  text "Replies:", 81, 177 141 25 8, hide
-  edit "", 82, 35 117 20 11, hide
-  edit "", 83, 35 128 20 11, hide
-  edit "", 84, 35 139 20 11, hide
-  edit "", 85, 97 117 20 11, hide
-  edit "", 86, 97 128 20 11, hide
-  edit "", 87, 97 139 20 11, hide
-  edit "", 88, 150 117 20 11, hide
-  edit "", 89, 150 128 20 11, hide
-  edit "", 90, 150 139 20 11, hide
-  edit "", 91, 202 117 20 11, hide
-  edit "", 92, 202 128 20 11, hide
-  edit "", 93, 202 139 20 11, hide
+  check "&Invalid DCC protection enabled", 68, 66 113 133 9, 3state hide
+  check "&CTCPs will actually be 'counted' as this many CTCPs for flood detection:", 69, 9 132 236 9, 3state hide
+  text "PING:", 70, 22 146 29 9, hide
+  text "ECHO:", 71, 22 159 29 9, hide
+  text "TIME:", 72, 22 173 29 9, hide
+  text "VERSION:", 73, 82 146 46 9, hide
+  text "USERINFO:", 74, 82 159 46 9, hide
+  text "CLIENTINFO:", 75, 82 173 46 9, hide
+  text "SOUND:", 76, 167 146 33 9, hide
+  text "XDCC:", 77, 167 159 33 9, hide
+  text "DCC:", 78, 167 173 33 9, hide
+  text "FINGER:", 79, 236 146 33 9, hide
+  text "Other:", 80, 236 159 33 9, hide
+  text "Replies:", 81, 236 173 33 9, hide
+  edit "", 82, 46 143 26 13, hide
+  edit "", 83, 46 157 26 13, hide
+  edit "", 84, 46 170 26 13, hide
+  edit "", 85, 129 143 26 13, hide
+  edit "", 86, 129 157 26 13, hide
+  edit "", 87, 129 170 26 13, hide
+  edit "", 88, 200 143 26 13, hide
+  edit "", 89, 200 157 26 13, hide
+  edit "", 90, 200 170 26 13, hide
+  edit "", 91, 269 143 26 13, hide
+  edit "", 92, 269 157 26 13, hide
+  edit "", 93, 269 170 26 13, hide
 
-  check "&Detect mode of +l 1", 94, 50 119 153 8, 3state hide
-  button "&Actions...", 96, 205 117 37 10, hide
-  check "&Detect two or more of: +k, +l, and +i, set in one line", 95, 50 131 153 8, 3state hide
-  button "&Actions...", 97, 205 130 37 10, hide
+  check "&Detect mode of +l 1", 94, 66 146 204 9, 3state hide
+  button "&Actions...", 96, 273 143 49 12, hide
+  check "&Detect two or more of: +k, +l, and +i, set in one line", 95, 66 160 204 9, 3state hide
+  button "&Actions...", 97, 273 159 49 12, hide
 
-  check "&Enable word 'kicks', group one", 98, 50 66 85 8, 3state hide
-  button "&Words...", 99, 137 65 50 10, hide
-  check "&Enable word 'kicks', group two", 100, 50 79 85 8, 3state hide
-  button "&Words...", 101, 137 78 50 10, hide
-  check "&Scan users for 'bad' channels", 102, 50 92 85 8, 3state hide
-  button "&Channels...", 103, 137 91 50 10, hide
+  check "&Enable word 'kicks', group one", 98, 66 81 113 9, 3state hide
+  button "&Words...", 99, 183 79 66 12, hide
+  check "&Enable word 'kicks', group two", 100, 66 97 113 9, 3state hide
+  button "&Words...", 101, 183 95 66 12, hide
+  check "&Scan users for 'bad' channels", 102, 66 113 113 9, 3state hide
+  button "&Channels...", 103, 183 111 66 12, hide
 
-  check "&Enforce bans (kick any non-op who is banned)", 118, 50 55 125 8, 3state hide
-  check "&Ops immune from text protections", 119, 50 66 125 8, 3state hide
-  check "&Halfops immune from text protections", 121, 50 75 127 8, 3state hide
-  check "&Voiced users immune from text protections", 120, 50 84 125 8, 3state hide
-  check "&Text protections enabled (according to settings)", 109, 50 95 150 8, 3state hide
-  check "&CTCP/DCC protections enabled (according to settings)", 110, 50 104 150 8, 3state hide
-  check "&All other protections enabled (according to settings)", 111, 50 113 150 8, 3state hide
-  text "&Allow", 112, 57 126 15 8, hide
-  edit "", 113, 72 124 20 11, hide
-  text "seconds before moving to next action", 114, 95 126 125 8, hide
-  text "&Wait", 115, 57 138 15 8, hide
-  edit "", 116, 72 136 20 11, hide
-  text "seconds before resetting to first action", 117, 95 138 125 8, hide
+  check "&Enforce bans (kick any non-op who is banned)", 118, 66 67 167 9, 3state hide
+  check "&Ops immune from text protections", 119, 66 81 167 9, 3state hide
+  check "&Halfops immune from text protections", 121, 66 92 169 9, 3state hide
+  check "&Voiced users immune from text protections", 120, 66 103 167 9, 3state hide
+  check "&Text protections enabled (according to settings)", 109, 66 116 200 9, 3state hide
+  check "&CTCP/DCC protections enabled (according to settings)", 110, 66 127 200 9, 3state hide
+  check "&All other protections enabled (according to settings)", 111, 66 138 200 9, 3state hide
+  text "&Allow", 112, 76 154 20 9, hide
+  edit "", 113, 96 152 26 13, hide
+  text "seconds before moving to next action", 114, 126 154 167 9, hide
+  text "&Wait", 115, 76 169 20 9, hide
+  edit "", 116, 96 167 26 13, hide
+  text "seconds before resetting to first action", 117, 126 169 167 9, hide
 
-  text "(note- attributes include colors, bold, underline, etc)", 122, 40 117 150 8, hide
+  text "(note- attributes include colors, bold, underline, etc)", 122, 53 143 200 9, hide
 
-  button "OK", 241, 15 158 27 12, OK default
-  button "Cancel", 240, 50 158 27 12, cancel
-  button "&Help", 239, 85 158 27 12, disable
+  button "OK", 241, 20 194 36 14, OK default
+  button "Cancel", 240, 66 194 36 14, cancel
+  button "&Help", 239, 113 194 36 14, disable
 
   edit "", 238, 1 1 1 1, hide autohs
   edit "", 235, 1 1 1 1, hide autohs
   edit "", 234, 1 1 1 1, hide autohs
 
-  text "Note:", 236, 130 160 17 10, right
-  check "= use global default settings", 237, 150 160 100 8, 3state
+  text "Note:", 236, 173 196 22 12, right
+  check "= use global default settings", 237, 200 196 133 9, 3state
 }
 on *:DIALOG:chanprot:init:*:{
   did -cu chanprot 237
@@ -557,24 +557,24 @@ alias -l _pae {
 dialog protact {
   title "Protection Actions (Punishments)"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 142 117
+  option map
+  size -1 -1 189 143
 
-  text "&Actions: (used successively for repeat violators)", 1, 2 2 125 10
+  text "&Actions: (used successively for repeat violators)", 1, 2 2 167 12
 
-  list 2, 2 12 100 75
-  list 3, 2 12 100 75, hide disable
+  list 2, 2 14 133 92
+  list 3, 2 14 133 92, hide disable
 
-  button "&Edit...", 4, 105 11 35 12, default
-  button "&Add...", 5, 105 27 35 12
-  button "&Del", 6, 105 43 35 12
-  button "&Up", 7, 105 59 35 12
-  button "&Down", 8, 105 75 35 12
+  button "&Edit...", 4, 140 13 46 14, default
+  button "&Add...", 5, 140 33 46 14
+  button "&Del", 6, 140 52 46 14
+  button "&Up", 7, 140 72 46 14
+  button "&Down", 8, 140 92 46 14
 
-  check "&Use global default actions", 9, 5 89 100 10
+  check "&Use global default actions", 9, 6 109 133 12
 
-  button "OK", 10, 2 102 35 12, OK
-  button "Cancel", 11, 67 102 35 12, cancel
+  button "OK", 10, 2 125 46 14, OK
+  button "Cancel", 11, 89 125 46 14, cancel
 
   edit "", 12, 1 1 1 1, hide autohs
 }
@@ -659,17 +659,17 @@ alias -l _paed {
 dialog paedit {
   title "Action (Punishment)"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 130 102
-  text "&Action to perform on offender:", 1, 2 2 100 10
-  combo 2, 2 12 125 75, drop
-  text "&Message for action: (recommended)", 3, 2 27 100 10
-  edit "", 4, 2 37 125 11, autohs
-  text "&Second action to perform: (optional)", 5, 2 52 100 10
-  combo 6, 2 62 125 75, drop
-  button "OK", 7, 5 85 35 12, OK
-  button "Cancel", 8, 47 85 35 12, cancel
-  button "&Help", 9, 90 85 35 12, disable
+  option map
+  size -1 -1 173 125
+  text "&Action to perform on offender:", 1, 2 2 133 12
+  combo 2, 2 14 167 92, drop
+  text "&Message for action: (recommended)", 3, 2 33 133 12
+  edit "", 4, 2 45 167 13, autohs
+  text "&Second action to perform: (optional)", 5, 2 63 133 12
+  combo 6, 2 76 167 92, drop
+  button "OK", 7, 6 104 46 14, OK
+  button "Cancel", 8, 62 104 46 14, cancel
+  button "&Help", 9, 120 104 46 14, disable
   edit "", 10, 1 1 1 1, hide result autohs
   edit "", 12, 1 1 1 1, hide autohs
   edit "", 13, 1 1 1 1, hide autohs
@@ -700,3 +700,4 @@ on *:DIALOG:paedit:sclick:7:{
   if (($did(4)) && ($did(2).sel != 6)) did -a paedit 10 $_dispact($did(6).sel,$did(2).sel,$did(4))
   else did -a paedit 10 $_dispact($did(6).sel,$did(2).sel)
 }
+

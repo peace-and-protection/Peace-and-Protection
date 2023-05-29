@@ -1001,13 +1001,13 @@ alias _doaww² {
 dialog autoaway {
   title "Auto-away"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 200 34
-  text "Setting auto away in:", 101, 7 1 60 10
-  text "15 seconds", 102, 67 1 130 10
-  text "(ESC to cancel)", 103, 7 10 188 10
-  button "&Set away", 1, 6 20 40 12, OK default
-  button "Cancel", 2, 56 20 40 12, cancel
+  option map
+  size -1 -1 267 41
+  text "Setting auto away in:", 101, 9 1 80 12
+  text "15 seconds", 102, 89 1 173 12
+  text "(ESC to cancel)", 103, 9 12 251 12
+  button "&Set away", 1, 8 24 53 14, OK default
+  button "Cancel", 2, 74 24 53 14, cancel
 }
 on *:DIALOG:autoaway:sclick:1:autoaway now
 on *:DIALOG:autoaway:sclick:2:aacancel
@@ -1015,29 +1015,29 @@ on *:DIALOG:autoaway:sclick:2:aacancel
 dialog pager {
   title "Pager"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 275 93
+  option map
+  size -1 -1 367 114
 
-  button "&>>", 102, 24 5 18 12, default
+  button "&>>", 102, 32 6 24 14, default
 
-  box "Page 1 of 1", 1, 47 2 225 87
-  text "Paged by:", 12, 52 14 35 10, right
-  edit "", 2, 87 12 62 11, read autohs
+  box "Page 1 of 1", 1, 62 2 300 106
+  text "Paged by:", 12, 69 17 46 12, right
+  edit "", 2, 116 14 82 13, read autohs
 
-  button "&Query", 201, 152 12 35 11
-  button "&DCC", 202, 192 12 35 11
-  button "&Ignore...", 203, 231 12 35 11
+  button "&Query", 201, 203 14 46 13
+  button "&DCC", 202, 256 14 46 13
+  button "&Ignore...", 203, 308 14 46 13
 
-  text "Reason:", 13, 52 27 35 10, right
-  edit "", 3, 87 25 180 11, read autohs
+  text "Reason:", 13, 69 33 46 12, right
+  edit "", 3, 116 30 240 13, read autohs
 
-  edit "", 4, 52 41 216 43, autohs vsbar return multi read
+  edit "", 4, 69 50 288 52, autohs vsbar return multi read
 
-  button "Close", 103, 3 45 40 12, OK
-  button "&Help", 104, 3 61 40 12, disable
-  button "&Configure...", 105, 3 77 40 12
+  button "Close", 103, 4 55 53 14, OK
+  button "&Help", 104, 4 74 53 14, disable
+  button "&Configure...", 105, 4 94 53 14
 
-  button "&<<", 101, 3 5 18 12, disable
+  button "&<<", 101, 4 6 24 14, disable
 
   edit "0", 197, 1 1 1 1, hide autohs
   edit "", 198, 1 1 1 1, hide autohs
@@ -1054,15 +1054,15 @@ on *:DIALOG:pager:sclick:203:ign $did(199) | if (($result) && ($did(198) == $hge
 dialog banorback {
   title "Ban or Back?"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 200 34
+  option map
+  size -1 -1 267 41
 
-  text "/b is /back, but you seem to be trying to /ban.", 1, 7 1 190 10
-  text "What would you like to do?", 2, 7 10 190 10
+  text "/b is /back, but you seem to be trying to /ban.", 1, 9 1 253 12
+  text "What would you like to do?", 2, 9 12 253 12
 
-  button "/bac&k", 101, 6 20 40 12, OK
-  button "/ba&n", 102, 56 20 40 12
-  button "&Configure...", 103, 106 20 40 12
+  button "/bac&k", 101, 8 24 53 14, OK
+  button "/ba&n", 102, 74 24 53 14
+  button "&Configure...", 103, 141 24 53 14
 
   edit "", 3, 1 1 1 1, hide result autohs
 }
@@ -1074,21 +1074,21 @@ on *:DIALOG:banorback?:sclick:103:config 33
 dialog away {
   title "Set Away"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 150 60
+  option map
+  size -1 -1 200 73
 
-  text "Away message?", 202, 7 5 140 10
+  text "Away message?", 202, 9 6 187 12
 
-  combo 1, 5 15 140 80, result edit drop
+  combo 1, 6 18 187 98, result edit drop
 
-  check "&Pager", 2, 5 30 35 8, 3state
-  check "&Logging", 3, 40 30 35 8
-  check "&Quiet", 4, 75 30 35 8
-  check "&All servers", 6, 110 30 35 8
+  check "&Pager", 2, 6 36 46 9, 3state
+  check "&Logging", 3, 53 36 46 9
+  check "&Quiet", 4, 100 36 46 9
+  check "&All servers", 6, 146 36 46 9
 
-  button "OK", 101, 5 43 40 12, OK default
-  button "Cancel", 102, 55 43 40 12, cancel
-  button "&Options...", 103, 105 43 40 12
+  button "OK", 101, 6 52 53 14, OK default
+  button "Cancel", 102, 73 52 53 14, cancel
+  button "&Options...", 103, 140 52 53 14
 }
 on *:DIALOG:away:init:*:{
   _fillrec $dname 1 0 $_cfg(away.lis) 0 %.reason
@@ -1103,3 +1103,4 @@ on *:DIALOG:away:init:*:{
 }
 on *:DIALOG:away:sclick:101:set -u1 %.pager $gettok(0 1 quiet,$calc($did(2).state + 1),32) | set -u1 %.log $did(3).state | set -u1 %.quiet $did(4).state | set -u1 %.oneserver $iif($did(6).state,0,1)
 on *:DIALOG:away:sclick:103:_juryrig awaycfg
+

@@ -1505,3 +1505,4 @@ on &*:SIGNAL:PNP.DRAGDROP:{
   if (($1 == n) && (*.wav iswm $3-)) sound $2 $3-
   else dcc send $iif(=* iswm $2,$right($2,-1),$2) $3-
 }
+

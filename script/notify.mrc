@@ -147,30 +147,30 @@ alias notif {
 dialog addnotif {
   title "Notify"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 115 130
+  option map
+  size -1 -1 153 159
 
-  text "&Adding:", 201, 2 4 23 10
-  edit "", 1, 26 2 50 11, autohs
-  text "(notify list)", 202, 78 4 35 10
+  text "&Adding:", 201, 2 4 30 12
+  edit "", 1, 34 2 66 13, autohs
+  text "(notify list)", 202, 104 4 46 12
 
-  radio "&on all networks", 2, 11 15 100 8
-  radio "&only on", 3, 11 25 30 8
-  edit "", 4, 42 23 44 11, autohs
-  text "network", 203, 88 25 25 10
+  radio "&on all networks", 2, 14 18 133 9
+  radio "&only on", 3, 14 30 40 9
+  edit "", 4, 56 28 58 13, autohs
+  text "network", 203, 117 30 33 12
 
-  text "&Mask to match address against:", 204, 2 45 105 10
+  text "&Mask to match address against:", 204, 2 55 140 12
 
-  combo 5, 11 55 100 50, drop edit
-  check "&Whois user on notify", 6, 11 67 100 8
+  combo 5, 14 67 133 61, drop edit
+  check "&Whois user on notify", 6, 14 82 133 9
 
-  text "&User note:", 205, 2 85 105 10
+  text "&User note:", 205, 2 104 140 12
 
-  edit "", 7, 10 94 101 11, autohs
+  edit "", 7, 13 115 134 13, autohs
 
-  button "OK", 101, 2 115 35 12, OK default
-  button "Cancel", 102, 40 115 35 12, cancel
-  button "&Remove", 103, 77 115 35 12
+  button "OK", 101, 2 141 46 14, OK default
+  button "Cancel", 102, 53 141 46 14, cancel
+  button "&Remove", 103, 102 141 46 14
 
   edit "", 241, 1 1 1 1, hide autohs
   edit "", 242, 1 1 1 1, hide autohs result
@@ -248,3 +248,4 @@ on *:DIALOG:addnotif:sclick:101:{
   }
 }
 on *:DIALOG:addnotif:sclick:103:notify -r $did(241) | did -r $dname 1 | scid -at1 _nickcol.updatenick $did(241) 1 | dialog -k $dname
+

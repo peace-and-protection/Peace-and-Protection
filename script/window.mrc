@@ -49,11 +49,11 @@ alias hide {
 dialog howunhide {
   title "Hiding Windows"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 125 62
-  text "To unhide a window, select it from the Window menu, or select 'Unhide all' from the PnP menu. You can also type /unhide.", 3, 5 5 115 50
-  check "&Don't show this message again", 2, 20 30 85 10
-  button "OK", 1, 42 45 40 12, ok default
+  option map
+  size -1 -1 167 76
+  text "To unhide a window, select it from the Window menu, or select 'Unhide all' from the PnP menu. You can also type /unhide.", 3, 6 6 153 61
+  check "&Don't show this message again", 2, 26 36 113 12
+  button "OK", 1, 56 55 53 14, ok default
   edit "", 4, 1 1 1 1, hide autohs result
 }
 on *:DIALOG:howunhide:sclick:1:did -o $dname 4 1 $did(2).state
@@ -732,3 +732,4 @@ alias -l _picbkmethod {
   var %sel = $$dialog(nickcomp,nickcomp,-4)
   return $gettok(-c -f -n -r -t -p,$findtok(%items,%sel,1,44),32)
 }
+

@@ -281,3 +281,4 @@ on *:INPUT:#:if (!$hget(pnp. $+ $cid,away)) hadd pnp. $+ $cid -chanidle. $+ $tar
 on me:*:JOIN:#:if (!$hget(pnp. $+ $cid,away)) hadd pnp. $+ $cid -chanidle. $+ $chan $ctime
 on me:*:PART:#:hdel pnp. $+ $cid -chanidle. $+ $chan
 on *:KICK:#:if ($knick == $me) hdel pnp. $+ $cid -chanidle. $+ $chan
+

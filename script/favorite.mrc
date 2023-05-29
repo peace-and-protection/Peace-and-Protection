@@ -435,3 +435,4 @@ alias _favservpop {
   if (%serv) return $1 $+ . %serv $+ :fav c %serv
   return
 }
+

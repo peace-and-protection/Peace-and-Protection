@@ -284,28 +284,28 @@ menu @Blacklist {
 dialog blackedit {
   title "Blacklist"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 150 130
+  option map
+  size -1 -1 200 159
 
-  box "Blacklisting:", 101, 5 5 140 39
-  text "&Nickname:", 106, 8 17 25 10, right
-  edit "", 1, 35 15 50 11
-  text "(for reference only)", 107, 87 17 50 10
-  text "&Usermask:", 108, 8 29 25 10, right
-  combo 2, 35 27 105 60, edit drop
+  box "Blacklisting:", 101, 6 6 187 47
+  text "&Nickname:", 106, 10 20 33 12, right
+  edit "", 1, 46 18 66 13
+  text "(for reference only)", 107, 116 20 66 12
+  text "&Usermask:", 108, 10 35 33 12, right
+  combo 2, 46 33 140 73, edit drop
 
-  box "Where:", 102, 5 46 140 43
-  radio "&All channels", 5, 10 56 130 8
-  radio "&Only in:", 6, 10 66 35 8
-  edit "", 7, 45 65 90 11, disable
-  text "(multiple channels ok)", 103, 47 78 94 10
+  box "Where:", 102, 6 56 187 52
+  radio "&All channels", 5, 13 68 173 9
+  radio "&Only in:", 6, 13 81 46 9
+  edit "", 7, 60 79 120 13, disable
+  text "(multiple channels ok)", 103, 62 95 125 12
 
-  text "&Reason:", 104, 8 95 25 10, right
-  combo 8, 35 93 105 70, edit drop
+  text "&Reason:", 104, 10 116 33 12, right
+  combo 8, 46 114 140 85, edit drop
 
-  button "&Blacklist", 201, 5 112 40 12, default
-  button "Cancel", 202, 55 112 40 12, cancel
-  button "&Remove", 203, 105 112 40 12, disable
+  button "&Blacklist", 201, 6 137 53 14, default
+  button "Cancel", 202, 73 137 53 14, cancel
+  button "&Remove", 203, 140 137 53 14, disable
 
   edit "", 241, 1 1 1 1, hide autohs
   edit "", 242, 1 1 1 1, hide autohs result
@@ -487,3 +487,4 @@ alias _reorderblack {
     window -c @.userlist
   }
 }
+

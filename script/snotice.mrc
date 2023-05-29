@@ -448,3 +448,4 @@ menu @Wallop {
   $iif(w isincs $usermode,$style(1)) Mode +w on:umode +w
   $iif(w !isincs $usermode,$style(1)) Mode +w off:umode -w
 }
+

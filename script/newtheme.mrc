@@ -125,11 +125,11 @@ alias soundcfg { theme 13 }
 dialog pnp.mts {
   title "Theme Central"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 210 169
+  option map
+  size -1 -1 280 207
 
   ; List of sections
-  list 501, 5 5 50 140, size
+  list 501, 6 6 66 171, size
 
   ; Whether a section has been loaded yet
   list 502, 1 1 1 1, hide
@@ -144,18 +144,18 @@ dialog pnp.mts {
   edit "", 503, 1 1 1 1, autohs hide
 
   ; 'Actions:' drop down
-  combo 504, 5 151 50 70, drop
+  combo 504, 6 185 66 85, drop
 
-  button "OK", 505, 60 150 30 12, default group
-  button "Cancel", 506, 95 150 30 12, cancel
-  button "&Help", 507, 130 150 30 12, disable
-  button "&Preview >>", 508, 165 150 40 12, disable
+  button "OK", 505, 80 184 40 14, default group
+  button "Cancel", 506, 126 184 40 14, cancel
+  button "&Help", 507, 173 184 40 14, disable
+  button "&Preview >>", 508, 220 184 53 14, disable
 
   ; Preview image
-  icon 512, 215 5 100 140
+  icon 512, 287 6 133 171
 
   ; Generate preview button
-  button "&Generate", 513, 245 150 40 12
+  button "&Generate", 513, 327 184 53 14
 
   ; Hidden tabs to select areas
   tab "", 19, -25 -25 1 1, disable hide group
@@ -175,310 +175,310 @@ dialog pnp.mts {
   tab "", 17, -25 -25 1 1, disable hide
 
   ; Text to show on tab 19
-  text "", 510, 65 70 140 40, center tab 19  
+  text "", 510, 86 85 187 49, center tab 19  
 
   ; mIRC Colors
-  text "Action text:", 20, 60 7 55 10, right tab 1
-  text "CTCP text:", 21, 60 17 55 10, right tab 1
-  text "Highlight text:", 22, 60 27 55 10, right tab 1
-  text "Info text:", 23, 60 37 55 10, right tab 1
-  text "Info2 text:", 24, 60 47 55 10, right tab 1
-  text "Invite text:", 25, 60 57 55 10, right tab 1
-  text "Join text:", 26, 60 67 55 10, right tab 1
-  text "Kick text:", 27, 60 77 55 10, right tab 1
-  text "Mode text:", 28, 60 87 55 10, right tab 1
-  text "Nick text:", 29, 60 97 55 10, right tab 1
-  text "Normal text:", 30, 130 7 55 10, right tab 1
-  text "Notice text:", 31, 130 17 55 10, right tab 1
-  text "Notify text:", 32, 130 27 55 10, right tab 1
-  text "Other text:", 33, 130 37 55 10, right tab 1
-  text "Own text:", 34, 130 47 55 10, right tab 1
-  text "Part text:", 35, 130 57 55 10, right tab 1
-  text "Quit text:", 36, 130 67 55 10, right tab 1
-  text "Topic text:", 37, 130 77 55 10, right tab 1
-  text "Wallops text:", 38, 130 87 55 10, right tab 1
-  text "Whois text:", 39, 130 97 55 10, right tab 1
-  text "Background:", 40, 60 112 55 10, right tab 1
-  text "Editbox text:", 41, 60 127 55 10, right tab 1
-  text "Editbox background:", 42, 60 137 55 10, right tab 1
-  text "Grayed text:", 43, 130 112 55 10, right tab 1
-  text "Listbox text:", 44, 130 127 55 10, right tab 1
-  text "Listbox background:", 45, 130 137 55 10, right tab 1
+  text "Action text:", 20, 80 8 73 12, right tab 1
+  text "CTCP text:", 21, 80 20 73 12, right tab 1
+  text "Highlight text:", 22, 80 33 73 12, right tab 1
+  text "Info text:", 23, 80 45 73 12, right tab 1
+  text "Info2 text:", 24, 80 57 73 12, right tab 1
+  text "Invite text:", 25, 80 70 73 12, right tab 1
+  text "Join text:", 26, 80 82 73 12, right tab 1
+  text "Kick text:", 27, 80 94 73 12, right tab 1
+  text "Mode text:", 28, 80 106 73 12, right tab 1
+  text "Nick text:", 29, 80 119 73 12, right tab 1
+  text "Normal text:", 30, 173 8 73 12, right tab 1
+  text "Notice text:", 31, 173 20 73 12, right tab 1
+  text "Notify text:", 32, 173 33 73 12, right tab 1
+  text "Other text:", 33, 173 45 73 12, right tab 1
+  text "Own text:", 34, 173 57 73 12, right tab 1
+  text "Part text:", 35, 173 70 73 12, right tab 1
+  text "Quit text:", 36, 173 82 73 12, right tab 1
+  text "Topic text:", 37, 173 94 73 12, right tab 1
+  text "Wallops text:", 38, 173 106 73 12, right tab 1
+  text "Whois text:", 39, 173 119 73 12, right tab 1
+  text "Background:", 40, 80 137 73 12, right tab 1
+  text "Editbox text:", 41, 80 156 73 12, right tab 1
+  text "Editbox background:", 42, 80 168 73 12, right tab 1
+  text "Grayed text:", 43, 173 137 73 12, right tab 1
+  text "Listbox text:", 44, 173 156 73 12, right tab 1
+  text "Listbox background:", 45, 173 168 73 12, right tab 1
 
-  icon 47, 119 7 8 8, %.blank, tab 1
-  icon 48, 119 17 8 8, %.blank, tab 1
-  icon 49, 119 27 8 8, %.blank, tab 1
-  icon 50, 119 37 8 8, %.blank, tab 1
-  icon 51, 119 47 8 8, %.blank, tab 1
-  icon 52, 119 57 8 8, %.blank, tab 1
-  icon 53, 119 67 8 8, %.blank, tab 1
-  icon 54, 119 77 8 8, %.blank, tab 1
-  icon 55, 119 87 8 8, %.blank, tab 1
-  icon 56, 119 97 8 8, %.blank, tab 1
-  icon 57, 189 7 8 8, %.blank, tab 1
-  icon 58, 189 17 8 8, %.blank, tab 1
-  icon 59, 189 27 8 8, %.blank, tab 1
-  icon 60, 189 37 8 8, %.blank, tab 1
-  icon 61, 189 47 8 8, %.blank, tab 1
-  icon 62, 189 57 8 8, %.blank, tab 1
-  icon 63, 189 67 8 8, %.blank, tab 1
-  icon 64, 189 77 8 8, %.blank, tab 1
-  icon 65, 189 87 8 8, %.blank, tab 1
-  icon 66, 189 97 8 8, %.blank, tab 1
-  icon 46, 119 112 8 8, %.blank, tab 1
-  icon 68, 119 127 8 8, %.blank, tab 1
-  icon 67, 119 137 8 8, %.blank, tab 1
-  icon 71, 189 112 8 8, %.blank, tab 1
-  icon 70, 189 127 8 8, %.blank, tab 1
-  icon 69, 189 137 8 8, %.blank, tab 1
+  icon 47, 158 8 10 9, %.blank, tab 1
+  icon 48, 158 20 10 9, %.blank, tab 1
+  icon 49, 158 33 10 9, %.blank, tab 1
+  icon 50, 158 45 10 9, %.blank, tab 1
+  icon 51, 158 57 10 9, %.blank, tab 1
+  icon 52, 158 70 10 9, %.blank, tab 1
+  icon 53, 158 82 10 9, %.blank, tab 1
+  icon 54, 158 94 10 9, %.blank, tab 1
+  icon 55, 158 106 10 9, %.blank, tab 1
+  icon 56, 158 119 10 9, %.blank, tab 1
+  icon 57, 252 8 10 9, %.blank, tab 1
+  icon 58, 252 20 10 9, %.blank, tab 1
+  icon 59, 252 33 10 9, %.blank, tab 1
+  icon 60, 252 45 10 9, %.blank, tab 1
+  icon 61, 252 57 10 9, %.blank, tab 1
+  icon 62, 252 70 10 9, %.blank, tab 1
+  icon 63, 252 82 10 9, %.blank, tab 1
+  icon 64, 252 94 10 9, %.blank, tab 1
+  icon 65, 252 106 10 9, %.blank, tab 1
+  icon 66, 252 119 10 9, %.blank, tab 1
+  icon 46, 158 137 10 9, %.blank, tab 1
+  icon 68, 158 156 10 9, %.blank, tab 1
+  icon 67, 158 168 10 9, %.blank, tab 1
+  icon 71, 252 137 10 9, %.blank, tab 1
+  icon 70, 252 156 10 9, %.blank, tab 1
+  icon 69, 252 168 10 9, %.blank, tab 1
 
   ; RGB Settings
   ;!!
-  text "Sorry, this section is not currently available. You can edit RGB colors in mIRC's color dialog. (Alt+K)", 600, 65 70 140 40, center tab 2
+  text "Sorry, this section is not currently available. You can edit RGB colors in mIRC's color dialog. (Alt+K)", 600, 86 85 187 49, center tab 2
 
   ; PnP Colors
-  text "Text color:", 80, 65 40 80 10, right tab 3
-  text "Target color:", 81, 65 52 80 10, right tab 3
-  text "Text highlight color:", 82, 65 64 80 10, right tab 3
-  text "Bracket color:", 83, 65 76 80 10, right tab 3
-  text "Alert/error color:", 84, 65 88 80 10, right tab 3
-  icon 85, 150 39 8 8, %.blank, tab 3
-  icon 86, 150 51 8 8, %.blank, tab 3
-  icon 87, 150 63 8 8, %.blank, tab 3
-  icon 88, 150 75 8 8, %.blank, tab 3
-  icon 89, 150 87 8 8, %.blank, tab 3
+  text "Text color:", 80, 86 49 106 12, right tab 3
+  text "Target color:", 81, 86 63 106 12, right tab 3
+  text "Text highlight color:", 82, 86 78 106 12, right tab 3
+  text "Bracket color:", 83, 86 93 106 12, right tab 3
+  text "Alert/error color:", 84, 86 108 106 12, right tab 3
+  icon 85, 200 47 10 9, %.blank, tab 3
+  icon 86, 200 62 10 9, %.blank, tab 3
+  icon 87, 200 77 10 9, %.blank, tab 3
+  icon 88, 200 92 10 9, %.blank, tab 3
+  icon 89, 200 106 10 9, %.blank, tab 3
 
   ; Nicklist Colors
-  text "Normal:", 90, 62 27 42 10, right tab 4
-  text "Notify / Userlist:", 91, 62 38 42 10, right tab 4
-  text "Failed notify:", 92, 62 49 42 10, right tab 4
-  text "Blacklist / Ignore:", 93, 62 60 42 10, right tab 4
-  text "IRCop:", 94, 62 71 42 10, right tab 4
-  text "Yourself:", 95, 62 82 42 10, right tab 4
-  text "Lagged:", 96, 62 93 42 10, right tab 4
-  text "Being pinged:", 97, 62 104 42 10, right tab 4
-  text "None:", 98, 109 16 20 8, center tab 4
-  text "Voice:", 99, 131 16 20 8, center tab 4
-  text "Half:", 100, 153 16 20 8, center tab 4
-  text "Op:", 101, 175 16 20 8, center tab 4
+  text "Normal:", 90, 82 33 56 12, right tab 4
+  text "Notify / Userlist:", 91, 82 46 56 12, right tab 4
+  text "Failed notify:", 92, 82 60 56 12, right tab 4
+  text "Blacklist / Ignore:", 93, 82 73 56 12, right tab 4
+  text "IRCop:", 94, 82 87 56 12, right tab 4
+  text "Yourself:", 95, 82 100 56 12, right tab 4
+  text "Lagged:", 96, 82 114 56 12, right tab 4
+  text "Being pinged:", 97, 82 127 56 12, right tab 4
+  text "None:", 98, 145 19 26 9, center tab 4
+  text "Voice:", 99, 175 19 26 9, center tab 4
+  text "Half:", 100, 204 19 26 9, center tab 4
+  text "Op:", 101, 233 19 26 9, center tab 4
 
-  icon 102, 115 26 8 8, %.blank, tab 4
-  icon 103, 137 26 8 8, %.blank, tab 4
-  icon 104, 159 26 8 8, %.blank, tab 4
-  icon 105, 181 26 8 8, %.blank, tab 4
-  icon 106, 115 37 8 8, %.blank, tab 4
-  icon 107, 137 37 8 8, %.blank, tab 4
-  icon 108, 159 37 8 8, %.blank, tab 4
-  icon 109, 181 37 8 8, %.blank, tab 4
-  icon 110, 115 48 8 8, %.blank, tab 4
-  icon 111, 137 48 8 8, %.blank, tab 4
-  icon 112, 159 48 8 8, %.blank, tab 4
-  icon 113, 181 48 8 8, %.blank, tab 4
-  icon 114, 115 59 8 8, %.blank, tab 4
-  icon 115, 137 59 8 8, %.blank, tab 4
-  icon 116, 159 59 8 8, %.blank, tab 4
-  icon 117, 181 59 8 8, %.blank, tab 4
-  icon 118, 115 70 8 8, %.blank, tab 4
-  icon 119, 137 70 8 8, %.blank, tab 4
-  icon 120, 159 70 8 8, %.blank, tab 4
-  icon 121, 181 70 8 8, %.blank, tab 4
-  icon 122, 115 81 8 8, %.blank, tab 4
-  icon 123, 137 81 8 8, %.blank, tab 4
-  icon 124, 159 81 8 8, %.blank, tab 4
-  icon 125, 181 81 8 8, %.blank, tab 4
-  icon 126, 115 92 8 8, %.blank, tab 4
-  icon 127, 137 92 8 8, %.blank, tab 4
-  icon 128, 159 92 8 8, %.blank, tab 4
-  icon 129, 181 92 8 8, %.blank, tab 4
-  icon 130, 115 103 8 8, %.blank, tab 4
-  icon 131, 137 103 8 8, %.blank, tab 4
-  icon 132, 159 103 8 8, %.blank, tab 4
-  icon 133, 181 103 8 8, %.blank, tab 4
+  icon 102, 153 31 10 9, %.blank, tab 4
+  icon 103, 183 31 10 9, %.blank, tab 4
+  icon 104, 212 31 10 9, %.blank, tab 4
+  icon 105, 241 31 10 9, %.blank, tab 4
+  icon 106, 153 45 10 9, %.blank, tab 4
+  icon 107, 183 45 10 9, %.blank, tab 4
+  icon 108, 212 45 10 9, %.blank, tab 4
+  icon 109, 241 45 10 9, %.blank, tab 4
+  icon 110, 153 58 10 9, %.blank, tab 4
+  icon 111, 183 58 10 9, %.blank, tab 4
+  icon 112, 212 58 10 9, %.blank, tab 4
+  icon 113, 241 58 10 9, %.blank, tab 4
+  icon 114, 153 72 10 9, %.blank, tab 4
+  icon 115, 183 72 10 9, %.blank, tab 4
+  icon 116, 212 72 10 9, %.blank, tab 4
+  icon 117, 241 72 10 9, %.blank, tab 4
+  icon 118, 153 85 10 9, %.blank, tab 4
+  icon 119, 183 85 10 9, %.blank, tab 4
+  icon 120, 212 85 10 9, %.blank, tab 4
+  icon 121, 241 85 10 9, %.blank, tab 4
+  icon 122, 153 99 10 9, %.blank, tab 4
+  icon 123, 183 99 10 9, %.blank, tab 4
+  icon 124, 212 99 10 9, %.blank, tab 4
+  icon 125, 241 99 10 9, %.blank, tab 4
+  icon 126, 153 113 10 9, %.blank, tab 4
+  icon 127, 183 113 10 9, %.blank, tab 4
+  icon 128, 212 113 10 9, %.blank, tab 4
+  icon 129, 241 113 10 9, %.blank, tab 4
+  icon 130, 153 126 10 9, %.blank, tab 4
+  icon 131, 183 126 10 9, %.blank, tab 4
+  icon 132, 212 126 10 9, %.blank, tab 4
+  icon 133, 241 126 10 9, %.blank, tab 4
 
   ; Display
-  text "&Bold characters:", 161, 67 24 55 10, right tab 5
-  edit "", 164, 123 22 25 11, autohs tab 5 group
-  edit "", 165, 149 22 25 11, autohs tab 5
-  text "&Line prefix:", 162, 67 40 55 10, right tab 5
-  edit "", 166, 123 38 51 11, autohs tab 5
-  text "&Parenthesis'd text:", 171, 67 56 55 10, right tab 5
-  edit "", 172, 123 54 51 11, autohs tab 5
-  check "&Enable timestamp:", 167, 67 70 55 10, tab 5
-  edit "", 168, 123 70 51 11, autohs tab 5
-  check "&Lowercase channel names", 169, 67 84 140 10, tab 5
-  check "&Show separators around /whois", 170, 67 96 140 10, tab 5
+  text "&Bold characters:", 161, 89 29 73 12, right tab 5
+  edit "", 164, 164 27 33 13, autohs tab 5 group
+  edit "", 165, 199 27 33 13, autohs tab 5
+  text "&Line prefix:", 162, 89 49 73 12, right tab 5
+  edit "", 166, 164 46 68 13, autohs tab 5
+  text "&Parenthesis'd text:", 171, 89 68 73 12, right tab 5
+  edit "", 172, 164 66 68 13, autohs tab 5
+  check "&Enable timestamp:", 167, 89 85 73 12, tab 5
+  edit "", 168, 164 85 68 13, autohs tab 5
+  check "&Lowercase channel names", 169, 89 103 187 12, tab 5
+  check "&Show separators around /whois", 170, 89 117 187 12, tab 5
 
   ; Line Separator
-  radio "&Color-based separator:", 230, 61 12 140 8, tab 6 group
-  radio "&Custom line separator:", 231, 61 80 140 8, tab 6
-  radio "&No line separator", 232, 61 124 140 8, tab 6
-  box "", 233, 71 22 115 50, tab 6
-  box "", 234, 71 91 115 25, tab 6
+  radio "&Color-based separator:", 230, 81 14 187 9, tab 6 group
+  radio "&Custom line separator:", 231, 81 98 187 9, tab 6
+  radio "&No line separator", 232, 81 152 187 9, tab 6
+  box "", 233, 94 27 153 61, tab 6
+  box "", 234, 94 111 153 30, tab 6
 
-  icon 235, 80 32 8 8, %.blank, tab 6
-  icon 236, 90 32 8 8, %.blank, tab 6
-  icon 237, 100 32 8 8, %.blank, tab 6
-  icon 238, 110 32 8 8, %.blank, tab 6
-  icon 239, 120 32 8 8, %.blank, tab 6
-  icon 240, 130 32 8 8, %.blank, tab 6
-  icon 241, 140 32 8 8, %.blank, tab 6
-  icon 242, 150 32 8 8, %.blank, tab 6
-  icon 243, 160 32 8 8, %.blank, tab 6
-  icon 244, 170 32 8 8, %.blank, tab 6
-  icon 245, 80 42 8 8, %.blank, tab 6
-  icon 246, 90 42 8 8, %.blank, tab 6
-  icon 247, 100 42 8 8, %.blank, tab 6
-  icon 248, 110 42 8 8, %.blank, tab 6
-  icon 249, 120 42 8 8, %.blank, tab 6
-  icon 250, 130 42 8 8, %.blank, tab 6
-  icon 251, 140 42 8 8, %.blank, tab 6
-  icon 252, 150 42 8 8, %.blank, tab 6
-  icon 253, 160 42 8 8, %.blank, tab 6
-  icon 254, 170 42 8 8, %.blank, tab 6
+  icon 235, 106 39 10 9, %.blank, tab 6
+  icon 236, 120 39 10 9, %.blank, tab 6
+  icon 237, 133 39 10 9, %.blank, tab 6
+  icon 238, 146 39 10 9, %.blank, tab 6
+  icon 239, 160 39 10 9, %.blank, tab 6
+  icon 240, 173 39 10 9, %.blank, tab 6
+  icon 241, 187 39 10 9, %.blank, tab 6
+  icon 242, 200 39 10 9, %.blank, tab 6
+  icon 243, 213 39 10 9, %.blank, tab 6
+  icon 244, 227 39 10 9, %.blank, tab 6
+  icon 245, 106 51 10 9, %.blank, tab 6
+  icon 246, 120 51 10 9, %.blank, tab 6
+  icon 247, 133 51 10 9, %.blank, tab 6
+  icon 248, 146 51 10 9, %.blank, tab 6
+  icon 249, 160 51 10 9, %.blank, tab 6
+  icon 250, 173 51 10 9, %.blank, tab 6
+  icon 251, 187 51 10 9, %.blank, tab 6
+  icon 252, 200 51 10 9, %.blank, tab 6
+  icon 253, 213 51 10 9, %.blank, tab 6
+  icon 254, 227 51 10 9, %.blank, tab 6
 
-  text "&Char:", 255, 75 58 24 10, right tab 6
-  edit "", 256, 100 56 25 11, tab 6 group
-  text "&Length:", 257, 128 58 24 10, right tab 6
-  edit "", 258, 153 56 25 11, tab 6
-  edit "", 259, 80 100 98 11, autohs tab 6
+  text "&Char:", 255, 100 71 32 12, right tab 6
+  edit "", 256, 133 68 33 13, tab 6 group
+  text "&Length:", 257, 171 71 32 12, right tab 6
+  edit "", 258, 204 68 33 13, tab 6
+  edit "", 259, 106 122 130 13, autohs tab 6
 
   ; Text theme
-  radio "&Edit theme lines", 300, 61 6 50 12, push tab 8 group
-  radio "&Edit script", 301, 114 6 50 12, push tab 8
-  edit "", 302, 60 20 140 125, multi return hsbar vsbar tab 8 group
-  edit "", 303, 60 20 140 125, multi return hsbar vsbar tab 8 group hide
+  radio "&Edit theme lines", 300, 81 7 66 14, push tab 8 group
+  radio "&Edit script", 301, 152 7 66 14, push tab 8
+  edit "", 302, 80 24 187 153, multi return hsbar vsbar tab 8 group
+  edit "", 303, 80 24 187 153, multi return hsbar vsbar tab 8 group hide
 
   ; Fonts
-  text "&Status font:", 310, 62 20 50 10, right tab 10
-  edit "", 315, 113 18 65 11, read autohs tab 10 group
-  button "&Select", 320, 181 18 24 11, tab 10 group
-  text "&Channel font:", 311, 62 34 50 10, right tab 10
-  edit "", 316, 113 32 65 11, read autohs tab 10
-  button "&Select", 321, 181 32 24 11, tab 10
-  text "&Query/chat font:", 312, 62 48 50 10, right tab 10
-  edit "", 317, 113 46 65 11, read autohs tab 10
-  button "&Select", 322, 181 46 24 11, tab 10
-  text "&Send/get font:", 313, 62 62 50 10, right tab 10
-  edit "", 318, 113 60 65 11, read autohs tab 10
-  button "&Select", 323, 181 60 24 11, tab 10
-  text "&Script window font:", 314, 62 76 50 10, right tab 10
-  edit "", 319, 113 74 65 11, read autohs tab 10
-  button "&Select", 324, 181 74 24 11, tab 10
+  text "&Status font:", 310, 82 24 66 12, right tab 10
+  edit "", 315, 150 22 86 13, read autohs tab 10 group
+  button "&Select", 320, 241 22 32 13, tab 10 group
+  text "&Channel font:", 311, 82 41 66 12, right tab 10
+  edit "", 316, 150 39 86 13, read autohs tab 10
+  button "&Select", 321, 241 39 32 13, tab 10
+  text "&Query/chat font:", 312, 82 58 66 12, right tab 10
+  edit "", 317, 150 56 86 13, read autohs tab 10
+  button "&Select", 322, 241 56 32 13, tab 10
+  text "&Send/get font:", 313, 82 76 66 12, right tab 10
+  edit "", 318, 150 73 86 13, read autohs tab 10
+  button "&Select", 323, 241 73 32 13, tab 10
+  text "&Script window font:", 314, 82 93 66 12, right tab 10
+  edit "", 319, 150 90 86 13, read autohs tab 10
+  button "&Select", 324, 241 90 32 13, tab 10
 
   ; Backgrounds
-  text "&mIRC background:", 330, 62 10 50 10, right tab 11
-  edit "", 331, 113 8 65 11, read autohs tab 11 group
-  button "&Select", 332, 181 8 24 11, tab 11
-  combo 333, 113 21 65 100, drop tab 11
-  button "&None", 334, 181 21 24 11, tab 11
-  text "&Status bkg.:", 335, 62 38 50 10, right tab 11
-  edit "", 336, 113 36 65 11, read autohs tab 11
-  button "&Select", 337, 181 36 24 11, tab 11
-  combo 338, 113 49 65 100, drop tab 11
-  button "&None", 339, 181 49 24 11, tab 11
-  text "&Channel bkg.:", 340, 62 66 50 10, right tab 11
-  edit "", 341, 113 64 65 11, read autohs tab 11
-  button "&Select", 342, 181 64 24 11, tab 11
-  combo 343, 113 77 65 100, drop tab 11
-  button "&None", 344, 181 77 24 11, tab 11
-  text "&Query/chat bkg.:", 345, 62 94 50 10, right tab 11
-  edit "", 346, 113 92 65 11, read autohs tab 11
-  button "&Select", 347, 181 92 24 11, tab 11
-  combo 348, 113 105 65 100, drop tab 11
-  button "&None", 349, 181 105 24 11, tab 11
-  text "&Script win. bkg.:", 350, 62 122 50 10, right tab 11
-  edit "", 351, 113 120 65 11, read autohs tab 11
-  button "&Select", 352, 181 120 24 11, tab 11
-  combo 353, 113 133 65 100, drop tab 11
-  button "&None", 354, 181 133 24 11, tab 11
+  text "&mIRC background:", 330, 82 12 66 12, right tab 11
+  edit "", 331, 150 9 86 13, read autohs tab 11 group
+  button "&Select", 332, 241 9 32 13, tab 11
+  combo 333, 150 25 86 122, drop tab 11
+  button "&None", 334, 241 25 32 13, tab 11
+  text "&Status bkg.:", 335, 82 46 66 12, right tab 11
+  edit "", 336, 150 44 86 13, read autohs tab 11
+  button "&Select", 337, 241 44 32 13, tab 11
+  combo 338, 150 60 86 122, drop tab 11
+  button "&None", 339, 241 60 32 13, tab 11
+  text "&Channel bkg.:", 340, 82 81 66 12, right tab 11
+  edit "", 341, 150 78 86 13, read autohs tab 11
+  button "&Select", 342, 241 78 32 13, tab 11
+  combo 343, 150 94 86 122, drop tab 11
+  button "&None", 344, 241 94 32 13, tab 11
+  text "&Query/chat bkg.:", 345, 82 115 66 12, right tab 11
+  edit "", 346, 150 113 86 13, read autohs tab 11
+  button "&Select", 347, 241 113 32 13, tab 11
+  combo 348, 150 128 86 122, drop tab 11
+  button "&None", 349, 241 128 32 13, tab 11
+  text "&Script win. bkg.:", 350, 82 149 66 12, right tab 11
+  edit "", 351, 150 147 86 13, read autohs tab 11
+  button "&Select", 352, 241 147 32 13, tab 11
+  combo 353, 150 163 86 122, drop tab 11
+  button "&None", 354, 241 163 32 13, tab 11
 
   ; Toolbars
-  text "&Toolbar icons:", 360, 62 30 50 10, right tab 12
-  edit "", 361, 113 28 65 11, read autohs tab 12 group
-  button "&Select", 362, 181 28 24 11, tab 12
-  button "&None", 364, 181 41 24 11, tab 12
-  text "&Toolbar bkg.:", 365, 62 61 50 10, right tab 12
-  edit "", 366, 113 59 65 11, read autohs tab 12
-  button "&Select", 367, 181 59 24 11, tab 12
-  button "&None", 369, 181 72 24 11, tab 12
-  text "&Switchbar bkg.:", 370, 62 92 50 10, right tab 12
-  edit "", 371, 113 90 65 11, read autohs tab 12
-  button "&Select", 372, 181 90 24 11, tab 12
-  button "&None", 374, 181 103 24 11, tab 12
+  text "&Toolbar icons:", 360, 82 36 66 12, right tab 12
+  edit "", 361, 150 34 86 13, read autohs tab 12 group
+  button "&Select", 362, 241 34 32 13, tab 12
+  button "&None", 364, 241 50 32 13, tab 12
+  text "&Toolbar bkg.:", 365, 82 74 66 12, right tab 12
+  edit "", 366, 150 72 86 13, read autohs tab 12
+  button "&Select", 367, 241 72 32 13, tab 12
+  button "&None", 369, 241 88 32 13, tab 12
+  text "&Switchbar bkg.:", 370, 82 113 66 12, right tab 12
+  edit "", 371, 150 110 86 13, read autohs tab 12
+  button "&Select", 372, 241 110 32 13, tab 12
+  button "&None", 374, 241 126 32 13, tab 12
 
   ; Event Sounds
-  text "&Editing", 401, 62 14 31 10, right tab 13
-  combo 402, 95 12 60 85, drop tab 13 group
-  text "event sounds:", 403, 157 14 50 10, tab 13
+  text "&Editing", 401, 82 17 41 12, right tab 13
+  combo 402, 126 14 80 104, drop tab 13 group
+  text "event sounds:", 403, 209 17 66 12, tab 13
   ; (currently viewed sounds- Item (sound) format)
-  list 404, 62 25 145 55, tab 13
-  text "", 406, 65 75 75 7, tab 13
-  text "", 407, 65 82 35 7, tab 13
-  text "", 408, 102 82 105 7, tab 13
-  button "&Select...", 409, 65 92 42 12, tab 13 group
-  button "&Preview", 410, 112 92 42 12, tab 13
-  button "&Clear", 411, 160 92 42 12, tab 13
-  button "&Clear all", 412, 65 110 42 12, tab 13
-  button "&Copy", 413, 112 110 42 12, tab 13
-  button "&Paste", 414, 160 110 42 12, tab 13
+  list 404, 82 30 193 67, tab 13
+  text "", 406, 86 92 100 8, tab 13
+  text "", 407, 86 100 46 8, tab 13
+  text "", 408, 136 100 140 8, tab 13
+  button "&Select...", 409, 86 113 56 14, tab 13 group
+  button "&Preview", 410, 149 113 56 14, tab 13
+  button "&Clear", 411, 213 113 56 14, tab 13
+  button "&Clear all", 412, 86 135 56 14, tab 13
+  button "&Copy", 413, 149 135 56 14, tab 13
+  button "&Paste", 414, 213 135 56 14, tab 13
   ; (all sounds in current theme- Item File format)
-  list 415, 62 25 145 55, hide
+  list 415, 82 30 193 67, hide
   ; (all items currenetly viewed, same order as 404- just Item names)
-  list 416, 62 25 145 55, hide
+  list 416, 82 30 193 67, hide
 
   ; Theme Info
-  text "&Theme name:", 420, 62 20 50 10, right tab 15
-  edit "", 426, 113 18 90 11, autohs tab 15 group
-  text "&Version:", 421, 62 34 50 10, right tab 15
-  edit "", 427, 113 32 90 11, autohs tab 15
-  text "&Author:", 422, 62 48 50 10, right tab 15
-  edit "", 428, 113 46 90 11, autohs tab 15
-  text "&E-Mail:", 423, 62 62 50 10, right tab 15
-  edit "", 429, 113 60 90 11, autohs tab 15
-  text "&Homepage:", 424, 62 76 50 10, right tab 15
-  edit "", 430, 113 74 90 11, autohs tab 15
-  text "&Description:", 425, 62 90 50 10, right tab 15
-  edit "", 431, 113 88 90 30, multi vsbar tab 15
+  text "&Theme name:", 420, 82 24 66 12, right tab 15
+  edit "", 426, 150 22 120 13, autohs tab 15 group
+  text "&Version:", 421, 82 41 66 12, right tab 15
+  edit "", 427, 150 39 120 13, autohs tab 15
+  text "&Author:", 422, 82 58 66 12, right tab 15
+  edit "", 428, 150 56 120 13, autohs tab 15
+  text "&E-Mail:", 423, 82 76 66 12, right tab 15
+  edit "", 429, 150 73 120 13, autohs tab 15
+  text "&Homepage:", 424, 82 93 66 12, right tab 15
+  edit "", 430, 150 90 120 13, autohs tab 15
+  text "&Description:", 425, 82 110 66 12, right tab 15
+  edit "", 431, 150 108 120 36, multi vsbar tab 15
 
   ; Save Theme
-  text "Which elements do you wish to include?", 440, 68 10 140 10, tab 17
-  check "&mIRC colors", 441, 75 20 64 8, tab 17 group
-  check "&RGB settings", 442, 75 29 64 8, tab 17
-  check "&PnP colors", 443, 75 38 64 8, tab 17
-  check "&Nicklist colors", 444, 75 47 64 8, tab 17
-  check "&Line separator", 445, 75 56 64 8, tab 17
-  check "&Text theme / Display", 446, 140 20 65 8, tab 17
-  check "&Font settings", 447, 140 29 65 8, tab 17
-  check "&Backgrounds", 448, 140 38 65 8, tab 17
-  check "&Toolbars", 449, 140 47 65 8, tab 17
-  check "&Event sounds", 450, 140 56 65 8, tab 17
-  box "&Filename", 451, 65 69 127 55, tab 17
-  edit "", 452, 74 78 110 11, autohs tab 17 group
-  text "Enter a filename, without extension, to save your theme as. This will be used for the subdirectory name, the theme file, and any script file.", 453, 72 92 110 28, tab 17
-  button "&Save theme", 454, 100 130 50 12, tab 17 group
+  text "Which elements do you wish to include?", 440, 90 12 187 12, tab 17
+  check "&mIRC colors", 441, 100 24 85 9, tab 17 group
+  check "&RGB settings", 442, 100 35 85 9, tab 17
+  check "&PnP colors", 443, 100 46 85 9, tab 17
+  check "&Nicklist colors", 444, 100 57 85 9, tab 17
+  check "&Line separator", 445, 100 68 85 9, tab 17
+  check "&Text theme / Display", 446, 187 24 86 9, tab 17
+  check "&Font settings", 447, 187 35 86 9, tab 17
+  check "&Backgrounds", 448, 187 46 86 9, tab 17
+  check "&Toolbars", 449, 187 57 86 9, tab 17
+  check "&Event sounds", 450, 187 68 86 9, tab 17
+  box "&Filename", 451, 86 84 169 67, tab 17
+  edit "", 452, 98 95 146 13, autohs tab 17 group
+  text "Enter a filename, without extension, to save your theme as. This will be used for the subdirectory name, the theme file, and any script file.", 453, 96 113 146 34, tab 17
+  button "&Save theme", 454, 133 159 66 14, tab 17 group
 
   ; Load Theme
-  box "Select theme:", 460, 60 5 145 55, tab 16
-  list 461, 65 15 135 50, sort group tab 16
+  box "Select theme:", 460, 80 6 193 67, tab 16
+  list 461, 86 18 180 61, sort group tab 16
   ; (theme filenames)
   list 474, 1 1 1 1, hide
-  text "&Scheme:", 475, 59 65 30 20, right tab 16
-  combo 476, 91 63 108 100, group drop tab 16
-  box "", 462, 60 74 145 71, tab 16
+  text "&Scheme:", 475, 78 79 40 24, right tab 16
+  combo 476, 121 77 144 122, group drop tab 16
+  box "", 462, 80 90 193 87, tab 16
 
-  check "&mIRC colors", 463, 65 81 65 8, group tab 16
-  check "&RGB settings", 464, 65 90 65 8, tab 16
-  check "&PnP colors", 465, 65 99 65 8, tab 16
-  check "&Nicklist colors", 466, 65 108 65 8, tab 16
-  check "&Line separator", 467, 65 117 65 8, tab 16
-  check "&Text theme / Display", 469, 135 81 65 8, tab 16
-  check "&Font settings", 470, 135 90 65 8, tab 16
-  check "&Backgrounds", 471, 135 99 65 8, tab 16
-  check "&Toolbars", 472, 135 108 65 8, tab 16
-  check "&Event sounds", 473, 135 117 65 8, tab 16
+  check "&mIRC colors", 463, 86 99 86 9, group tab 16
+  check "&RGB settings", 464, 86 110 86 9, tab 16
+  check "&PnP colors", 465, 86 121 86 9, tab 16
+  check "&Nicklist colors", 466, 86 132 86 9, tab 16
+  check "&Line separator", 467, 86 143 86 9, tab 16
+  check "&Text theme / Display", 469, 180 99 86 9, tab 16
+  check "&Font settings", 470, 180 110 86 9, tab 16
+  check "&Backgrounds", 471, 180 121 86 9, tab 16
+  check "&Toolbars", 472, 180 132 86 9, tab 16
+  check "&Event sounds", 473, 180 143 86 9, tab 16
 
-  button "&Delete theme...", 477, 65 128 65 12, group tab 16
-  button "&Load theme", 478, 135 128 65 12, group tab 16
+  button "&Delete theme...", 477, 86 157 86 14, group tab 16
+  button "&Load theme", 478, 180 157 86 14, group tab 16
 }
 
 ; Dialog init
@@ -851,11 +851,11 @@ alias -l page.themeload {
 on *:DIALOG:pnp.mts:sclick:508:{
   if ($gettok($did(508),-1,32) == >>) {
     did -ra pnp.mts 508 Preview <<
-    dialog -bs pnp.mts -1 -1 320 169
+    dialog -ls pnp.mts 427 207
   }
   else {
     did -ra pnp.mts 508 Preview >>
-    dialog -bs pnp.mts -1 -1 210 169
+    dialog -ls pnp.mts -1 -1 280 207
   }
 }
 
@@ -1089,7 +1089,7 @@ alias -l page.show {
   else {
     did -b pnp.mts 508
     did -ra pnp.mts 508 Preview >>
-    dialog -bs pnp.mts -1 -1 210 169
+    dialog -ls pnp.mts -1 -1 280 207
   }
 
   ; (do nothing if same page as before)
@@ -3890,3 +3890,5 @@ alias theme.isscripted {
   if ((%event == $null) || ($gettok(%event,1,32) == % $+ :echo)) return 0
   return 1
 }
+
+

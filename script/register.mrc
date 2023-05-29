@@ -15,45 +15,45 @@ alias _registerunload {
 dialog bugrep {
   title "Bug report and feedback"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 250 192
+  option map
+  size -1 -1 334 235
 
-  text "To report a bug or problem with PnP, use the 'Report a bug' section. To suggest features, or give other feedback, use the 'General feedback' section.", 1, 5 5 240 20
-  radio "&Report a bug", 2, 5 25 50 12, push
-  radio "&Send feedback", 3, 60 25 50 12, push
-  box "", 4, 5 40 240 117
+  text "To report a bug or problem with PnP, use the 'Report a bug' section. To suggest features, or give other feedback, use the 'General feedback' section.", 1, 6 6 320 24
+  radio "&Report a bug", 2, 6 30 66 14, push
+  radio "&Send feedback", 3, 80 30 66 14, push
+  box "", 4, 6 49 320 143
 
-  text "Please write a detailed description of the bug, including when it occurs and how it can be reproduced. Include any information that you think may help in reproducing the bug.", 5, 10 50 230 20
+  text "Please write a detailed description of the bug, including when it occurs and how it can be reproduced. Include any information that you think may help in reproducing the bug.", 5, 13 61 307 24
 
-  edit "", 6, 10 70 230 40, return vsbar multi
+  edit "", 6, 13 85 307 49, return vsbar multi
 
-  text "Please provide your e-mail in case we need to contact you. Due to limited time, replies may not always be sent. We apologize that we cannot reply to everyone.", 7, 10 115 230 25
+  text "Please provide your e-mail in case we need to contact you. Due to limited time, replies may not always be sent. We apologize that we cannot reply to everyone.", 7, 13 141 307 30
 
-  text "&Your e-mail:", 8, 10 142 30 10, right
-  edit "", 9, 41 140 100 11, autohs
+  text "&Your e-mail:", 8, 13 174 40 12, right
+  edit "", 9, 54 171 133 13, autohs
 
-  text "Press the Next button to continue.", 11, 10 162 150 10
-  button "&Next >>", 12, 10 175 60 12, disable default
+  text "Press the Next button to continue.", 11, 13 199 200 12
+  button "&Next >>", 12, 13 214 80 14, disable default
 
-  text "To aid us in finding and fixing the bug, you may wish to send us additional information about your computer and script configuration.", 13, 10 50 230 15, hide
+  text "To aid us in finding and fixing the bug, you may wish to send us additional information about your computer and script configuration.", 13, 13 61 307 18, hide
 
-  check "&Send basic system info", 14, 10 69 100 8, hide
-  check "&Send PnP and mIRC configuration", 15, 10 94 100 8, hide
-  check "&Send recent debug log", 16, 10 124 100 8, hide
+  check "&Send basic system info", 14, 13 84 133 9, hide
+  check "&Send PnP and mIRC configuration", 15, 13 115 133 9, hide
+  check "&Send recent debug log", 16, 13 152 133 9, hide
 
-  text "This is mIRC version and other very basic information, with no security risk.", 17, 110 70 120 20, hide
-  text "This includes most PnP and mIRC settings, as well as the userlist. This includes the mIRC 'perform' section.", 18, 110 95 120 27, hide
-  text "This includes ALL data sent to and from mIRC since you last started mIRC. It will contain all chat and any passwords, so only send this if needed.", 19, 110 125 120 30, hide
+  text "This is mIRC version and other very basic information, with no security risk.", 17, 146 85 160 24, hide
+  text "This includes most PnP and mIRC settings, as well as the userlist. This includes the mIRC 'perform' section.", 18, 146 116 160 33, hide
+  text "This includes ALL data sent to and from mIRC since you last started mIRC. It will contain all chat and any passwords, so only send this if needed.", 19, 146 153 160 36, hide
 
-  text "Press the Send button to send your bug report.", 20, 10 162 230 10, hide
-  button "&Send!", 21, 10 175 60 12, hide disable OK
+  text "Press the Send button to send your bug report.", 20, 13 199 307 12, hide
+  button "&Send!", 21, 13 214 80 14, hide disable OK
 
-  button "<< &Back", 22, 95 175 60 12, hide
+  button "<< &Back", 22, 126 214 80 14, hide
 
-  text "Please enter your feedback and comments.", 23, 10 50 230 20, hide
-  text "Press the Send button to send your feedback.", 24, 10 162 150 10, hide
+  text "Please enter your feedback and comments.", 23, 13 61 307 24, hide
+  text "Press the Send button to send your feedback.", 24, 13 199 200 12, hide
 
-  button "Cancel", 100, 180 175 60 12, cancel
+  button "Cancel", 100, 240 214 80 14, cancel
 }
 alias _bug set -u %.option $1 | _dialog -md bugrep bugrep
 on *:DIALOG:bugrep:init:*:{
@@ -281,15 +281,15 @@ alias -l _bugresend {
 dialog bugresend {
   title "Error sending feedback"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 200 96
-  text "There was an error sending your feedback:", 1, 5 5 200 10
-  text "", 2, 5 17 200 10
-  text "You may try to resend, or cancel your feedback.", 3, 5 30 190 10
-  text "You may need to use your own mail server to send the e-mail- if so, please enter your mail server in the box below.", 4, 5 42 190 17
-  edit "", 5, 5 61 125 11
-  button "&Retry", 10, 5 78 50 12, OK default
-  button "Cancel", 11, 145 78 50 12, cancel
+  option map
+  size -1 -1 267 117
+  text "There was an error sending your feedback:", 1, 6 6 267 12
+  text "", 2, 6 20 267 12
+  text "You may try to resend, or cancel your feedback.", 3, 6 36 253 12
+  text "You may need to use your own mail server to send the e-mail- if so, please enter your mail server in the box below.", 4, 6 51 253 20
+  edit "", 5, 6 74 167 13
+  button "&Retry", 10, 6 95 66 14, OK default
+  button "Cancel", 11, 193 95 66 14, cancel
 }
 on *:DIALOG:bugresend:sclick:10:{
   titlebar @.bug $iif(. isin $did(bugresend,5),$gettok($did(bugresend,5),1,32),login.kristshell.net) $gettok($window(@.bug).title,2,32)
@@ -306,13 +306,13 @@ on *:DIALOG:bugresend:sclick:11:{
 dialog pnpdonate {
   title "paiRC.com Donations"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 250 83
-  text "paiRC.com is now accepting monetary donations via PayPal to support the development of Peace and Protection. These donations will be used to cover ongoing server, domain, and bandwidth costs.", 2, 5 5 240 20
-  text "Please note that donations are entirely voluntary and optional- Peace and Protection is and will always remain a free script. Thank you for using Peace and Protection- your support is appreciated.", 3, 5 25 240 20
-  text "Click on the link below or visit www.pairc.com to make a donation.", 4, 5 45 240 10
-  link "http://www.parc.com/donate.html", 5, 5 55 240 10
-  button "Close", 13, 100 67 50 11, cancel default
+  option map
+  size -1 -1 334 101
+  text "paiRC.com is now accepting monetary donations via PayPal to support the development of Peace and Protection. These donations will be used to cover ongoing server, domain, and bandwidth costs.", 2, 6 6 320 24
+  text "Please note that donations are entirely voluntary and optional- Peace and Protection is and will always remain a free script. Thank you for using Peace and Protection- your support is appreciated.", 3, 6 30 320 24
+  text "Click on the link below or visit www.pairc.com to make a donation.", 4, 6 55 320 12
+  link "http://www.parc.com/donate.html", 5, 6 67 320 12
+  button "Close", 13, 133 82 66 13, cancel default
 }
 on *:DIALOG:pnpdonate:sclick:5:{ dialog -x $dname | http http://www.pairc.com/donate.html | .timer -mio 1 0 _registerunload }
 on *:DIALOG:pnpdonate:sclick:13:{ .timer -mio 1 0 _registerunload }
@@ -324,21 +324,21 @@ alias _donate _dialog -md pnpdonate pnpdonate
 dialog aboutpnp {
   title "About PnP"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 125 140
-  text "Peace and Protection", 2, 5 5 75 8
-  text "by pai", 3, 5 13 75 8
-  text "", 4, 5 21 75 8
-  text "Dedicated to Awenyedd", 10, 5 29 75 8
-  text "Homepage:", 5, 5 58 34 10, right
-  text "E-Mail:", 6, 5 67 34 10, right
-  link "", 7, 41 58 90 11
-  link "", 8, 41 67 90 11
-  button "&Close", 1, 5 80 24 10, cancel default
-  icon 9, 70 85 50 50
-  button "&Report a bug...", 11, 5 99 57 11
-  button "&Send feedback...", 12, 5 112 57 11
-  button "&Make donation...", 13, 5 125 57 11, disable
+  option map
+  size -1 -1 167 171
+  text "Peace and Protection", 2, 6 6 100 9
+  text "by pai", 3, 6 15 100 9
+  text "", 4, 6 25 100 9
+  text "Dedicated to Awenyedd", 10, 6 35 100 9
+  text "Homepage:", 5, 6 71 45 12, right
+  text "E-Mail:", 6, 6 82 45 12, right
+  link "", 7, 54 71 120 13
+  link "", 8, 54 82 120 13
+  button "&Close", 1, 6 98 32 12, cancel default
+  icon 9, 93 104 66 61
+  button "&Report a bug...", 11, 6 121 76 13
+  button "&Send feedback...", 12, 6 137 76 13
+  button "&Make donation...", 13, 6 153 76 13, disable
 }
 on *:DIALOG:aboutpnp:init:*:{
   hmake pnp.about 10
@@ -384,3 +384,4 @@ alias -l dorots dodraws $hget(pnp.about,cq) $bitrot(-30,-30,30,$1,$2,$3,$4,$5,$6
 alias -l bitrot return $calc((($2 * $5 + $3 * $4) * $7 + $1 * $6) * $8 - ($2 * $4 - $3 * $5) * $9) $calc((($2 * $5 + $3 * $4) * $7 + $1 * $6) * $9 + ($2 * $4 - $3 * $5) * $8) $calc(($2 * $5 + $3 * $4) * $6 - $1 * $7)
 alias -l stop3d .timer3d off | window -c @PNP3D | hfree pnp.about
 alias _about _ssplay Dialog | $dialog(aboutpnp,aboutpnp,-2) | _registerunload
+

@@ -8,12 +8,12 @@
 dialog pnp.firsttime {
   title "PnP Options"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 200 150
+  option map
+  size -1 -1 267 184
 
-  button "Next >>", 905, 155 131 40 12, default group
-  button "Cancel", 906, 5 131 40 12, cancel
-  button "<< Back", 907, 110 131 40 12, disable
+  button "Next >>", 905, 207 160 53 14, default group
+  button "Cancel", 906, 6 160 53 14, cancel
+  button "<< Back", 907, 146 160 53 14, disable
 
   ; Whether a section has been loaded yet
   list 902, 1 1 1 1, hide
@@ -37,72 +37,72 @@ dialog pnp.firsttime {
   tab "", 9, -25 -25 1 1, disable hide
 
   ; Intro
-  text "Welcome to Peace and Protection!", 50, 5 10 190 8, hide tab 1
-  text "The following pages will guide you through setting up some of the more common PnP options. If you do not wish to setup these options at this time, you may click 'Cancel'. You may rerun this setup at anytime by going to the 'PnP' menu, selecting 'Configure', and selecting 'Configuration Wizard'.", 51, 5 30 190 40, hide tab 1
-  text "Press the Next button to continue.", 52, 5 115 190 8, hide tab 1
+  text "Welcome to Peace and Protection!", 50, 6 12 253 9, hide tab 1
+  text "The following pages will guide you through setting up some of the more common PnP options. If you do not wish to setup these options at this time, you may click 'Cancel'. You may rerun this setup at anytime by going to the 'PnP' menu, selecting 'Configure', and selecting 'Configuration Wizard'.", 51, 6 36 253 49, hide tab 1
+  text "Press the Next button to continue.", 52, 6 141 253 9, hide tab 1
 
   ; Language
-  text "PnP has detected multiple languages available. Please select which language you would like to use. Please note that selecting a new language will take some time to apply, so please be patient.", 514, 5 10 190 30, tab 2
-  list 525, 5 45 190 70, sort tab 2
+  text "PnP has detected multiple languages available. Please select which language you would like to use. Please note that selecting a new language will take some time to apply, so please be patient.", 514, 6 12 253 36, tab 2
+  list 525, 6 55 253 85, sort tab 2
   text "", 527, 1 1 1 1, autohs hide
   text "", 528, 1 1 1 1, autohs hide
-  text "Press the Next button to continue.", 526, 5 115 190 8, tab 2
-  text "Please wait while the selected language is loaded...", 529, 5 65 190 8, center hide tab 2
+  text "Press the Next button to continue.", 526, 6 141 253 9, tab 2
+  text "Please wait while the selected language is loaded...", 529, 6 79 253 9, center hide tab 2
 
   ; Protection
-  text "PnP contains powerful protection options, but some users may find that they interfere needlessly. In addition, PnP's default channel protection options are not appropriate for some channels, such as channels with heavy amounts of text pasting, sound playing, or colors.", 563, 5 10 190 30, tab 3
-  check "&Enable default personal protections", 564, 5 45 190 8, tab 3
-  check "&Enable default personal protections", 664, 5 45 190 8, 3state hide tab 3
+  text "PnP contains powerful protection options, but some users may find that they interfere needlessly. In addition, PnP's default channel protection options are not appropriate for some channels, such as channels with heavy amounts of text pasting, sound playing, or colors.", 563, 6 12 253 36, tab 3
+  check "&Enable default personal protections", 564, 6 55 253 9, tab 3
+  check "&Enable default personal protections", 664, 6 55 253 9, 3state hide tab 3
   edit "", 764, 1 1 1 1, hide autohs
-  check "&Enable default channel protections", 566, 5 55 190 8, tab 3
-  check "&Enable default channel protections", 666, 5 55 190 8, 3state hide tab 3
+  check "&Enable default channel protections", 566, 6 67 253 9, tab 3
+  check "&Enable default channel protections", 666, 6 67 253 9, 3state hide tab 3
   edit "", 766, 1 1 1 1, hide autohs
-  text "The self-lag check may cause problems for some networks or users- if so, you may wish to disable it.", 581, 5 75 190 15, tab 3
-  check "&Enable PnP's self-lag checks", 582, 5 95 190 8, tab 3
-  text "Press the Next button to continue.", 583, 5 115 190 8, tab 3
+  text "The self-lag check may cause problems for some networks or users- if so, you may wish to disable it.", 581, 6 92 253 18, tab 3
+  check "&Enable PnP's self-lag checks", 582, 6 116 253 9, tab 3
+  text "Press the Next button to continue.", 583, 6 141 253 9, tab 3
 
   ; Misc
-  text "The following options may be configured to your liking.", 129, 5 10 190 8, tab 4
-  check "&Automatically set away after 30 minutes idle", 131, 5 35 190 8, tab 4
-  radio "&Use default popups (recommended for novice users)", 326, 5 50 190 8, group tab 4
-  radio "&Use condensed popups", 327, 5 60 190 8, tab 4
-  check "&Use channel nick-completion (when you type 'nick:' 'nick-' or 'nick,')", 650, 5 75 190 8, tab 4
-  check "&Use nick-completion in commands (/kick, /op, etc.)", 655, 5 85 190 8, tab 4
-  text "Press the Next button to continue.", 656, 5 115 190 8, tab 4
+  text "The following options may be configured to your liking.", 129, 6 12 253 9, tab 4
+  check "&Automatically set away after 30 minutes idle", 131, 6 42 253 9, tab 4
+  radio "&Use default popups (recommended for novice users)", 326, 6 61 253 9, group tab 4
+  radio "&Use condensed popups", 327, 6 73 253 9, tab 4
+  check "&Use channel nick-completion (when you type 'nick:' 'nick-' or 'nick,')", 650, 6 92 253 9, tab 4
+  check "&Use nick-completion in commands (/kick, /op, etc.)", 655, 6 104 253 9, tab 4
+  text "Press the Next button to continue.", 656, 6 141 253 9, tab 4
 
   ; Display
-  text "The following options control where PnP shows various events.", 189, 5 10 190 8, tab 5
-  text "&Show channel pings to:", 190, 5 25 72 8, right tab 5
-  combo 191, 80 23 115 50, drop tab 5
-  text "&Show whois replies to:", 270, 5 40 72 8, right tab 5
-  combo 271, 80 38 115 50, drop tab 5
-  text "&Show notifies to:", 175, 5 55 72 8, right tab 5
-  combo 176, 80 53 115 50, drop tab 5
-  text "&Names list when joining:", 290, 5 70 72 8, right tab 5
-  combo 291, 80 68 115 50, drop tab 5
-  check "&Show CTCPs, DNS, and away status to active window", 298, 5 90 190 8, tab 5
-  check "&Show events/raws to active if channel/query not open", 299, 5 100 190 8, tab 5
-  text "Press the Next button to continue.", 300, 5 115 190 8, tab 5
+  text "The following options control where PnP shows various events.", 189, 6 12 253 9, tab 5
+  text "&Show channel pings to:", 190, 6 30 96 9, right tab 5
+  combo 191, 106 28 153 61, drop tab 5
+  text "&Show whois replies to:", 270, 6 49 96 9, right tab 5
+  combo 271, 106 46 153 61, drop tab 5
+  text "&Show notifies to:", 175, 6 67 96 9, right tab 5
+  combo 176, 106 65 153 61, drop tab 5
+  text "&Names list when joining:", 290, 6 85 96 9, right tab 5
+  combo 291, 106 83 153 61, drop tab 5
+  check "&Show CTCPs, DNS, and away status to active window", 298, 6 110 253 9, tab 5
+  check "&Show events/raws to active if channel/query not open", 299, 6 122 253 9, tab 5
+  text "Press the Next button to continue.", 300, 6 141 253 9, tab 5
 
   ; Theming
-  text "PnP has enhanced theming features for displaying channel text and other events. You may wish to disable these features to speed up display on slower computers. The red coloring in the theme samples represents nickname coloring and can be disabled or changed.", 149, 5 10 190 35, tab 6
-  check "&Use PnP text theming:", 230, 5 45 105 8, tab 6
-  radio "", 231, 15 56 10 8, group tab 6
-  radio "", 232, 15 65 10 8, tab 6
-  radio "", 233, 15 74 10 8, tab 6
-  radio "", 234, 15 83 10 8, tab 6
-  radio "", 235, 15 92 10 8, tab 6
-  icon 236, 25 55 67 9, script\theme1.png, noborder tab 6
-  icon 237, 25 64 67 9, script\theme2.png, noborder tab 6
-  icon 238, 25 73 67 9, script\theme3.png, noborder tab 6
-  icon 239, 25 82 67 9, script\theme4.png, noborder tab 6
-  icon 240, 25 91 67 9, script\theme5.png, noborder tab 6
+  text "PnP has enhanced theming features for displaying channel text and other events. You may wish to disable these features to speed up display on slower computers. The red coloring in the theme samples represents nickname coloring and can be disabled or changed.", 149, 6 12 253 42, tab 6
+  check "&Use PnP text theming:", 230, 6 55 140 9, tab 6
+  radio "", 231, 20 68 13 9, group tab 6
+  radio "", 232, 20 79 13 9, tab 6
+  radio "", 233, 20 90 13 9, tab 6
+  radio "", 234, 20 101 13 9, tab 6
+  radio "", 235, 20 113 13 9, tab 6
+  icon 236, 33 67 89 11, script\theme1.png, noborder tab 6
+  icon 237, 33 78 89 11, script\theme2.png, noborder tab 6
+  icon 238, 33 89 89 11, script\theme3.png, noborder tab 6
+  icon 239, 33 100 89 11, script\theme4.png, noborder tab 6
+  icon 240, 33 111 89 11, script\theme5.png, noborder tab 6
   edit "", 244, 1 1 1 1, autohs hide
-  check "&Color nicknames in channel text", 151, 5 102 190 8, tab 6
-  check "&Color nicknames in nicklist", 150, 5 112 190 8, tab 6
-  check "&Apply this font:", 241, 110 45 85 8, tab 6
-  edit "", 242, 119 55 76 11, autohs read tab 6
-  button "&Select...", 243, 119 70 40 12, tab 6
+  check "&Color nicknames in channel text", 151, 6 125 253 9, tab 6
+  check "&Color nicknames in nicklist", 150, 6 137 253 9, tab 6
+  check "&Apply this font:", 241, 146 55 113 9, tab 6
+  edit "", 242, 158 67 101 13, autohs read tab 6
+  button "&Select...", 243, 158 85 53 14, tab 6
   ; (already got a fixed-width?)
   edit "", 245, 1 1 1 1, autohs hide
   ; (prev settings if selected theme 5)
@@ -113,20 +113,20 @@ dialog pnp.firsttime {
   edit "", 248, 1 1 1 1, autohs hide
 
   ; Addons
-  text "PnP includes a number of optional addons. You may select which addons to load below. Some of the less-commonly used addons are not listed- you can access all addons from the PnP menu.", 400, 5 10 190 30, tab 7
-  check "&ChanServ", 401, 5 45 105 8, tab 7
-  check "&NickServ", 402, 5 55 105 8, tab 7
-  check "&X Z P Bots", 403, 5 65 105 8, tab 7
-  check "&Extras", 404, 5 75 105 8, tab 7
-  check "&Spam Blocker", 405, 5 85 105 8, tab 7
-  check "&Sound", 406, 5 95 105 8, tab 7
+  text "PnP includes a number of optional addons. You may select which addons to load below. Some of the less-commonly used addons are not listed- you can access all addons from the PnP menu.", 400, 6 12 253 36, tab 7
+  check "&ChanServ", 401, 6 55 140 9, tab 7
+  check "&NickServ", 402, 6 67 140 9, tab 7
+  check "&X Z P Bots", 403, 6 79 140 9, tab 7
+  check "&Extras", 404, 6 92 140 9, tab 7
+  check "&Spam Blocker", 405, 6 104 140 9, tab 7
+  check "&Sound", 406, 6 116 140 9, tab 7
 
   ; Done!
-  text "That's it!", 420, 5 10 190 8, tab 8
-  text "Enjoy using Peace and Protection! You can access more configuration options from the 'PnP' menu, under 'Configure'. You may install and configure addons from the 'PnP' menu, under 'Addons'. You may even rerun this setup process at anytime by selecting 'Configuration Wizard' from that menu.", 421, 5 30 190 40, tab 8
-  text "Click 'Done' to complete setup.", 422, 5 115 190 8, tab 8
+  text "That's it!", 420, 6 12 253 9, tab 8
+  text "Enjoy using Peace and Protection! You can access more configuration options from the 'PnP' menu, under 'Configure'. You may install and configure addons from the 'PnP' menu, under 'Addons'. You may even rerun this setup process at anytime by selecting 'Configuration Wizard' from that menu.", 421, 6 36 253 49, tab 8
+  text "Click 'Done' to complete setup.", 422, 6 141 253 9, tab 8
 
-  text "", 423, 5 65 190 8, center tab 9
+  text "", 423, 6 79 253 9, center tab 9
 }
 
 ; /_firsttime
@@ -601,3 +601,4 @@ alias -l page.apply {
   :8
   return
 }
+

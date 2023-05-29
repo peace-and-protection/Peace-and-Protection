@@ -32,22 +32,22 @@ alias _wcled {
 dialog protlist {
   title "Channel Protection"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 142 117
+  option map
+  size -1 -1 189 143
 
-  text "", 1, 2 2 125 10
+  text "", 1, 2 2 167 12
 
-  list 2, 2 12 100 75
-  list 3, 2 12 100 75, hide disable
+  list 2, 2 14 133 92
+  list 3, 2 14 133 92, hide disable
 
-  button "&Edit...", 4, 105 12 35 12, default
-  button "&Add...", 5, 105 28 35 12
-  button "&Del", 6, 105 44 35 12
+  button "&Edit...", 4, 140 14 46 14, default
+  button "&Add...", 5, 140 34 46 14
+  button "&Del", 6, 140 54 46 14
 
-  check "&Use global default list", 9, 5 89 100 10
+  check "&Use global default list", 9, 6 109 133 12
 
-  button "OK", 10, 2 102 35 12, OK
-  button "Cancel", 11, 67 102 35 12, cancel
+  button "OK", 10, 2 125 46 14, OK
+  button "Cancel", 11, 89 125 46 14, cancel
 
   edit "", 12, 1 1 1 1, hide autohs
 }
@@ -105,17 +105,17 @@ alias -l _pled {
 dialog paddchan {
   title "Add Channel"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 105 77
+  option map
+  size -1 -1 140 94
 
-  text "&Base new channel off of settings for:", 1, 2 2 125 10
+  text "&Base new channel off of settings for:", 1, 2 2 167 12
 
-  list 2, 2 12 100 50
+  list 2, 2 14 133 61
 
   text "", 3, 1 1 1 1, hide autohs result
 
-  button "OK", 10, 7 60 35 12, OK default
-  button "Cancel", 11, 62 60 35 12, cancel
+  button "OK", 10, 9 73 46 14, OK default
+  button "Cancel", 11, 82 73 46 14, cancel
 }
 on *:DIALOG:paddchan:init:*:{
   var %num = 1
@@ -951,3 +951,4 @@ alias chopt {
   else dispa Unknown option ' $+ %work $+ '
   inc %num | goto loop
 }
+

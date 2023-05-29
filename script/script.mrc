@@ -47,38 +47,38 @@ alias umode {
 dialog usermode {
   title "Usermodes"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 182 80
+  option map
+  size -1 -1 243 98
 
-  box "&Current", 1, 5 5 30 52
-  check "+&i", 11, 10 15 18 8
-  check "+&s", 12, 10 24 18 8
-  check "+&w", 13, 10 33 18 8
-  edit "", 14, 10 42 20 11, autohs
+  box "&Current", 1, 6 6 40 63
+  check "+&i", 11, 13 18 24 9
+  check "+&s", 12, 13 29 24 9
+  check "+&w", 13, 13 40 24 9
+  edit "", 14, 13 51 26 13, autohs
 
-  box "&Default", 2, 40 5 30 52
-  check "+&i", 21, 45 15 18 8
-  check "+&s", 22, 45 24 18 8
-  check "+&w", 23, 45 33 18 8
-  edit "", 24, 45 42 20 11, autohs
+  box "&Default", 2, 53 6 40 63
+  check "+&i", 21, 60 18 24 9
+  check "+&s", 22, 60 29 24 9
+  check "+&w", 23, 60 40 24 9
+  edit "", 24, 60 51 26 13, autohs
 
-  box "&Away", 3, 75 5 30 52
-  check "+&i", 31, 80 15 18 8
-  check "+&s", 32, 80 24 18 8
-  check "+&w", 33, 80 33 18 8
-  edit "", 34, 80 42 20 11, autohs
+  box "&Away", 3, 100 6 40 63
+  check "+&i", 31, 106 18 24 9
+  check "+&s", 32, 106 29 24 9
+  check "+&w", 33, 106 40 24 9
+  edit "", 34, 106 51 26 13, autohs
 
-  text "(invisible)", 4, 110 15 60 10
-  text "(server notices)", 5, 110 24 60 10
-  text "(wallops)", 6, 110 33 60 10
-  text "(other)", 7, 110 44 60 10
+  text "(invisible)", 4, 146 18 80 12
+  text "(server notices)", 5, 146 29 80 12
+  text "(wallops)", 6, 146 40 80 12
+  text "(other)", 7, 146 54 80 12
 
-  button "&Filters...", 104, 150 22 27 10
-  button "&Filters...", 105, 150 33 27 10
+  button "&Filters...", 104, 200 27 36 12
+  button "&Filters...", 105, 200 40 36 12
 
-  button "OK", 101, 25 63 40 12, OK default
-  button "Cancel", 102, 70 63 40 12, cancel
-  button "&Help", 103, 115 63 40 12, disable
+  button "OK", 101, 33 77 53 14, OK default
+  button "Cancel", 102, 93 77 53 14, cancel
+  button "&Help", 103, 153 77 53 14, disable
 
   edit $cid, 200, 1 1 1 1, hide autohs
 }
@@ -224,11 +224,11 @@ alias _nci {
 dialog nickcomp {
   title "Selection"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 70 78
-  text "", 1, 1 1 65 14
-  list 2, 0 16 70 51, sort
-  button "&Select", 3, 10 66 48 10, default ok
+  option map
+  size -1 -1 93 95
+  text "", 1, 1 1 86 17
+  list 2, 0 19 93 62, sort
+  button "&Select", 3, 13 81 64 12, default ok
   edit "", 4, 1 1 1 1, hide result autohs
   button "", 5, 1 1 1 1, hide cancel
 }
@@ -426,27 +426,27 @@ on ^*:OPEN:?:*:{
 dialog ignore {
   title "Ignore User"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 150 138
+  option map
+  size -1 -1 200 169
 
-  box "&Ignoring:", 101, 5 5 140 27
-  combo 1, 10 15 130 50, edit drop
+  box "&Ignoring:", 101, 6 6 187 33
+  combo 1, 13 18 173 61, edit drop
 
-  box "Duration:", 102, 5 34 140 33
-  radio "&Permanent", 5, 10 44 130 8
-  radio "&Ignore for", 6, 10 54 40 8
-  text "minutes", 103, 74 55 60 10
-  edit "1", 7, 52 52 20 11
+  box "Duration:", 102, 6 41 187 40
+  radio "&Permanent", 5, 13 54 173 9
+  radio "&Ignore for", 6, 13 66 53 9
+  text "minutes", 103, 98 67 80 12
+  edit "1", 7, 69 63 26 13
 
-  text "&Ignore:", 104, 10 73 23 10, right
-  combo 8, 35 71 100 60, drop
-  check "&All networks", 11, 35 84 110 8
-  check "&Tell user that they are being ignored:", 9, 35 93 110 8
-  edit "", 10, 43 103 100 11, autohs disable
+  text "&Ignore:", 104, 13 89 30 12, right
+  combo 8, 46 87 133 73, drop
+  check "&All networks", 11, 46 103 146 9
+  check "&Tell user that they are being ignored:", 9, 46 114 146 9
+  edit "", 10, 57 126 133 13, autohs disable
 
-  button "&Ignore", 201, 5 120 40 12, OK default result
-  button "Cancel", 202, 55 120 40 12, cancel
-  button "&Help", 203, 105 120 40 12, disable
+  button "&Ignore", 201, 6 147 53 14, OK default result
+  button "Cancel", 202, 73 147 53 14, cancel
+  button "&Help", 203, 140 147 53 14, disable
 
   edit $cid, 300, 1 1 1 1, hide autohs
 }
@@ -877,3 +877,4 @@ alias _msgwrap {
   if (&msg& !isin %wrapper) %wrapper = %wrapper &msg&
   return $replace(%wrapper,&msg&,%msg)
 }
+

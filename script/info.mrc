@@ -338,29 +338,29 @@ alias -l _sdping {
 dialog scan {
   title "Channel Scan"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 175 108
+  option map
+  size -1 -1 233 132
 
-  text "&Channel to scan:", 249, 5 7 55 10, right
-  edit "", 100, 62 5 105 11, autohs result
+  text "&Channel to scan:", 249, 6 8 73 12, right
+  edit "", 100, 82 6 140 13, autohs result
 
-  box "Scan and show:", 250, 5 20 165 53
+  box "Scan and show:", 250, 6 24 220 65
 
-  check "&Away / here count", 1, 10 30 64 8
-  check "&Who is away", 2, 10 40 64 8
-  check "&IRCops", 3, 10 50 64 8
-  check "&Average server hops", 4, 10 60 64 8
+  check "&Away / here count", 1, 13 36 85 9
+  check "&Who is away", 2, 13 49 85 9
+  check "&IRCops", 3, 13 61 85 9
+  check "&Average server hops", 4, 13 73 85 9
 
-  check "&Favorite server", 5, 76 30 90 8
-  check "&List who is on favorite server", 6, 76 40 90 8
-  check "&Who is on my server", 7, 76 50 90 8
-  check "&Server details (separate window)", 8, 76 60 90 8
+  check "&Favorite server", 5, 101 36 120 9
+  check "&List who is on favorite server", 6, 101 49 120 9
+  check "&Who is on my server", 7, 101 61 120 9
+  check "&Server details (separate window)", 8, 101 73 120 9
 
-  check "&Route to separate window", 9, 10 78 90 8
+  check "&Route to separate window", 9, 13 95 120 9
 
-  button "Scan", 201, 10 91 30 12, OK default
-  button "&Save as default options", 202, 50 91 70 12, disable
-  button "Cancel", 203, 130 91 30 12, cancel
+  button "Scan", 201, 13 111 40 14, OK default
+  button "&Save as default options", 202, 66 111 93 14, disable
+  button "Cancel", 203, 173 111 40 14, cancel
 }
 on *:DIALOG:scan:init:*:{
   var %num = 1,%flag = $_cfgi(scan.flag)
@@ -525,21 +525,21 @@ alias _randserv server $gettok($1-,$_pprand($numtok($1-,32)),32) ?
 dialog nearserv {
   title "Nearby Servers"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 88 57
+  option map
+  size -1 -1 117 70
 
-  text "List servers that are-", 1, 5 5 80 10
+  text "List servers that are-", 1, 6 6 106 12
 
-  text "&At least", 2, 5 16 33 10, right
-  edit "1", 3, 40 14 12 11, autohs result
-  text "hop(s) away", 4, 54 16 30 10
+  text "&At least", 2, 6 19 44 12, right
+  edit "1", 3, 53 17 16 13, autohs result
+  text "hop(s) away", 4, 72 19 40 12
 
-  text "&No more than", 5, 5 27 33 10, right
-  edit "", 6, 40 25 12 11
-  text "hop(s) away", 7, 54 27 30 10
+  text "&No more than", 5, 6 33 44 12, right
+  edit "", 6, 53 30 16 13
+  text "hop(s) away", 7, 72 33 40 12
 
-  button "OK", 101, 15 40 27 12, OK default
-  button "Cancel", 102, 48 40 27 12, cancel
+  button "OK", 101, 20 49 36 14, OK default
+  button "Cancel", 102, 64 49 36 14, cancel
 }
 on *:DIALOG:nearserv:sclick:101:did -o $dname 3 1 $gettok($did(3),1,32) $gettok($iif($did(6),$did(6),+),1,32)
 
@@ -569,3 +569,4 @@ alias stats {
   stats %stats
   if ((%stats !isincs gkmou) && ($len(%stats) == 1) && (%stats isletter)) _recent stats 5 0 %stats
 }
+

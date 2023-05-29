@@ -13,11 +13,11 @@ alias _drivesearch set %.dsparm $1 | _ssplay Question | return $dialog(drivesear
 dialog drivesearch {
   title "Drive Search"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 108 91
-  text "&Select one or more drives to search:", 1, 2 2 100 8
-  list 2, 4 12 50 75, extsel sort
-  button "&Select", 3, 58 40 45 12, default ok
+  option map
+  size -1 -1 144 111
+  text "&Select one or more drives to search:", 1, 2 2 133 9
+  list 2, 5 14 66 92, extsel sort
+  button "&Select", 3, 77 49 60 14, default ok
   edit "", 4, 1 1 1 1, hide autohs result
 }
 on *:DIALOG:drivesearch:init:*:{
@@ -178,38 +178,38 @@ alias _pickfont {
 dialog entry {
   title "PnP Entry"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 175 60
+  option map
+  size -1 -1 233 73
 
-  text "", 202, 7 8 142 14
-  text "", 203, 7 5 142 10, hide
-  text "", 204, 7 12 142 10, hide
+  text "", 202, 9 9 189 17
+  text "", 203, 9 6 189 12, hide
+  text "", 204, 9 14 189 12, hide
 
-  edit %.entry.ans, 1, 5 22 165 11, result autohs
-  check %.entry.checkbox, 2, 5 35 165 11, hide
+  edit %.entry.ans, 1, 6 27 220 13, result autohs
+  check %.entry.checkbox, 2, 6 42 220 13, hide
 
-  icon 11, 151 3 16 16, script\pnp.ico
+  icon 11, 201 3 21 19, script\pnp.ico
 
-  button "OK", 101, 40 43 40 12, OK default
-  button "Cancel", 102, 95 43 40 12, cancel
+  button "OK", 101, 53 52 53 14, OK default
+  button "Cancel", 102, 126 52 53 14, cancel
 }
 dialog entrycheck {
   title "PnP Entry"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 175 68
+  option map
+  size -1 -1 233 83
 
-  text "", 202, 7 8 142 14
-  text "", 203, 7 5 142 10, hide
-  text "", 204, 7 12 142 10, hide
+  text "", 202, 9 9 189 17
+  text "", 203, 9 6 189 12, hide
+  text "", 204, 9 14 189 12, hide
 
-  edit %.entry.ans, 1, 5 22 165 11, result autohs
-  check "", 2, 5 35 165 11
+  edit %.entry.ans, 1, 6 27 220 13, result autohs
+  check "", 2, 6 42 220 13
 
-  icon 11, 151 3 16 16, script\pnp.ico
+  icon 11, 201 3 21 19, script\pnp.ico
 
-  button "OK", 101, 40 51 40 12, OK default
-  button "Cancel", 102, 95 51 40 12, cancel
+  button "OK", 101, 53 62 53 14, OK default
+  button "Cancel", 102, 126 62 53 14, cancel
 }
 on *:DIALOG:entry:init:*:{
   if (%.entry.q2) {
@@ -261,22 +261,22 @@ alias _entry {
 dialog rentry {
   title "PnP Entry"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 175 60
+  option map
+  size -1 -1 233 73
 
-  text "", 202, 7 8 142 14
-  text "", 203, 7 5 142 10, hide
-  text "", 204, 7 12 142 10, hide
+  text "", 202, 9 9 189 17
+  text "", 203, 9 6 189 12, hide
+  text "", 204, 9 14 189 12, hide
 
-  combo 1, 5 22 165 80, drop result edit
+  combo 1, 6 27 220 98, drop result edit
 
-  icon 11, 151 3 16 16, script\pnp.ico
+  icon 11, 201 3 21 19, script\pnp.ico
 
   edit %.entry.t, 100, 1 1 1 1, autohs hide
 
-  button "OK", 101, 15 43 40 12, OK default
-  button "Cancel", 102, 70 43 40 12, cancel
-  button "&Clear list", 103, 135 44 35 10, disable
+  button "OK", 101, 20 52 53 14, OK default
+  button "Cancel", 102, 93 52 53 14, cancel
+  button "&Clear list", 103, 180 54 46 12, disable
 }
 ; fills drop down with recents (bdid = clear button to enable if recents; chan = false if n/a)
 ; /_fillrec dname did bdid file chan [current]
@@ -351,20 +351,20 @@ alias _yesno {
 dialog yesno {
   title "PnP Entry"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 200 34
+  option map
+  size -1 -1 267 41
 
   edit "", 202, 1 1 1 1, hide result autohs
-  text "", 201, 7 4 150 14
+  text "", 201, 9 4 200 17
 
-  icon 11, 162 1 16 16, script\check1.ico
-  icon 12, 178 1 16 16, script\check2.ico
-  icon 13, 162 17 16 16, script\check3.ico
-  icon 14, 178 17 16 16, script\check4.ico
+  icon 11, 216 1 21 19, script\check1.ico
+  icon 12, 237 1 21 19, script\check2.ico
+  icon 13, 216 20 21 19, script\check3.ico
+  icon 14, 237 20 21 19, script\check4.ico
 
-  button "&Yes", 101, 6 20 40 12, OK
-  button "&No", 102, 56 20 40 12
-  button "Cancel", 103, 106 20 40 12, cancel
+  button "&Yes", 101, 8 24 53 14, OK
+  button "&No", 102, 74 24 53 14
+  button "Cancel", 103, 141 24 53 14, cancel
 }
 on *:DIALOG:yesno:init:*:{
   did -a $dname 201 $replace($gettok(%.yesno,2-,32),&,&&)
@@ -393,19 +393,19 @@ alias _okcancel {
 dialog okcancel {
   title "PnP Confirm"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 200 34
+  option map
+  size -1 -1 267 41
 
   edit "1", 202, 1 1 1 1, hide result autohs
-  text "", 201, 7 4 150 14
+  text "", 201, 9 4 200 17
 
-  icon 11, 162 1 16 16, script\check1.ico
-  icon 12, 178 1 16 16, script\check2.ico
-  icon 13, 162 17 16 16, script\check3.ico
-  icon 14, 178 17 16 16, script\check4.ico
+  icon 11, 216 1 21 19, script\check1.ico
+  icon 12, 237 1 21 19, script\check2.ico
+  icon 13, 216 20 21 19, script\check3.ico
+  icon 14, 237 20 21 19, script\check4.ico
 
-  button "OK", 101, 6 20 40 12, OK
-  button "Cancel", 102, 56 20 40 12, cancel
+  button "OK", 101, 8 24 53 14, OK
+  button "Cancel", 102, 74 24 53 14, cancel
 }
 on *:DIALOG:okcancel:init:*:{
   did -a $dname 201 $replace($gettok(%.okcancel,2-,32),&,&&)
@@ -429,20 +429,20 @@ alias _okcancelcheck {
 dialog okcancelcheck {
   title "PnP Confirm"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 200 44
+  option map
+  size -1 -1 267 54
 
   edit "1", 202, 1 1 1 1, hide result autohs
-  text "", 201, 7 4 150 14
-  check "", 203, 7 19 150 8
+  text "", 201, 9 4 200 17
+  check "", 203, 9 23 200 9
 
-  icon 11, 162 1 16 16, script\check1.ico
-  icon 12, 178 1 16 16, script\check2.ico
-  icon 13, 162 17 16 16, script\check3.ico
-  icon 14, 178 17 16 16, script\check4.ico
+  icon 11, 216 1 21 19, script\check1.ico
+  icon 12, 237 1 21 19, script\check2.ico
+  icon 13, 216 20 21 19, script\check3.ico
+  icon 14, 237 20 21 19, script\check4.ico
 
-  button "OK", 101, 6 30 40 12, OK
-  button "Cancel", 102, 56 30 40 12, cancel
+  button "OK", 101, 8 36 53 14, OK
+  button "Cancel", 102, 74 36 53 14, cancel
 }
 on *:DIALOG:okcancelcheck:init:*:{
   did -a $dname 201 $replace($gettok(%.okcancel,2-,32),&,&&)
@@ -466,21 +466,21 @@ alias _fileopt {
 dialog fileopt {
   title "File Exists"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 200 34
+  option map
+  size -1 -1 267 41
 
   edit "", 203, 1 1 1 1, hide autohs
   edit "", 202, 1 1 1 1, hide result autohs
-  text "", 201, 7 4 150 14
+  text "", 201, 9 4 200 17
 
-  icon 11, 162 1 16 16, script\file1.ico
-  icon 12, 178 1 16 16, script\file2.ico
-  icon 13, 162 17 16 16, script\file3.ico
-  icon 14, 178 17 16 16, script\file4.ico
+  icon 11, 216 1 21 19, script\file1.ico
+  icon 12, 237 1 21 19, script\file2.ico
+  icon 13, 216 20 21 19, script\file3.ico
+  icon 14, 237 20 21 19, script\file4.ico
 
-  button "&Overwrite", 101, 6 20 40 12, OK
-  button "&Append", 102, 56 20 40 12, disable
-  button "Cancel", 103, 106 20 40 12, cancel
+  button "&Overwrite", 101, 8 24 53 14, OK
+  button "&Append", 102, 74 24 53 14, disable
+  button "Cancel", 103, 141 24 53 14, cancel
 }
 on *:DIALOG:fileopt:init:*:{
   did -a $dname 203 $gettok(%.fileopt,2-,32)
@@ -624,11 +624,11 @@ alias _doubleclick² {
 dialog howundefault {
   title "Setting Double-click Default"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 125 62
-  text "To change the default action in the future, hold down the 'Ctrl' key while double-clicking.", 3, 5 5 115 50
-  check "&Don't show this message again", 2, 20 30 100 10
-  button "OK", 1, 42 45 40 12, ok default
+  option map
+  size -1 -1 167 76
+  text "To change the default action in the future, hold down the 'Ctrl' key while double-clicking.", 3, 6 6 153 61
+  check "&Don't show this message again", 2, 26 36 133 12
+  button "OK", 1, 56 55 53 14, ok default
   edit "", 4, 1 1 1 1, hide autohs result
 }
 on *:DIALOG:howundefault:sclick:1:did -o $dname 4 1 $did(2).state
@@ -680,3 +680,4 @@ alias _scandid {
 
 ; if dialog is already open, makes it active, else opens it
 alias _dialog if ($dialog($2)) dialog -v $2 | else { _ssplay Dialog | dialog $1- }
+

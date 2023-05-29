@@ -400,35 +400,35 @@ alias -l _clean.dcc {
 dialog dccqcfg {
   title "DCC Queueing Config"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 150 166
+  option map
+  size -1 -1 200 203
 
-  text "These options determine how many total files a user can request from PnP addons at one time. (sound, XDCC, etc)", 1, 2 2 145 15
-  box "Maximum simultaneous DCC sends:", 2, 2 20 145 35
-  text "&Per user:", 3, 5 31 39 8, right
-  edit "", 5, 45 29 25 11
-  text "&Total:", 4, 72 31 42 8, right
-  edit "", 6, 115 29 25 11
-  check "&Hide DCC sends (if automated)", 7, 35 42 105 8
-  check "&Queue DCCs when maximum reached", 8, 7 60 140 8
-  box "Maximum queued DCCs:", 9, 2 71 145 35
-  text "&Per user:", 10, 5 82 39 8, right
-  edit "", 12, 45 80 25 11
-  text "&Total:", 11, 72 82 42 8, right
-  edit "", 13, 115 80 25 11
-  check "&Hide queue window", 14, 35 93 105 8
-  box "Queue cleanup:", 15, 2 110 145 35
-  text "When user:", 16, 5 120 33 8, right
-  text "When you:", 17, 5 131 33 8, right
-  check "&Quits", 20, 40 120 30 8
-  check "&Parts", 18, 70 120 30 8
-  check "&Is kicked", 19, 100 120 45 8
-  check "&Leave channel", 21, 40 131 60 8
-  check "&Disconnect", 22, 100 131 45 8
+  text "These options determine how many total files a user can request from PnP addons at one time. (sound, XDCC, etc)", 1, 2 2 193 18
+  box "Maximum simultaneous DCC sends:", 2, 2 24 193 42
+  text "&Per user:", 3, 6 38 52 9, right
+  edit "", 5, 60 35 33 13
+  text "&Total:", 4, 96 38 56 9, right
+  edit "", 6, 153 35 33 13
+  check "&Hide DCC sends (if automated)", 7, 46 51 140 9
+  check "&Queue DCCs when maximum reached", 8, 9 73 187 9
+  box "Maximum queued DCCs:", 9, 2 87 193 42
+  text "&Per user:", 10, 6 100 52 9, right
+  edit "", 12, 60 98 33 13
+  text "&Total:", 11, 96 100 56 9, right
+  edit "", 13, 153 98 33 13
+  check "&Hide queue window", 14, 46 114 140 9
+  box "Queue cleanup:", 15, 2 135 193 42
+  text "When user:", 16, 6 147 44 9, right
+  text "When you:", 17, 6 160 44 9, right
+  check "&Quits", 20, 53 147 40 9
+  check "&Parts", 18, 93 147 40 9
+  check "&Is kicked", 19, 133 147 60 9
+  check "&Leave channel", 21, 53 160 80 9
+  check "&Disconnect", 22, 133 160 60 9
 
-  button "OK", 101, 10 150 35 12, ok default
-  button "Cancel", 102, 57 150 35 12, cancel
-  button "&Help", 103, 105 150 35 12, disable
+  button "OK", 101, 13 184 46 14, ok default
+  button "Cancel", 102, 76 184 46 14, cancel
+  button "&Help", 103, 140 184 46 14, disable
 }
 on *:DIALOG:dccqcfg:init:*:{
   did -a $dname 5 $_cfgi(dccmaxsendone)
@@ -513,3 +513,4 @@ alias rec {
 ; Above /dcc alias tracks why a DCC chat is opened
 ; This tracks why a DCC chat is opened if DCCSERVER
 on *:DCCSERVER:Chat:if ($creq == ignore) hdel pnp chat.open. $+ $nick | else hadd pnp chat.open. $+ $nick $creq server
+

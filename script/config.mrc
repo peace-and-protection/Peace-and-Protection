@@ -8,11 +8,11 @@
 dialog pnp.config {
   title "PnP Options"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 250 175
+  option map
+  size -1 -1 334 214
 
   ; List of sections
-  list 901, 5 5 58 164, size
+  list 901, 6 6 77 201, size
 
   ; Whether a section has been loaded yet
   list 902, 1 1 1 1, hide
@@ -20,9 +20,9 @@ dialog pnp.config {
   ; Last section selected
   edit "", 903, 1 1 1 1, autohs hide
 
-  button "OK", 905, 106 156 30 12, default group
-  button "Cancel", 906, 141 156 30 12, cancel
-  button "&Help", 907, 176 156 30 12, disable
+  button "OK", 905, 141 191 40 14, default group
+  button "Cancel", 906, 188 191 40 14, cancel
+  button "&Help", 907, 235 191 40 14, disable
 
   ; Blank tab
   tab "", 1, -25 -25 1 1, disable hide
@@ -57,497 +57,497 @@ dialog pnp.config {
   tab "", 33, -25 -25 1 1, disable hide
 
   ; Away - Pager/Log [70-99]
-  box "Pager", 70, 125 10 45 50, tab 2
-  box "Away logging", 71, 175 10 65 50, tab 2
-  text "&When away:", 72, 70 22 50 8, right tab 2
-  combo 75, 130 20 35 50, drop tab 2
-  text "&When auto-away:", 73, 70 34 50 8, right tab 2
-  combo 76, 130 32 35 50, drop tab 2
-  text "&When here :", 74, 70 46 50 8, right tab 2
-  combo 77, 130 44 35 50, drop tab 2
-  check "&On (away)", 78, 180 22 55 8, tab 2
-  check "&On (auto-away)", 79, 180 34 55 8, tab 2
-  box "What to log:", 80, 70 66 170 38, tab 2
-  check "&Log private messages and", 81, 75 77 72 8, tab 2
-  combo 82, 150 75 85 50, drop tab 2
-  check "&Log channel events:", 83, 75 90 72 8, tab 2
-  combo 84, 150 88 85 50, drop tab 2
-  check "&Use 'classic' pager window", 85, 75 111 170 8, tab 2
-  check "&Clear away log on away", 86, 75 120 170 8, tab 2
-  check "&Close any open queries on away", 87, 75 129 170 8, tab 2
-  check "&Save permanent copy of away log to logs directory", 88, 75 138 170 8, tab 2
+  box "Pager", 70, 167 12 60 61, tab 2
+  box "Away logging", 71, 233 12 86 61, tab 2
+  text "&When away:", 72, 93 27 66 9, right tab 2
+  combo 75, 173 24 46 61, drop tab 2
+  text "&When auto-away:", 73, 93 41 66 9, right tab 2
+  combo 76, 173 39 46 61, drop tab 2
+  text "&When here :", 74, 93 56 66 9, right tab 2
+  combo 77, 173 54 46 61, drop tab 2
+  check "&On (away)", 78, 240 27 73 9, tab 2
+  check "&On (auto-away)", 79, 240 41 73 9, tab 2
+  box "What to log:", 80, 93 81 227 46, tab 2
+  check "&Log private messages and", 81, 100 94 96 9, tab 2
+  combo 82, 200 92 113 61, drop tab 2
+  check "&Log channel events:", 83, 100 110 96 9, tab 2
+  combo 84, 200 108 113 61, drop tab 2
+  check "&Use 'classic' pager window", 85, 100 136 227 9, tab 2
+  check "&Clear away log on away", 86, 100 147 227 9, tab 2
+  check "&Close any open queries on away", 87, 100 158 227 9, tab 2
+  check "&Save permanent copy of away log to logs directory", 88, 100 169 227 9, tab 2
 
   ; Away - Message [100-129]
-  box "When you set away:", 100, 70 3 170 68, tab 3
-  radio "&Send an action", 101, 75 12 60 8, group tab 3
-  radio "&Send a message", 102, 75 21 60 8, tab 3
-  text "to all", 103, 138 17 27 8, tab 3
-  check "&channels", 104, 178 12 60 8, tab 3
-  check "&chats/queries", 105, 178 21 60 8, tab 3
-  check "&Ignore these channels:", 106, 75 35 71 8, tab 3
-  edit "", 107, 146 34 87 11, autohs tab 3
-  check "&Ignore channels where you are idle", 108, 75 46 100 8, tab 3
-  text "minutes", 109, 192 47 45 8, tab 3
-  edit "", 110, 175 45 15 11, autohs tab 3
-  check "&Repeat this every", 111, 75 57 71 8, tab 3
-  text "minutes", 112, 163 58 65 8, tab 3
-  edit "", 113, 146 56 15 11, autohs tab 3
-  box "Remind people that you're away if they:", 114, 70 76 170 75, tab 3
-  check "&Send you a private message", 115, 75 85 160 8, tab 3
-  check "&Trigger your mIRC highlight settings in a channel", 116, 75 94 160 8, tab 3
-  check "&Use any of these words in a channel: (separate with commas)", 117, 75 103 160 8, tab 3
-  edit "", 118, 84 113 122 11, autohs tab 3
-  check "&Only remind if triggered in these channels:", 119, 75 126 160 8, tab 3
-  edit "", 120, 84 136 122 11, autohs tab 3
+  box "When you set away:", 100, 93 3 227 83, tab 3
+  radio "&Send an action", 101, 100 14 80 9, group tab 3
+  radio "&Send a message", 102, 100 25 80 9, tab 3
+  text "to all", 103, 184 20 36 9, tab 3
+  check "&channels", 104, 237 14 80 9, tab 3
+  check "&chats/queries", 105, 237 25 80 9, tab 3
+  check "&Ignore these channels:", 106, 100 42 94 9, tab 3
+  edit "", 107, 195 41 116 13, autohs tab 3
+  check "&Ignore channels where you are idle", 108, 100 56 133 9, tab 3
+  text "minutes", 109, 256 57 60 9, tab 3
+  edit "", 110, 233 55 20 13, autohs tab 3
+  check "&Repeat this every", 111, 100 70 94 9, tab 3
+  text "minutes", 112, 217 71 86 9, tab 3
+  edit "", 113, 195 68 20 13, autohs tab 3
+  box "Remind people that you're away if they:", 114, 93 93 227 92, tab 3
+  check "&Send you a private message", 115, 100 104 213 9, tab 3
+  check "&Trigger your mIRC highlight settings in a channel", 116, 100 115 213 9, tab 3
+  check "&Use any of these words in a channel: (separate with commas)", 117, 100 126 213 9, tab 3
+  edit "", 118, 112 138 162 13, autohs tab 3
+  check "&Only remind if triggered in these channels:", 119, 100 154 213 9, tab 3
+  edit "", 120, 112 167 162 13, autohs tab 3
 
   ; Away - Other [130-149]
-  box "Auto-away", 130, 70 15 170 50, tab 4
-  check "&Automatically set away after", 131, 75 25 77 8, tab 4
-  text "minutes idle", 132, 172 26 70 8, tab 4
-  edit "", 133, 153 24 15 11, autohs tab 4
-  check "&Warn you before setting auto-away", 134, 75 38 160 8, tab 4
-  check "&Perform auto-away quietly (don't message channels, etc.)", 135, 75 51 160 8, tab 4
-  check "&Change nick on away to:", 136, 75 75 69 8, tab 4
-  edit "", 137, 146 74 50 11, autohs tab 4
-  text "", 138, 84 86 90 8, tab 4
-  check "&Set away on all connections (by default)", 143, 75 99 160 8, tab 4
-  check "&Disable sounds when away", 139, 75 108 160 8, tab 4
-  check "&Disable event beeps when away", 140, 75 117 160 8, tab 4
-  check "&Deop yourself in any channels when away", 141, 75 126 160 8, tab 4
-  check "&Enable dedicated query window when away", 142, 75 135 160 8, tab 4
+  box "Auto-away", 130, 93 18 227 61, tab 4
+  check "&Automatically set away after", 131, 100 30 102 9, tab 4
+  text "minutes idle", 132, 229 31 93 9, tab 4
+  edit "", 133, 204 29 20 13, autohs tab 4
+  check "&Warn you before setting auto-away", 134, 100 46 213 9, tab 4
+  check "&Perform auto-away quietly (don't message channels, etc.)", 135, 100 62 213 9, tab 4
+  check "&Change nick on away to:", 136, 100 92 92 9, tab 4
+  edit "", 137, 195 90 66 13, autohs tab 4
+  text "", 138, 112 105 120 9, tab 4
+  check "&Set away on all connections (by default)", 143, 100 121 213 9, tab 4
+  check "&Disable sounds when away", 139, 100 132 213 9, tab 4
+  check "&Disable event beeps when away", 140, 100 143 213 9, tab 4
+  check "&Deop yourself in any channels when away", 141, 100 154 213 9, tab 4
+  check "&Enable dedicated query window when away", 142, 100 165 213 9, tab 4
 
   ; Display - Nick colors [150-159]
-  check "&Color nicknames in nicklist", 150, 75 25 170 8, tab 7
-  check "&Color nicknames in channel text", 151, 75 38 170 8, tab 7
-  text "&Use lagged nick color if lagged", 152, 84 52 77 8, tab 7
-  edit "", 153, 162 50 15 11, autohs tab 7
-  text "seconds", 154, 180 52 70 8, tab 7
-  text "Nick colors are set in theme configuration.", 155, 84 75 160 8, tab 7
-  button "&Edit Theme", 156, 84 87 50 12, tab 7
+  check "&Color nicknames in nicklist", 150, 100 30 227 9, tab 7
+  check "&Color nicknames in channel text", 151, 100 46 227 9, tab 7
+  text "&Use lagged nick color if lagged", 152, 112 63 102 9, tab 7
+  edit "", 153, 216 61 20 13, autohs tab 7
+  text "seconds", 154, 240 63 93 9, tab 7
+  text "Nick colors are set in theme configuration.", 155, 112 92 213 9, tab 7
+  button "&Edit Theme", 156, 112 106 66 14, tab 7
 
   ; Display - Notify [160-189]
-  box "Notify format", 160, 125 37 55 80, tab 8
-  box "Unnotify format", 161, 185 37 55 80, tab 8
-  text "&Address matches:", 162, 65 49 57 8, right tab 8
-  combo 165, 130 47 45 50, drop tab 8
-  combo 169, 190 70 45 50, drop tab 8
-  check "&Beep and flash", 172, 130 59 45 8, tab 8
-  text "&Address fails:", 163, 65 72 57 8, right tab 8
-  combo 166, 130 70 45 50, drop tab 8
-  combo 168, 190 47 45 50, drop tab 8
-  check "&Beep and flash", 173, 130 82 45 8, tab 8
-  text "&No address check:", 164, 65 95 57 8, right tab 8
-  combo 167, 130 93 45 50, drop tab 8
-  combo 170, 190 93 45 50, drop tab 8
-  check "&Beep and flash", 174, 130 105 45 8, tab 8
-  text "When a user on your notify list comes online, PnP can check their address against a mask. (see /notif) PnP can show the notify differetly based on the results of this address check. 'Unnotify' is shown when a notify user leaves IRC.", 171, 70 5 170 32, tab 8
-  text "&Show notifies to:", 175, 65 123 57 8, right tab 8
-  combo 176, 130 121 80 50, drop tab 8
-  check "&Show unnotify in quit color", 177, 130 133 115 8, tab 8
-  check "&Show function keys with notify", 178, 130 142 115 8, tab 8
+  box "Notify format", 160, 167 45 73 98, tab 8
+  box "Unnotify format", 161, 247 45 73 98, tab 8
+  text "&Address matches:", 162, 86 60 76 9, right tab 8
+  combo 165, 173 57 60 61, drop tab 8
+  combo 169, 253 85 60 61, drop tab 8
+  check "&Beep and flash", 172, 173 72 60 9, tab 8
+  text "&Address fails:", 163, 86 88 76 9, right tab 8
+  combo 166, 173 85 60 61, drop tab 8
+  combo 168, 253 57 60 61, drop tab 8
+  check "&Beep and flash", 173, 173 100 60 9, tab 8
+  text "&No address check:", 164, 86 116 76 9, right tab 8
+  combo 167, 173 114 60 61, drop tab 8
+  combo 170, 253 114 60 61, drop tab 8
+  check "&Beep and flash", 174, 173 128 60 9, tab 8
+  text "When a user on your notify list comes online, PnP can check their address against a mask. (see /notif) PnP can show the notify differetly based on the results of this address check. 'Unnotify' is shown when a notify user leaves IRC.", 171, 93 6 227 39, tab 8
+  text "&Show notifies to:", 175, 86 151 76 9, right tab 8
+  combo 176, 173 148 106 61, drop tab 8
+  check "&Show unnotify in quit color", 177, 173 163 153 9, tab 8
+  check "&Show function keys with notify", 178, 173 174 153 9, tab 8
 
   ; Display - Ping [190-209]
-  text "&Show channel pings to:", 190, 70 35 72 8, right tab 9
-  combo 191, 145 33 80 50, drop tab 9
-  text "&Show single pings to:", 192, 70 48 72 8, right tab 9
-  combo 193, 145 46 80 50, drop tab 9
-  box "Options:", 194, 70 75 170 54, tab 9
-  check "&Minimize @Ping window when opened", 195, 75 85 160 8, tab 9
-  check "&Bring @Ping window to front on new replies", 196, 75 95 160 8, tab 9
-  check "&Retain replies for later viewing", 197, 75 105 160 8, tab 9
-  check "&Show numeric codes when others ping you", 198, 75 115 160 8, tab 9
+  text "&Show channel pings to:", 190, 93 42 96 9, right tab 9
+  combo 191, 193 40 106 61, drop tab 9
+  text "&Show single pings to:", 192, 93 58 96 9, right tab 9
+  combo 193, 193 56 106 61, drop tab 9
+  box "Options:", 194, 93 92 227 66, tab 9
+  check "&Minimize @Ping window when opened", 195, 100 104 213 9, tab 9
+  check "&Bring @Ping window to front on new replies", 196, 100 116 213 9, tab 9
+  check "&Retain replies for later viewing", 197, 100 128 213 9, tab 9
+  check "&Show numeric codes when others ping you", 198, 100 141 213 9, tab 9
 
   ; Display - Server notices [210-229]
-  text "Select shown notices and press 'Hide' to hide them, or select hidden notices and press 'Show' to show them again.", 210, 70 5 170 24, tab 10
-  check "&Enable PnP server notice filtering: (when usermode +s on)", 213, 74 26 210 8, tab 10
-  box "&Shown server notices:", 214, 70 37 170 56, tab 10
-  list 216, 75 45 160 35, extsel sort tab 10
+  text "Select shown notices and press 'Hide' to hide them, or select hidden notices and press 'Show' to show them again.", 210, 93 6 227 29, tab 10
+  check "&Enable PnP server notice filtering: (when usermode +s on)", 213, 98 31 280 9, tab 10
+  box "&Shown server notices:", 214, 93 45 227 68, tab 10
+  list 216, 100 55 213 42, extsel sort tab 10
   list 217, 1 1 1 1, hide
-  button "&Hide", 220, 205 77 30 11, tab 10
-  box "&Hidden server notices:", 215, 70 96 170 56, tab 10
-  list 218, 75 104 160 35, extsel sort tab 10
+  button "&Hide", 220, 273 94 40 13, tab 10
+  box "&Hidden server notices:", 215, 93 117 227 68, tab 10
+  list 218, 100 127 213 42, extsel sort tab 10
   list 219, 1 1 1 1, hide
-  button "&Show", 221, 205 136 30 11, tab 10
-  text "&Show to:", 222, 73 79 36 8, right tab 10
-  combo 223, 110 77 90 50, drop tab 10
+  button "&Show", 221, 273 167 40 13, tab 10
+  text "&Show to:", 222, 97 97 48 9, right tab 10
+  combo 223, 146 94 120 61, drop tab 10
 
   ; Display - Text [230-249]
-  check "&Copy private messages to active window", 231, 72 15 173 8, tab 11
-  check "&Use PnP text theming", 230, 72 25 173 8, tab 11
-  button "&Edit Theme", 244, 81 37 50 12, tab 11
-  box "Notices:", 232, 74 57 80 40, tab 11
-  radio "&Normal", 233, 84 67 65 8, group tab 11
-  radio "&Notices window", 234, 84 76 65 8, tab 11
-  radio "&Status window", 235, 84 85 65 8, tab 11
-  box "Op Notices:", 236, 159 57 80 40, tab 11
-  radio "&Normal", 237, 169 67 65 8, group tab 11
-  radio "&Notices window", 238, 169 76 65 8, tab 11
-  radio "&Events window", 239, 169 85 65 8, tab 11
-  box "Services Notices:", 240, 74 102 80 40, tab 11
-  radio "&Normal", 241, 84 112 65 8, group tab 11
-  radio "&Notices window", 242, 84 121 65 8, tab 11
-  radio "&Status window", 243, 84 130 65 8, tab 11
+  check "&Copy private messages to active window", 231, 96 18 231 9, tab 11
+  check "&Use PnP text theming", 230, 96 30 231 9, tab 11
+  button "&Edit Theme", 244, 108 45 66 14, tab 11
+  box "Notices:", 232, 98 70 106 49, tab 11
+  radio "&Normal", 233, 112 82 86 9, group tab 11
+  radio "&Notices window", 234, 112 93 86 9, tab 11
+  radio "&Status window", 235, 112 104 86 9, tab 11
+  box "Op Notices:", 236, 212 70 106 49, tab 11
+  radio "&Normal", 237, 225 82 86 9, group tab 11
+  radio "&Notices window", 238, 225 93 86 9, tab 11
+  radio "&Events window", 239, 225 104 86 9, tab 11
+  box "Services Notices:", 240, 98 125 106 49, tab 11
+  radio "&Normal", 241, 112 137 86 9, group tab 11
+  radio "&Notices window", 242, 112 148 86 9, tab 11
+  radio "&Status window", 243, 112 159 86 9, tab 11
 
   ; Display - Wallops [250-269]
-  text "Select shown wallops and press 'Hide' to hide them, or select hidden wallops and press 'Show' to show them again.", 250, 70 5 170 24, tab 12
-  check "&Enable PnP wallop filtering: (when usermode +w on)", 253, 74 26 210 8, tab 12
-  box "&Shown wallops:", 254, 70 37 170 56, tab 12
-  list 256, 75 45 160 35, extsel sort tab 12
+  text "Select shown wallops and press 'Hide' to hide them, or select hidden wallops and press 'Show' to show them again.", 250, 93 6 227 29, tab 12
+  check "&Enable PnP wallop filtering: (when usermode +w on)", 253, 98 31 280 9, tab 12
+  box "&Shown wallops:", 254, 93 45 227 68, tab 12
+  list 256, 100 55 213 42, extsel sort tab 12
   list 257, 1 1 1 1, hide
-  button "&Hide", 260, 205 77 30 11, tab 12
-  box "&Hidden wallops:", 255, 70 96 170 56, tab 12
-  list 258, 75 104 160 35, extsel sort tab 12
+  button "&Hide", 260, 273 94 40 13, tab 12
+  box "&Hidden wallops:", 255, 93 117 227 68, tab 12
+  list 258, 100 127 213 42, extsel sort tab 12
   list 259, 1 1 1 1, hide
-  button "&Show", 261, 205 136 30 11, tab 12
-  text "&Show to:", 262, 73 79 36 8, right tab 12
-  combo 263, 110 77 90 50, drop tab 12
+  button "&Show", 261, 273 167 40 13, tab 12
+  text "&Show to:", 262, 97 97 48 9, right tab 12
+  combo 263, 146 94 120 61, drop tab 12
 
   ; Display - Whois replies [270-289]
-  text "&Show whois replies to:", 270, 70 13 72 8, right tab 13
-  combo 271, 145 11 80 50, drop tab 13
-  box "Options:", 272, 70 25 170 78, tab 13
-  check "&Show in query/chat if open", 273, 75 35 160 8, tab 13
-  check "&Minimize @Whois window when opened", 274, 75 45 160 8, tab 13
-  check "&Bring @Whois window to front on new replies", 275, 75 55 160 8, tab 13
-  check "&Retain replies for later viewing", 276, 75 65 160 8, tab 13
-  check "&Show extended server information", 277, 75 78 160 8, tab 13
-  check "&Show shared channels in bold", 278, 75 88 160 8, tab 13
-  box "Show nickname:", 279, 70 106 170 45, tab 13
-  radio "&on all lines", 280, 75 116 160 8, group tab 13
-  radio "&on first line only", 281, 75 126 160 8, tab 13
-  radio "&on first line, but line up remaining lines", 282, 75 136 160 8, tab 13
+  text "&Show whois replies to:", 270, 93 15 96 9, right tab 13
+  combo 271, 193 13 106 61, drop tab 13
+  box "Options:", 272, 93 30 227 95, tab 13
+  check "&Show in query/chat if open", 273, 100 42 213 9, tab 13
+  check "&Minimize @Whois window when opened", 274, 100 55 213 9, tab 13
+  check "&Bring @Whois window to front on new replies", 275, 100 67 213 9, tab 13
+  check "&Retain replies for later viewing", 276, 100 79 213 9, tab 13
+  check "&Show extended server information", 277, 100 95 213 9, tab 13
+  check "&Show shared channels in bold", 278, 100 108 213 9, tab 13
+  box "Show nickname:", 279, 93 130 227 55, tab 13
+  radio "&on all lines", 280, 100 142 213 9, group tab 13
+  radio "&on first line only", 281, 100 154 213 9, tab 13
+  radio "&on first line, but line up remaining lines", 282, 100 167 213 9, tab 13
 
   ; Display - Other [290-309]
-  text "&Names list when joining:", 290, 70 23 72 8, right tab 14
-  combo 291, 145 21 80 50, drop tab 14
-  text "&Show MOTD on connect:", 292, 70 36 72 8, right tab 14
-  combo 293, 145 34 80 50, drop tab 14
-  text "&Time display format:", 294, 70 53 72 8, right tab 14
-  combo 295, 145 51 80 50, drop edit tab 14
-  text "&Date display format:", 296, 70 66 72 8, right tab 14
-  combo 297, 145 64 80 50, drop edit tab 14
-  box "Options:", 301, 70 85 170 54, tab 14
-  check "&Show CTCPs, DNS, and away status to active window", 298, 75 95 160 8, tab 14
-  check "&Show events/raws to active if channel/query not open", 302, 75 105 160 8, tab 14
-  check "&Display MOTD to @MOTD window", 299, 75 115 160 8, tab 14
-  check "&Show PnP splash screen during startup", 300, 75 125 160 8, tab 14
+  text "&Names list when joining:", 290, 93 28 96 9, right tab 14
+  combo 291, 193 25 106 61, drop tab 14
+  text "&Show MOTD on connect:", 292, 93 44 96 9, right tab 14
+  combo 293, 193 41 106 61, drop tab 14
+  text "&Time display format:", 294, 93 65 96 9, right tab 14
+  combo 295, 193 62 106 61, drop edit tab 14
+  text "&Date display format:", 296, 93 81 96 9, right tab 14
+  combo 297, 193 78 106 61, drop edit tab 14
+  box "Options:", 301, 93 104 227 66, tab 14
+  check "&Show CTCPs, DNS, and away status to active window", 298, 100 116 213 9, tab 14
+  check "&Show events/raws to active if channel/query not open", 302, 100 128 213 9, tab 14
+  check "&Display MOTD to @MOTD window", 299, 100 141 213 9, tab 14
+  check "&Show PnP splash screen during startup", 300, 100 153 213 9, tab 14
 
   ; Popups - Channel [310-329]
-  box "Show these popups:", 329, 80 15 150 74, tab 17
-  check "&Topic", 310, 85 25 70 10, tab 17
-  check "&Modes", 311, 85 35 70 10, tab 17
-  check "&Settings", 312, 85 45 70 10, tab 17
-  check "&Banlist", 313, 85 55 70 10, tab 17
-  check "&Bans", 314, 85 65 70 10, tab 17
-  check "&Ping", 315, 85 75 70 10, tab 17
-  check "&Scan", 316, 155 25 70 10, tab 17
-  check "&Favorites", 317, 155 35 70 10, tab 17
-  check "&Part", 318, 155 45 70 10, tab 17
-  check "&Window", 319, 155 55 70 10, tab 17
-  check "&Help", 320, 155 65 70 10, disable tab 17
-  check "&Hide op popups if not opped", 321, 85 95 160 10, tab 17
-  button "&Load default", 326, 85 112 60 12, tab 17
-  button "&Load condensed", 327, 155 112 60 12, tab 17
-  text "Tip: You can hold Ctrl when right-clicking to show hidden popups.", 328, 85 132 140 24, tab 17
+  box "Show these popups:", 329, 106 18 200 90, tab 17
+  check "&Topic", 310, 113 30 93 12, tab 17
+  check "&Modes", 311, 113 42 93 12, tab 17
+  check "&Settings", 312, 113 55 93 12, tab 17
+  check "&Banlist", 313, 113 67 93 12, tab 17
+  check "&Bans", 314, 113 79 93 12, tab 17
+  check "&Ping", 315, 113 92 93 12, tab 17
+  check "&Scan", 316, 207 30 93 12, tab 17
+  check "&Favorites", 317, 207 42 93 12, tab 17
+  check "&Part", 318, 207 55 93 12, tab 17
+  check "&Window", 319, 207 67 93 12, tab 17
+  check "&Help", 320, 207 79 93 12, disable tab 17
+  check "&Hide op popups if not opped", 321, 113 116 213 12, tab 17
+  button "&Load default", 326, 113 137 80 14, tab 17
+  button "&Load condensed", 327, 207 137 80 14, tab 17
+  text "Tip: You can hold Ctrl when right-clicking to show hidden popups.", 328, 113 162 187 29, tab 17
 
   ; Popups - Menubar [330-349]
-  box "Show these popups:", 349, 80 15 150 74, tab 18
-  check "&Configure", 330, 85 25 70 10, tab 18
-  check "&Last whois", 331, 85 35 70 10, tab 18
-  check "&Lists", 332, 85 45 70 10, tab 18
-  check "&Away", 333, 85 55 70 10, tab 18
-  check "&Nickname", 334, 85 65 70 10, tab 18
-  check "&List channels", 335, 155 25 70 10, tab 18
-  check "&Channels", 336, 155 35 70 10, tab 18
-  check "&Favorites", 337, 155 45 70 10, tab 18
-  check "&Addons", 338, 155 55 70 10, tab 18
-  check "&Help", 339, 155 65 70 10, disable tab 18
-  button "&Load default", 346, 85 112 60 12, tab 18
-  button "&Load condensed", 347, 155 112 60 12, tab 18
-  text "Tip: You can hold Ctrl when right-clicking to show hidden popups.", 348, 85 132 140 24, tab 18
+  box "Show these popups:", 349, 106 18 200 90, tab 18
+  check "&Configure", 330, 113 30 93 12, tab 18
+  check "&Last whois", 331, 113 42 93 12, tab 18
+  check "&Lists", 332, 113 55 93 12, tab 18
+  check "&Away", 333, 113 67 93 12, tab 18
+  check "&Nickname", 334, 113 79 93 12, tab 18
+  check "&List channels", 335, 207 30 93 12, tab 18
+  check "&Channels", 336, 207 42 93 12, tab 18
+  check "&Favorites", 337, 207 55 93 12, tab 18
+  check "&Addons", 338, 207 67 93 12, tab 18
+  check "&Help", 339, 207 79 93 12, disable tab 18
+  button "&Load default", 346, 113 137 80 14, tab 18
+  button "&Load condensed", 347, 207 137 80 14, tab 18
+  text "Tip: You can hold Ctrl when right-clicking to show hidden popups.", 348, 113 162 187 29, tab 18
 
   ; Popups - Nicklist [350-369]
-  box "Show these popups:", 369, 80 15 150 74, tab 19
-  check "&Quick kick", 350, 85 25 70 10, tab 19
-  check "&Quick ban", 351, 85 35 70 10, tab 19
-  check "&Kick", 352, 85 45 70 10, tab 19
-  check "&Bans", 353, 85 55 70 10, tab 19
-  check "&Op / Halfop / Voice", 354, 85 65 70 10, tab 19
-  check "&User info", 355, 85 75 70 10, tab 19
-  check "&CTCP", 356, 155 25 70 10, tab 19
-  check "&DCC", 357, 155 35 70 10, tab 19
-  check "&Query", 358, 155 45 70 10, tab 19
-  check "&Lists", 359, 155 55 70 10, tab 19
-  check "&Notices", 360, 155 65 70 10, tab 19
-  check "&Help", 361, 155 75 70 10, disable tab 19
-  check "&Hide op popups if not opped", 362, 85 95 160 10, tab 19
-  button "&Load default", 366, 85 112 60 12, tab 19
-  button "&Load condensed", 367, 155 112 60 12, tab 19
-  text "Tip: You can hold Ctrl when right-clicking to show hidden popups.", 368, 85 132 140 24, tab 19
+  box "Show these popups:", 369, 106 18 200 90, tab 19
+  check "&Quick kick", 350, 113 30 93 12, tab 19
+  check "&Quick ban", 351, 113 42 93 12, tab 19
+  check "&Kick", 352, 113 55 93 12, tab 19
+  check "&Bans", 353, 113 67 93 12, tab 19
+  check "&Op / Halfop / Voice", 354, 113 79 93 12, tab 19
+  check "&User info", 355, 113 92 93 12, tab 19
+  check "&CTCP", 356, 207 30 93 12, tab 19
+  check "&DCC", 357, 207 42 93 12, tab 19
+  check "&Query", 358, 207 55 93 12, tab 19
+  check "&Lists", 359, 207 67 93 12, tab 19
+  check "&Notices", 360, 207 79 93 12, tab 19
+  check "&Help", 361, 207 92 93 12, disable tab 19
+  check "&Hide op popups if not opped", 362, 113 116 213 12, tab 19
+  button "&Load default", 366, 113 137 80 14, tab 19
+  button "&Load condensed", 367, 207 137 80 14, tab 19
+  text "Tip: You can hold Ctrl when right-clicking to show hidden popups.", 368, 113 162 187 29, tab 19
 
   ; Popups - Query [370-389]
-  box "Show these popups:", 389, 80 15 150 74, tab 20
-  check "&Whois", 370, 85 25 70 10, tab 20
-  check "&User info", 371, 85 35 70 10, tab 20
-  check "&Ping", 372, 85 45 70 10, tab 20
-  check "&CTCP", 373, 85 55 70 10, tab 20
-  check "&DCC", 374, 85 65 70 10, tab 20
-  check "&Ignore", 375, 85 75 70 10, tab 20
-  check "&Userlist", 376, 155 25 70 10, tab 20
-  check "&Notify", 377, 155 35 70 10, tab 20
-  check "&Window", 378, 155 45 70 10, tab 20
-  check "&Close", 379, 155 55 70 10, tab 20
-  check "&Help", 380, 155 65 70 10, disable tab 20
-  button "&Load default", 386, 85 112 60 12, tab 20
-  button "&Load condensed", 387, 155 112 60 12, tab 20
-  text "Tip: You can hold Ctrl when right-clicking to show hidden popups.", 388, 85 132 140 24, tab 20
+  box "Show these popups:", 389, 106 18 200 90, tab 20
+  check "&Whois", 370, 113 30 93 12, tab 20
+  check "&User info", 371, 113 42 93 12, tab 20
+  check "&Ping", 372, 113 55 93 12, tab 20
+  check "&CTCP", 373, 113 67 93 12, tab 20
+  check "&DCC", 374, 113 79 93 12, tab 20
+  check "&Ignore", 375, 113 92 93 12, tab 20
+  check "&Userlist", 376, 207 30 93 12, tab 20
+  check "&Notify", 377, 207 42 93 12, tab 20
+  check "&Window", 378, 207 55 93 12, tab 20
+  check "&Close", 379, 207 67 93 12, tab 20
+  check "&Help", 380, 207 79 93 12, disable tab 20
+  button "&Load default", 386, 113 137 80 14, tab 20
+  button "&Load condensed", 387, 207 137 80 14, tab 20
+  text "Tip: You can hold Ctrl when right-clicking to show hidden popups.", 388, 113 162 187 29, tab 20
 
   ; Popups - Status [390-409]
-  box "Show these popups:", 409, 80 15 150 74, tab 21
-  check "&List channels", 390, 85 25 70 10, tab 21
-  check "&Channels", 391, 85 35 70 10, tab 21
-  check "&Favorites", 392, 85 45 70 10, tab 21
-  check "&Nickname", 393, 85 55 70 10, tab 21
-  check "&Usermode", 394, 85 65 70 10, tab 21
-  check "&Quit", 395, 85 75 70 10, tab 21
-  check "&Server", 396, 155 25 70 10, tab 21
-  check "&Stats", 397, 155 35 70 10, tab 21
-  check "&Connect", 398, 155 45 70 10, tab 21
-  check "&Window", 399, 155 55 70 10, tab 21
-  check "&Help", 400, 155 65 70 10, disable tab 21
-  button "&Load default", 406, 85 112 60 12, tab 21
-  button "&Load condensed", 407, 155 112 60 12, tab 21
-  text "Tip: You can hold Ctrl when right-clicking to show hidden popups.", 408, 85 132 140 24, tab 21
+  box "Show these popups:", 409, 106 18 200 90, tab 21
+  check "&List channels", 390, 113 30 93 12, tab 21
+  check "&Channels", 391, 113 42 93 12, tab 21
+  check "&Favorites", 392, 113 55 93 12, tab 21
+  check "&Nickname", 393, 113 67 93 12, tab 21
+  check "&Usermode", 394, 113 79 93 12, tab 21
+  check "&Quit", 395, 113 92 93 12, tab 21
+  check "&Server", 396, 207 30 93 12, tab 21
+  check "&Stats", 397, 207 42 93 12, tab 21
+  check "&Connect", 398, 207 55 93 12, tab 21
+  check "&Window", 399, 207 67 93 12, tab 21
+  check "&Help", 400, 207 79 93 12, disable tab 21
+  button "&Load default", 406, 113 137 80 14, tab 21
+  button "&Load condensed", 407, 207 137 80 14, tab 21
+  text "Tip: You can hold Ctrl when right-clicking to show hidden popups.", 408, 113 162 187 29, tab 21
 
   ; Popups - @Windows [410-429]
-  box "Show these popups:", 429, 80 15 150 74, tab 22
-  check "&Select all", 410, 85 25 70 10, tab 22
-  check "&Copy", 411, 85 35 70 10, tab 22
-  check "&Window", 412, 85 45 70 10, tab 22
-  check "&Close", 413, 85 55 70 10, tab 22
-  check "&Hide", 414, 85 65 70 10, tab 22
-  check "&Help", 415, 85 75 70 10, disable tab 22
-  button "&Load default", 426, 85 112 60 12, tab 22
-  button "&Load condensed", 427, 155 112 60 12, tab 22
-  text "Tip: You can hold Ctrl when right-clicking to show hidden popups.", 428, 85 132 140 24, tab 22
+  box "Show these popups:", 429, 106 18 200 90, tab 22
+  check "&Select all", 410, 113 30 93 12, tab 22
+  check "&Copy", 411, 113 42 93 12, tab 22
+  check "&Window", 412, 113 55 93 12, tab 22
+  check "&Close", 413, 113 67 93 12, tab 22
+  check "&Hide", 414, 113 79 93 12, tab 22
+  check "&Help", 415, 113 92 93 12, disable tab 22
+  button "&Load default", 426, 113 137 80 14, tab 22
+  button "&Load condensed", 427, 207 137 80 14, tab 22
+  text "Tip: You can hold Ctrl when right-clicking to show hidden popups.", 428, 113 162 187 29, tab 22
 
   ; Channel options [430-459]
-  text "&Channel:", 452, 65 8 36 8, right tab 24
-  combo 453, 102 6 70 50, sort drop tab 24
+  text "&Channel:", 452, 86 9 48 9, right tab 24
+  combo 453, 136 7 93 61, sort drop tab 24
   list 454, 1 1 1 1, hide
   edit "", 457, 1 1 1 1, hide autohs
-  button "&Add...", 455, 176 5 30 12, tab 24
-  button "&Remove", 456, 210 5 30 12, tab 24
-  box "&Default tempban:", 430, 70 23 170 25, tab 24
-  edit "", 431, 75 32 20 11, autohs tab 24
-  text "&seconds, ban type:", 432, 97 34 50 8, tab 24
-  combo 433, 147 32 88 70, drop tab 24
-  box "&Default banmask:", 434, 70 51 170 25, tab 24
-  combo 435, 75 60 38 50, drop tab 24
-  text "@", 436, 115 62 7 8, tab 24
-  combo 437, 124 60 111 60, drop tab 24
-  check "&Check your op status before performing op commands", 442, 70 80 175 8, tab 24
-  check "&Display note when users trigger channel protection", 443, 70 89 175 8, tab 24
-  check "&Show clones on join", 444, 70 98 85 8, tab 24
-  check "&Add delay between kicks", 445, 155 98 90 8, tab 24
-  check "&IRCop check on join", 446, 70 107 85 8, tab 24
-  check "&Show users banned", 447, 155 107 85 8, tab 24
-  check "&Whois users on join...", 448, 70 121 85 8, tab 24
-  check "...&but only if you're opped", 449, 155 121 90 8, tab 24
-  check "...&only if you're not away", 450, 155 130 90 8, tab 24
-  check "...&show results in channel", 451, 155 139 90 8, tab 24
-  check "&Rejoin if alone and not op", 458, 70 139 85 8, tab 24
+  button "&Add...", 455, 235 6 40 14, tab 24
+  button "&Remove", 456, 280 6 40 14, tab 24
+  box "&Default tempban:", 430, 93 28 227 30, tab 24
+  edit "", 431, 100 39 26 13, autohs tab 24
+  text "&seconds, ban type:", 432, 129 41 66 9, tab 24
+  combo 433, 196 39 117 85, drop tab 24
+  box "&Default banmask:", 434, 93 62 227 30, tab 24
+  combo 435, 100 73 50 61, drop tab 24
+  text "@", 436, 153 76 9 9, tab 24
+  combo 437, 165 73 148 73, drop tab 24
+  check "&Check your op status before performing op commands", 442, 93 98 233 9, tab 24
+  check "&Display note when users trigger channel protection", 443, 93 109 233 9, tab 24
+  check "&Show clones on join", 444, 93 120 113 9, tab 24
+  check "&Add delay between kicks", 445, 207 120 120 9, tab 24
+  check "&IRCop check on join", 446, 93 131 113 9, tab 24
+  check "&Show users banned", 447, 207 131 113 9, tab 24
+  check "&Whois users on join...", 448, 93 148 113 9, tab 24
+  check "...&but only if you're opped", 449, 207 148 120 9, tab 24
+  check "...&only if you're not away", 450, 207 159 120 9, tab 24
+  check "...&show results in channel", 451, 207 170 120 9, tab 24
+  check "&Rejoin if alone and not op", 458, 93 170 113 9, tab 24
 
   ; DCC accept [40-69]
-  text "These options determine how PnP handles DCCs. They override mIRC's DCC settings. Selecting 'Warn' will reject a DCC and send a notice reminding the user you are not accepting DCCs.", 40, 70 12 170 30, tab 25
-  box "DCC chat", 41, 130 45 55 100, tab 25
-  box "DCC send (file)", 42, 190 45 55 100, tab 25
-  text "When here:", 43, 70 55 60 8, tab 25
-  text "&Known user:", 44, 75 67 55 8, tab 25
-  combo 50, 135 65 45 50, group drop tab 25
-  combo 51, 195 65 45 50, drop tab 25
-  text "&Unknown user:", 45, 75 79 55 8, tab 25
-  combo 52, 135 77 45 50, drop tab 25
-  combo 53, 195 77 45 50, drop tab 25
-  text "When away:", 46, 70 91 60 8, tab 25
-  text "&Known user:", 47, 75 103 55 8, tab 25
-  combo 54, 135 101 45 50, drop tab 25
-  combo 55, 195 101 45 50, drop tab 25
-  text "&Unknown user:", 48, 75 115 55 8, tab 25
-  combo 56, 135 113 45 50, drop tab 25
-  combo 57, 195 113 45 50, drop tab 25
-  text "&User with DCC auth:", 49, 75 127 55 8, tab 25
-  combo 58, 135 125 45 50, drop tab 25
-  combo 59, 195 125 45 50, drop tab 25
+  text "These options determine how PnP handles DCCs. They override mIRC's DCC settings. Selecting 'Warn' will reject a DCC and send a notice reminding the user you are not accepting DCCs.", 40, 93 14 227 36, tab 25
+  box "DCC chat", 41, 173 55 73 122, tab 25
+  box "DCC send (file)", 42, 253 55 73 122, tab 25
+  text "When here:", 43, 93 67 80 9, tab 25
+  text "&Known user:", 44, 100 82 73 9, tab 25
+  combo 50, 180 79 60 61, group drop tab 25
+  combo 51, 260 79 60 61, drop tab 25
+  text "&Unknown user:", 45, 100 97 73 9, tab 25
+  combo 52, 180 94 60 61, drop tab 25
+  combo 53, 260 94 60 61, drop tab 25
+  text "When away:", 46, 93 111 80 9, tab 25
+  text "&Known user:", 47, 100 126 73 9, tab 25
+  combo 54, 180 124 60 61, drop tab 25
+  combo 55, 260 124 60 61, drop tab 25
+  text "&Unknown user:", 48, 100 141 73 9, tab 25
+  combo 56, 180 138 60 61, drop tab 25
+  combo 57, 260 138 60 61, drop tab 25
+  text "&User with DCC auth:", 49, 100 156 73 9, tab 25
+  combo 58, 180 153 60 61, drop tab 25
+  combo 59, 260 153 60 61, drop tab 25
 
   ; Favorites [460-489,510-519]
-  text "&Select/add a favorite network...", 460, 70 5 85 8, tab 26
-  combo 470, 70 15 60 48, size edit tab 26
-  button "&Add", 471, 135 15 20 12, tab 26
-  button "&Del", 472, 135 30 20 12, tab 26
-  text "...enter preferred info...", 461, 160 5 85 8, tab 26
-  text "&Nick:", 462, 158 17 23 8, right tab 26
-  edit "", 463, 182 15 63 11, autohs tab 26
-  text "&Alt:", 464, 158 29 23 8, right tab 26
-  edit "", 465, 182 27 63 11, autohs tab 26
-  text "&E-Mail:", 466, 158 41 23 8, right tab 26
-  edit "", 467, 182 39 63 11, autohs tab 26
-  text "&Name:", 468, 158 53 23 8, right tab 26
-  edit "", 469, 182 51 63 11, autohs tab 26
+  text "&Select/add a favorite network...", 460, 93 6 113 9, tab 26
+  combo 470, 93 18 80 58, size edit tab 26
+  button "&Add", 471, 180 18 26 14, tab 26
+  button "&Del", 472, 180 36 26 14, tab 26
+  text "...enter preferred info...", 461, 213 6 113 9, tab 26
+  text "&Nick:", 462, 211 20 30 9, right tab 26
+  edit "", 463, 243 18 84 13, autohs tab 26
+  text "&Alt:", 464, 211 35 30 9, right tab 26
+  edit "", 465, 243 33 84 13, autohs tab 26
+  text "&E-Mail:", 466, 211 50 30 9, right tab 26
+  edit "", 467, 243 47 84 13, autohs tab 26
+  text "&Name:", 468, 211 65 30 9, right tab 26
+  edit "", 469, 243 62 84 13, autohs tab 26
   list 487, 1 1 1 1, hide
   list 488, 1 1 1 1, hide
   list 489, 1 1 1 1, hide
   edit "", 512, 1 1 1 1, autohs hide
-  text "&Add favorite channels:", 473, 70 75 85 8, tab 26
-  combo 475, 70 85 60 48, size edit tab 26
-  button "&Add", 476, 135 85 20 10, tab 26
-  button "&Del", 477, 135 97 20 10, tab 26
-  button "&Up", 478, 135 109 20 10, tab 26
-  button "&Down", 479, 135 121 20 10, tab 26
-  text "&Add favorite servers:", 474, 160 75 85 8, tab 26
-  combo 480, 160 85 60 48, size edit tab 26
-  button "&Add", 481, 225 85 20 10, tab 26
-  button "&Del", 482, 225 97 20 10, tab 26
-  button "&Up", 483, 225 109 20 10, tab 26
-  button "&Down", 484, 225 121 20 10, tab 26
-  check "&Join on connect", 485, 70 135 63 8, tab 26
-  edit "", 510, 135 134 20 11, autohs tab 26
-  check "&Connect on startup", 486, 160 135 85 8, tab 26
+  text "&Add favorite channels:", 473, 93 92 113 9, tab 26
+  combo 475, 93 104 80 58, size edit tab 26
+  button "&Add", 476, 180 104 26 12, tab 26
+  button "&Del", 477, 180 119 26 12, tab 26
+  button "&Up", 478, 180 133 26 12, tab 26
+  button "&Down", 479, 180 148 26 12, tab 26
+  text "&Add favorite servers:", 474, 213 92 113 9, tab 26
+  combo 480, 213 104 80 58, size edit tab 26
+  button "&Add", 481, 300 104 26 12, tab 26
+  button "&Del", 482, 300 119 26 12, tab 26
+  button "&Up", 483, 300 133 26 12, tab 26
+  button "&Down", 484, 300 148 26 12, tab 26
+  check "&Join on connect", 485, 93 165 84 9, tab 26
+  edit "", 510, 180 164 26 13, autohs tab 26
+  check "&Connect on startup", 486, 213 165 113 9, tab 26
 
   ; Flashing [490-509]
-  text "If mIRC is not the current application, it's taskbar button will flash on the following events, if selected.", 507, 70 12 170 30, tab 27
-  box "When here:", 490, 125 35 55 50, tab 27
-  box "When away:", 491, 185 35 55 50, tab 27
-  text "New query window:", 492, 70 47 50 8, right tab 27
-  text "Private message:", 493, 70 59 50 8, right tab 27
-  text "DCC chat message:", 494, 70 71 50 8, right tab 27
-  check "&Flash if here", 495, 130 47 45 8, tab 27
-  check "&Flash if here", 497, 130 59 45 8, tab 27
-  check "&Flash if here", 499, 130 71 45 8, tab 27
-  check "&Flash if away", 496, 190 47 45 8, tab 27
-  check "&Flash if away", 498, 190 59 45 8, tab 27
-  check "&Flash if away", 500, 190 71 45 8, tab 27
-  check "&Limit flashing to", 501, 70 95 48 8, tab 27
-  edit "", 502, 120 94 20 11, autohs tab 27
-  text "seconds (when here)", 503, 144 96 101 8, tab 27
-  check "&Limit flashing to", 504, 70 107 48 8, tab 27
-  edit "", 505, 120 106 20 11, autohs tab 27
-  text "seconds (when away)", 506, 144 108 101 8, tab 27
+  text "If mIRC is not the current application, it's taskbar button will flash on the following events, if selected.", 507, 93 14 227 36, tab 27
+  box "When here:", 490, 167 42 73 61, tab 27
+  box "When away:", 491, 247 42 73 61, tab 27
+  text "New query window:", 492, 93 57 66 9, right tab 27
+  text "Private message:", 493, 93 72 66 9, right tab 27
+  text "DCC chat message:", 494, 93 87 66 9, right tab 27
+  check "&Flash if here", 495, 173 57 60 9, tab 27
+  check "&Flash if here", 497, 173 72 60 9, tab 27
+  check "&Flash if here", 499, 173 87 60 9, tab 27
+  check "&Flash if away", 496, 253 57 60 9, tab 27
+  check "&Flash if away", 498, 253 72 60 9, tab 27
+  check "&Flash if away", 500, 253 87 60 9, tab 27
+  check "&Limit flashing to", 501, 93 116 64 9, tab 27
+  edit "", 502, 160 115 26 13, autohs tab 27
+  text "seconds (when here)", 503, 192 117 134 9, tab 27
+  check "&Limit flashing to", 504, 93 131 64 9, tab 27
+  edit "", 505, 160 130 26 13, autohs tab 27
+  text "seconds (when away)", 506, 192 132 134 9, tab 27
 
   ; Language [520-539]
-  text "Current language:", 520, 70 9 63 8, right tab 28
-  edit "", 521, 135 7 70 11, autohs read tab 28
-  text "Language selected:", 522, 70 21 63 8, right tab 28
-  edit "", 523, 135 19 70 11, autohs read tab 28
+  text "Current language:", 520, 93 11 84 9, right tab 28
+  edit "", 521, 180 8 93 13, autohs read tab 28
+  text "Language selected:", 522, 93 25 84 9, right tab 28
+  edit "", 523, 180 23 93 13, autohs read tab 28
   edit "", 529, 1 1 1 1, hide
-  check "&Convert all popups to lowercase", 527, 135 31 110 8, tab 28
-  check "&Convert ALL text to lowercase", 528, 135 40 110 8, tab 28
-  text "To change PnP's language, select a language from the list below and click 'Select'. PnP will change to the new language when you close this options dialog. Please be patient, as loading a new language or changing the above options is time-consuming.", 524, 70 56 170 41, tab 28
-  list 525, 70 97 135 50, sort tab 28
-  button "&Select", 526, 210 97 30 12, tab 28
+  check "&Convert all popups to lowercase", 527, 180 38 146 9, tab 28
+  check "&Convert ALL text to lowercase", 528, 180 49 146 9, tab 28
+  text "To change PnP's language, select a language from the list below and click 'Select'. PnP will change to the new language when you close this options dialog. Please be patient, as loading a new language or changing the above options is time-consuming.", 524, 93 68 227 50, tab 28
+  list 525, 93 119 180 61, sort tab 28
+  button "&Select", 526, 280 119 40 14, tab 28
 
   ; Messages [540-559]
-  text "&Editing", 541, 70 8 20 8, tab 29
-  combo 542, 93 6 50 85, drop sort tab 29
-  text "messages:", 543, 146 8 44 8, tab 29
-  check "(alt. list format)", 555, 190 8 50 8, tab 29
-  list 544, 70 19 170 49, size sort tab 29
+  text "&Editing", 541, 93 9 26 9, tab 29
+  combo 542, 124 7 66 104, drop sort tab 29
+  text "messages:", 543, 195 9 58 9, tab 29
+  check "(alt. list format)", 555, 253 9 66 9, tab 29
+  list 544, 93 23 227 60, size sort tab 29
   list 552, 1 1 1 1, hide
   list 553, 1 1 1 1, hide
   edit "", 556, 1 1 1 1, autohs hide
   edit "", 557, 1 1 1 1, autohs hide
-  text "", 554, 70 72 170 8, tab 29
-  text "&Enter a message or select a default from the dropdown:", 545, 70 82 170 8, tab 29
-  combo 546, 70 92 170 85, edit drop tab 29
-  text "This is a sample of how your message will look:", 547, 70 106 170 8, tab 29
-  icon 548, 70 116 170 11, script\pnp.ico, tab 29
-  text "", 549, 70 136 95 8, tab 29
-  edit "", 550, 165 134 20 11, autohs tab 29
-  edit "", 551, 188 134 20 11, autohs tab 29
+  text "", 554, 93 88 227 9, tab 29
+  text "&Enter a message or select a default from the dropdown:", 545, 93 100 227 9, tab 29
+  combo 546, 93 113 227 104, edit drop tab 29
+  text "This is a sample of how your message will look:", 547, 93 130 227 9, tab 29
+  icon 548, 93 142 227 13, script\pnp.ico, tab 29
+  text "", 549, 93 167 126 9, tab 29
+  edit "", 550, 220 164 26 13, autohs tab 29
+  edit "", 551, 251 164 26 13, autohs tab 29
 
   ; Protection [560-599]
-  check "&Send script reply to VERSION CTCPs", 560, 70 5 175 8, tab 30
-  check "&Reply to other CTCPs-", 561, 70 14 175 8, tab 30
-  button "&Edit Replies", 562, 81 25 50 12, tab 30
-  check "&DCC flood protection enabled", 563, 70 40 175 8, tab 30
-  check "&CTCP flood protection enabled", 564, 70 49 175 8, tab 30
-  check "&Change nick randomly if protection triggered", 565, 70 58 175 8, tab 30
-  check "&Verify channels you are invited to", 581, 70 67 175 8, tab 30
-  check "&Close DCC chat on flood:", 566, 70 84 80 8, tab 30
-  edit "", 567, 150 83 20 11, autohs tab 30
-  text "lines", 568, 172 85 25 8, tab 30
-  edit "", 569, 198 83 20 11, autohs tab 30
-  text "seconds", 570, 220 85 30 8, tab 30
-  check "&Ignore queries on flood:", 571, 70 96 80 8, tab 30
-  edit "", 572, 150 95 20 11, autohs tab 30
-  text "queries", 573, 172 97 25 8, tab 30
-  edit "", 574, 198 95 20 11, autohs tab 30
-  text "seconds", 575, 220 97 30 8, tab 30
-  check "&Ignore notices on flood:", 576, 70 108 80 8, tab 30
-  edit "", 577, 150 107 20 11, autohs tab 30
-  text "lines", 578, 172 109 25 8, tab 30
-  edit "", 579, 198 107 20 11, autohs tab 30
-  text "seconds", 580, 220 109 30 8, tab 30
-  check "&Send self lag check every", 582, 70 123 80 8, tab 30
-  edit "", 583, 150 122 20 11, autohs tab 30
-  text "seconds", 584, 172 124 60 8, tab 30
-  check "&Show self lag warnings at", 585, 70 135 80 8, tab 30
-  edit "", 586, 150 134 20 11, autohs tab 30
-  text "and", 587, 172 136 25 8, tab 30
-  edit "", 588, 198 134 20 11, autohs tab 30
-  text "seconds", 589, 220 136 30 8, tab 30
+  check "&Send script reply to VERSION CTCPs", 560, 93 6 233 9, tab 30
+  check "&Reply to other CTCPs-", 561, 93 17 233 9, tab 30
+  button "&Edit Replies", 562, 108 30 66 14, tab 30
+  check "&DCC flood protection enabled", 563, 93 49 233 9, tab 30
+  check "&CTCP flood protection enabled", 564, 93 60 233 9, tab 30
+  check "&Change nick randomly if protection triggered", 565, 93 71 233 9, tab 30
+  check "&Verify channels you are invited to", 581, 93 82 233 9, tab 30
+  check "&Close DCC chat on flood:", 566, 93 103 106 9, tab 30
+  edit "", 567, 200 101 26 13, autohs tab 30
+  text "lines", 568, 229 104 33 9, tab 30
+  edit "", 569, 264 101 26 13, autohs tab 30
+  text "seconds", 570, 293 104 40 9, tab 30
+  check "&Ignore queries on flood:", 571, 93 117 106 9, tab 30
+  edit "", 572, 200 116 26 13, autohs tab 30
+  text "queries", 573, 229 119 33 9, tab 30
+  edit "", 574, 264 116 26 13, autohs tab 30
+  text "seconds", 575, 293 119 40 9, tab 30
+  check "&Ignore notices on flood:", 576, 93 132 106 9, tab 30
+  edit "", 577, 200 131 26 13, autohs tab 30
+  text "lines", 578, 229 133 33 9, tab 30
+  edit "", 579, 264 131 26 13, autohs tab 30
+  text "seconds", 580, 293 133 40 9, tab 30
+  check "&Send self lag check every", 582, 93 151 106 9, tab 30
+  edit "", 583, 200 149 26 13, autohs tab 30
+  text "seconds", 584, 229 152 80 9, tab 30
+  check "&Show self lag warnings at", 585, 93 165 106 9, tab 30
+  edit "", 586, 200 164 26 13, autohs tab 30
+  text "and", 587, 229 167 33 9, tab 30
+  edit "", 588, 264 164 26 13, autohs tab 30
+  text "seconds", 589, 293 167 40 9, tab 30
 
   ; Serverlist [600-619]
-  text "PnP can include popups in status listing all known servers for a network. Add networks by entering their name (such as 'Undernet') and clicking 'Add', below.", 604, 70 5 170 24, tab 31
-  check "&Enable serverlist popups in status:", 600, 70 30 170 8, tab 31
-  combo 601, 70 40 135 60, size edit tab 31
-  button "&Add", 602, 210 40 30 12, tab 31
-  button "&Del", 603, 210 55 30 12, tab 31
-  text "Servers shown in the serverlist are taken from mIRC's servers.ini. Update servers.ini and click 'Refresh' to refresh the serverlist popups.", 605, 70 105 170 24, tab 31
-  button "&Refresh", 606, 190 129 50 12, tab 31
+  text "PnP can include popups in status listing all known servers for a network. Add networks by entering their name (such as 'Undernet') and clicking 'Add', below.", 604, 93 6 227 29, tab 31
+  check "&Enable serverlist popups in status:", 600, 93 36 227 9, tab 31
+  combo 601, 93 49 180 73, size edit tab 31
+  button "&Add", 602, 280 49 40 14, tab 31
+  button "&Del", 603, 280 67 40 14, tab 31
+  text "Servers shown in the serverlist are taken from mIRC's servers.ini. Update servers.ini and click 'Refresh' to refresh the serverlist popups.", 605, 93 128 227 29, tab 31
+  button "&Refresh", 606, 253 158 66 14, tab 31
   edit "", 607, 1 1 1 1, hide
-  text "The serverlist will refresh when you close this dialog.", 608, 70 129 120 16, hide tab 31
+  text "The serverlist will refresh when you close this dialog.", 608, 93 158 160 19, hide tab 31
 
   ; Titlebar [620-649]
-  check "&Update mIRC titlebar with info:", 638, 70 10 120 8, tab 32
-  box "When here:", 620, 70 25 80 94, tab 32
-  check "&Network", 621, 75 35 70 10, tab 32
-  check "&Nickname", 622, 75 45 70 10, tab 32
-  check "&Self-lag", 623, 75 55 70 10, tab 32
-  check "&Active window", 624, 75 65 70 10, tab 32
-  text "(and data)", 625, 84 74 61 10, tab 32
-  check "&Pager", 626, 75 85 70 10, tab 32
-  check "&Time", 627, 75 95 70 10, tab 32
-  check "&Idle", 628, 75 105 70 10, tab 32
-  box "When away:", 629, 160 25 80 94, tab 32
-  check "&Network", 630, 165 35 70 10, tab 32
-  check "&Nickname", 631, 165 45 70 10, tab 32
-  check "&Self-lag", 632, 165 55 70 10, tab 32
-  check "&Away reason", 633, 165 65 70 10, tab 32
-  check "&Away logging", 634, 165 75 70 10, tab 32
-  check "&Pager", 635, 165 85 70 10, tab 32
-  check "&Time", 636, 165 95 70 10, tab 32
-  check "&Idle", 637, 165 105 70 10, tab 32
-  text "Note: Idle time will only be shown if over 90 seconds.", 639, 70 130 170 8, tab 32
+  check "&Update mIRC titlebar with info:", 638, 93 12 160 9, tab 32
+  box "When here:", 620, 93 30 106 115, tab 32
+  check "&Network", 621, 100 42 93 12, tab 32
+  check "&Nickname", 622, 100 55 93 12, tab 32
+  check "&Self-lag", 623, 100 67 93 12, tab 32
+  check "&Active window", 624, 100 79 93 12, tab 32
+  text "(and data)", 625, 112 90 81 12, tab 32
+  check "&Pager", 626, 100 104 93 12, tab 32
+  check "&Time", 627, 100 116 93 12, tab 32
+  check "&Idle", 628, 100 128 93 12, tab 32
+  box "When away:", 629, 213 30 106 115, tab 32
+  check "&Network", 630, 220 42 93 12, tab 32
+  check "&Nickname", 631, 220 55 93 12, tab 32
+  check "&Self-lag", 632, 220 67 93 12, tab 32
+  check "&Away reason", 633, 220 79 93 12, tab 32
+  check "&Away logging", 634, 220 92 93 12, tab 32
+  check "&Pager", 635, 220 104 93 12, tab 32
+  check "&Time", 636, 220 116 93 12, tab 32
+  check "&Idle", 637, 220 128 93 12, tab 32
+  text "Note: Idle time will only be shown if over 90 seconds.", 639, 93 159 227 9, tab 32
 
   ; Other [650-679]
-  text "&Channel nick-completion character(s):", 650, 70 15 100 8, right tab 33
-  edit "", 651, 172 13 30 11, autohs tab 33
-  text "&Inline nick-completion prefix:", 652, 70 27 100 8, right tab 33
-  edit "", 653, 172 25 30 11, autohs tab 33
-  check "&Ask if multiple matches found for nick-completion", 654, 75 42 170 8, tab 33
-  check "&Use nick-completion in commands (/kick, /op, etc.)", 655, 75 51 170 8, tab 33
-  check "&Strip colors/attributes from all script messages sent to IRC", 656, 75 65 170 8, tab 33
-  box "Use /b as:", 657, 70 79 55 34, tab 33
-  radio "/bac&k", 658, 80 89 40 8, group tab 33
-  radio "/ba&n", 659, 80 99 40 8, tab 33
-  box "FKeys for recent events: (CtrlF1, etc.)", 660, 130 79 115 34, tab 33
-  radio "&Cycle through all choices", 661, 140 89 100 8, group tab 33
-  radio "&Automatically use most recent", 662, 140 99 100 8, tab 33
-  box "FKeys to use for misc. events such as DNS:", 663, 70 119 175 24, tab 33
-  radio "&F7", 664, 80 129 50 8, group tab 33
-  radio "&F10", 665, 130 129 50 8, tab 33
-  radio "&Any", 666, 180 129 55 8, tab 33
+  text "&Channel nick-completion character(s):", 650, 93 18 133 9, right tab 33
+  edit "", 651, 229 15 40 13, autohs tab 33
+  text "&Inline nick-completion prefix:", 652, 93 33 133 9, right tab 33
+  edit "", 653, 229 30 40 13, autohs tab 33
+  check "&Ask if multiple matches found for nick-completion", 654, 100 51 227 9, tab 33
+  check "&Use nick-completion in commands (/kick, /op, etc.)", 655, 100 62 227 9, tab 33
+  check "&Strip colors/attributes from all script messages sent to IRC", 656, 100 79 227 9, tab 33
+  box "Use /b as:", 657, 93 97 73 41, tab 33
+  radio "/bac&k", 658, 106 109 53 9, group tab 33
+  radio "/ba&n", 659, 106 121 53 9, tab 33
+  box "FKeys for recent events: (CtrlF1, etc.)", 660, 173 97 153 41, tab 33
+  radio "&Cycle through all choices", 661, 187 109 133 9, group tab 33
+  radio "&Automatically use most recent", 662, 187 121 133 9, tab 33
+  box "FKeys to use for misc. events such as DNS:", 663, 93 146 233 29, tab 33
+  radio "&F7", 664, 106 158 66 9, group tab 33
+  radio "&F10", 665, 173 158 66 9, tab 33
+  radio "&Any", 666, 240 158 73 9, tab 33
 }
 
 ; /_config [#]
@@ -2143,3 +2143,4 @@ alias -l msgprev.update {
   drawsave @.msgprev script\temp\msgprev.bmp
   did -g pnp.config 548 script\temp\msgprev.bmp
 }
+

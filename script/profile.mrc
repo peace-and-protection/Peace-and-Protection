@@ -217,29 +217,29 @@ alias spawn {
 dialog profile {
   title "User Profile"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 200 152
+  option map
+  size -1 -1 267 186
 
-  text "Choose a user profile by double-clicking, or select an option.", 40, 5 5 190 8
+  text "Choose a user profile by double-clicking, or select an option.", 40, 6 6 253 9
 
-  box "&User profiles", 13, 5 15 190 75
-  list 1, 10 25 115 70
-  list 11, 10 25 115 70, hide
+  box "&User profiles", 13, 6 18 253 92
+  list 1, 13 30 153 85
+  list 11, 13 30 153 85, hide
   edit "", 150, 1 1 1 1, hide autohs
-  button "&Open profile", 101, 130 25 60 12, default
-  button "&Delete profile", 102, 130 41 60 12
-  button "&Rename profile", 103, 130 57 60 12
-  button "&Set as default", 104, 130 73 60 12
+  button "&Open profile", 101, 173 30 80 14, default
+  button "&Delete profile", 102, 173 50 80 14
+  button "&Rename profile", 103, 173 70 80 14
+  button "&Set as default", 104, 173 89 80 14
 
-  text "", 75, 7 95 250 10
+  text "", 75, 9 116 334 12
 
-  box "Options", 12, 5 105 190 24
-  check "&Ask for profile on startup", 2, 10 115 115 8
-  button "&New profile", 201, 130 112 60 12
-  text "Select the profile or option you wish to base the new profile on", 80, 7 107 190 8, hide
+  box "Options", 12, 6 128 253 29
+  check "&Ask for profile on startup", 2, 13 141 153 9
+  button "&New profile", 201, 173 137 80 14
+  text "Select the profile or option you wish to base the new profile on", 80, 9 131 253 9, hide
 
-  button "Close", 202, 55 135 40 12, cancel
-  button "&Help", 203, 105 135 40 12, disable
+  button "Close", 202, 73 165 53 14, cancel
+  button "&Help", 203, 140 165 53 14, disable
 
   edit "", 50, 1 1 1 1, hide result autohs
 }
@@ -323,14 +323,14 @@ alias _profimport {
 dialog profileimp {
   title "Profile Import"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 200 35
+  option map
+  size -1 -1 267 42
 
-  text "Should PnP search for your other copies of mIRC or do you wish to locate MIRC.INI manually?", 201, 7 2 150 15
+  text "Should PnP search for your other copies of mIRC or do you wish to locate MIRC.INI manually?", 201, 9 2 200 18
 
-  button "&Search", 101, 6 20 65 12, default
-  button "&Manual", 103, 81 20 65 12, OK
-  button "Cancel", 105, 156 20 32 12, cancel
+  button "&Search", 101, 8 24 86 14, default
+  button "&Manual", 103, 108 24 86 14, OK
+  button "Cancel", 105, 208 24 42 14, cancel
 
   edit "manual", 1, 1 1 1 1, result hide
 }
@@ -338,11 +338,11 @@ on *:DIALOG:profileimp:sclick:101:did -o $dname 1 1 search | dialog -k $dname
 dialog profilesearch {
   title "Profile Import"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 108 105
-  text "&Select MIRC.INI to import from:", 1, 2 2 100 8
-  list 2, 4 12 100 75, sort
-  button "&Select", 3, 31 90 45 12, default ok
+  option map
+  size -1 -1 144 128
+  text "&Select MIRC.INI to import from:", 1, 2 2 133 9
+  list 2, 5 14 133 92, sort
+  button "&Select", 3, 41 110 60 14, default ok
   edit "", 4, 1 1 1 1, hide autohs result
 }
 on *:DIALOG:profilesearch:init:*:{
@@ -369,15 +369,15 @@ on *:DIALOG:profilesearch:sclick:3:did -o $dname 4 1 $did(2,$did(2).sel)
 dialog profimpsel {
   title "Select profile"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 200 96
+  option map
+  size -1 -1 267 117
 
-  text "Import which profile?", 40, 5 5 190 8
+  text "Import which profile?", 40, 6 6 253 9
 
-  box "&Profiles", 13, 5 15 190 75
-  list 1, 10 25 115 70
-  list 11, 10 25 115 70, hide
-  button "&Select", 101, 130 25 60 12, default ok
+  box "&Profiles", 13, 6 18 253 92
+  list 1, 13 30 153 85
+  list 11, 13 30 153 85, hide
+  button "&Select", 101, 173 30 80 14, default ok
 
   edit "", 50, 1 1 1 1, hide result autohs
   edit %.which, 51, 1 1 1 1, hide autohs
@@ -397,3 +397,4 @@ on *:DIALOG:profimpsel:init:*:{
 }
 on *:DIALOG:profimpsel:dclick:1:dialog -k $dname
 on *:DIALOG:profimpsel:sclick:101:set -u1 %.whichp $did(11,$did(1).sel) | did -o $dname 50 1 $did(1,$did(1).sel)
+

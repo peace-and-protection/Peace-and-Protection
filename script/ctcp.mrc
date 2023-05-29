@@ -630,26 +630,26 @@ alias ctcpedit dialog -dm ctcpedit ctcpedit
 dialog ctcpedit {
   title "CTCP replies"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 200 174
+  option map
+  size -1 -1 267 213
 
-  box "&CTCPs:", 21, 5 5 190 92
-  list 2, 10 15 180 60, extsel sort
+  box "&CTCPs:", 21, 6 6 253 113
+  list 2, 13 18 240 73, extsel sort
 
-  button "&Add...", 10, 10 77 40 12
-  button "&Remove", 11, 55 77 40 12
-  button "&Load default", 12, 134 77 55 12
+  button "&Add...", 10, 13 94 53 14
+  button "&Remove", 11, 73 94 53 14
+  button "&Load default", 12, 179 94 73 14
 
-  box "", 22, 5 105 190 42
+  box "", 22, 6 128 253 51
 
-  combo 4, 10 115 50 50, drop
-  edit "", 5, 65 115 125 11, autohs
-  button "&Select...", 8, 10 130 30 11
-  button "&Default", 9, 155 130 35 11
+  combo 4, 13 141 66 61, drop
+  edit "", 5, 86 141 167 13, autohs
+  button "&Select...", 8, 13 159 40 13
+  button "&Default", 9, 207 159 46 13
 
-  button "OK", 100, 5 155 40 12, ok
-  button "Cancel", 101, 50 155 40 12, cancel
-  button "&Help", 102, 155 155 40 12, disable
+  button "OK", 100, 6 190 53 14, ok
+  button "Cancel", 101, 66 190 53 14, cancel
+  button "&Help", 102, 207 190 53 14, disable
 }
 on *:DIALOG:ctcpedit:init:*:{
   loadbuf -otctcp $dname 4 script\dlgtext.dat
@@ -743,3 +743,4 @@ on *:DIALOG:ctcpedit:sclick:12:{
   loadbuf -o $dname 2 script\defcfg\ctcp.dat
   _loadctcp
 }
+

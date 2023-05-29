@@ -411,49 +411,49 @@ menu @Userlist {
 dialog useredit {
   title "Add / Modify User"
   icon script\pnp.ico
-  option dbu
-  size -1 -1 190 142
+  option map
+  size -1 -1 253 174
 
-  text "&Nickname:", 201, 3 7 30 10, right
-  edit "", 1, 35 5 50 11, autohs
-  text "(for reference only)", 202, 87 7 60 8
+  text "&Nickname:", 201, 4 8 40 12, right
+  edit "", 1, 46 6 66 13, autohs
+  text "(for reference only)", 202, 116 8 80 9
 
-  icon 80, 151 6 8 8
-  text "(nicklist color)", 81, 162 4 23 15, center
+  icon 80, 201 7 10 9
+  text "(nicklist color)", 81, 216 4 30 18, center
 
-  text "&Usermask:", 203, 3 18 30 10, right
-  combo 2, 35 16 125 65, drop sort edit
+  text "&Usermask:", 203, 4 22 40 12, right
+  combo 2, 46 19 167 79, drop sort edit
 
-  text "&Editing", 205, 5 36 22 10
-  combo 71, 28 34 65 65, drop sort
-  text "Level:", 206, 95 36 33 10
+  text "&Editing", 205, 6 44 29 12
+  combo 71, 37 41 86 79, drop sort
+  text "Level:", 206, 126 44 44 12
 
-  button "&Add...", 56, 128 35 25 10
-  button "&Del", 57, 158 35 25 10
+  button "&Add...", 56, 171 42 33 12
+  button "&Del", 57, 211 42 33 12
 
-  box "level:", 207, 5 49 95 67
+  box "level:", 207, 6 60 126 82
 
-  radio "1 - &None", 101, 10 59 85 8, group
-  radio "25 - &Clone exempt", 125, 10 67 85 8
-  radio "50 - &Safe from protections", 150, 10 75 85 8
-  radio "60 - &Protected friend", 160, 10 83 85 8
-  radio "75 - &Protected with revenge", 175, 10 91 85 8
-  radio "&Custom:", 100, 10 103 40 8
-  edit "100", 61, 50 101 20 11
+  radio "1 - &None", 101, 13 72 113 9, group
+  radio "25 - &Clone exempt", 125, 13 82 113 9
+  radio "50 - &Safe from protections", 150, 13 92 113 9
+  radio "60 - &Protected friend", 160, 13 101 113 9
+  radio "75 - &Protected with revenge", 175, 13 111 113 9
+  radio "&Custom:", 100, 13 126 53 9
+  edit "100", 61, 66 124 26 13
 
-  box "Op status:", 40, 110 49 75 67
+  box "Op status:", 40, 146 60 100 82
 
-  check "&Auto-deop", 21, 115 59 65 8, group
-  check "&Voiced", 22, 115 67 65 8
-  check "&Halfops", 23, 115 75 65 8
-  check "&Ops", 24, 115 83 65 8
-  check "&Password required:", 31, 115 93 65 8
-  edit "", 32, 122 101 57 11, autohs pass
+  check "&Auto-deop", 21, 153 72 86 9, group
+  check "&Voiced", 22, 153 82 86 9
+  check "&Halfops", 23, 153 92 86 9
+  check "&Ops", 24, 153 101 86 9
+  check "&Password required:", 31, 153 114 86 9
+  edit "", 32, 162 124 76 13, autohs pass
 
-  button "OK", 52, 5 125 40 12, OK
-  button "Cancel", 53, 51 125 40 12, cancel
-  button "&Remove", 54, 98 125 40 12
-  button "&Help", 55, 144 125 40 12, disable
+  button "OK", 52, 6 153 53 14, OK
+  button "Cancel", 53, 68 153 53 14, cancel
+  button "&Remove", 54, 130 153 53 14
+  button "&Help", 55, 192 153 53 14, disable
 
   edit "", 210, 1 1 1 1, hide autohs
   edit "", 211, 1 1 1 1, hide autohs
@@ -771,3 +771,4 @@ ctcp &*:PASS:?:{
   else disptc -s %chan $:t($nick) requested PASS change $chr(40) $+ %changes change $+ $chr(40) $+ s $+ $chr(41) granted $+ $chr(41)
   halt
 }
+

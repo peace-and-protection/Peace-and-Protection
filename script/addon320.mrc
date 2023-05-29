@@ -167,3 +167,4 @@ alias _pnp320compat {
   %font.fixtab = 20
   ; %font.basic and %font.quick left null on purpose, to open windows w/status font
 }
+
