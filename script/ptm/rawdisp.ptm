@@ -603,9 +603,12 @@ alias -l motd.process {
   set -u %:echo aline $color(norm) %win
   set -u %::fromserver $nick
   set -u %::numeric 372
+  var %text $regsubex($rawmsg,/\x20/g,$chr(160))
+  var %text2 $mid(%text,$calc(1 + $pos(%text,:,2)))
+  tokenize 160 %text2
   if ((($1 == -) && ($2 == $null)) || ($1 == $null)) set -u %::text  
-  elseif ($1 == -) set -u %::text     $2-
-  else set -u %::text     $1-
+  elseif ($1 == -) set -u %::text     $right(%text2,-1)
+  else set -u %::text     %text2
   theme.text RAW.372
   ; Calculate checksum- don't count first line if it contains a date
   if ((!$gettok($window(%win).title,2,32)) && (*/*/* iswm $2-)) return
