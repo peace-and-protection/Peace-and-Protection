@@ -803,7 +803,7 @@ raw 353:*:{
   ; Counts of op/voc/etc
   var %num = 1
   while (%num <= $len($prefix)) {
-    hinc pnp. $+ $cid -namec. $+ $mid($prefix,%num,1) $count($4-,$mid($prefix,%num,1))
+    hinc pnp. $+ $cid -namec. $+ $mid($prefix,%num,1) $count($+($chr(32),$4-),$+($chr(32),$mid($prefix,%num,1)))
     inc %num
   }
   ; Count all ppl, count all regulars (no prefix at all)
