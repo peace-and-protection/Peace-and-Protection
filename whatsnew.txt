@@ -5,6 +5,18 @@ As of Sunday October 21 2012, the support channel #peace&protection has moved to
 
 *** 4.22.10 changes ***
 
+* First release without WildCraze...
+  On january 16 2023 we got word that WildCraze, also known as just Craze, died on May 17, 2022 from an illness.
+  Therefore we are dedicating this release to him.
+  We have written a more detailed chain of events in our forum, on how we found this out:
+  https://pnp.kristshell.net/forum/viewthread.php?tid=456
+
+  One of our developer wrote this text in his memory:
+  «You were as steady as a rock, your light shining brightly o'er PnP as you gazed upon it, may you be lifted from this earlthy pit, and look out from the heavens.»
+
+
+  And now, back to the regular changelog:
+
 * BugFix UHNAMES - Fix count op/voc.
 * BugFix MOTD ASCII art (spaces) - Don't forget to use a monospace font in your theme (Consolas)! And to save your theme. If it's not displaying properly, run PnP's /fontfixer!
 * BugFix EZPING - False positives when enabled for phrases such as "He's helping me" are now resolved.
