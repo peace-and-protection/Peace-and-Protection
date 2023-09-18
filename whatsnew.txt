@@ -3,6 +3,17 @@ Complete details on everything added here.
 
 As of Sunday October 21 2012, the support channel #peace&protection has moved to EFnet.
 
+*** 4.22.10 changes ***
+
+* BugFix UHNAMES - Fix count op/voc.
+* BugFix MOTD ASCII art (spaces) - Don't forget to use a monospace font in your theme (Consolas)! And to save your theme. If it's not displaying properly, run PnP's /fontfixer!
+* BugFix EZPING - False positives when enabled for phrases such as "He's helping me" are now resolved.
+* BugFix SPAMBLOCK - Use $unsafe in parameters to mitigate RE vulnerability.
+* BugFix REROUTE - A fix using the RR dialog.
+* BugFix FONT.EXISTS alias - Fix for font checking used in theme dialog.
+* BugFix ANTIIDLE - Fix for undernet (for example). Now clears idle counter.
+* Change Option DBU to MAP - dialogs should now show properly on high res monitors with DPI scaling.
+
 *** 4.22.9 changes ***
 
 * BugFix mIRC sets $numeric == 0 for non-numeric raws causing PnP to display no/strange output (for example on raw AWAY:*:{})
