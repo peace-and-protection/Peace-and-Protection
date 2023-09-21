@@ -16,3 +16,11 @@ release:
 diff:
 	git diff-tree -r --no-commit-id --name-only --diff-filter=ACMRT HEAD $(LATEST_TAG)|grep -v "`cat .diff-exclude`"|xargs zip -FSq fix-$(VERSION).zip
 	git diff-tree -r --no-commit-id --name-only --diff-filter=ACMRT HEAD v4.22.3|grep -v "`cat .diff-exclude`"|xargs zip -FSq fix.zip
+
+upload:
+	rsync -avh pnp-$(VERSION).zip ${HOME}/Dokumenter/Mine_dokumenter/oppdrag/pnp/pnp/dl/
+	rsync -avh fix-$(VERSION).zip fix.zip ${HOME}/Dokumenter/Mine_dokumenter/oppdrag/pnp/fix/
+	rsync -avh pp-faq.txt pp-readme.txt quits.txt whatsnew.txt ${HOME}/Dokumenter/Mine_dokumenter/oppdrag/pnp/pnp/
+
+git-tag:
+	git tag -s v$(VERSION) -m "Version $(VERSION)"
